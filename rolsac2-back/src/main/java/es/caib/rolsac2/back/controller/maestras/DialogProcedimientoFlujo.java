@@ -18,6 +18,7 @@ import es.caib.rolsac2.service.model.Propiedad;
 import es.caib.rolsac2.service.model.ServicioDTO;
 import es.caib.rolsac2.service.model.types.*;
 import es.caib.rolsac2.service.utils.UtilJSON;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -248,7 +249,10 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             } else {
                 enlaceProp = systemServiceFacade.obtenerPropiedadConfiguracion("email.serv.enlace") + idProcedimiento;
             }
-            parametros[1] = mensajeNuevo;
+            String mensajeNuevoSeguro = StringEscapeUtils.escapeHtml4(mensajeNuevo);
+            mensajeNuevoSeguro = mensajeNuevoSeguro.replace("\r\n", "\n").replace("\r", "\n");
+            mensajeNuevoSeguro = mensajeNuevoSeguro.replace("\n", "<br/>");
+            parametros[1] = mensajeNuevoSeguro;
             parametros[2] = enlaceProp;
 
             String mensajeInicial = systemServiceFacade.obtenerPropiedadConfiguracion("email.email.inicio." + getIdioma());
@@ -273,7 +277,6 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         final EmailPlugin pluginEmail = (EmailPlugin) systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.EMAIL, UtilJSF.getSessionBean().getEntidad().getCodigo());
 
         try {
-            //EmailPlugin pluginEmail = (EmailPlugin) plg;
             boolean respuesta = pluginEmail.envioEmail(listaDestinatarios, asunto, mensajeEnviar, null, sessionBean.getLang());
             LOG.debug("Resultado Email: ");
             LOG.debug(Boolean.toString(respuesta));

@@ -32,7 +32,7 @@ public class JConfiguracionGlobal {
     /**
      * Valor
      **/
-    @Column(name = "CFG_VALOR", length = 500)
+    @Column(name = "CFG_VALOR", length = 4000)
     private String valor;
 
     /**

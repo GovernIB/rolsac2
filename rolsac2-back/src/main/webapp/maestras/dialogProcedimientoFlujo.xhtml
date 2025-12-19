@@ -86,8 +86,8 @@
                 <div class="ui-g-12 ui-md-1 ui-lg-1">
                     <h:outputText value="#{labels['dict.mensaje']}:" for="datatableEstado"/>
                 </div>
-                <div class="ui-g-12 ui-md-5 ui-lg-5">
-                    <p:inputTextarea value="#{dialogProcedimientoFlujo.mensajeNuevo}" rows="5" cols="35"   autoResize="false">
+                <div class="ui-g-12 ui-md-11 ui-lg-11">
+                    <p:inputTextarea value="#{dialogProcedimientoFlujo.mensajeNuevo}" rows="5"   autoResize="false" style="width:100%" id="txtMensajeNuevo" >
                         <!--<p:keyFilter regEx="/[0-9_-a-zA-Z\u00C0-\u024F\. @!¡()¿?+-;:,]/i" preventPaste="false"/>-->
                     </p:inputTextarea>
                 </div>
@@ -202,9 +202,8 @@
         </p:panel>
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
-        <p:selectBooleanCheckbox id="checkMail" value="#{dialogProcedimientoFlujo.checkMail}"
-                                 itemLabel="Enviar correo"/>
-        <p:commandButton id="btnCopy"  icon="pi pi-clipboard" value="Copiar chat"/>
+        <p:selectBooleanCheckbox id="checkMail" value="#{dialogProcedimientoFlujo.checkMail}" itemLabel="#{labels['dialogProcedimientoFlujo.enviarCorreo']}"/>
+        <p:commandButton id="btnCopy"  icon="pi pi-clipboard" value="#{labels['dialogProcedimientoFlujo.copiarXat']}"/>
         <pe:clipboard id="clipboard" text="#{dialogProcedimientoFlujo.estructurarCopiaChat()}" action="copy"
                       trigger="btnCopy" successMessage="Copiado" errorMessage="Error al copiar"/>
     </ui:define>

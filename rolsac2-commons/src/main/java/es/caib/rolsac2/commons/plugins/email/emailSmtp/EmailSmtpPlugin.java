@@ -71,6 +71,10 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
                 props.put("mail.smtp.host", host);
                 props.put("mail.smtp.port", port);
 
+                // 🔥 saltarse certificados
+                //props.put("mail.smtp.ssl.trust", "*");
+                //props.put("mail.smtp.ssl.checkserveridentity", "false");
+
                 mailSession = Session.getInstance(props, new javax.mail.Authenticator() {
                     protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
                         return new javax.mail.PasswordAuthentication(user, pwd);
@@ -79,7 +83,6 @@ public class EmailSmtpPlugin extends AbstractPluginProperties implements EmailPl
             } else {
                 mailSession = (Session) jndiContext.lookup(getProperty(EMAIL_JNDI));
             }
-
             // Preparar destinatarios tras validación
             InternetAddress[] direcciones = destinatarios.stream()
                     .map(address -> {
