@@ -1,16 +1,19 @@
-CREATE OR REPLACE FUNCTION obtenerUAconDIR3 (
+CREATE OR REPLACE FUNCTION todosAscendentesUACorrectos (
 	p_unad_codigo RS2_UNIADM.UNAD_CODIGO%TYPE
-) RETURN RS2_UNIADM.UNAD_CODIGO%TYPE IS
+) RETURN BOOLEAN IS
 
 	v_dir3   RS2_UNIADM.UNAD_DIR3%TYPE;
 	v_padre  RS2_UNIADM.UNAD_UNADPADRE%TYPE;
 	v_valida  r1_uniadm.UNA_VALIDA%TYPE;
 	v_correcto  BOOLEAN;
 BEGIN
+	 -- ESTE METODO ES PARA COMPROBAR SI TODOS LOS ASCENDENTES DE UNA UA SON CORRECTOS (TIENEN DIR3 Y VALIDA = 1)
+	 -- SI TODOS SON CORRECTOS DEVUELVE TRUE, SINO FALSE
+
 	IF p_unad_codigo IS null
 	THEN
-		/** SI EL PARAMETRO QUE SE PASA ES NULO, DEVOLVER NULO **/
-		RETURN NULL;
+		/** SI EL PARAMETRO QUE SE PASA ES NULO, DEVOLVER TRUE, SEGURAMENTE SEA LA RAIZ **/
+		RETURN true;
 	END IF;
 
 	SELECT UNA_CODDR3, UNA_CODUNA, UNA_VALIDA
@@ -18,26 +21,17 @@ BEGIN
 	FROM r1_uniadm
 	WHERE UNA_CODI = p_unad_codigo;
 
+   IF v_dir3 IS NULL OR  v_valida != 1
+   THEN
+         RETURN FALSE;
+   END IF;
 
-	-- Si la unidad tiene DIR3, devolver su código
-	IF v_dir3 IS NOT NULL AND v_valida = 1 THEN
-
-		--Comprobamos que todos los ascendentes son correctos (tiene DIR3 y valida = 1)
-		v_correcto := todosAscendentesUACorrectos(v_padre);
-		IF v_correcto = TRUE
-		THEN
-			RETURN p_unad_codigo;
-		END IF;
-	END IF;
-
-	-- Si no tiene padre, no hay más que buscar
 	IF v_padre IS NULL
 	THEN
-		RETURN NULL;
+		RETURN TRUE;
 	END IF;
-
-	-- buscar en el padre
-	RETURN obtenerUAconDIR3(v_padre);
+	 	-- buscar en el padre
+	RETURN todosAscendentesUACorrectos(v_padre);
 
 EXCEPTION
 	WHEN NO_DATA_FOUND THEN
