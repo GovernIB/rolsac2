@@ -50,34 +50,14 @@
                             </ui:repeat>
                         </div>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown mobil" title="#{labels['dict.configuracion']}" href="#" id="idiomas"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="oi oi-caret-bottom float-right flechaSubmenu" title=""
-                                                  aria-hidden="true"></span>
-                            <span class="mb-0 float-right botoCurt">#{labels['dict.configuracion']}</span>
-                            <span class="oi oi-cog" title="#{labels['dict.configuracion']}" aria-hidden="true"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="idiomas">
-                            <c:if test="${sessionBean.perfil eq TypePerfiles.SUPER_ADMINISTRADOR || sessionBean.perfil eq TypePerfiles.ADMINISTRADOR_ENTIDAD || sessionBean.entidad.admContenidoSeleccionIdioma == null}">
-                                <ui:repeat value="#{applicationLocales.available}" var="locale" rendered="true">
-                                    <h:commandLink styleClass="dropdown-item mobil" hreflang="#{locale.toLanguageTag()}"
-                                                   action="#{sessionBean.reload()}"
-                                                   title="#{labels['dict.' += locale.toLanguageTag()]}"
-                                                   rendered="#{sessionBean.lang != locale.toLanguageTag()}"
-                                                   update="@form" execute="@form" render="@form"
-                                    >
-                                        <span class="mb-0 float-right">#{labels['dict.' += locale.toLanguageTag()]}</span>
-                                        <f:ajax listener="#{sessionBean.setCurrent(locale)}" update="@form" execute="@form" render="@form"  />
-                                    </h:commandLink>
-                                </ui:repeat>
-                            </c:if>
-                            <p:commandLink action="#{logout.logout}"
-                                           ajax="false" immediate="true" styleClass="dropdown-item mobil"
-                                           title="#{labels['dict.salir']}">
-                                <span class="mb-0 float-right">#{labels['dict.salir']}</span>
-                            </p:commandLink>
+                    <li>
+                        <div  class="usuarioMenu" >
+                            <strong >#{labels['dict.usuario']}: </strong>
+                            <span class="subtitolMay" style="padding-left: 0.3rem;">
+                                 #{sessionBean.getUsuario().getIdentificador()}
+                             </span>
                         </div>
+
                     </li>
             </ul>
         </div>

@@ -74,13 +74,15 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
          }
 
          .ui-growl {
-             top: 10%;
+             top: 85%;
              right: 10px;
          }
 
          .ui-outputlabel {
             font-size: 1.1em !important;
          }
+
+
 
      </h:outputStylesheet>
 
@@ -90,7 +92,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                   globalOnly="false"
                   showDetail="false"
                   life="5000"
-                  escape="false"/>
+                  escape="false" />
 
              <p:importConstants type="es.caib.rolsac2.service.model.types.TypeIdiomaFijo"
                                 var="idiomasFijos"></p:importConstants>
@@ -257,6 +259,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                           cancelLabel="#{labels['dict.cancelar']}"
                                                           styleClass=""
                                                           auto="true"
+                                                          
                                             />
                                         </c:when>
                                         <c:otherwise>
