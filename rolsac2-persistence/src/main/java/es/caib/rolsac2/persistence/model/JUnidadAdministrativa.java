@@ -101,9 +101,6 @@ public class JUnidadAdministrativa extends BaseEntity {
     @Column(name = "UNAD_ESTADO", length = 1)
     private String estado;
 
-    @Column(name = "UNAD_CODEST")
-    private String codigoEstandard;
-
     /**
      * Fecha de baja.
      */
@@ -288,14 +285,6 @@ public class JUnidadAdministrativa extends BaseEntity {
 
     public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
-    }
-
-    public String getCodigoEstandard() {
-        return codigoEstandard;
-    }
-
-    public void setCodigoEstandard(String codigoEstandard) {
-        this.codigoEstandard = codigoEstandard;
     }
 
     @Override

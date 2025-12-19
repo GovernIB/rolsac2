@@ -647,7 +647,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
 
     @Override
     public int compareTo(ProcedimientoTramiteDTO data2) {
-        return compareTo(data2, true);
+        return compareTo(data2, false);
     }
 
     public int compareTo(ProcedimientoTramiteDTO data2, boolean mostrarLog) {

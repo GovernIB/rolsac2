@@ -1,3 +1,4 @@
+/*ALTER TABLE RS2_UNIADM ADD "UNAD_CODEST"	VARCHAR2(256 CHAR) NULL	;*/
 create
 	or replace PROCEDURE "MIGRAR_UA" (codigoUA NUMBER, codigoEntidad NUMBER, codigoUARaiz NUMBER, resultado OUT VARCHAR2)
 AS
@@ -217,8 +218,7 @@ BEGIN
 			 UNAD_CODENTI,
 			 UNAD_VERSION,
 			 UNAD_TIPOUA,
-			 UNAD_ESTADO,
-			 UNAD_CODEST)
+			 UNAD_ESTADO)
 			SELECT codigoUA,
 			       UNA_CODUNA,
 			       UNA_CODDR3,
@@ -232,13 +232,16 @@ BEGIN
 			       UNA_EMAILR,
 			       UNA_DOMINI,
 			       codigoEntidad,
-			       1,
+			       CASE
+				       WHEN UNA_CODEST IS NOT NULL AND REGEXP_LIKE(UNA_CODEST, '^\d+$')
+					       THEN TO_NUMBER(UNA_CODEST)
+				       ELSE 1
+				       END,
 			       UNA_CODTRT,
 			       CASE
 				       WHEN UNA_VALIDA = 1 THEN 'V'
 				       ELSE 'X'
-				       END,
-			       UNA_CODEST
+				       END as UNAD_ESTADO
 			FROM R1_UNIADM
 			WHERE UNA_CODI = codigoUA;
 
