@@ -33,7 +33,7 @@ public class JCategoriaPDUTraduccion {
     @Column(name = "TPDU_IDIOMA", nullable = false, length = 2)
     private String idioma;
 
-    @Column(name = "TPDU_DESCRI")
+    @Column(name = "TPDU_DESCRI", length = 255)
     private String descripcion;
 
     public static List<JCategoriaPDUTraduccion> createInstance(List<String> idiomas) {

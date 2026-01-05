@@ -94,7 +94,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          required="#{empty param['formDialog:closeButton']}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}">
+                                         nombreLiteral="#{labels['dict.descripcion']}"
+                                        maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
@@ -110,7 +111,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}">
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}"
+                                         maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
@@ -126,7 +128,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}">
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}"
+                                         maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
@@ -142,7 +145,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}">
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}"
+                                         maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
@@ -158,7 +162,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoUnidadAdministrativa.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}">
+                                         nombreLiteral="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}"
+                                         maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>

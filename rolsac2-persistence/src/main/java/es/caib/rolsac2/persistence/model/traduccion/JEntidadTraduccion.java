@@ -28,37 +28,37 @@ public class JEntidadTraduccion extends BaseEntity {
     /**
      * Descripcion
      **/
-    @Column(name = "TREN_DESCRI")
+    @Column(name = "TREN_DESCRI", length = 255)
     private String descripcion;
 
     /**
      * LOPD Finalidad
      **/
-    @Column(name = "TREN_LOPDFI")
+    @Column(name = "TREN_LOPDFI", length = 4000)
     private String lopdFinalidad;
 
     /**
      * LOPD Destinatario
      **/
-    @Column(name = "TREN_LOPDDS")
+    @Column(name = "TREN_LOPDDS", length = 4000)
     private String lopdDestinatario;
 
     /**
      * LOPD Derechos
      **/
-    @Column(name = "TREN_LOPDDR")
+    @Column(name = "TREN_LOPDDR", length = 4000)
     private String lopdDerechos;
 
-    @Column(name = "TREN_LOPDCB")
+    @Column(name = "TREN_LOPDCB", length = 4000)
     private String lopdCabecera;
 
-    @Column(name = "TREN_LOPDPL")
+    @Column(name = "TREN_LOPDPL", length = 4000)
     private String lopdPlantilla;
 
     /**
      * LOPD Derechos
      **/
-    @Column(name = "TREN_UACOMU")
+    @Column(name = "TREN_UACOMU", length = 4000)
     private String uaComun;
 
     public static List<JEntidadTraduccion> createInstance(List<String> idiomas) {

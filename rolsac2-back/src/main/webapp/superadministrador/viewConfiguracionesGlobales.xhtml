@@ -29,7 +29,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
                              action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
 
@@ -44,7 +44,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                                              actionListener="#{viewConfiguracionesGlobales.buscar()}" process="@form" />
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
+                            <p:commandButton id="btnEditar" name="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
                                              actionListener="#{viewConfiguracionesGlobales.editarConfiguracionGlobal}"
                                              process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewConfiguracionesGlobales.returnDialogo}"
@@ -67,11 +67,6 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                          reflow="true"
                          style="min-height: 300px;"
             >
-                <!--
-                rowKey="#{configuracionGlobal.codigo}"
-                sortBy="#{viewConfiguracionesGlobales.filtro.orderBy}"
-                sortOrder="#{viewConfiguracionesGlobales.filtro.order}"
-                         -->
                 <p:ajax
                         event="rowDblselect"
                         oncomplete="triggerDblClick();"
@@ -90,7 +85,15 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 </p:column>
                 <p:column sortBy="#{configuracionGlobal.valor}" headerText="#{labels['dict.valor']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{configuracionGlobal.valor}"/>
+                    <h:outputText id="valorTxt"
+                                  value="#{configuracionGlobal.valor}"
+                                  styleClass="truncate" />
+
+                    <p:tooltip for="valorTxt"
+                               value="#{configuracionGlobal.valor}"
+                               position="top"
+                               showDelay="200"
+                               hideDelay="0" />
                 </p:column>
                 <p:column sortBy="#{configuracionGlobal.descripcion}" headerText="#{labels['dict.descripcion']}">
                     <f:facet name="header"/>
@@ -100,17 +103,10 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
 
             <h:outputScript>
                 function triggerDblClick() {
-                    myDoubleClickCommand();
-                    /*$('#form\\:btnConsultaHidden').click();*/
-                }
+                    $("#form\\:btnEditar").click();
+                   }
             </h:outputScript>
 
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewConfiguracionesGlobales.editarConfiguracionGlobal}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewConfiguracionesGlobales.consultarConfiguracionGlobal}"
                              process="@this" update="messages"

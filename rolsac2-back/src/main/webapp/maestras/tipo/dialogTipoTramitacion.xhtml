@@ -85,7 +85,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          idioma="#{dialogTipoTramitacion.idioma}"
                                          literal="#{dialogTipoTramitacion.data.descripcion}"
-                                         nombreLiteral="#{labels['dict.descripcion']}">
+                                         nombreLiteral="#{labels['dict.descripcion']}"
+                                        maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
                 </div>
@@ -156,7 +157,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
                                  requiredMessage="#{labels['dict.obligatorio.parametros']}"
                                  styleClass="w96" required="#{empty param['formDialog:closeButton']}"
-                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="500"/>
+                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="255"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">

@@ -29,10 +29,10 @@ public class JPlatTramitElectronicaTraduccion extends BaseEntity {
     @Column(name = "TRPT_IDIOMA", nullable = false, length = 2)
     private String idioma;
 
-    @Column(name = "TRPT_URL", nullable = false, length=50)
+    @Column(name = "TRPT_URL", length=1024)
     private String urlAcceso;
 
-    @Column(name = "TRPT_DESCR", nullable = false)
+    @Column(name = "TRPT_DESCR", length = 255)
     private String descripcion;
 
 

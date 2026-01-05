@@ -93,7 +93,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          idioma="#{dialogTipoMateriaSIA.idioma}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dict.descripcion']}">
+                                         nombreLiteral="#{labels['dict.descripcion']}"
+                                         maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                     </my:literalComponent>
                 </div>
@@ -103,7 +104,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigoSIA" value="#{dialogTipoMateriaSIA.data.codigoSIA}"
-                                 styleClass="w96" disabled="#{dialogTipoMateriaSIA.isModoConsulta()}" maxlength="50"/>
+                                 styleClass="w96" disabled="#{dialogTipoMateriaSIA.isModoConsulta()}" maxlength="10"/>
                 </div>
 
 

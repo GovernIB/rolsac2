@@ -1948,3 +1948,10 @@ button.ui-state-hover:hover{
 #burguer1[aria-expanded="true"] {
     display: none;
 }
+.truncate{
+   /* display: block;*/
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

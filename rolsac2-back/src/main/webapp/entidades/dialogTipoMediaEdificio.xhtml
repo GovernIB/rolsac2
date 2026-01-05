@@ -86,7 +86,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                idioma="#{dialogTipoMediaEdificio.idioma}" required="#{empty param['formDialog:closeButton']}"
                                idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                               nombreLiteral="#{labels['dict.descripcion']}"/>
+                               nombreLiteral="#{labels['dict.descripcion']}"
+                                maxlength="255"/>
         </div>
       </div>
     </p:panel>

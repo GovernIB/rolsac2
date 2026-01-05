@@ -87,7 +87,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Trámite parámetros
      */
-    @Column(name = "PRES_INTTPA", nullable = false, length = 500)
+    @Column(name = "PRES_INTTPA", nullable = false, length = 255)
     private String tramiteParametros;
 
     /**

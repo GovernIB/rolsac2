@@ -37,7 +37,7 @@ public class JTipoLegitimacionTraduccion extends BaseEntity {
     @Column(name = "TRTL_IDIOMA", length = 2)
     private String idioma;
 
-    @Column(name = "TRTL_DESCRI", length = 255)
+    @Column(name = "TRTL_DESCRI", length = 2000)
     private String descripcion;
 
     public static List<JTipoLegitimacionTraduccion> createInstance(List<String> idiomas) {

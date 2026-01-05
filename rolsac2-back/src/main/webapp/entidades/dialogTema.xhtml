@@ -96,7 +96,8 @@
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                          idioma="#{dialogTema.idioma}"
                                          literal="#{dialogTema.data.descripcion}"
-                                         nombreLiteral="#{labels['dict.descripcion']}">
+                                         nombreLiteral="#{labels['dict.descripcion']}"
+                                        maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>

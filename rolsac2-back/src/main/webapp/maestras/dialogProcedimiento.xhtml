@@ -1214,7 +1214,7 @@
                              process="@all"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog"
-                             rendered="#{!dialogProcedimiento.isNoEditable()}">
+                             rendered="#{dialogProcedimiento.isMostrarBtnFlujo()}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}"
@@ -1239,7 +1239,7 @@
 
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogProcedimiento.guardar}"
+        <p:commandButton id="btnGuardar" action="#{dialogProcedimiento.guardar}"
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos"
                          rendered="#{dialogProcedimiento.mostrarBotonGuardar()}"

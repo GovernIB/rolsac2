@@ -111,6 +111,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     private boolean noEditable;
     private boolean mostrarBtnPDU = false;
+    private boolean MostrarBtnFlujo = true;
 
     public void load() {
         LOG.debug("init");
@@ -1673,6 +1674,27 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setEstadoProcedimiento(String estadoProcedimiento) {
         this.estadoProcedimiento = estadoProcedimiento;
+    }
+
+    public boolean isMostrarBtnFlujo() {
+        if (this.isGestor()) {
+            if (this.data.getComun() == 1) {
+                //Si es comun , no mostrar boton
+                return false;
+            } else {
+                return !this.isNoEditable();
+            }
+        } else if (this.isInformador()) {
+            return false;
+        } else if (this.isAdministradorContenidos()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setMostrarBtnFlujo(boolean mostrarBtnFlujo) {
+        MostrarBtnFlujo = mostrarBtnFlujo;
     }
 }
 

@@ -53,7 +53,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputText id="txtValor" value="#{dialogConfiguracionGlobal.data.valor}"
                     			 requiredMessage="#{labels['dict.obligatorio.valor']}"
                                  styleClass="w95"
-                                 disabled="#{dialogConfiguracionGlobal.isModoConsulta()}" maxlength="50"/>
+                                 disabled="#{dialogConfiguracionGlobal.isModoConsulta()}" maxlength="100"/>
                 </div>
             </div>
             <div class="row">
@@ -64,7 +64,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputTextarea id="txtDescripcion" value="#{dialogConfiguracionGlobal.data.descripcion}"
                                      requiredMessage="#{labels['dict.obligatorio.descripcion']}" styleClass="w95"
                                      required="#{empty param['formDialog:closeButton']}" rows="10"
-                                     disabled="#{dialogConfiguracionGlobal.isModoConsulta()}" maxlength="50"/>
+                                     disabled="#{dialogConfiguracionGlobal.isModoConsulta()}" maxlength="255"/>
                 </div>
             </div>
         </p:panel>

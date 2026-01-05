@@ -86,7 +86,8 @@
                                          literal="#{dialogPlatTramitElectronica.data.descripcion}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.descripcion']}">
+                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.descripcion']}"
+                                        maxlength="255">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>
@@ -103,7 +104,8 @@
                                          literal="#{dialogPlatTramitElectronica.data.urlAcceso}"
                                          idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.urlAcceso']}">
+                                         nombreLiteral="#{labels['dialogPlatTramitElectronica.urlAcceso']}"
+                                        maxlength="1024">
                         <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                     </my:literalComponent>
                 </div>

@@ -154,7 +154,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                  idiomasPermitidos="#{viewConfiguracionEntidad.data.getIdiomasPermitidos()}"
                                                  idioma="#{viewConfiguracionEntidad.idioma}"
                                                  literal="#{viewConfiguracionEntidad.uaDataComun}"
-                                                 nombreLiteral="#{labels['dict.comunUA']}">
+                                                 nombreLiteral="#{labels['dict.comunUA']}"
+                                                 maxlength="4000">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"  />
                             </my:literalComponent>
                         </div>

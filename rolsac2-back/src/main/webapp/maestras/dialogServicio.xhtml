@@ -537,7 +537,8 @@
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogServicio.idioma}"
                                                      literal="#{dialogServicio.data.tipoTramitacion.url}"
-                                                     nombreLiteral="#{labels['dialogServicio.url']}">
+                                                     nombreLiteral="#{labels['dialogServicio.url']}"
+                                                    maxlength="512">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"
                                                  disabled="#{dialogServicio.isModoConsulta() or  !dialogServicio.isOpcionTelematicaUrl()}"/>
                                 </my:literalComponent>
