@@ -157,7 +157,7 @@ public class SessionBean implements Serializable {
         // inicializamos mochila
         mochilaDatos = new HashMap<>();
         String idUsuario = seguridad.getIdentificadorUsuario();
-        usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario(), lang);
+        usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario());
 
         cargarDatos();
         cargarAlertas();
@@ -191,7 +191,7 @@ public class SessionBean implements Serializable {
             }
         }
         if (administracionEntServiceFacade.checkIdentificadorUsuario(idUsuario)) {
-            UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario, lang);
+            UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario);
             entidades = new ArrayList<>();
             List<Long> idEntidades = new ArrayList<>();
             for (EntidadGridDTO entidad : usuario.getEntidades()) {

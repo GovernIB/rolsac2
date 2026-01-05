@@ -87,13 +87,21 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
     String getIdiomaPorDefecto(Long idEntidad);
 
     /**
-     * Retorna una lista con las entidades asociados al usuario
+     * Retorna una lista con las entidades asociados al usuario y con las traducciones en el idioma indicado
      *
      * @param codigo identificador del usuario
      * @param lang   idioma
      * @return
      */
     List<EntidadGridDTO> getEntidadGridDTOByUsuario(Long codigo, String lang);
+
+    /**
+     * Retorna una lista con las entidades asociados al usuario
+     *
+     * @param codigo
+     * @return
+     */
+    List<EntidadGridDTO> getEntidadGridDTOByUsuario(Long codigo);
 
     /**
      * Devuelve el literal comun de la entidad asociada a la UA

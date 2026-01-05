@@ -1,5 +1,6 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.*;
@@ -273,6 +274,23 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
     @Override
     @PermitAll
+    public UsuarioDTO findUsuarioSimpleByIdentificador(String identificador) {
+        UsuarioDTO usuarioDTO = usuarioRepository.findSimpleByIdentificador(identificador, null);
+        if (usuarioDTO == null) {
+            return null;
+        }
+
+        List<UnidadAdministrativaGridDTO> unidadesAdministrativas = unidadAdministrativaRepository.getUnidadesAdministrativaGridDTOByUsuario(usuarioDTO.getCodigo());
+        usuarioDTO.setUnidadesAdministrativas(unidadesAdministrativas);
+
+        List<EntidadGridDTO> entidades = entidadRepository.getEntidadGridDTOByUsuario(usuarioDTO.getCodigo());
+        usuarioDTO.setEntidades(entidades);
+
+        return usuarioDTO;
+    }
+
+    @Override
+    @PermitAll
     public UsuarioDTO findUsuarioSimpleByIdentificador(String identificador, String lang) {
         UsuarioDTO usuarioDTO = usuarioRepository.findSimpleByIdentificador(identificador, lang);
         if (usuarioDTO == null) {
@@ -287,7 +305,6 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
 
         return usuarioDTO;
     }
-
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})

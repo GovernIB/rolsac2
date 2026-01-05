@@ -220,6 +220,44 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
     }
 
     @Override
+    public List<EntidadGridDTO> getEntidadGridDTOByUsuario(Long codigo) {
+        List<EntidadGridDTO> entidades = new ArrayList<>();
+
+        List<JEntidad> jEntidades = entityManager.createQuery("SELECT distinct e FROM JEntidad e LEFT JOIN FETCH e.descripcion WHERE e.codigo IN (SELECT entidades.codigo FROM JUsuario jusu LEFT OUTER JOIN jusu.entidades entidades WHERE jusu.codigo = :codigo)", JEntidad.class)
+                .setParameter("codigo", codigo)
+                .getResultList();
+
+        if (jEntidades != null) {
+            for (JEntidad jEntidad : jEntidades) {
+                EntidadGridDTO entidadGridDTO = new EntidadGridDTO();
+                entidadGridDTO.setCodigo(jEntidad.getCodigo());
+                entidadGridDTO.setIdentificador(jEntidad.getIdentificador());
+                entidadGridDTO.setActiva(jEntidad.getActiva());
+                entidadGridDTO.setRolAdmin( jEntidad.getRolAdmin());
+                entidadGridDTO.setRolAdminContenido(jEntidad.getRolAdminContenido());
+                entidadGridDTO.setRolGestor(jEntidad.getRolGestor());
+                entidadGridDTO.setRolInformador(jEntidad.getRolInformador());
+
+                Literal descripcion = new Literal();
+                if(jEntidad.getDescripcion()!=null){
+                   for (JEntidadTraduccion jEntidadTraduccion : jEntidad.getDescripcion()) {
+                       Traduccion trad = new Traduccion(jEntidadTraduccion.getIdioma(), jEntidadTraduccion.getDescripcion());
+                       descripcion.add(trad);
+                   }
+                }
+                entidadGridDTO.setDescripcion(descripcion);
+
+                entidadGridDTO.setAdmContenidoIdiomaPorDefecto(jEntidad.getAdmContenidoIdiomaPrioritario());
+                entidadGridDTO.setAdmContenidoSeleccionIdioma(jEntidad.getAdmContenidoSeleccionIdioma());
+
+                entidades.add(entidadGridDTO);
+            }
+        }
+        return entidades;
+    }
+
+
+    @Override
     public Literal getUAComun(Long codigoUA) {
         JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUA);
         Literal literalComun = new Literal();

@@ -681,6 +681,37 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
+    public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativaGridDTOByUsuario(Long codigo) {
+
+        List<JUnidadAdministrativa> jUnidadAdministrativas = entityManager.createQuery("select distinct ua from JUnidadAdministrativa ua " +
+                        "LEFT OUTER JOIN ua.usuarios usuarios where usuarios.codigo = :codigoUsuario",
+                        JUnidadAdministrativa.class)
+                .setParameter("codigoUsuario", codigo)
+                .getResultList();
+
+        List<UnidadAdministrativaGridDTO> uas = new ArrayList<>();
+        if (jUnidadAdministrativas != null && !jUnidadAdministrativas.isEmpty()) {
+            for (JUnidadAdministrativa jua : jUnidadAdministrativas) {
+                UnidadAdministrativaGridDTO ua = new UnidadAdministrativaGridDTO();
+                ua.setCodigo(jua.getCodigo());
+                ua.setCodigoDIR3( jua.getCodigoDIR3());
+                ua.setIdentificador( jua.getIdentificador());
+                Literal nombre = new Literal();
+                if(jua.getTraducciones() != null) {
+                    for (JUnidadAdministrativaTraduccion trad : jua.getTraducciones()) {
+                        nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                    }
+                }
+                ua.setNombre(nombre);
+                ua.setIdEntidad(jua.getEntidad().getCodigo());
+                uas.add(ua);
+            }
+        }
+
+        return uas;
+    }
+
+    @Override
     public UnidadAdministrativaGridDTO getUaRaizEntidad(Long codEntidad) {
         Query query = entityManager.createQuery("select ua from JUnidadAdministrativa ua  where ua.entidad.codigo = :codEntidad and ua.padre is null");
         query.setParameter("codEntidad", codEntidad);

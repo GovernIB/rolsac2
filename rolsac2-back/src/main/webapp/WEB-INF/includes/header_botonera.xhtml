@@ -23,7 +23,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right marg0 minW0" aria-labelledby="entidades">
                                 <ui:repeat value="#{sessionBean.entidades}" var="entidad" rendered="true">
-                                    <p:commandLink styleClass="dropdown-item mobil" hreflang="#{entidad}"
+                                    <p:commandLink styleClass="dropdown-item mobil" hreflang="#{sessionBean.lang}"
                                                    value="#{entidad.descripcion.getTraduccionConValor(sessionBean.getLang())}">
                                         <p:ajax listener="#{sessionBean.actualizarEntidad(entidad)}" oncomplete="window.location.replace(window.location)"/>
                                     </p:commandLink>

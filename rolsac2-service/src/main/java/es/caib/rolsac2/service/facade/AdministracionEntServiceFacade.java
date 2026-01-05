@@ -125,6 +125,8 @@ public interface AdministracionEntServiceFacade {
      */
     UsuarioDTO findUsuarioSimpleByIdentificador(String identificador, String lang);
 
+    UsuarioDTO findUsuarioSimpleByIdentificador(String identificador);
+
     /**
      * Devuelve una página con el tipo de afectación relacionado con los parámetros del filtro
      *
