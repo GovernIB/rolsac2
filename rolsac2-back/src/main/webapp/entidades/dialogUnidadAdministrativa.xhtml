@@ -30,7 +30,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this"
-                    update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
+                    update="formDialog:txtNombre formDialog:txtAbreviatura formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogUnidadAdministrativa.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -40,7 +40,7 @@
                          process="@this"
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta() and dialogUnidadAdministrativa.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogUnidadAdministrativa.returnDialogTraducir}" process="@this"
-                    update="formDialog:txtNombre formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
+                    update="formDialog:txtNombre formDialog:txtAbreviatura formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
         </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
@@ -102,22 +102,27 @@
                         <div class="form-group col-md-2 sinMarginBottom">
                             <p:outputLabel value="#{labels['dialogUnidadAdministrativa.version']}:" for="txtVersion"
                                            styleClass="mb-1 pt-0"/>
-                            <p:inputText id="txtVersion" type="number" value="#{dialogUnidadAdministrativa.data.version}"
-                                         styleClass="w95"
+                            <p:inputNumber id="txtVersion" value="#{dialogUnidadAdministrativa.data.version}"
+                                           inputStyleClass="w85"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.version']}"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         minValue="0"
+                                         maxValue="999"
                                          decimalPlaces="0"/>
                         </div>
                         <div class="form-group col-md-2 sinMarginBottom">
                             <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
                                            styleClass="mb-1 pt-0"/>
-                            <p:inputText id="txtOrden" type="number" value="#{dialogUnidadAdministrativa.data.orden}"
-                                         styleClass="w95"
+                            <p:inputNumber id="txtOrden"  value="#{dialogUnidadAdministrativa.data.orden}"
+                                           inputStyleClass="w85"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.orden']}"
+                                         minValue="0"
+                                         maxValue="999"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                         decimalPlaces="0"/>
+                                         decimalPlaces="0" />
+
                         </div>
                         <div class="form-group col-md-4 sinMarginBottom">
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
@@ -126,6 +131,7 @@
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                          styleClass="w95"
+                                         maxlength="50"
                                          disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
                         </div>
                         <div class="form-group col-md-12 sinMarginBottom">
@@ -154,6 +160,7 @@
                             </p>
                             <p:inputText id="txtCodigoDIR3" value="#{dialogUnidadAdministrativa.data.codigoDIR3}"
                                          styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                            maxlength="20"
                                          required="#{empty param['formDialog:closeButton']}"/>
                         </div>
                         <div class="form-group col-md-5 sinMarginBottom">
@@ -164,8 +171,7 @@
                             </p>
                             <my:literalComponent id="txtAbreviatura"
                                                  literal="#{dialogUnidadAdministrativa.data.abreviatura}"
-                                                 disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
-                                                 soloLecture="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                                  soloLecture="#{dialogUnidadAdministrativa.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
