@@ -147,6 +147,9 @@ public class IndexacionSIARepositoryBean extends AbstractCrudRepository<JIndexac
 
     @Override
     public void actualizarDato(IndexacionSIADTO dato, ResultadoSIA resultadoAccion) {
+        if (resultadoAccion == null) {
+            return;
+        }
         JIndexacionSIA jIndexacion = entityManager.find(JIndexacionSIA.class, dato.getCodigo());
         if (resultadoAccion.isNoError() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {
             entityManager.remove(jIndexacion);
