@@ -1439,5 +1439,25 @@ public class DialogServicio extends AbstractController implements Serializable {
     public void setEstadoProcedimiento(String estadoProcedimiento) {
         this.estadoProcedimiento = estadoProcedimiento;
     }
+
+    public boolean isMostrarBtnFlujo() {
+     return isTotalHabilitadoComunes();
+    }
+
+    public boolean isTotalHabilitadoComunes() {
+        if (this.isGestor()) {
+            return true;
+        } else if (this.isInformador()) {
+            return false;
+        } else if (this.isAdministradorContenidos()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isMostrarBtnMensajes(){
+        return isTotalHabilitadoComunes();
+    }
 }
 

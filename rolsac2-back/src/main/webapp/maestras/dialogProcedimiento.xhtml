@@ -1224,7 +1224,8 @@
                              process="@this"
                              style="flex:0 0 auto; white-space:nowrap;"
                              disabled="#{empty dialogProcedimiento.data.codigo}"
-                             update="messagesDialog">
+                             update="messagesDialog"
+                             rendered="#{dialogProcedimiento.isMostrarBtnMensajes()}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMensajes}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.auditorias']}"

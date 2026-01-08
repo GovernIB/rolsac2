@@ -1046,7 +1046,8 @@
                              style="white-space: nowrap;text-align: center;"
                              process="@all"
                              disabled="#{empty dialogServicio.data.codigo}"
-                             update="messagesDialog">
+                             update="messagesDialog"
+                                rendered="#{dialogServicio.mostrarBtnFlujo}">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}"
@@ -1055,7 +1056,8 @@
                              styleClass="btn-footer"
                              process="@this"
                              disabled="#{empty dialogServicio.data.codigo}"
-                             update="messagesDialog">
+                             update="messagesDialog"
+                                rendered="#{dialogServicio.mostrarBtnMensajes}">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogMensajes}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.auditorias']}"
