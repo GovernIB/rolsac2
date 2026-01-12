@@ -2327,6 +2327,14 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoCodigoSIA()) {
             sql.append(" AND j.codigoSIA LIKE :codigoSIA ");
         }
+        if(filtro.isRellenoEstadoSIA()){
+            if("N".equals(filtro.getEstadoSIA())) {
+                sql.append(" AND j.estadoSIA IS NULL ");
+            }else {
+                sql.append(" AND j.estadoSIA = :estadoSIA ");
+            }
+        }
+
         if (filtro.isRellenoCodigoUaDir3()) {
             if (ambosWf) {
                 sql.append(" AND (WF.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.codigoDIR3 LIKE :codigoUaDir3) or WF2.uaInstructor IN (select ua.codigo from JUnidadAdministrativa ua where ua.codigoDIR3 LIKE :codigoUaDir3)) ");
@@ -2749,6 +2757,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoCodigoSIA()) {
             query.setParameter("codigoSIA", filtro.getCodigoSIA());
+        }
+        if (filtro.isRellenoEstadoSIA() && ! "N".equals(filtro.getEstadoSIA())) {
+            query.setParameter("estadoSIA", filtro.getEstadoSIA());
         }
         if (filtro.isRellenoEstado()) {
             query.setParameter("estado", filtro.getEstado());
