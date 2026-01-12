@@ -800,11 +800,11 @@ END IF;
         dbms_lob.writeappend(
                 l_clob,
                 length(
-                        'ERROR en MIGRAR_PROC. PRO=' || codigo ||
+                        'ERROR en MIGRAR_SERV. PRO=' || codigo ||
                         ' CODE=' || SQLCODE ||
                         ' MSG='  || SQLERRM || chr(10)
                 ),
-                'ERROR en MIGRAR_PROC. PRO=' || codigo ||
+                'ERROR en MIGRAR_SERV. PRO=' || codigo ||
                 ' CODE=' || SQLCODE ||
                 ' MSG='  || SQLERRM || chr(10)
         );
