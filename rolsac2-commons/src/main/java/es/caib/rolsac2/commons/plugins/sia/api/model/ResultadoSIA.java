@@ -207,4 +207,11 @@ public class ResultadoSIA {
     public void setOperacion(String operacion) {
         this.operacion = operacion;
     }
+
+    @Override
+    public String toString() {
+        return "ResultadoSIA [resultado=" + resultado + ", mensaje=" + mensaje + ", correctos=" + correctos
+                + ", incorrectos=" + incorrectos + ", codSIA=" + codSIA + ", estadoSIA=" + estadoSIA
+                + ", operacion=" + operacion + "]";
+    }
 }

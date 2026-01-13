@@ -319,7 +319,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             } else {
                                 totalServiciosERROR++;
                                 mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje() + ". \n");
-                                new ResultadoSIA(0, "El servei s'ha indexat incorrectamente " + resultadoSIA.getMensaje().toString());
+                                return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje());
                             }
                         } else {
                             totalServiciosOK++;
@@ -349,7 +349,6 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             }
         }
 
-        return null;
     }
 
     private ResultadoSIA indexarProcedimiento(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza,

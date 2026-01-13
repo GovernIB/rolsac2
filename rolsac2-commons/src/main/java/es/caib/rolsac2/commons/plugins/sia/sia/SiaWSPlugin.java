@@ -31,8 +31,8 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
         final ResultadoSIA resultadoSIA = new ResultadoSIA();
         resultadoSIA.setOperacion(envioSIA.getOperacion());
         if (isActivoEnvio()) {
-            final String usuario = envioSIA.getUsuario();//getProperty(USER);
-            final String password = envioSIA.getPassword();//getProperty(PASSWORD);
+            final String usuario = envioSIA.getUsuario();
+            final String password = envioSIA.getPassword();
             final String url = getProperty(URL);
             SiaClient client;
             try {
