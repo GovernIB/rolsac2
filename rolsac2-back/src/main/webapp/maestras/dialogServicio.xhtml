@@ -600,7 +600,7 @@
                                        for="txtLopdFinalidad"/>
                             <my:literalAreaComponent id="txtLopdFinalidad"
                                                  literal="#{dialogServicio.data.lopdFinalidad}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -616,7 +616,7 @@
                                        for="txtLopdDestinatario"/>
                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
                                                  literal="#{dialogServicio.data.lopdDestinatario}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"

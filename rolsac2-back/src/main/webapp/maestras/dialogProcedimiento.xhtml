@@ -105,10 +105,15 @@
                             <p>
                                 <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA" styleClass="mb-1 pt-0 negrita"/>
                                 <p:inputText id="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
+                                             title="#{dialogProcedimiento.data.errorSIA}"
                                              styleClass="w95" disabled="true"
                                 />
-                                <p:tooltip id="toolTipFadeSIA" for="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
-                                           position="top"/>
+                                <p:tooltip for="txtErrorSIA"
+                                           value="#{dialogProcedimiento.data.errorSIA}"
+                                           position="top"
+                                           showEvent="mouseenter"
+                                           hideEvent="mouseleave"/>
+
                             </p>
                         </div>
                         <div class="form-group col-md-2">
@@ -624,7 +629,7 @@
                                            for="txtLopdFinalidad"/>
                             <my:literalAreaComponent id="txtLopdFinalidad"
                                                      literal="#{dialogProcedimiento.data.lopdFinalidad}"
-                                                     soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() or !dialogProcedimiento.isAdministradorContenidos()}"
                                                      idioma="#{dialogProcedimiento.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -638,7 +643,7 @@
                                            for="txtLopdDestinatario"/>
                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
                                                      literal="#{dialogProcedimiento.data.lopdDestinatario}"
-                                                     soloLecture="#{dialogProcedimiento.isModoConsulta()}"
+                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() or !dialogProcedimiento.isAdministradorContenidos()}"
                                                      idioma="#{dialogProcedimiento.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
