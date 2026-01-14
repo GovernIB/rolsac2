@@ -580,11 +580,20 @@ public class SessionBean implements Serializable {
      */
     public void actualizarUnidadAdministrativa(UsuarioDTO usuario, TypePerfiles perfil, SesionDTO sesionDTO) {
         if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
-            if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty() && sesionDTO.getIdUa() != null) {
-                UnidadAdministrativaGridDTO unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getCodigo().compareTo(sesionDTO.getIdUa()) == 0).findFirst().orElse(null);
+            if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty() ) {
+                UnidadAdministrativaGridDTO unidadSesion = null;
+                if(sesionDTO.getIdUa() != null) {
+                    unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getCodigo().compareTo(sesionDTO.getIdUa()) == 0).findFirst().orElse(null);
+                }
+                // Puede venir del perfil de SUPERADMIN donde se anula la UA en la sesión y hay que volver a setearla como ua de la entidad
+                else{
+                    unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).findFirst().orElse(null);
 
+                }
                 // this.unidadActiva = unidadSesion == null ? uaService.findById(usuario.getUnidadesAdministrativas().get(0).getCodigo()) : uaService.findById(unidadSesion.getCodigo());
                 this.unidadActiva = unidadSesion == null ? uaService.findUASimpleByID(usuario.getUnidadesAdministrativas().get(0).getCodigo(), this.lang, null) : uaService.findUASimpleByID(unidadSesion.getCodigo(), this.lang, null);
+
+
             } else if (this.entidad != null) {
                 unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
             }
