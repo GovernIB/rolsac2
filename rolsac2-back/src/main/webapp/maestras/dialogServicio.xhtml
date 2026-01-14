@@ -578,6 +578,22 @@
                         />
                     </div>
                 </div>
+                <div id="filaLOPDFinalidad" class="form-row">
+                    <div class="form-group col-md-12">
+                        <p:outputLabel styleClass="mr-2  pt-0 negrita"
+                                       value="#{labels['dialogServicio.finalidad']}:"
+                                       for="txtLopdFinalidad"/>
+                        <my:literalAreaComponent id="txtLopdFinalidad"
+                                                 literal="#{dialogServicio.data.lopdFinalidad}"
+                                                 soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
+                                                 idioma="#{dialogServicio.idioma}"
+                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 nombreLiteral="#{labels['dialogServicio.finalidad']}">
+                            <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                        </my:literalAreaComponent>
+                    </div>
+                </div>
                 <div id="filaLOPDLegitimacion" class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.legitimacion']}:"
@@ -591,22 +607,6 @@
                                            itemLabel="#{tipoLegitimacion.descripcion.getTraduccionConValor(dialogServicio.idioma)}"
                                            itemValue="#{tipoLegitimacion}"/>
                         </p:selectOneMenu>
-                    </div>
-                </div>
-                <div id="filaLOPDFinalidad" class="form-row">
-                    <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2  pt-0 negrita"
-                                       value="#{labels['dialogServicio.finalidad']}:"
-                                       for="txtLopdFinalidad"/>
-                            <my:literalAreaComponent id="txtLopdFinalidad"
-                                                 literal="#{dialogServicio.data.lopdFinalidad}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
-                                                 idioma="#{dialogServicio.idioma}"
-                                                 idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                                 idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                 nombreLiteral="#{labels['dialogServicio.finalidad']}">
-                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                            </my:literalAreaComponent>
                     </div>
                 </div>
                 <div id="filaLOPDDestinatario" class="form-row">

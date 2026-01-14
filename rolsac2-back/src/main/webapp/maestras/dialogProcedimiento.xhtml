@@ -610,6 +610,20 @@
                         </div>
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
+                                           value="#{labels['dialogProcedimiento.finalidad']}:"
+                                           for="txtLopdFinalidad"/>
+                            <my:literalAreaComponent id="txtLopdFinalidad"
+                                                     literal="#{dialogProcedimiento.data.lopdFinalidad}"
+                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() or !dialogProcedimiento.isAdministradorContenidos()}"
+                                                     idioma="#{dialogProcedimiento.idioma}"
+                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                     nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
+                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                            </my:literalAreaComponent>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.legitimacion']}:"
                                            for="txtLegitimacion"/>
                             <p:selectOneMenu id="txtLegitimacion"
@@ -622,20 +636,6 @@
                                                itemLabel="#{tipoLegitimacion.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                itemValue="#{tipoLegitimacion}"/>
                             </p:selectOneMenu>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dialogProcedimiento.finalidad']}:"
-                                           for="txtLopdFinalidad"/>
-                            <my:literalAreaComponent id="txtLopdFinalidad"
-                                                     literal="#{dialogProcedimiento.data.lopdFinalidad}"
-                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() or !dialogProcedimiento.isAdministradorContenidos()}"
-                                                     idioma="#{dialogProcedimiento.idioma}"
-                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
-                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                     nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
-                                <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
-                            </my:literalAreaComponent>
                         </div>
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
