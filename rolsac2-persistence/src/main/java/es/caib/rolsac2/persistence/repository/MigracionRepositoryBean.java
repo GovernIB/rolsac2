@@ -35,6 +35,34 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
         super(JProceso.class);
     }
 
+
+    @Override
+    public String importarUA(long idUA, Long codigoEntidad, Long idUARaiz) {
+        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("MIGRAR_UA");
+        String resultado = "";
+        try {
+            query.registerStoredProcedureParameter("codigoUA", Long.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("codigoEntidad", Long.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("codigoUARaiz", Long.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("resultado", String.class, ParameterMode.INOUT);
+
+            query.setParameter("codigoUA", idUA);
+            query.setParameter("codigoEntidad", codigoEntidad);
+            query.setParameter("codigoUARaiz", idUARaiz);
+            query.setParameter("resultado", resultado);
+
+            // call the stored procedure and get the result
+            query.execute();
+            //query.executeUpdate();
+        } catch (Exception e) {
+            LOG.error("Error importando ua ", e);
+            return e.getMessage();
+        }
+        String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
+        query.unwrap(ProcedureOutputs.class).release();
+        return retorno;
+    }
+
     @Override
     public String ejecutarMetodo(String metodo, String param1, String param2) {
 
@@ -63,7 +91,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
     /**
      * Se tiene que devolver la lista de ambas query quitando repetidos.
      *
-     * @param idEntidad
+     * @param idEntidad Codigo entidad
      * @return
      */
     @Override
@@ -288,32 +316,6 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
         return query.getResultList();
     }
 
-    @Override
-    public String importarUA(long idUA, Long codigoEntidad, Long idUARaiz) {
-        StoredProcedureQuery query = this.entityManager.createStoredProcedureQuery("MIGRAR_UA");
-        String resultado = "";
-        try {
-            query.registerStoredProcedureParameter("codigoUA", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("codigoEntidad", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("codigoUARaiz", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("resultado", String.class, ParameterMode.INOUT);
-
-            query.setParameter("codigoUA", idUA);
-            query.setParameter("codigoEntidad", codigoEntidad);
-            query.setParameter("codigoUARaiz", idUARaiz);
-            query.setParameter("resultado", resultado);
-
-            // call the stored procedure and get the result
-            query.execute();
-            //query.executeUpdate();
-        } catch (Exception e) {
-            LOG.error("Error importando ua ", e);
-            return e.getMessage();
-        }
-        String retorno = "     " + query.getOutputParameterValue("resultado") + "\n";
-        query.unwrap(ProcedureOutputs.class).release();
-        return retorno;
-    }
 
     @Override
     public List<UnidadAdministrativaDTO> getUnidadAdministrativasRaiz() {
