@@ -38,7 +38,7 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de consulta al API REST DIR3CAIB', 'e
 
 Insert into RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
 VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de indexacion sia', 'es.caib.rolsac2.commons.plugins.sia.sia.SiaWSPlugin',
-        '[{"codigo":"url","valor":"http://pre-sia2.redsara.es/axis2/services/wsSIAActualizarActuaciones","orden":null}]',
+        '[{"codigo":"url","valor":"https://pre-sia2.redsara.es/axis2/services/wsSIAActualizarActuaciones","orden":null}]',
         'pluginsib.indexacion.sia.', 'SIA');
 
 Insert into RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
