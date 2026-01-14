@@ -330,6 +330,8 @@ public class SessionBean implements Serializable {
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
         }
 
+
+
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {
@@ -598,10 +600,17 @@ public class SessionBean implements Serializable {
                 unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
             }
         } else {
-            if (sesionDTO.getIdUa() == null) {
-                this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
-            } else {
-                this.unidadActiva = uaService.findUASimpleByID(sesionDTO.getIdUa(), this.lang, null); // uaService.findById(sesionDTO.getIdUa());
+
+            if(TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil)){
+                UnidadAdministrativaGridDTO uaRoot = uaService.getUaRaizEntidad(this.entidad.getCodigo());
+                this.unidadActiva = uaService.findUASimpleByID(uaRoot.getCodigo(), this.lang, null);
+                this.unidadActivaAux = uaRoot;
+            }else {
+                if (sesionDTO.getIdUa() == null) {
+                    this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
+                } else {
+                    this.unidadActiva = uaService.findUASimpleByID(sesionDTO.getIdUa(), this.lang, null); // uaService.findById(sesionDTO.getIdUa());
+                }
             }
         }
 
@@ -701,7 +710,7 @@ public class SessionBean implements Serializable {
     }
 
     public boolean tieneHijosUaActiva() {
-        return uaService.getCountHijos(unidadActiva.getCodigo()) >= 1;
+        return unidadActiva != null ? uaService.getCountHijos(unidadActiva.getCodigo()) >= 1 : false;
     }
 
     private List<UnidadAdministrativaGridDTO> lasUnidadesHijasActivas = null;
