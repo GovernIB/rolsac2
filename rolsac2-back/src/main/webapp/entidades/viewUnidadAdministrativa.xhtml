@@ -45,24 +45,27 @@
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
                                          update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" />
-                        <button type="button"
-                                class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        </button>
-                        <div class="dropdown-menu">
-                            <c:forEach
-                                    items="#{sessionBean.obtenerUasEntidad()}"
-                                    var="ua">
 
-                                <p:commandButton styleClass="dropdown-item btn-drop" process="@this @form"
-                                                 actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
-                                                 value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                                 update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" >
-                                    <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
-                                    <f:actionListener binding="#{viewUnidadAdministrativa.buscar()}"></f:actionListener>
-                                </p:commandButton>
-                            </c:forEach>
-                        </div>
+                        <c:if test="#{ TypePerfiles.ADMINISTRADOR_CONTENIDOS != sessionBean.getPerfil() }">
+                            <button type="button"
+                                    class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu">
+                                <c:forEach
+                                        items="#{sessionBean.obtenerUasEntidad()}"
+                                        var="ua">
+
+                                    <p:commandButton styleClass="dropdown-item btn-drop" process="@this @form"
+                                                     actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
+                                                     value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
+                                                     update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" >
+                                        <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
+                                        <f:actionListener binding="#{viewUnidadAdministrativa.buscar()}"></f:actionListener>
+                                    </p:commandButton>
+                                </c:forEach>
+                            </div>
+                        </c:if>
                     </div>
                 </li>
                 <c:if test="#{sessionBean.isUnidadesActivasGestor()}">
