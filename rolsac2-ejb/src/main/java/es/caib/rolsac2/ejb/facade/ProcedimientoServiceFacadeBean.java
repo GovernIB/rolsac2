@@ -1505,14 +1505,14 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @PermitAll
-    public SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data) {
+    public SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data, String idioma) {
         final boolean isVisibleUA = uaRepository.isVisibleUA(data.getUaResponsable());
         final String codigoIdCentro = uaRepository.obtenerCodigoDIR3(data.getUaResponsable().getCodigo());
         SiaEnviableResultado siaEnviable;
         if (data instanceof ProcedimientoDTO) {
-            siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ProcedimientoDTO) data, true);
+            siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ProcedimientoDTO) data, true, idioma);
         } else {
-            siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ServicioDTO) data, true);
+            siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ServicioDTO) data, true, idioma);
         }
         SiaCumpleDatos siaCumpleDatos = null;
         EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaResponsable().getCodigo());

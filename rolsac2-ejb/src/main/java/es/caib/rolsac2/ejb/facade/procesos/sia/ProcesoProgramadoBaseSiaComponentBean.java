@@ -169,7 +169,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 for (IndexacionSIADTO dato : datos.getItems()) {
                     switch (TypeIndexacion.fromString(dato.getTipo())) {
                         case PROCEDIMIENTO:
-                            ResultadoSIA resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza, puntual);
+                            ResultadoSIA resultadoPro = indexarProcedimiento(dato, plugin, mensajeTraza, puntual, "ca");
 
                             //Si es distinto null, significa que es un dato pendiente
                             procedimientoService.actualizarSIA(dato, resultadoPro);
@@ -177,7 +177,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             break;
                         case SERVICIO:
                             totalServicios++;
-                            ResultadoSIA resultadoSrv = indexarServicio(dato, plugin, mensajeTraza, puntual);
+                            ResultadoSIA resultadoSrv = indexarServicio(dato, plugin, mensajeTraza, puntual, "ca");
 
                             //Si es distinto null, significa que es un dato pendiente
                             procedimientoService.actualizarSIA(dato, resultadoSrv);
@@ -256,7 +256,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
     }
 
 
-    private ResultadoSIA indexarServicio(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza, boolean indexacionForzada) {
+    private ResultadoSIA indexarServicio(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza, boolean indexacionForzada, String idioma) {
         Long codigoWF = null;
         boolean publicado;
         totalServicios++;
@@ -298,7 +298,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 try {
                     final boolean isVisibleUA = uaService.isVisibleUA(servicioDTO.getUaResponsable());
                     final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaResponsable().getCodigo());
-                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, servicioDTO, indexacionForzada);
+                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, servicioDTO, indexacionForzada, idioma);
                     if (esEnviable.isNotificiarSIA()) {
                         final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaResponsable().getCodigo());
                         final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
@@ -352,7 +352,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
     }
 
     private ResultadoSIA indexarProcedimiento(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, StringBuilder mensajeTraza,
-                                              boolean indexacionForzada) {
+                                              boolean indexacionForzada, String idioma) {
         Long codigoWF = null;
 
         boolean publicado;
@@ -393,7 +393,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 try {
                     final boolean isVisibleUA = uaService.isVisibleUA(procedimientoDTO.getUaResponsable());
                     final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaResponsable().getCodigo());
-                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, procedimientoDTO, indexacionForzada);
+                    SiaEnviableResultado esEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, procedimientoDTO, indexacionForzada, idioma);
                     if (esEnviable.isNotificiarSIA()) {
                         final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaResponsable().getCodigo());
                         final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());

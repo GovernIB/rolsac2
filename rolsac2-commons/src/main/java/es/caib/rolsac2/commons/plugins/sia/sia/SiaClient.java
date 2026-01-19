@@ -5,16 +5,48 @@ import es.caib.rolsac2.commons.plugins.sia.sia.actualizar.ParamSIA;
 import es.caib.rolsac2.commons.plugins.sia.sia.actualizar.WsSIAActualizarActuaciones;
 import es.caib.rolsac2.commons.plugins.sia.sia.actualizar.WsSIAActualizarActuaciones_Service;
 
-import javax.ws.rs.client.Client;
+import javax.net.ssl.*;
 import javax.xml.ws.BindingProvider;
+import java.security.cert.X509Certificate;
 
 public class SiaClient {
+
+    private static void disableSSLVerification() {
+        try {
+            // Crear un TrustManager que no valida certificados
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            // Instalar el TrustManager que confía en todos
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Crear un HostnameVerifier que no valida el hostname
+            HostnameVerifier allHostsValid = (hostname, session) -> true;
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private final WsSIAActualizarActuaciones cliente;
     private final String usr;
     private final String pwd;
 
     public SiaClient(String url, String user, String password) throws Exception {
+        disableSSLVerification(); // Agregar esta línea
         this.cliente = getCliente(url);
         this.usr = user;
         this.pwd = password;

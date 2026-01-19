@@ -255,7 +255,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
      */
     public void enviarSIA() {
         if (data.getCodigo() != null && data.getCodigoSIA() == null) {
-            SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data);
+            SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data, this.getIdioma());
             if (dato.isCorrecto()) {
                 ListaPropiedades listaPropiedades = new ListaPropiedades();
                 Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();

@@ -54,13 +54,13 @@ public class SiaUtils {
      * @param procedimiento
      * @return
      */
-    public static SiaEnviableResultado isEnviable(final boolean isVisibleUA, final String codigoIdCentro, final ProcedimientoDTO procedimiento, final boolean indexacionForzada) {
+    public static SiaEnviableResultado isEnviable(final boolean isVisibleUA, final String codigoIdCentro, final ProcedimientoDTO procedimiento, final boolean indexacionForzada, final String idioma) {
         final SiaEnviableResultado resultado = new SiaEnviableResultado(false);
         final StringBuilder mensajeError = new StringBuilder();
 
         // Si el procedimiento que se pasa es nulo, tiene que salir.
         if (procedimiento == null) {
-            resultado.setRespuesta("El procediment és nul.");
+            resultado.setRespuesta(SiaMessages.getMessage("sia.error.procedimiento.nulo", idioma));
             resultado.setIdCentro("");
             resultado.setNotificarSIA(false);
             return resultado;
@@ -71,7 +71,7 @@ public class SiaUtils {
         if (procedimiento.getNormativas() != null) {
             for (final NormativaGridDTO normativa : procedimiento.getNormativas()) {
                 if (normativa.getVigente() == null || !normativa.getVigente()) {
-                    resultado.setRespuesta("Té alguna normativa no vàlida.");
+                    resultado.setRespuesta(SiaMessages.getMessage("sia.error.normativa.no.valida", idioma));
                     resultado.setIdCentro("");
                     resultado.setNotificarSIA(false);
                     return resultado;
@@ -84,7 +84,7 @@ public class SiaUtils {
         if (!indexacionForzada) {
             esVisible = procedimiento.esVisible();
             if (!esVisible) {
-                mensajeError.append("El procediment no és visible.");
+                mensajeError.append(SiaMessages.getMessage("sia.error.procedimiento.no.visible", idioma));
             }
         }
 
@@ -92,7 +92,7 @@ public class SiaUtils {
         // Es visible UA.
         // final boolean isVisibleUA = uaService.isVisibleUA(procedimiento.getUaResponsable());
         if (!isVisibleUA) {
-            mensajeError.append("La unitat de l'òrgan resolutori o d'alguns dels seus predecessors és no visible.");
+            mensajeError.append(SiaMessages.getMessage("sia.error.ua.no.visible", idioma));
         }
 
         // Tiene código centro.
@@ -103,7 +103,8 @@ public class SiaUtils {
             // final String codigoIdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaResponsable().getCodigo());
             if (codigoIdCentro == null) {
                 tieneCodigoCentro = false;
-                mensajeError.append("No té codi DIR ni l'òrgan resolutori ni predecessors.");
+                mensajeError.append(SiaMessages.getMessage("sia.error.sin.codigo.dir", idioma));
+
             } else {
                 tieneCodigoCentro = true;
                 resultado.setIdCentro(codigoIdCentro);
@@ -153,13 +154,13 @@ public class SiaUtils {
      * @param servicio
      * @return
      */
-    public static SiaEnviableResultado isEnviable(final boolean isVisibleUA, final String codigoIdCentro, final ServicioDTO servicio, final boolean indexacionForzada) {
+    public static SiaEnviableResultado isEnviable(final boolean isVisibleUA, final String codigoIdCentro, final ServicioDTO servicio, final boolean indexacionForzada, String idioma) {
         final SiaEnviableResultado resultado = new SiaEnviableResultado(false);
         final StringBuilder mensajeError = new StringBuilder();
 
         // Si el procedimiento que se pasa es nulo, tiene que salir.
         if (servicio == null) {
-            resultado.setRespuesta("El procediment és nul.");
+            resultado.setRespuesta(SiaMessages.getMessage("sia.error.procedimiento.nulo", idioma));
             resultado.setIdCentro("");
             resultado.setNotificarSIA(false);
             return resultado;
@@ -170,14 +171,13 @@ public class SiaUtils {
         if (!indexacionForzada) {
             esVisible = servicio.esVisible();
             if (!esVisible) {
-                mensajeError.append("El servei no és visible.");
+                mensajeError.append(SiaMessages.getMessage("sia.error.servicio.no.visible", idioma));
             }
         }
 
         // Es visible UA.
-        // final boolean isVisibleUA = uaService.isVisibleUA(servicio.getUaResponsable());
         if (!isVisibleUA) {
-            mensajeError.append("La unitat de l'òrgan resolutori o d'alguns dels seus predecessors és no visible.");
+            mensajeError.append(SiaMessages.getMessage("sia.error.ua.no.visible", idioma));
         }
 
         // Tiene código centro.
@@ -185,10 +185,9 @@ public class SiaUtils {
         if (servicio.esComun()) {
             tieneCodigoCentro = true;
         } else {
-            // final String codigoIdCentro = uaService.obtenerCodigoDIR3(servicio.getUaResponsable().getCodigo());
             if (codigoIdCentro == null) {
                 tieneCodigoCentro = false;
-                mensajeError.append("No té codi DIR ni l'òrgan resolutori ni predecessors.");
+                mensajeError.append(SiaMessages.getMessage("sia.error.sin.codigo.dir", idioma));
             } else {
                 tieneCodigoCentro = true;
                 resultado.setIdCentro(codigoIdCentro);
@@ -284,7 +283,7 @@ public class SiaUtils {
                         break;
                 }
             }
-            //TODO para poder avanzar, se añade uno por defecto
+
             if (destinatarios.isEmpty()) {
                 destinatarios.add("1");
             }
@@ -429,14 +428,14 @@ public class SiaUtils {
                 NormativaSIA normativaSIA = new NormativaSIA();
                 normativaSIA.setTitulo(normativa.getTitulo().getTraduccion("es"));
                 normativaSIA.setTipoSia(normativa.getTipoNormativa());
-
+                normativaSIAS.add(normativaSIA);
             }
         }
         return normativaSIAS;
     }
 
     private static boolean isActivoSiaComunes() {
-        //TODO pendiente ver que hacen aqui
+        //De momento, siempre activo
         return true;
     }
 
@@ -479,7 +478,7 @@ public class SiaUtils {
             // final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaResponsable().getCodigo());
             // final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(siaUA.getUa().getCodigo());
             if (codigoDir3SiaUA.equals(codigoDir3IdCentro)) {
-                mensajeError.append("El procedimiento esta asociado directamente a la entidad raiz.");
+                mensajeError.append("El procediment aquesta associat directament a l'entitat arrel.");
                 noAsociadoSiaUA = false;
             }
         }
@@ -525,7 +524,7 @@ public class SiaUtils {
                 mensajeError.append("No té matèries.");
             }
 
-            tieneNormativas = procedimiento.getNormativas().size() > 0;
+            tieneNormativas = !procedimiento.getNormativas().isEmpty();
             if (!tieneNormativas && activo) {
                 mensajeError.append("No té normatives.");
             }

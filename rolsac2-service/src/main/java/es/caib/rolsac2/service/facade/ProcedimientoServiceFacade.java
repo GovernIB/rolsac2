@@ -295,7 +295,7 @@ public interface ProcedimientoServiceFacade {
      * @param data Datos del procedimiento/servicio a comprobar
      * @return SiaCumpleEnviable con el resultado de la comprobación
      */
-    SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data);
+    SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data, String idioma);
 
     /**
      * Comprueba todos los procedimientos y servicios publicados en SIA que se han caducado y están marcados como publicados.

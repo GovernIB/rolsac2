@@ -1,6 +1,5 @@
 package es.caib.rolsac2.ejb.facade.procesos;
 
-import es.caib.rolsac2.ejb.facade.SeccionServiceFacadeBean;
 import es.caib.rolsac2.ejb.util.procesos.InterpreteQuartz;
 import es.caib.rolsac2.persistence.repository.ProcesoLogRepository;
 import es.caib.rolsac2.persistence.repository.ProcesoRepository;
@@ -94,7 +93,7 @@ public class ProcesosExecComponentFacadeBean implements ProcesosExecComponentFac
                     if (iq.isActivar()) {
                         result.add(p.getIdentificadorProceso());
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     LOG.error("Error al interpretar cron del proceso " + p.getIdentificadorProceso() + ": " + e.getMessage(), e);
                 }
             }
