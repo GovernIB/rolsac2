@@ -1,6 +1,7 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
+import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
@@ -120,7 +121,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.setearIdioma();
         estadosProcedimiento = estadoProcedimiento;
 
-        this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
+        this.setLopdDerechos((Literal) sessionBean.getEntidad().getLopdDerechos().clone());
         this.setLopdInfoAdicional(new Literal());
 
         if (this.isModoAlta()) {
@@ -136,8 +137,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             data.setTemas(new ArrayList<>());
             data.setCategoriasPDU(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
-            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
-            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
+            data.setLopdFinalidad((Literal) sessionBean.getEntidad().getLopdFinalidad().clone());
+            data.setLopdDestinatario((Literal) sessionBean.getEntidad().getLopdDestinatario().clone());
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -391,14 +392,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void abrirVentanaUAResp() {
+        UtilJSF.vaciarMochila();
         abrirVentanaUA(this.data.getUaResponsable());
     }
 
     public void abrirVentanaUAInstr() {
+
+        UtilJSF.anyadirMochila("uaRaiz", sessionBean.getUnidadActiva());
         abrirVentanaUA(this.data.getUaInstructor());
     }
 
     public void abrirVentanaUACompetente() {
+        UtilJSF.vaciarMochila();
         abrirVentanaUA(this.data.getUaCompetente());
     }
 
@@ -414,6 +419,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         String direccion = "/comun/dialogSeleccionarUA";
 
         UtilJSF.anyadirMochila("ua", ua);
+
+
+
         //params.put("esCabecera", null);
         UtilJSF.openDialog(direccion, TypeModoAcceso.valueOf(this.getModoAcceso()), params, true, 850, 575);
     }
@@ -1697,7 +1705,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         this.mostrarBtnFlujo = mostrarBtnFlujo;
     }
 
-    public boolean isMostrarBtnMensajes(){
+    public boolean isMostrarBtnMensajes() {
         return isMostrarBtnFlujo();
     }
 }

@@ -41,7 +41,7 @@ public class ViewLOPD extends AbstractController implements Serializable {
         permisoAccesoVentana(ViewLOPD.class);
         this.setearIdioma();
 
-        data = UtilJSF.getSessionBean().getEntidad();
+        data = administracionSupServiceFacade.findEntidadById(sessionBean.getEntidad().getCodigo());
 
     }
 

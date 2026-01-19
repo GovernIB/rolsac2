@@ -52,12 +52,18 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
     private UnidadAdministrativaDTO uaAux;
 
-    private Boolean esCabecera;
+    private Boolean esCabecera = Boolean.FALSE;
+
+    /**
+     *  Indica la raiz del arbol que se debe mostrar. Si es nulo, se muestra la ua principal de la entidad del usuario.
+     */
+    private UnidadAdministrativaDTO uaRaiz;
 
     public void load() {
         LOG.debug("init");
 
         ua = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua");
+        uaRaiz = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("uaRaiz");
         esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
         root = new LazyLoadingTreeNode();
 
@@ -66,16 +72,28 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
             uaAux = (UnidadAdministrativaDTO) ua.clone();
 
             ua = uaService.findUASimpleByID(ua.getCodigo(), sessionBean.getLang(), null);
-            if (ua.getPadre() != null) {
+            if ( !esUARaizArbol(ua)) {
                 construirArbolDesdeHoja(ua, (LazyLoadingTreeNode) root);
             } else {
-                UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                UnidadAdministrativaDTO uaRoot = null;
+                if(uaRaiz == null) {
+                    uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                }else{
+                    uaRoot = (UnidadAdministrativaDTO)uaRaiz.clone();
+                }
+//                UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
                 LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
                 rootChildNode.setSelected(true);
                 addTreeNodeCargando(rootChildNode);
             }
         } else {
-            UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            UnidadAdministrativaDTO uaRoot = null;
+            if(uaRaiz == null) {
+                uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+            }else{
+                uaRoot = (UnidadAdministrativaDTO)uaRaiz.clone();
+            }
+
             LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
             addTreeNodeCargando(rootChildNode);
         }
@@ -87,10 +105,20 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
         }
     }
 
+    /**
+     * Construye el árbol completo se le pase el raiz o una hoja. Si es una hoja va buscando padres hacia arriba
+     * para llegar al raiz.
+     *
+     * El nodo ua pasado al dialog queda seleccionado.
+     *
+     * @param hoja
+     * @param arbol
+     * @return
+     */
     private LazyLoadingTreeNode construirArbolDesdeHoja(UnidadAdministrativaDTO hoja, LazyLoadingTreeNode arbol) {
         LazyLoadingTreeNode nodo = null;
-        if (hoja.getPadre() != null) {
-            nodo = new LazyLoadingTreeNode(hoja, construirArbolDesdeHoja(hoja.getPadre(), arbol));
+        if (!esUARaizArbol(hoja)) {
+            nodo =  construirArbolDesdeHoja(hoja.getPadre(), arbol);
         } else {
             nodo = new LazyLoadingTreeNode(hoja, arbol);
         }
@@ -103,7 +131,9 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
         if (childs == null) {
             if (((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo().equals(ua.getCodigo())) {
                 resultNodo.setSelected(true);
-                resultNodo.setExpanded(false);
+                if( !esUARaizArbol(ua)) {
+                    resultNodo.setExpanded(false);
+                }
                 selectedNode = resultNodo;
             }
         } else {
@@ -111,24 +141,25 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
             if (((UnidadAdministrativaDTO) resultNodo.getData()).getCodigo().equals(ua.getCodigo())) {
                 resultNodo.setSelected(true);
-                resultNodo.setExpanded(false);
 
                 if (!childs.isEmpty()) {
                     resultNodo.getChildren().add(addTreeNodeCargando(resultNodo));
                 }
                 selectedNode = resultNodo;
-            } else {
-                if (!childs.isEmpty()) {
-                    nodo.getChildren().clear();
-                    childs.forEach(c -> {
-                        if (!c.getCodigo().equals(ua.getCodigo())) {
+            }
+
+            if (!childs.isEmpty()) {
+                nodo.getChildren().clear();
+                childs.forEach(c -> {
                             LazyLoadingTreeNode grandChild = new LazyLoadingTreeNode(c, resultNodo);
+                            if( c.getCodigo().equals(ua.getCodigo())){
+                                grandChild.setSelected(true);
+                                selectedNode = grandChild;
+                            }
                             addTreeNodeCargando(grandChild);
 
                             resultNodo.getChildren().add(grandChild);
-                        }
-                    });
-                }
+                });
             }
         }
 
@@ -140,6 +171,10 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
             }
         }
         return resultNodo;
+    }
+
+    private boolean esUARaizArbol(UnidadAdministrativaDTO ua) {
+       return ua.getPadre() == null || (uaRaiz != null && ua.getCodigo().equals(uaRaiz.getCodigo()));
     }
 
     private LazyLoadingTreeNode addTreeNodeCargando(TreeNode parentTreeNode) {

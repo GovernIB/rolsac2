@@ -137,7 +137,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         canalesSeleccionados = new ArrayList<>();
         platTramitElectronica = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
 
-        this.setLopdDerechos(sessionBean.getEntidad().getLopdDerechos());
+        this.setLopdDerechos((Literal) sessionBean.getEntidad().getLopdDerechos().clone());
         this.setLopdInfoAdicional(new Literal());
 
         if (this.isModoAlta()) {
@@ -147,8 +147,8 @@ public class DialogServicio extends AbstractController implements Serializable {
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
-            data.setLopdFinalidad(sessionBean.getEntidad().getLopdFinalidad());
-            data.setLopdDestinatario(sessionBean.getEntidad().getLopdDestinatario());
+            data.setLopdFinalidad((Literal) sessionBean.getEntidad().getLopdFinalidad().clone());
+            data.setLopdDestinatario((Literal) sessionBean.getEntidad().getLopdDestinatario().clone());
 
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
@@ -388,10 +388,12 @@ public class DialogServicio extends AbstractController implements Serializable {
 
 
     public void abrirVentanaUAInstr() {
+        UtilJSF.anyadirMochila("uaRaiz", sessionBean.getUnidadActiva());
         abrirVentanaUA(this.data.getUaInstructor());
     }
 
     public void abrirVentanaUAResp() {
+        UtilJSF.anyadirMochila("uaRaiz", null);
         abrirVentanaUA(this.data.getUaResponsable());
     }
 
@@ -1441,7 +1443,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean isMostrarBtnFlujo() {
-     return isTotalHabilitadoComunes();
+        return isTotalHabilitadoComunes();
     }
 
     public boolean isTotalHabilitadoComunes() {
@@ -1456,7 +1458,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
     }
 
-    public boolean isMostrarBtnMensajes(){
+    public boolean isMostrarBtnMensajes() {
         return isTotalHabilitadoComunes();
     }
 }
