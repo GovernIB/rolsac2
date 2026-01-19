@@ -29,7 +29,7 @@ Pàgina amb el llistat de processos automàtics
     </ui:define>
 
     <ui:define name="content">
-        <h:form prependId="false">
+        <h:form id="form" prependId="false">
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
             <p:commandButton value="#{labels['viewProcesos.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewProcesos.buscar}"
@@ -54,7 +54,7 @@ Pàgina amb el llistat de processos automàtics
                                 <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  styleClass="mr-2"
+                            <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  styleClass="mr-2"
                                              actionListener="#{viewProcesos.editarProceso()}"
                                              process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
@@ -110,16 +110,9 @@ Pàgina amb el llistat de processos automàtics
             </p:dataTable>
             <h:outputScript>
                 function triggerDblClick() {
-                myDoubleClickCommand();
-                /*$('#form\\:btnConsultaHidden').click();*/
+                 $('#btnEditar').click();
                 }
             </h:outputScript>
-            <p:remoteCommand name="myDoubleClickCommand"
-                             widgetVar="myDoubleClickCommand"
-                             action="#{viewProcesos.editarProceso()}"
-                             autoRun="false"
-                             partialSubmit="true"
-                             process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewProcesos.consultarProceso()}"
                              process="@this" update="messages" style="display: none">
