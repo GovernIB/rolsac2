@@ -2627,7 +2627,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             if (filtro.getIntegradoPdu()) {
                 sql.append(" AND j.estadoPdu = 1 ");
             } else {
-                sql.append(" AND j.estadoPdu = 0 ");
+                sql.append(" AND ( j.estadoPdu = 0 OR j.estadoPdu is null) ");
             }
         }
 
