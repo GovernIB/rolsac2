@@ -109,7 +109,9 @@ public class DialogLiteral extends AbstractController implements Serializable {
                 Map<String, String> opciones = new HashMap<>();
                 LOG.error("TRADUCCION");
                 LOG.error("TipoEntrada:" + TipoEntrada.TEXTO_PLANO.toString() + " IDIOMA_ORIGEN:" + idiomaOrigen + " IDIOMA_DESTINO:" + idiomaDestino + " LITERAL_IDIOMA_ORIGEN:" + literal.getTraduccion(idiomaOrigen) + " COMPROBAR_IDIOMA_ORIGEN:" + comprobarIdioma(idiomaOrigen) + " COMPROBAR_IDIOMA_DEST:" + comprobarIdioma(idiomaDestino) + " OPCIONES:" + opciones + " ENTIDAD:" + sessionBean.getEntidad().getCodigo());
-                String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(), literal.getTraduccion(idiomaOrigen), comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino), opciones, sessionBean.getEntidad().getCodigo());
+
+                String textoATraducir = textosEnIdioma.get(idiomaOrigen);
+                String tradDestino = traduccionServiceFacade.traducir(TipoEntrada.TEXTO_PLANO.toString(), textoATraducir, comprobarIdioma(idiomaOrigen), comprobarIdioma(idiomaDestino), opciones, sessionBean.getEntidad().getCodigo());
                 LOG.error("Valor traducido:" + tradDestino);
                 if (isSustitucion()) {
                     literal.add(new Traduccion(idiomaDestino, tradDestino));
