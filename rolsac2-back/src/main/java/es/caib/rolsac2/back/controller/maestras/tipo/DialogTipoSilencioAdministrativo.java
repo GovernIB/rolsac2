@@ -89,21 +89,26 @@ public class DialogTipoSilencioAdministrativo extends AbstractController impleme
             return;
         }
 
-        if (this.data.getCodigo() == null) {
-            maestrasSupService.create(this.data);
-        } else {
-            maestrasSupService.update(this.data);
-        }
+        try {
+            if (this.data.getCodigo() == null) {
+                maestrasSupService.create(this.data);
+            } else {
+                maestrasSupService.update(this.data);
+            }
 
-        // Retornamos resultado
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            // Retornamos resultado
+            final DialogResult result = new DialogResult();
+            if (this.getModoAcceso() != null) {
+                result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+            } else {
+                result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            }
+            result.setResult(data);
+            UtilJSF.closeDialog(result);
+        } catch (Exception e) {
+            LOG.error("Error guardando el tipo de silencio administrativo", e);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.errorGuardar"), true);
         }
-        result.setResult(data);
-        UtilJSF.closeDialog(result);
     }
 
     public void cerrar() {

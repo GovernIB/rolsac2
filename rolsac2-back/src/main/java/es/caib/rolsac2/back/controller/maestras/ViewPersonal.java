@@ -179,11 +179,6 @@ public class ViewPersonal extends AbstractController implements Serializable {
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
-            if (respuesta.isAlta()) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.creaciocorrecta"));
-            } else if (respuesta.isEdicion()) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.actualitzaciocorrecta"));
-            }
         }
     }
 
