@@ -69,8 +69,7 @@ public class DialogSeleccionNormativa extends AbstractController implements Seri
         // Generamos una búsqueda
         buscar();
         //  normativasSeleccionadas.add(new NormativaGridDTO());
-        // normativasSeleccionadas = new ArrayList<>(
-        normativasSeleccionadas = (List<NormativaGridDTO>) UtilJSF.getValorMochilaByKey("normativasSeleccionadas");
+         normativasSeleccionadas = new ArrayList<>( (List<NormativaGridDTO>) UtilJSF.getValorMochilaByKey("normativasSeleccionadas"));
 
     }
 
