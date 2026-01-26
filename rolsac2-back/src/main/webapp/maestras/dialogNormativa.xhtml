@@ -52,6 +52,12 @@
             .ui-chkbox ~ label {
                 font-size: 1.2em;
             }
+            .custom-select-menu {
+                max-width: 570px; /* Define the maximum width of the dropdown */
+                white-space: nowrap; /* Prevent text wrapping */
+                overflow: hidden; /* Hide overflowing text */
+                text-overflow: ellipsis; /* Add ellipsis (...) for overflowing text */
+            }
         </h:outputStylesheet>
         <p:growl id="messagesDialog"
                  globalOnly="false"
@@ -98,10 +104,11 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.tipoNormativa']}:"
                                        for="selectTipoNormativa"/>
                         <p:selectOneMenu id="selectTipoNormativa" value="#{dialogNormativa.data.tipoNormativa}"
-                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                         styleClass="w95 custom-select-menu" required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.tipoNormativa']}"
                                          disabled="#{dialogNormativa.isModoConsulta()}"
-                                         converter="#{tipoNormativaConverter}">
+                                         converter="#{tipoNormativaConverter}" autoWidth="false"
+                                           >
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.tipoNormativa']}"
                                           itemValue="#{null}"/>
                             <f:selectItems value="#{dialogNormativa.tipoNormativa}" var="tipoNormativa"
@@ -143,10 +150,10 @@
                                        for="selectBoletinOficial"/>
 
                         <p:selectOneMenu id="selectBoletinOficial" value="#{dialogNormativa.data.boletinOficial}"
-                                         styleClass="w95" required="#{empty param['formDialog:closeButton']}"
+                                         styleClass="w95 custom-select-menu" required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
                                          disabled="#{dialogNormativa.isModoConsulta()}"
-                                         converter="#{boletinOficialConverter}">
+                                         converter="#{boletinOficialConverter}" autoWidth="false">
                             <f:selectItem itemLabel="#{labels['dialogNormativa.selecciona.boletinOficial']}"
                                           itemValue="#{null}"/>
                             <f:selectItems value="#{dialogNormativa.tipoBoletin}" var="boletinOficial"

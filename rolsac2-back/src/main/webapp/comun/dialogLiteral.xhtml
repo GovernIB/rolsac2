@@ -85,6 +85,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                          styleClass="w95"
                                          autoResize="false"
                                          required="#{dialogLiteral.calcularRequired(idioma) and empty param['formDialog:btnTraducir']}"
+                                         converter="stringNormalizerConverter"
                                          maxlength="#{dialogLiteral.maxlength}"/>
                     </div>
                 </c:forEach>

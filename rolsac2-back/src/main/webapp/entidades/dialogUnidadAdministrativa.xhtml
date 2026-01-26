@@ -302,7 +302,11 @@
                                          value="#{dialogUnidadAdministrativa.data.responsableEmail}"
                                          styleClass="w95"
                                          maxlength="100"
-                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         validatorMessage="#{labels['dict.emailNoValido']}">
+                                <f:validateRegex
+                                        pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                            </p:inputText>
                         </div>
                         <div class="form-group col-md-11">
                             <p class="mb-1">
@@ -355,7 +359,11 @@
                             <p:inputText id="txtEmail" value="#{dialogUnidadAdministrativa.data.email}"
                                          styleClass="w95"
                                          maxlength="100"
-                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"/>
+                                         disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
+                                         validatorMessage="#{labels['dict.emailNoValido']}">
+                                <f:validateRegex
+                                    pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                            </p:inputText>
                         </div>
                         <div class="form-group col-md-4">
                             <p class="mb-1">

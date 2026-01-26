@@ -49,7 +49,7 @@
                         </div>
                         <div class="ui-g-12 ui-md-10 ui-lg-5">
                             <p:inputText id="txtCodigo" value="#{dialogProceso.data.identificadorProceso}"
-                                         styleClass="w95" disabled="true" maxlength="50"/>
+                                         styleClass="w95" disabled="true" maxlength="10"/>
                         </div>
                     </c:otherwise>
                 </c:choose>
@@ -60,7 +60,7 @@
                     <p:inputTextarea id="txtDescripcion" value="#{dialogProceso.data.descripcion}"
                                      requiredMessage="#{labels['dict.obligatorio.descripcion']}"
                                      styleClass="w95" required="#{empty param['formDialog:closeButton']}" autoResize="false" rows="3"
-                                 disabled="#{dialogProceso.isModoConsulta()}" maxlength="1000"/>
+                                 disabled="#{dialogProceso.isModoConsulta()}" maxlength="100"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['viewProcesos.cron']}:" for="txtClassname"/>
@@ -69,7 +69,7 @@
                     <p:inputText id="txtClassname" value="#{dialogProceso.data.cron}"
                                  requiredMessage="#{labels['dict.obligatorio.expresionActivacion']}"
                                  styleClass="w95" required="#{empty param['formDialog:closeButton']}"
-                                     disabled="#{dialogProceso.isModoConsulta()}" maxlength="1000"/>
+                                     disabled="#{dialogProceso.isModoConsulta()}" maxlength="100"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dict.activo']}:" for="txtActivo"/>
