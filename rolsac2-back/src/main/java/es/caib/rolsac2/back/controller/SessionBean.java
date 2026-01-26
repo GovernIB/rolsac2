@@ -318,8 +318,8 @@ public class SessionBean implements Serializable {
      */
     public void cambioPerfil(TypePerfiles perfil) {
         String idUsuario = seguridad.getIdentificadorUsuario();
-        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario, lang);
-        SesionDTO sesionDTO = systemServiceBean.findSesionById(usuario.getCodigo());
+        UsuarioDTO usuarioPerfil = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario, lang);
+        SesionDTO sesionDTO = systemServiceBean.findSesionById(usuarioPerfil.getCodigo());
         sesionDTO.setFechaUltimaSesion(new Date());
         TypePerfiles perfilAntiguo = this.perfil;
 
@@ -335,7 +335,7 @@ public class SessionBean implements Serializable {
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
             if (permiso) {
-                actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
+                actualizarUnidadAdministrativa(usuarioPerfil, perfil, sesionDTO);
                 if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
                     checkUaGestor(unidadActiva);
                 }
@@ -355,6 +355,7 @@ public class SessionBean implements Serializable {
             setPerfil(perfil);
             actualizarPerfiles();
         }
+        setUsuario(usuarioPerfil);
         sesionDTO.setPerfil(this.perfil.toString());
         sesionDTO.setIdEntidad(this.entidad == null ? null : this.entidad.getCodigo());
         sesionDTO.setIdUa(this.unidadActiva == null ? null : this.unidadActiva.getCodigo());
