@@ -334,7 +334,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     }
                     break;
                 case "T":
-                default:
                     List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
                     for (Object[] proc : jprocs) {
                         if (proc != null) {
@@ -365,10 +364,25 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                                 }
                                 procs.add(procDTO);
                             }
-
-
                         }
-
+                    }
+                    break;
+                default:
+                    List<JProcedimientoWorkflow> jprocsD = query.getResultList();
+                    List<Long> idProcsD = getIdsProcedimientos(jprocsD);
+                    List<JProcedimientoDocumento> documentosD = getDocumentosLopd(idProcsD);
+                    for (Object proc : jprocsD) {
+                        if (proc != null) {
+                            seleccionado = (JProcedimientoWorkflow) proc;
+                            if (seleccionado != null) {
+                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionado);
+                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
+                                if (!ignorarDocumentos) {
+                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosD, filtro.getIdioma()));
+                                }
+                                procs.add(procDTO);
+                            }
+                        }
                     }
                     break;
             }
@@ -2135,6 +2149,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1 and rownum = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor, wf.uaInstructor.codigo FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
             ambosWf = true;
         }
+
+        // Hacemos esto para que la consulta sólo devuelva procedimientos que tengan workflow asociado
+        if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("T")){
+            sql.append(" AND (wf is not null or wf2 is not null) ");
+        }
+
 
         if (filtro.isRellenoTexto() && ambosWf) {
             sql.append(" and ( LOWER(cast(j.codigo as string)) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro  OR LOWER(t2.nombre) LIKE :filtro " + " OR LOWER(wf.estado) LIKE :filtro OR LOWER(wf2.estado) LIKE :filtro    " + " OR LOWER(j.tipo) LIKE :filtro  OR LOWER(cast(j.codigoSIA as string)) LIKE :filtro " + " OR LOWER(cast(j.estadoSIA as string)) LIKE :filtro  )");

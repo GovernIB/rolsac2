@@ -253,7 +253,7 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (resultadoBusqueda.getItems().size()), lista, tiempoMiliSegundos);
+        return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
     }
 
     /**
