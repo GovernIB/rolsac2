@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -495,7 +496,7 @@ public class ProcedimientoGridDTO extends ModelApi {
         final boolean noCaducado = (getTramiteIniciofechaCierre() == null || getTramiteIniciofechaCierre().after(now));
         final boolean publicado = (getTramiteInicioFechaPublicacion() == null || getTramiteInicioFechaPublicacion().before(now));
 
-        final boolean visible = this.estado != null && this.estado.contains("P");
+        final boolean visible = this.estado != null && (this.estado.contains(TypeProcedimientoEstado.PUBLICADO.toString()) || this.estado.contains(TypeProcedimientoEstado.PENDIENTE_CERRAR.toString()));
         return tieneTramiteInicio && visible && noCaducado && publicado;
     }
 

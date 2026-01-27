@@ -598,7 +598,8 @@ FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
                            trpw_svreq,
                            trpw_prreso,
                            trpw_dpfina,
-                           trpw_dpdest)
+                           trpw_dpdest,
+						   trpw_uaresp)
               VALUES      ( rs2_traprwf_seq.NEXTVAL,
                            codigo_procwf,
                            rolsac1_tradserv.tsr_codidi,
@@ -609,7 +610,26 @@ FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
                            rolsac1_tradserv.tsr_ulrser,
                            rolsac1_tradserv.tsr_requis,
                            rolsac1_tradserv.tsr_lopdfi,
-                           rolsac1_tradserv.tsr_lopdds );
+                           rolsac1_tradserv.tsr_lopdds,
+                            SUBSTR(
+								              COALESCE(
+										              (
+											              SELECT MAX(TUN_NOMBRE)
+											              FROM R1_UNIADM_TRAD
+											              WHERE TUN_CODUNA = V_PRWF_CODUAI
+												            AND TUN_CODIDI = rolsac1_tradserv.tsr_codidi
+										              ),
+										              (
+											              SELECT MAX(TUN_NOMBRE)
+											              FROM R1_UNIADM_TRAD
+											              WHERE TUN_CODUNA = V_PRWF_CODUAI
+												            AND TUN_CODIDI = 'ca'
+										              ),
+										              ''
+								              ),
+								              1,
+								              1000
+						              ));
 
               /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
               IF lslopd IS NOT NULL

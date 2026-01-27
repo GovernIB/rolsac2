@@ -485,6 +485,38 @@ BEGIN
 			V_PRWF_PRCODUAC := obtenerUAconDIR3(NVL (v_pro_coduna_resol, v_pro_coduna));
 			V_PRWF_CODUAR := obtenerUAconDIR3( NVL (v_PRO_CODUNA_SERV, v_pro_coduna) );
 
+			IF V_PRWF_CODUAI IS NULL or
+			   V_PRWF_CODUAR IS NULL
+			   THEN
+				RAISE_APPLICATION_ERROR(
+						-20010,
+						'La Unitat Administrativa Responsable és nul, comprovi el procediment perquè té assignat una Unitat Administrativa que no penja de l''arrel GOIB.'
+				);
+			END IF;
+
+			IF CHECK_CUELGA_UA_PROC(V_PRWF_CODUAR, 1) = 0
+			THEN
+				RAISE_APPLICATION_ERROR(
+						-20010,
+						'La Unitat Administrativa té assignat una Unitat Administrativa Responsable que no penja de l''arrel GOIB.'
+				);
+			END IF;
+
+			IF CHECK_CUELGA_UA_PROC(V_PRWF_CODUAI, 1) = 0
+			THEN
+				RAISE_APPLICATION_ERROR(
+						-20010,
+						'La Unitat Administrativa té assignat una Unitat Administrativa Instructora que no penja de l''arrel GOIB.'
+				);
+			END IF;
+
+			IF CHECK_CUELGA_UA_PROC(V_PRWF_PRCODUAC, 1) = 0
+			THEN
+				RAISE_APPLICATION_ERROR(
+						-20010,
+						'La Unitat Administrativa té assignat una Unitat Administrativa Compentent que no penja de l''arrel GOIB.'
+				);
+			END IF;
 
 			INSERT INTO rs2_prcwf
 			(prwf_codigo,
@@ -530,8 +562,8 @@ BEGIN
 				   V_PRWF_PRCODUAC ,
 				   V_PRWF_CODUAR,
 				   interno,
-				   Coalesce (pro_respon, 'Desconegut'),
-				   pro_info,
+				   SUBSTR(NVL(pro_respon, 'Desconegut'), 1, 255) AS prwf_rsnom, -- ejemplo: 100 caracteres
+				   SUBSTR(NVL(pro_info, ''), 1, 100) AS prwf_rsema,
 				/*PRWF_RSTFNO,*/
 				   pro_codleg,
 				/*PRWF_LSTDOC,
@@ -894,17 +926,39 @@ BEGIN
 						 trpw_obser,
 						 trpw_prreso,
 						 trpw_dpfina,
-						 trpw_dpdest)
+						 trpw_dpdest,
+						 trpw_uaresp)
 						VALUES      ( rs2_traprwf_seq.NEXTVAL,
 						              codigo_procwf,
 						              rolsac1_tradproc.tpr_codidi,
-						              rolsac1_tradproc.tpr_nombre,
+						              SUBSTR(NVL(rolsac1_tradproc.tpr_nombre, ''), 1, 255) ,
 						              rolsac1_tradproc.tpr_resume,
 						              rolsac1_tradproc.tpr_destin,
 						              rolsac1_tradproc.tpr_observ,
 						              rolsac1_tradproc.tpr_resolucion,
 						              rolsac1_tradproc.tpr_lopdfi,
-						              rolsac1_tradproc.tpr_lopdds );
+						              rolsac1_tradproc.tpr_lopdds,
+						              SUBSTR(
+								              COALESCE(
+										              (
+											              SELECT MAX(TUN_NOMBRE)
+											              FROM R1_UNIADM_TRAD
+											              WHERE TUN_CODUNA = V_PRWF_CODUAI
+												            AND TUN_CODIDI = rolsac1_tradproc.tpr_codidi
+										              ),
+										              (
+											              SELECT MAX(TUN_NOMBRE)
+											              FROM R1_UNIADM_TRAD
+											              WHERE TUN_CODUNA = V_PRWF_CODUAI
+												            AND TUN_CODIDI = 'ca'
+										              ),
+										              ''
+								              ),
+								              1,
+								              1000
+						              )
+
+						            );
 
 						/** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
 						IF lslopd IS NOT NULL
@@ -982,7 +1036,7 @@ BEGIN
 						SELECT rs2_tradopr_seq.NEXTVAL,
 						       rs2_docpr_seq.CURRVAL,
 						       tdo_codidi,
-						       tdo_titulo,
+						       SUBSTR(NVL(tdo_titulo, ''), 1, 256),
 						       tdo_descri,
 						       tdo_codarc
 						FROM   r1_procedimientos_doc_trad
