@@ -165,6 +165,11 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
      */
     private Literal terminoResolucion;
 
+    /**
+     * UA responsable literal
+     */
+    private Literal uaResponsableLiteral;
+
 
     /**
      * Instancia un nuevo Procedimiento workflow dto.
@@ -747,6 +752,14 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
         this.terminoResolucion = terminoResolucion;
     }
 
+    public Literal getUaResponsableLiteral() {
+        return uaResponsableLiteral;
+    }
+
+    public void setUaResponsableLiteral(Literal uaResponsableLiteral) {
+        this.uaResponsableLiteral = uaResponsableLiteral;
+    }
+
     /**
      * Is interna boolean.
      *
@@ -780,6 +793,6 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoWorkflowDTO{" + "codigo=" + codigo + ", procedimiento=" + procedimiento + ", workflow=" + workflow + ", estado='" + estado + '\'' + ", usuario='" + usuario + '\'' + ", uaResponsable=" + uaResponsable + ", uaInstructor=" + uaInstructor + ", interno=" + interno + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableTelefono='" + responsableTelefono + '\'' + ", datosPersonalesActivo=" + datosPersonalesActivo + ", datosPersonalesLegitimacion=" + datosPersonalesLegitimacion + ", listaDocumentos=" + listaDocumentos + ", uaCompetente=" + uaCompetente + ", formaInicio=" + formaInicio + ", silencioAdministrativo=" + silencioAdministrativo + ", finVia=" + finVia + ", tieneTasa=" + tieneTasa + ", tramiteElectronico=" + tramiteElectronico + ", nombre=" + nombre + ", objeto=" + objeto + ", destinatarios=" + destinatarios + ", observaciones=" + observaciones + ", datosPersonalesFinalidad=" + datosPersonalesFinalidad + ", datosPersonalesDestinatario=" + datosPersonalesDestinatario + ", documentoLOPD=" + documentoLOPD + ", requisitos=" + requisitos + ", terminoResolucion=" + terminoResolucion + '}';
+        return "ProcedimientoWorkflowDTO{" + "codigo=" + codigo + ", procedimiento=" + procedimiento + ", workflow=" + workflow + ", estado='" + estado + '\'' + ", usuario='" + usuario + '\'' + ", uaResponsable=" + uaResponsable + ", uaInstructor=" + uaInstructor + ", interno=" + interno + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableTelefono='" + responsableTelefono + '\'' + ", datosPersonalesActivo=" + datosPersonalesActivo + ", datosPersonalesLegitimacion=" + datosPersonalesLegitimacion + ", listaDocumentos=" + listaDocumentos + ", uaCompetente=" + uaCompetente + ", formaInicio=" + formaInicio + ", silencioAdministrativo=" + silencioAdministrativo + ", finVia=" + finVia + ", tieneTasa=" + tieneTasa + ", tramiteElectronico=" + tramiteElectronico + ", nombre=" + nombre + ", objeto=" + objeto + ", destinatarios=" + destinatarios + ", observaciones=" + observaciones + ", datosPersonalesFinalidad=" + datosPersonalesFinalidad + ", datosPersonalesDestinatario=" + datosPersonalesDestinatario + ", documentoLOPD=" + documentoLOPD + ", requisitos=" + requisitos + ", terminoResolucion=" + terminoResolucion + ", uaResponsableLiteral=" + uaResponsableLiteral + '}';
     }
 }

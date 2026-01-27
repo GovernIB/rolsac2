@@ -106,6 +106,10 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
                 traduccion.setRequisitos(dto.getRequisitos().getTraduccion(traduccion.getIdioma()));
             }
 
+            if (dto.getUaResponsableLiteral() != null) {
+                traduccion.setUaResponsable(dto.getUaResponsableLiteral().getTraduccion(traduccion.getIdioma()));
+            }
+
             // TODO Hay que devolver el documento según el idioma
             if (dto.getDocumentoLOPD() != null) {
                 traduccion.setDocumentoLOPD(dto.getDocumentoLOPD());
@@ -148,6 +152,9 @@ public interface ProcedimientoWorkflowConverter extends Converter<JProcedimiento
                         break;
                     case "requisitos":
                         literal = traduccion.getRequisitos();
+                        break;
+                    case "uaResponsable":
+                        literal = traduccion.getUaResponsable();
                         break;
                     default:
                         literal = null;

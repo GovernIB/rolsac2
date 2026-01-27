@@ -3492,6 +3492,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         Literal lopdFinalidad = new Literal();
         Literal lopdDestinatario = new Literal();
         Literal urlPdu = new Literal();
+        Literal uaResponsableLiteral = new Literal();
 
         if (jprocWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
@@ -3505,6 +3506,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 lopdFinalidad.add(new Traduccion(trad.getIdioma(), trad.getLopdFinalidad()));
                 lopdDestinatario.add(new Traduccion(trad.getIdioma(), trad.getLopdDestinatario()));
                 urlPdu.add(new Traduccion(trad.getIdioma(), trad.getUrlPdu()));
+                uaResponsableLiteral.add(new Traduccion(trad.getIdioma(), trad.getUaResponsable()));
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
@@ -3517,6 +3519,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setLopdFinalidad(lopdFinalidad);
         proc.setLopdDestinatario(lopdDestinatario);
         proc.setUrlPdu(urlPdu);
+        proc.setUaResponsableLiteral(uaResponsableLiteral);
 
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));

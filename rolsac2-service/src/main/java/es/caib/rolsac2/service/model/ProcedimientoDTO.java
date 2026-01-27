@@ -39,6 +39,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         proc.setObservaciones(Literal.createInstance(idiomas));
         proc.setKeywords(Literal.createInstance(idiomas));
         proc.setUrlPdu(Literal.createInstance(idiomas));
+        proc.setUaResponsableLiteral(Literal.createInstance(idiomas));
         proc.setComun(0);
         proc.setEstadoPdu(0);
         proc.setIntegrarPdu(false);
@@ -281,6 +282,10 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
         if (this.getKeywords() != null) {
             procClonado.setKeywords((Literal) this.getKeywords().clone());
+        }
+
+        if (this.getUaResponsableLiteral() != null) {
+            procClonado.setUaResponsableLiteral((Literal) this.getUaResponsableLiteral().clone());
         }
 
         //Relaciones
@@ -647,6 +652,13 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords());
         }
 
+        if( UtilComparador.compareTo(this.getUaResponsableLiteral(), dataOriginal.getUaResponsableLiteral()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getUaResponsableLiteral() != dataOriginal.getUaResponsableLiteral(). this.getUaResponsableLiteral()=" + this.getUaResponsableLiteral() + " dataOriginal.getUaResponsableLiteral()=" + dataOriginal.getUaResponsableLiteral());
+            }
+            return UtilComparador.compareTo(this.getUaResponsableLiteral(), dataOriginal.getUaResponsableLiteral());
+        }
+
         if (UtilComparador.compareTo(this.getRequisitos(), dataOriginal.getRequisitos()) != 0) {
             if (mostrarLog) {
                 LOG.error("ProcedimientoDTO.compareTo: this.getRequisitos() != dataOriginal.getRequisitos(). this.getRequisitos()=" + this.getRequisitos() + " dataOriginal.getRequisitos()=" + dataOriginal.getRequisitos());
@@ -754,6 +766,8 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditar(data.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion(), cambios, "auditoria.procedimiento.datosPersonalesLegitimacion");
         AuditoriaUtil.auditar(data.getLopdFinalidad(), dataOriginal.getLopdFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
         AuditoriaUtil.auditar(data.getLopdDestinatario(), dataOriginal.getLopdDestinatario(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
+
+        AuditoriaUtil.auditar(data.getUaResponsableLiteral(), dataOriginal.getUaResponsableLiteral(), cambios, "auditoria.procedimiento.uaResponsableLiteral");
 
 
         if (data instanceof ServicioDTO) {

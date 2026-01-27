@@ -412,6 +412,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (dto.getKeywords() != null) {
             traduccion.setKeywords(dto.getKeywords().getTraduccion(traduccion.getIdioma()));
         }
+        if(dto.getUaResponsableLiteral() != null) {
+            traduccion.setUaResponsable(dto.getUaResponsableLiteral().getTraduccion(traduccion.getIdioma()));
+        }
     }
 
     @Override
@@ -778,6 +781,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         Literal terminoResolucion = new Literal();
         Literal observaciones = new Literal();
         Literal keywords = new Literal();
+        Literal uaResponsableLiteral = new Literal();
 
         if (jprocWF.getTraducciones() != null) {
             for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
@@ -790,6 +794,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
                 observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
                 keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
+                uaResponsableLiteral.add(new Traduccion(trad.getIdioma(), trad.getUaResponsable()));
             }
         }
         proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
@@ -801,6 +806,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setKeywords(keywords);
         proc.setLopdFinalidad(lopdFinalidad);
         proc.setLopdDestinatario(lopdDestinatario);
+        proc.setUaResponsableLiteral(uaResponsableLiteral);
         // proc.setLopdInfoAdicional(lopdInfoAdicional);
         proc.setPublicosObjetivo(procedimientoRepository.getTipoPubObjEntByWF(proc.getCodigoWF()));
         proc.setNormativas(procedimientoRepository.getNormativasByWF(proc.getCodigoWF()));

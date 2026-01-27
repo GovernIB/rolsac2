@@ -62,6 +62,9 @@ public class JProcedimientoWorkflowTraduccion {
     @Column(name = "TRPW_URLPDU")
     private String urlPdu;
 
+    @Column(name = "TRPW_UARESP", length = 1000)
+    private String uaResponsable;
+
     public static List<JProcedimientoWorkflowTraduccion> createInstance(List<String> idiomas) {
         List<JProcedimientoWorkflowTraduccion> traducciones = new ArrayList<>();
         for (String idioma : idiomas) {
@@ -91,6 +94,7 @@ public class JProcedimientoWorkflowTraduccion {
                 trad.setRequisitos(traduccion.getRequisitos());
                 trad.setTerminoResolucion(traduccion.getTerminoResolucion());
                 trad.setUrlPdu(traduccion.getUrlPdu());
+                trad.setUaResponsable(traduccion.getUaResponsable());
                 retorno.add(trad);
             }
         }
@@ -207,6 +211,14 @@ public class JProcedimientoWorkflowTraduccion {
 
     public void setUrlPdu(String urlPdu) {
         this.urlPdu = urlPdu;
+    }
+
+    public String getUaResponsable() {
+        return uaResponsable;
+    }
+
+    public void setUaResponsable(String uaResponsable) {
+        this.uaResponsable = uaResponsable;
     }
 
     @Override

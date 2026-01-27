@@ -514,36 +514,18 @@
                             <p:outputLabel styleClass="mr-2 pt-0 negrita" value="#{labels['dialogProcedimiento.servicio']}:"
                                            for="txtOrgResp"/>
                             <p>
-                                <h:panelGroup id="panelComunContacto">
-                                <span style="white-space:nowrap;  display:flex;">
-                                <p:inputText id="txtOrgResp"
-                                             rendered="#{!dialogProcedimiento.data.esComun()}"
-                                             value="#{dialogProcedimiento.data.uaResponsable.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
-                                             styleClass="w90 mr-1"
-                                             disabled="true"/>
-                                <p:commandButton
-                                        action="#{dialogProcedimiento.abrirVentanaUAResp()}"
-                                        icon="pi pi-sitemap"
-                                        value=" "
-                                        styleClass="w35px h30px iconoUAselector"
-                                        style="position:relative; "
-                                        process="@this"
-                                        rendered="#{!dialogProcedimiento.data.esComun()}"
-                                        disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                        id="btnAbrirUAResp"
+
+                                <my:literalComponent id="txtOrgResp"
+                                                     literal="#{dialogProcedimiento.data.uaResponsableLiteral}"
+                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() or !dialogProcedimiento.isAdministradorContenidos()}"
+                                                     idioma="#{dialogProcedimiento.idioma}"
+                                                     idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                                     idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                     required="#{empty param['formDialog:closeButton']}"
                                 >
-                                    <p:ajax event="dialogReturn"
-                                            listener="#{dialogProcedimiento.returnDialogoUAResp}"
-                                            process="@this"
-                                            update="formDialog:txtOrgResp lblUAiconoCompetente lblUAiconoCompetente2 toolTipFadeCompetente"
-                                            oncomplete="checkUAraiz()"/>
-                                </p:commandButton>
-                                <h:outputLink id="lblUAiconoCompetente" value="#" styleClass="w20px labelWarningUAPadre">
-                                    <h:outputText id="lblUAiconoCompetente2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUAResponsable()}" />
-                                </h:outputLink>
-                                <p:tooltip id="toolTipFadeCompetente" for="lblUAiconoCompetente" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
-                                </span>
-                                </h:panelGroup>
+                                    <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                                </my:literalComponent>
+
                             </p>
                         </div>
                         <div class="form-group col-md-7">

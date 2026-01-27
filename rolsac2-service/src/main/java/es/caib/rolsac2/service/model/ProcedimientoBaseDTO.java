@@ -66,6 +66,11 @@ public class ProcedimientoBaseDTO extends ModelApi {
     // Nombre
     private Literal nombreProcedimientoWorkFlow;
 
+    /**
+     * Literal de la unidad administrativa responsable
+     */
+    private Literal uaResponsableLiteral;
+
 
     /**
      * Nombre
@@ -151,6 +156,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
         proc.setObservaciones(Literal.createInstance(idiomas));
         proc.setKeywords(Literal.createInstance(idiomas));
         proc.setUrlPdu(Literal.createInstance(idiomas));
+        proc.setUaResponsableLiteral(Literal.createInstance(idiomas));
         proc.setPendienteIndexar(false);
         proc.setPendienteMensajesGestor(false);
         proc.setPendienteMensajesSupervisor(false);
@@ -746,6 +752,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setCategoriasPDU(List<CategoriaPDUGridDTO> categoriasPDU) {
         this.categoriasPDU = categoriasPDU;
+    }
+
+    public Literal getUaResponsableLiteral() {
+        return uaResponsableLiteral;
+    }
+
+    public void setUaResponsableLiteral(Literal uaResponsableLiteral) {
+        this.uaResponsableLiteral = uaResponsableLiteral;
     }
 
     @Override
