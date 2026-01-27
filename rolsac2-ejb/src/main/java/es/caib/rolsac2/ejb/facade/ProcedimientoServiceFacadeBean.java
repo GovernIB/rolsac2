@@ -1166,7 +1166,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         }
 
 
-        if (data instanceof ProcedimientoDTO && estadoDestino != null && estadoDestino.isEstadoValidacionPDU()) {
+        if (data instanceof ProcedimientoDTO && estadoDestino != null && estadoDestino.isEstadoValidacionPDUparaIndexar()) {
             Integer accionPDU = UtilPDU.getAccion((ProcedimientoDTO) data, (ProcedimientoDTO) dataDefinitivo, estadoDestino);
             if (accionPDU != null) {
                 indexacionPDURepository.guardarIndexar(data.getCodigo(), tipo.toString(), idEntidad, accionPDU);

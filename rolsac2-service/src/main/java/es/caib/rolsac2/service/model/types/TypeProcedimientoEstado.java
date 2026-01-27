@@ -114,6 +114,10 @@ public enum TypeProcedimientoEstado {
     }
 
     public boolean isEstadoValidacionPDU() {
+        return this == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || this == TypeProcedimientoEstado.PUBLICADO || this == TypeProcedimientoEstado.CERRADO;
+    }
+
+    public boolean isEstadoValidacionPDUparaIndexar() {
         return this == TypeProcedimientoEstado.PUBLICADO || this == TypeProcedimientoEstado.CERRADO;
     }
 }
