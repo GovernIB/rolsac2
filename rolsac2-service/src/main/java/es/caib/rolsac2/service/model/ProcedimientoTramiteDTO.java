@@ -637,7 +637,10 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProcedimientoTramiteDTO that = (ProcedimientoTramiteDTO) o;
-        return codigo.equals(that.codigo);
+        if (codigo == null && that.codigo == null) {
+            return false;
+        }
+        return Objects.equals(codigo, that.codigo);
     }
 
     @Override
