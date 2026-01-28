@@ -343,6 +343,7 @@
                                              idioma="#{dialogServicio.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             nombreLiteral="#{labels['dialogServicio.servicio']}"
                                              required="#{empty param['formDialog:closeButton']}"
                         >
                             <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
