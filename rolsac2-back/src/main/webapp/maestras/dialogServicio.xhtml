@@ -339,7 +339,7 @@
 
                         <my:literalComponent id="txtServResp"
                                              literal="#{dialogServicio.data.uaResponsableLiteral}"
-                                             soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
+                                             soloLecture="#{dialogServicio.isModoConsulta()}"
                                              idioma="#{dialogServicio.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"

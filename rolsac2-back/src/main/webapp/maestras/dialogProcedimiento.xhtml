@@ -517,7 +517,7 @@
 
                                 <my:literalComponent id="txtOrgResp"
                                                      literal="#{dialogProcedimiento.data.uaResponsableLiteral}"
-                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() or !dialogProcedimiento.isAdministradorContenidos()}"
+                                                     soloLecture="#{dialogProcedimiento.isModoConsulta() }"
                                                      idioma="#{dialogProcedimiento.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
