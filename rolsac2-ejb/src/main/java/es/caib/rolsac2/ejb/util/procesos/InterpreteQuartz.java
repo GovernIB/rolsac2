@@ -1,14 +1,16 @@
 package es.caib.rolsac2.ejb.util.procesos;
 
-import jakarta.enterprise.concurrent.CronTrigger;
+import org.quartz.CronExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
  * The Class InterpreteQuartz.
  */
 public final class InterpreteQuartz {
+    private static final Logger LOG = LoggerFactory.getLogger(InterpreteQuartz.class);
 
     /**
      * expresion.
@@ -67,7 +69,23 @@ public final class InterpreteQuartz {
      */
 
     public boolean isActivar() {
-        final CronTrigger ct = new CronTrigger(this.expresion, ZoneId.systemDefault());
+        /** El método se encarga de ver cuando es la próxima ejecución a partir de la última
+         *  y la expresión cron. */
+        try {
+            CronExpression cron = new CronExpression(this.expresion);
+            Date base = this.fechaUltimaEjecucion != null ? this.fechaUltimaEjecucion : new Date(0);
+            fechaProximaEjecucion = cron.getNextValidTimeAfter(base);
+            return fechaProximaEjecucion.before(new Date());
+        } catch (java.text.ParseException e) {
+            // Manejo del error: puedes registrar el error y devolver false
+            LOG.error("Error al interpretar cron del proceso. ERROR:" + e.getMessage(), e);
+            return false;
+        }
+
+
+
+
+        /*final CronTrigger ct = new CronTrigger(this.expresion, ZoneId.systemDefault());
         final ProcesTriggerContext pc = new ProcesTriggerContext();
         Date base = this.fechaUltimaEjecucion != null
                 ? this.fechaUltimaEjecucion
@@ -75,7 +93,7 @@ public final class InterpreteQuartz {
         pc.setLast(base);
         fechaProximaEjecucion = ct.getNextRunTime(pc, pc.getRunEnd() == null ? base : pc.getRunEnd());
         return fechaProximaEjecucion.before(new Date());
-
+        */
     }
 
     /**
