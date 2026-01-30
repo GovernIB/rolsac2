@@ -129,6 +129,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
         filtro.setOrder("DESCENDING");
+        filtro.setVigente(Boolean.TRUE);
     }
 
     /**
