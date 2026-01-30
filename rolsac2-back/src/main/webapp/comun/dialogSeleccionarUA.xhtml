@@ -37,12 +37,21 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             	    elements[i].addEventListener('dblclick', seleccionar, false);
             	}
 
+                var selectedNode = document.querySelector('.ui-treenode.ui-treenode-selected');
         		let seleccionado =  document.getElementsByClassName("ui-treenode-leaf");
-
+                debugger;
+                if (selectedNode) {
+                    // Desplázate al nodo seleccionado
+                    selectedNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             	if("#{dialogSeleccionarUA.selectedNode}"!=null &amp;&amp; seleccionado.length!=0){
             		let seleccionado = document.getElementsByClassName("ui-treenode-leaf");
             		seleccionado[0].classList.add("ui-treenode-parent");
+
+                    // seleccionado.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
             	}
+
+
 
             	setEstilos();
         	}

@@ -623,6 +623,10 @@ public class SessionBean implements Serializable {
         systemServiceBean.updateSesion(sesionDTO);
     }
 
+    /**
+     * Obtiene las UAs del usuario relacionadas con la entidad activa.
+     * @return
+     */
     public List<UnidadAdministrativaGridDTO> obtenerUasEntidad() {
         return usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).collect(Collectors.toList());
     }

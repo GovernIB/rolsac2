@@ -9,8 +9,10 @@ import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
+import org.apache.commons.collections4.CollectionUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
@@ -24,7 +26,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Controlador para seleccionar una UA/entidad.
@@ -57,13 +62,13 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     /**
      *  Indica la raiz del arbol que se debe mostrar. Si es nulo, se muestra la ua principal de la entidad del usuario.
      */
-    private UnidadAdministrativaDTO uaRaiz;
+    private List<UnidadAdministrativaGridDTO> uAsRaiz;
 
     public void load() {
         LOG.debug("init");
 
         ua = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("ua");
-        uaRaiz = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("uaRaiz");
+        uAsRaiz = (List< UnidadAdministrativaGridDTO>) UtilJSF.getValorMochilaByKey("uAsRaiz");
         esCabecera = Boolean.parseBoolean((String) UtilJSF.getDialogParam("esCabecera"));
         root = new LazyLoadingTreeNode();
 
@@ -73,29 +78,56 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
 
             ua = uaService.findUASimpleByID(ua.getCodigo(), sessionBean.getLang(), null);
             if ( !esUARaizArbol(ua)) {
-                construirArbolDesdeHoja(ua, (LazyLoadingTreeNode) root);
+                LazyLoadingTreeNode selectedRaiz = construirArbolDesdeHoja(ua, (LazyLoadingTreeNode) root);
+                UnidadAdministrativaDTO raiz = (UnidadAdministrativaDTO)selectedRaiz.getData();
+                if( !CollectionUtils.isEmpty(uAsRaiz)) {
+                    for (UnidadAdministrativaGridDTO uaRaiz : uAsRaiz) {
+                        if (!Objects.equals(raiz.getCodigo(), uaRaiz.getCodigo())) {
+                            UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(uaRaiz.getCodigo(), sessionBean.getLang(), null);
+                            LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+                            if (!CollectionUtils.isEmpty(((UnidadAdministrativaDTO) rootChildNode.getData()).getHijos()))
+                                addTreeNodeCargando(rootChildNode);
+                        }
+                    }
+                }
+
             } else {
-                UnidadAdministrativaDTO uaRoot = null;
-                if(uaRaiz == null) {
-                    uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+
+                if(CollectionUtils.isEmpty(uAsRaiz)) {
+                    UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                    LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+                    rootChildNode.setSelected(true);
+                    addTreeNodeCargando(rootChildNode);
                 }else{
-                    uaRoot = (UnidadAdministrativaDTO)uaRaiz.clone();
+                    for( UnidadAdministrativaGridDTO uaRaiz : uAsRaiz) {
+                        UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(uaRaiz.getCodigo(), sessionBean.getLang(), null);
+                        LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+                        if( ! CollectionUtils.isEmpty( ( (UnidadAdministrativaDTO)rootChildNode.getData()).getHijos()))
+                            addTreeNodeCargando(rootChildNode);
+
+                        if ( ua != null &&
+                                ((UnidadAdministrativaDTO) rootChildNode.getData()).getCodigo().equals(ua.getCodigo())) {
+                            rootChildNode.setSelected(true);
+                        }
+                    }
                 }
 //                UnidadAdministrativaDTO uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-                LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
-                rootChildNode.setSelected(true);
-                addTreeNodeCargando(rootChildNode);
+
             }
         } else {
-            UnidadAdministrativaDTO uaRoot = null;
-            if(uaRaiz == null) {
-                uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
-            }else{
-                uaRoot = (UnidadAdministrativaDTO)uaRaiz.clone();
-            }
 
-            LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
-            addTreeNodeCargando(rootChildNode);
+            if(CollectionUtils.isEmpty(uAsRaiz)) {
+                UnidadAdministrativaDTO  uaRoot = uaService.findUASimpleByID(null, sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+                LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+                addTreeNodeCargando(rootChildNode);
+            }else{
+                for( UnidadAdministrativaGridDTO uaRaiz : uAsRaiz){
+                    UnidadAdministrativaDTO  uaRoot = uaService.findUASimpleByID(uaRaiz.getCodigo(), sessionBean.getLang(), null);
+                    LazyLoadingTreeNode rootChildNode = new LazyLoadingTreeNode(uaRoot, root);
+                    addTreeNodeCargando(rootChildNode);
+                }
+
+            }
         }
     }
 
@@ -174,7 +206,7 @@ public class DialogSeleccionarUA extends AbstractController implements Serializa
     }
 
     private boolean esUARaizArbol(UnidadAdministrativaDTO ua) {
-       return ua.getPadre() == null || (uaRaiz != null && ua.getCodigo().equals(uaRaiz.getCodigo()));
+       return ua.getPadre() == null || (uAsRaiz != null && uAsRaiz.stream().map(UnidadAdministrativaGridDTO::getCodigo).collect(Collectors.toList()).contains(ua.getCodigo()) );
     }
 
     private LazyLoadingTreeNode addTreeNodeCargando(TreeNode parentTreeNode) {

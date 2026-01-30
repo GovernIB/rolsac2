@@ -388,12 +388,14 @@ public class DialogServicio extends AbstractController implements Serializable {
 
 
     public void abrirVentanaUAInstr() {
-        UtilJSF.anyadirMochila("uaRaiz", sessionBean.getUnidadActiva());
+        if( !this.isAdministradorContenidos()) {
+            UtilJSF.anyadirMochila("uAsRaiz", sessionBean.obtenerUasEntidad());
+        }
         abrirVentanaUA(this.data.getUaInstructor());
     }
 
     public void abrirVentanaUAResp() {
-        UtilJSF.anyadirMochila("uaRaiz", null);
+        UtilJSF.anyadirMochila("uAsRaiz", null);
         abrirVentanaUA(this.data.getUaResponsable());
     }
 
