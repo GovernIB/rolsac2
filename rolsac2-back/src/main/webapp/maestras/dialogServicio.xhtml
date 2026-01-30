@@ -56,7 +56,7 @@
                          process="@this"
                          rendered="#{!dialogServicio.isModoConsulta() and dialogServicio.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTraducir}" process="@this"
-                    update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtRespTrat"/>
+                    update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtKeywords formDialog:txtServResp formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtRespTrat"/>
         </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">

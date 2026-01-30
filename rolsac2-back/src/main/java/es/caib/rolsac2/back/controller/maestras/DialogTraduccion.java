@@ -157,6 +157,8 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ProcedimientoDTO) data).setDestinatarios(literales.get(2));
                 ((ProcedimientoDTO) data).setTerminoResolucion(literales.get(3));
                 ((ProcedimientoDTO) data).setObservaciones(literales.get(4));
+                ((ProcedimientoDTO) data).setKeywords(literales.get(5));
+                ((ProcedimientoDTO) data).setUaResponsableLiteral(literales.get(6));
             }
         } else if (data instanceof ServicioDTO) {
             if (literales != null) {
@@ -165,6 +167,8 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ServicioDTO) data).setDestinatarios(literales.get(2));
                 ((ServicioDTO) data).setRequisitos(literales.get(3));
                 ((ServicioDTO) data).setObservaciones(literales.get(4));
+                ((ServicioDTO) data).setKeywords(literales.get(5));
+                ((ServicioDTO) data).setUaResponsableLiteral(literales.get(6));
             }
         } else if (data instanceof ProcedimientoTramiteDTO) {
             if (literales != null) {
@@ -274,6 +278,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
         literales.add((Literal) ((ServicioDTO) data).getRequisitos().clone());
         literales.add((Literal) ((ServicioDTO) data).getObservaciones().clone());
         literales.add((Literal) ((ServicioDTO) data).getKeywords().clone());
+        literales.add((Literal) ((ServicioDTO) data).getUaResponsableLiteral().clone());
 
         /*literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesDestinatario().clone());
@@ -285,6 +290,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
         listaFields.add("requisitos");
         listaFields.add("observaciones");
         listaFields.add("keywords");
+        listaFields.add("uaResponsable");
         //      listaFields.add("url");
         /*listaFields.add("datosPersonalesFinalidad");
         listaFields.add("datosPersonalesDestinatario");
@@ -300,6 +306,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
         literales.add((Literal) ((ProcedimientoDTO) data).getTerminoResolucion().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getObservaciones().clone());
         literales.add((Literal) ((ProcedimientoDTO) data).getKeywords().clone());
+        literales.add((Literal) ((ProcedimientoDTO) data).getUaResponsableLiteral().clone());
         //literales.add((Literal) ((ProcedimientoDTO) data).getDatosPersonalesFinalidad().clone());
         //literales.add((Literal) ((ProcedimientoDTO) data).getDestinatarios().clone());
         //literales.add((Literal) ((ProcedimientoDTO) data).getRequisitos().clone());
@@ -310,6 +317,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
         listaFields.add("terminoResolucion");
         listaFields.add("observaciones");
         listaFields.add("keywords");
+        listaFields.add("uaResponsable");
         //listaFields.add("datosPersonalesFinalidad");
         //listaFields.add("destinatarios");
         //listaFields.add("requisitos");
