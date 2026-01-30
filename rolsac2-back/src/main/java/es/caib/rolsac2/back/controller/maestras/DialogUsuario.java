@@ -198,6 +198,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
      */
     public void abrirDialogUAs(TypeModoAcceso modoAcceso) {
 
+        UtilJSF.vaciarMochila();
         if (TypeModoAcceso.CONSULTA.equals(modoAcceso)) {
             final Map<String, String> params = new HashMap<>();
             params.put("ID", uaSeleccionada.getCodigo().toString());
