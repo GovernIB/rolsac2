@@ -2,7 +2,8 @@ package es.caib.rolsac2.rest.api.interna.v1.services;
 
 import es.caib.rolsac2.api.interna.v1.model.*;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroServicios;
-import es.caib.rolsac2.api.interna.v1.model.respuestas.*;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
@@ -23,8 +24,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,16 +47,20 @@ public class ServiciosResource {
     @EJB
     EntidadServiceFacade entidadService;
 
+
+    @Context
+    private UriInfo uriInfo;
+
     /**
      * Metodo de tipo test para hacer una prueba que se llega a la url.
      *
-     * @return RespuestaServicios
+     * @return RespuestaBase
      * @throws ValidationException Manejo de excepciones
      */
     @GET
     @Path("/test")
     @Operation(operationId = "test", summary = "Test", description = "Test")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response test() throws ValidationException {
 
@@ -69,7 +77,10 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        RespuestaServicios resp = new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(3), (long) (3), lista, tiempoMiliSegundos);
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        RespuestaBase resp = new RespuestaBase(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(3), tiempoMiliSegundos);
         return Response.ok(resp, MediaType.APPLICATION_JSON).build();
     }
 
@@ -84,7 +95,7 @@ public class ServiciosResource {
     @POST
     @Path("/")
     @Operation(operationId = "listarServicios", summary = "Lista los servicios", description = "Lista los servicios disponibles en funcion de los filtros")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarServicios(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de servicios: " + FiltroServicios.SAMPLE, name = "filtro", content = @Content(example = FiltroServicios.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroServicios.class))) FiltroServicios filtro) throws ValidationException {
 
@@ -116,7 +127,11 @@ public class ServiciosResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -168,9 +183,15 @@ public class ServiciosResource {
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
 
-        RespuestaBase respuesta = new RespuestaBase(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(total.intValue()), total, tiempoMiliSegundos);
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
 
-
+        RespuestaBase respuesta = new RespuestaBase();
+        //Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(total.intValue()), total, tiempoMiliSegundos);
+        respuesta.setStatus(Response.Status.OK.getStatusCode() + "");
+        respuesta.setMensaje(Constantes.mensaje200(total.intValue()));
+        respuesta.setResultadoLong(total);
+        respuesta.setTiempo(tiempoMiliSegundos);
         return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
     }
 
@@ -185,7 +206,7 @@ public class ServiciosResource {
     @POST
     @Path("/enlaceTelematico/{codigo}")
     @Operation(operationId = "getEnlaceTelematico", summary = "Obtiene enlace telematico", description = "Obtiene enlace telematico dado servicio")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getEnlaceTelematico(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws ValidationException {
         Instant start = Instant.now();
@@ -200,8 +221,8 @@ public class ServiciosResource {
 
         fg.setTipo("S");
         final String url = servicioService.getEnlaceTelematicoByServicio(fg);
-        RespuestaServicios respuesta = new RespuestaServicios();
-        respuesta.setUrl(url);
+        RespuestaBase respuesta = new RespuestaBase();
+        respuesta.setResultadoURL(url);
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
         respuesta.setTiempo(tiempoMiliSegundos);
@@ -219,7 +240,7 @@ public class ServiciosResource {
     @POST
     @Path("/{codigo}")
     @Operation(operationId = "getPorId", summary = "Obtiene un servicio", description = "Obtiene el servicio con el código indicado")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaServicios.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getPorId(@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception {
 
@@ -235,11 +256,15 @@ public class ServiciosResource {
         fg.setCodigoProc(Long.parseLong(codigo));
         fg.setTipo("S");
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start), MediaType.APPLICATION_JSON).build();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url), MediaType.APPLICATION_JSON).build();
     }
 
 
-    private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro, String idiomaPorDefecto, Instant start) {
+    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, String idiomaPorDefecto, Instant start, String url) {
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = servicioService.findProcedimientosByFiltroRest(filtro);
 
         List<Servicios> lista = new ArrayList<>();
@@ -253,7 +278,14 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return new RespuestaServicios(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+        return new RespuestaBase(
+                (int) resultadoBusqueda.getTotal(),
+                lista.size(),
+                filtro.getPaginaTamanyo(),
+                filtro.getPaginaFirst(),
+                url,
+                lista,
+                tiempoMiliSegundos);
     }
 
     /**
@@ -268,7 +300,7 @@ public class ServiciosResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/publicoObjetivoEntidad/{codigo}")
     @Operation(operationId = "listarPublicoObjetivoEntidad", summary = "Lista los tipos de público objetivo entidad del servicio", description = "Lista los tipos de público objetivo entidad del servicio dado por código workflow")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivoEntidad.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarPublicoObjetivoEntidad(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
@@ -289,7 +321,18 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return Response.ok(new RespuestaTipoPublicoObjetivoEntidad(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoMiliSegundos), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(new RespuestaBase(
+                (int) lista.size(),
+                lista.size(),
+                "0",
+                0,
+                0,
+                url,
+                lista,
+                tiempoMiliSegundos), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -304,7 +347,7 @@ public class ServiciosResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/normativas/{codigo}")
     @Operation(operationId = "listarNormativas", summary = "Lista los normativas del servicio", description = "Lista los normativas del servicio dado por código workflow")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaNormativa.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarNormativas(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
@@ -325,7 +368,17 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoSegundos = Duration.between(start, finish).toMillis();
 
-        return Response.ok(new RespuestaNormativa(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoSegundos), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+        return Response.ok(new RespuestaBase(
+                (int) lista.size(),
+                lista.size(),
+                "0",
+                0,
+                0,
+                url,
+                lista,
+                tiempoSegundos), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -340,7 +393,7 @@ public class ServiciosResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/temas/{codigo}")
     @Operation(operationId = "listarTemas", summary = "Lista los temas del servicio", description = "Lista los temas del servicio dado por código workflow")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTema.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTemas(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
         Instant start = Instant.now();
@@ -360,7 +413,18 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoSegundos = Duration.between(start, finish).toMillis();
 
-        return Response.ok(new RespuestaTema(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoSegundos), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(new RespuestaBase(
+                (int) lista.size(),
+                lista.size(),
+                "0",
+                0,
+                0,
+                url,
+                lista,
+                tiempoSegundos), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -375,7 +439,7 @@ public class ServiciosResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/documentos/{codigo}")
     @Operation(operationId = "listarDocumentos", summary = "Lista los documentos del servicio", description = "Lista los documentos del servicio dado por código workflow")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarDocumentos(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
@@ -396,7 +460,18 @@ public class ServiciosResource {
         long tiempoSegundos = Duration.between(start, finish).toMillis();
 
 
-        return Response.ok(new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoSegundos), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(new RespuestaBase(
+                (int) lista.size(),
+                lista.size(),
+                "0",
+                0,
+                0,
+                url,
+                lista,
+                tiempoSegundos), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -411,7 +486,7 @@ public class ServiciosResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/documentosLopd/{codigo}")
     @Operation(operationId = "listarDocumentosLopd", summary = "Lista los documentos LOPD del servicio", description = "Lista los documentos LOPD del servicio dado por código workflow")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaProcedimientoDocumento.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarDocumentosLopd(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
@@ -432,7 +507,19 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoSegundos = Duration.between(start, finish).toMillis();
 
-        return Response.ok(new RespuestaProcedimientoDocumento(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), (long) (result.size()), lista, tiempoSegundos), MediaType.APPLICATION_JSON).build();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(new RespuestaBase(
+                (int) lista.size(),
+                lista.size(),
+                "0",
+                0,
+                0,
+                url,
+                lista,
+                tiempoSegundos), MediaType.APPLICATION_JSON).build();
     }
 
 }

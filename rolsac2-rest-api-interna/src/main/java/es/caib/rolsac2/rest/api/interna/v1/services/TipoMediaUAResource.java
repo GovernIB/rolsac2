@@ -2,8 +2,8 @@ package es.caib.rolsac2.rest.api.interna.v1.services;
 
 import es.caib.rolsac2.api.interna.v1.model.TipoMediaUA;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroTipoMediaUA;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
-import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaTipoMediaUA;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
@@ -26,8 +26,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -46,6 +49,9 @@ public class TipoMediaUAResource {
     @EJB
     EntidadServiceFacade entidadService;
 
+    @Context
+    private UriInfo uriInfo;
+
     /**
      * Listado de TiposMediaUA.
      *
@@ -59,7 +65,7 @@ public class TipoMediaUAResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
     @Operation(operationId = "listarTiposMediaUA", summary = "Lista de tipos de media ua", description = "Lista todos los tipos de media ua disponibles")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoMediaUA.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposMediaUA(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoMediaUA.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoMediaUA.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoMediaUA.class))) FiltroTipoMediaUA filtro) throws ValidationException {
 
@@ -90,8 +96,10 @@ public class TipoMediaUAResource {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -106,7 +114,7 @@ public class TipoMediaUAResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
     @Operation(operationId = "getTipoMediaUA", summary = "Obtiene un tipo de media ua", description = "Obtiene el tipo de media ua con el id(código) indicado")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoMediaUA.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoMediaUA(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de media ua", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
@@ -119,11 +127,13 @@ public class TipoMediaUAResource {
         } else {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaTipoMediaUA getRespuesta(TipoMediaUAFiltro fg, Instant start) {
+    private RespuestaBase getRespuesta(TipoMediaUAFiltro fg, Instant start, String url) {
         Pagina<TipoMediaUADTO> resultadoBusqueda = tipoMediaUAService.findByFiltroRest(fg);
 
         List<TipoMediaUA> lista = new ArrayList<>();
@@ -138,6 +148,14 @@ public class TipoMediaUAResource {
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
 
-        return new RespuestaTipoMediaUA(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+        return new RespuestaBase(
+                (int) resultadoBusqueda.getTotal(),
+                lista.size(),
+                fg.getPaginaTamanyo().toString(),
+                (int) Math.ceil((double) resultadoBusqueda.getTotal() / fg.getPaginaTamanyo()),
+                fg.getPaginaFirst(),
+                url,
+                lista,
+                tiempoMiliSegundos);
     }
 }

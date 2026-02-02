@@ -2,8 +2,8 @@ package es.caib.rolsac2.rest.api.interna.v1.services;
 
 import es.caib.rolsac2.api.interna.v1.model.TipoSexo;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroTipoSexo;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
-import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaTipoSexo;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -23,8 +23,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -40,6 +43,9 @@ public class TipoSexoResource {
     @EJB
     SystemServiceFacade systemService;
 
+    @Context
+    private UriInfo uriInfo;
+
     /**
      * Listado de TiposSexo.
      *
@@ -53,7 +59,7 @@ public class TipoSexoResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
     @Operation(operationId = "listarTiposSexo", summary = "Lista de tipos de sexo", description = "Lista todos los tipos de sexo disponibles")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoSexo.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposSexo(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoSexo.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoSexo.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoSexo.class))) FiltroTipoSexo filtro) throws ValidationException {
 
@@ -75,7 +81,11 @@ public class TipoSexoResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -90,7 +100,7 @@ public class TipoSexoResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
     @Operation(operationId = "getTipoSexo", summary = "Obtiene un tipo de sexo", description = "Obtiene el tipo de sexo con el id(código) indicado")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoSexo.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoSexo(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de sexo", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
@@ -103,10 +113,13 @@ public class TipoSexoResource {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaTipoSexo getRespuesta(TipoSexoFiltro fg, Instant start) {
+    private RespuestaBase getRespuesta(TipoSexoFiltro fg, Instant start, String url) {
         Pagina<TipoSexoDTO> resultadoBusqueda = tipoSexoService.findByFiltroRest(fg);
 
         List<TipoSexo> lista = new ArrayList<>();
@@ -120,6 +133,14 @@ public class TipoSexoResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return new RespuestaTipoSexo(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+        return new RespuestaBase(
+                (int) resultadoBusqueda.getTotal(),
+                lista.size(),
+                fg.getPaginaTamanyo().toString(),
+                (int) Math.ceil((double) resultadoBusqueda.getTotal() / fg.getPaginaTamanyo()),
+                fg.getPaginaFirst(),
+                url,
+                lista,
+                tiempoMiliSegundos);
     }
 }

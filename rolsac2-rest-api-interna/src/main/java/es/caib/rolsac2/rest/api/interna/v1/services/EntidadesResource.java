@@ -4,8 +4,7 @@ import es.caib.rolsac2.api.interna.v1.model.Entidad;
 import es.caib.rolsac2.api.interna.v1.model.EntidadIdioma;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroEntidad;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroPaginacion;
-import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaEntidad;
-import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaEntidadIdioma;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
@@ -26,8 +25,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,6 +45,9 @@ public class EntidadesResource {
     @EJB
     SystemServiceFacade systemService;
 
+    @Context
+    private UriInfo uriInfo;
+
     /**
      * Listado de TiposTramitacion.
      *
@@ -54,7 +59,7 @@ public class EntidadesResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
     @Operation(operationId = "listarEntidad", summary = "Lista de entidades", description = "Lista todos las entidades disponibles")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaEntidad.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarEntidad(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroEntidad.SAMPLE, name = "filtro", content = @Content(example = FiltroEntidad.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroEntidad.class))) FiltroEntidad filtro) throws ValidationException {
 
@@ -77,7 +82,10 @@ public class EntidadesResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -91,7 +99,7 @@ public class EntidadesResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/idioma/")
     @Operation(operationId = "listarEntidadesIdioma", summary = "Lista de entidades", description = "Lista todos las entidades disponibles")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaEntidadIdioma.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarEntidadesIdioma(@RequestBody(description = "Filtro: " + FiltroPaginacion.SAMPLE, name = "filtro", content = @Content(example = FiltroPaginacion.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroPaginacion.class))) FiltroPaginacion filtro) throws ValidationException {
 
@@ -106,7 +114,10 @@ public class EntidadesResource {
             fg.setPaginaFirst(filtro.getPage());
         }
 
-        return Response.ok(getRespuestaIdioma(fg, start), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuestaIdioma(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -121,7 +132,7 @@ public class EntidadesResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
     @Operation(operationId = "getEntidad", summary = "Obtiene un entidad", description = "Obtiene la entidad con el id(código) indicado")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaEntidad.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getEntidad(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de entidad", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
@@ -135,10 +146,14 @@ public class EntidadesResource {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaEntidad getRespuesta(EntidadFiltro fg, Instant start) {
+    private RespuestaBase getRespuesta(EntidadFiltro fg, Instant start, String url) {
         Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(fg);
 
         List<Entidad> lista = new ArrayList<>();
@@ -152,10 +167,17 @@ public class EntidadesResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return new RespuestaEntidad(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+        return new RespuestaBase(
+                (int) resultadoBusqueda.getTotal(),
+                lista.size(),
+                fg.getPaginaTamanyo(),
+                fg.getPaginaFirst(),
+                url,
+                lista,
+                tiempoMiliSegundos);
     }
 
-    private RespuestaEntidadIdioma getRespuestaIdioma(EntidadFiltro fg, Instant start) {
+    private RespuestaBase getRespuestaIdioma(EntidadFiltro fg, Instant start, String url) {
 
 
         Pagina<EntidadDTO> resultadoBusqueda = entidadService.findByFiltroRest(fg);
@@ -171,6 +193,13 @@ public class EntidadesResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return new RespuestaEntidadIdioma(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+        return new RespuestaBase(
+                (int) resultadoBusqueda.getTotal(),
+                lista.size(),
+                fg.getPaginaTamanyo(),
+                fg.getPaginaFirst(),
+                url,
+                lista,
+                tiempoMiliSegundos);
     }
 }

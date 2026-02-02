@@ -61,14 +61,14 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de PDU', 'es.caib.rolsac2.commons.plu
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'TEST', 'Proceso de prueba', null, 1, '[{"codigo":"valida","valor":"true"}]');
 insert into RS2_PROCEX (procex_codigo, procex_instan, procex_fecha) VALUES ('MAESTRO', 'XXXX', to_date('1998/05/31:12:00:00AM', 'yyyy/mm/dd:hh:mi:ssam'));
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'SIA_PUNT', 'Proceso de lanzamiento puntual SIA', null, 1, '[{"codigo":"valida","valor":"true"}]');
-insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'SIA', 'Proceso de lanzamiento puntual SIA', '0 30 2 * * * ', 1, '[{"codigo":"valida","valor":"true"}]');
+insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'SIA', 'Proceso de lanzamiento puntual SIA', '0 30 2 * * ? ', 1, '[{"codigo":"valida","valor":"true"}]');
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'SOLR_PUNT', 'Proceso  de lanzamiento puntual SOLR', null, 1, '[{"codigo":"valida","valor":"true"}]');
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'MIGRA_PUNT', 'Proceso  de lanzamiento puntual MIGRACION', null, 1, '[{"codigo":"valida","valor":"true"}]');
 Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS)
 values (RS2_PROCES_SEQ.NEXTVAL,1,'DIR3','Proceso automático para la sincronización del organigrama DIR3','0 0 23 */7 * *','1',
         '[{"codigo":"codigoDir3","valor":"A04003003","orden":null},{"codigo":"denominacionCooficial","valor":"false","orden":null}]');
-Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.nextval,'1','BORRAR_FIC','Borra el sistema de ficheros del dia anterior ejecutandose a la 1 de la madrugada','0 0 1 * * ?','1','[]');
-Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU','Proceso lanzamiento periódico PDU','30 23 * * * ?','1','[]');
+Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.nextval,'1','BORRAR_FIC','Borra el sistema de ficheros del dia anterior ejecutandose a la 1 de la madrugada','0 0 1 * * *','1','[]');
+Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU','Proceso lanzamiento periódico PDU','30 23 * * * *','1','[]');
 Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU_PUNT','Proceso lanzamiento puntual PDU',null,'1','[]');
 
 /** Los 3 tipos de publico objetivo basico y entidad que son 1.Ciudadano 2.Empresa 3.Administración . **/

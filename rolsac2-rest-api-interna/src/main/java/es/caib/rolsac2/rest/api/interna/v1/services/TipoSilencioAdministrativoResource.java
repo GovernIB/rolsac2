@@ -2,8 +2,8 @@ package es.caib.rolsac2.rest.api.interna.v1.services;
 
 import es.caib.rolsac2.api.interna.v1.model.TipoSilencioAdministrativo;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroTipoSilencioAdministrativo;
+import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
-import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaTipoSilencioAdministrativo;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
@@ -23,8 +23,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -40,6 +43,9 @@ public class TipoSilencioAdministrativoResource {
     @EJB
     SystemServiceFacade systemService;
 
+    @Context
+    private UriInfo uriInfo;
+
     /**
      * Listado de TiposSilenciosAdministrativos.
      *
@@ -53,7 +59,7 @@ public class TipoSilencioAdministrativoResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
     @Operation(operationId = "listarTiposSilenciosAdministrativos", summary = "Lista de tipos de silencios administrativos", description = "Lista todos los tipos de silencios administrativos disponibles")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoSilencioAdministrativo.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposSilenciosAdministrativos(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoSilencioAdministrativo.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoSilencioAdministrativo.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoSilencioAdministrativo.class))) FiltroTipoSilencioAdministrativo filtro) throws ValidationException {
 
@@ -76,7 +82,10 @@ public class TipoSilencioAdministrativoResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
         }
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -91,7 +100,7 @@ public class TipoSilencioAdministrativoResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
     @Operation(operationId = "getTipoSilencioAdministrativo", summary = "Obtiene un tipo de silencio administrativo", description = "Obtiene el tipo de silencio administrativo con el id(código) indicado")
-    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoSilencioAdministrativo.class)))
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoSilencioAdministrativo(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de silencio administrativo", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
@@ -104,10 +113,13 @@ public class TipoSilencioAdministrativoResource {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
 
-        return Response.ok(getRespuesta(fg, start), MediaType.APPLICATION_JSON).build();
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaTipoSilencioAdministrativo getRespuesta(TipoSilencioAdministrativoFiltro fg, Instant start) {
+    private RespuestaBase getRespuesta(TipoSilencioAdministrativoFiltro fg, Instant start, String url) {
         Pagina<TipoSilencioAdministrativoDTO> resultadoBusqueda = tipoSilencioAdministrativoService.findByFiltroRest(fg);
 
         List<TipoSilencioAdministrativo> lista = new ArrayList<>();
@@ -121,7 +133,15 @@ public class TipoSilencioAdministrativoResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-        return new RespuestaTipoSilencioAdministrativo(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda.getTotal(), lista, tiempoMiliSegundos);
+        return new RespuestaBase(
+                (int) resultadoBusqueda.getTotal(),
+                lista.size(),
+                fg.getPaginaTamanyo().toString(),
+                (int) Math.ceil((double) resultadoBusqueda.getTotal() / fg.getPaginaTamanyo()),
+                fg.getPaginaFirst(),
+                url,
+                lista,
+                tiempoMiliSegundos);
     }
 
 }
