@@ -110,6 +110,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                       onupload=""
                                                       label="#{labels['dict.anyadir']}"
                                                       cancelLabel="#{labels['dict.cancelar']}"
+                                                      rendered="#{!dialogDocumentoProcedimiento.isModoConsulta()}"
                                                       styleClass=""
                                                       update="formDialog:#{labels['dialog.doc.txt.' += idioma]} messagesDialog"
                                                       auto="true"
@@ -125,6 +126,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                     value="#{dialogDocumentoProcedimiento.obtenerDocumento(idioma)}"></p:fileDownload>
                                         </p:commandButton>
                                         <p:commandButton actionListener="#{dialogDocumentoProcedimiento.eliminarDocumento(idioma)}"
+                                                         disabled="#{dialogDocumentoProcedimiento.isModoConsulta()}"
                                                          icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
                                         ></p:commandButton>
                                     </c:otherwise>

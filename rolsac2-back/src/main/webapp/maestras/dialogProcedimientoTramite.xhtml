@@ -292,13 +292,13 @@
                     <div class="form-group col-md-5">
                         <!--Aquí es mapear luego con los bools que tiene TipoTramitacionDTO para ello-->
                         <p:selectManyCheckbox id="canalesTramitacion"
+                                              disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                               value="#{dialogProcedimientoTramite.canalesSeleccionados}">
                             <f:selectItem id="canalesTramitacionTel"
                                           itemLabel="#{labels['dialogProcedimientoTramite.canalTelematico']}"
                                           itemValue="TEL"/>
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalPresencial']}"
                                           itemValue="PRE"/>
-                            <!--<f:selectItem itemLabel="Telefónico" itemValue="TFN"  />-->
                             <p:ajax event="change"
                                     process="@this"
                                     update="panelFormCanales txtOpcionTelematica"/>
@@ -507,16 +507,26 @@
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarModelo"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
+                                     rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                                      process="@this" update="dataDocumentosModelo messagesDialog">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}"
                                 process="@this"
                                 update="dataDocumentosModelo"/>
                     </p:commandButton>
+
+                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     id="btnConsultarModelo"
+                                     action="#{dialogProcedimientoTramite.consultarModelo}"
+                                     rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                     process="@this" update="dataDocumentosModelo messagesDialog">
+                    </p:commandButton>
                     <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirModelo}"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
                     <p:commandButton id="btnBajarModelo" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimientoTramite.bajarModelo}"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      process="@this" update="dataDocumentosModelo messagesDialog"/>
                 </div>
             </div>
@@ -558,6 +568,7 @@
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarDocumento"
+                                     rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.editarDocumento}"
                                      process="@this" update="messagesDialog"
                                         >
@@ -565,12 +576,20 @@
                             process="@this"
                             update="dataDocumentosRelacionados"/>
                     </p:commandButton>
+                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     id="btnConsultarDocumento"
+                                     rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                     action="#{dialogProcedimientoTramite.consultarDocumento}"
+                                     process="@this" update="messagesDialog"
+                    />
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirDocumento}"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimientoTramite.bajarDocumento}"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                 </div>
             </div>

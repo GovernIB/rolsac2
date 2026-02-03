@@ -1,7 +1,6 @@
 package es.caib.rolsac2.back.controller.maestras;
 
 import es.caib.rolsac2.back.controller.AbstractController;
-import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.controller.comun.UtilsArbolTemas;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
@@ -398,7 +397,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void abrirVentanaUAInstr() {
 
-        if( !this.isAdministradorContenidos()) {
+        if (!this.isAdministradorContenidos()) {
             UtilJSF.anyadirMochila("uAsRaiz", sessionBean.obtenerUasEntidad());
         }
         abrirVentanaUA(this.data.getUaInstructor());
@@ -421,7 +420,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         String direccion = "/comun/dialogSeleccionarUA";
 
         UtilJSF.anyadirMochila("ua", ua);
-
 
 
         //params.put("esCabecera", null);
@@ -813,6 +811,15 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
+    public void consultarTramite() {
+        if (tramiteSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogTramite(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+
     public void borrarTramite() {
         if (tramiteSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
@@ -1194,6 +1201,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public void nuevoDocumentoLOPD() {
         abrirDialogDocumentoLOPD(TypeModoAcceso.ALTA);
     }
+
 
     public void editarDocumentoLOPD() {
         if (documentoLOPDSeleccionado == null) {
