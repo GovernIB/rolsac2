@@ -123,7 +123,7 @@
                         <p:commandButton id="btnIndexacionSIA" action="#{dialogServicio.enviarSIA}"
                                          value="#{labels['dict.enviarSIA']}"
                                          update="messagesDialog formDatosSIA btnRefrescarSIA btnIndexacionSIA"
-                                         rendered="#{empty dialogServicio.data.codigoSIA and !empty dialogServicio.data.codigo and !dialogServicio.mostrarRefreshSIA}"
+                                         rendered="#{empty dialogServicio.data.codigoSIA and !empty dialogServicio.data.codigo and !dialogServicio.mostrarRefreshSIA and !dialogProcedimiento.isInformador()}"
                                          style="margin-top:19px"
                                          process="@all"/>
                         <p:commandButton id="btnRefrescarSIA" action="#{dialogServicio.refrescarSIA}"
@@ -572,7 +572,7 @@
                                        for="txtLopdFinalidad"/>
                         <my:literalAreaComponent id="txtLopdFinalidad"
                                                  literal="#{dialogServicio.data.lopdFinalidad}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
+                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -603,7 +603,7 @@
                                        for="txtLopdDestinatario"/>
                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
                                                  literal="#{dialogServicio.data.lopdDestinatario}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta() or !dialogServicio.isAdministradorContenidos()}"
+                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
                                                  idioma="#{dialogServicio.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -804,10 +804,12 @@
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                     <p:commandButton id="btnSubirNormativa" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogServicio.subirNormativa}"
+                                     disabled="#{dialogServicio.isModoConsulta()}"
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                     <p:commandButton id="btnBajarNormativa" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogServicio.bajarNormativa}"
+                                     disabled="#{dialogServicio.isModoConsulta()}"
                                      process="@this" update="dataNormativaProcedimiento messagesDialog"/>
                 </div>
             </div>
@@ -859,16 +861,24 @@
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogServicio.editarDocumento}"
+                                     rendered="#{!dialogServicio.isModoConsulta()}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumento}" process="@this"
                                 update="dataDocumentosRelacionados"/>
                     </p:commandButton>
+                    <p:commandButton id="btnConsultarDoc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     action="#{dialogServicio.consultarDocumento}"
+                                     rendered="#{dialogServicio.isModoConsulta()}"
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog">
+                    </p:commandButton>
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogServicio.subirDocumento}"
+                                     disabled="#{dialogServicio.isModoConsulta()}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                     <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogServicio.bajarDocumento}"
+                                     disabled="#{dialogServicio.isModoConsulta()}"
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                 </div>
             </div>
@@ -931,10 +941,17 @@
                     <p:commandButton id="btnEditarDocLOPD" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogServicio.editarDocumentoLOPD}" styleClass=" "
                                      process="@this" update="dataDocumentosLopd messagesDialog"
+                                     rendered="#{!dialogServicio.isModoConsulta()}"
                                      disabled="#{dialogServicio.isModoConsulta() or empty dialogServicio.data.documentosLOPD}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumentoLOPD}"
                                 process="@this"
                                 update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnConsultarDocLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     action="#{dialogServicio.consultarDocumentoLOPD}" styleClass=" "
+                                     process="@this" update="dataDocumentosLopd messagesDialog"
+                                     rendered="#{dialogServicio.isModoConsulta()}"
+                                     disabled="#{empty dialogServicio.data.documentosLOPD}">
                     </p:commandButton>
                 </div>
             </h:panelGroup>
