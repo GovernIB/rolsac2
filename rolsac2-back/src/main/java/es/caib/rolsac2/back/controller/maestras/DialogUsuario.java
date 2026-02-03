@@ -252,7 +252,7 @@ public class DialogUsuario extends AbstractController implements Serializable {
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("entidadesSeleccionada", data.getEntidades());
             final Map<String, String> params = new HashMap<>();
-            UtilJSF.openDialog("dialogSeleccionEntidad", modoAcceso, params, true, 1040, 460);
+            UtilJSF.openDialog("dialogSeleccionEntidad", modoAcceso, params, true, 1040, 475);
         }
     }
 
