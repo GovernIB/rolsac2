@@ -37,23 +37,33 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             	    elements[i].addEventListener('dblclick', seleccionar, false);
             	}
 
-                var selectedNode = document.querySelector('.ui-treenode.ui-treenode-selected');
-        		let seleccionado =  document.getElementsByClassName("ui-treenode-leaf");
-                debugger;
-                if (selectedNode) {
-                    // Desplázate al nodo seleccionado
-                    selectedNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            	if("#{dialogSeleccionarUA.selectedNode}"!=null &amp;&amp; seleccionado.length!=0){
-            		let seleccionado = document.getElementsByClassName("ui-treenode-leaf");
-            		seleccionado[0].classList.add("ui-treenode-parent");
-
-                    // seleccionado.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
-            	}
-
-
-
             	setEstilos();
+
+            	// Hacer scroll al nodo seleccionado si es necesario
+            	var scrollToSelected = #{dialogSeleccionarUA.scrollToSelected};
+            	if (scrollToSelected) {
+            	    scrollToSelectedNode();
+            	}
+        	}
+
+        	function scrollToSelectedNode() {
+        	    // Intentar varias veces porque el árbol puede tardar en renderizarse completamente
+        	    var attempts = 0;
+        	    var maxAttempts = 10;
+        	    var interval = setInterval(function() {
+        	        attempts++;
+        	        var selectedNode = document.querySelector('.ui-state-highlight');
+
+        	        if (selectedNode) {
+        	            clearInterval(interval);
+        	            // Esperar un poco más para asegurar que el árbol está completamente expandido
+        	            setTimeout(function() {
+        	                selectedNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        	            }, 300);
+        	        } else if (attempts >= maxAttempts) {
+        	            clearInterval(interval);
+        	        }
+        	    }, 200);
         	}
 
         	function seleccion(){
