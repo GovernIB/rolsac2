@@ -69,7 +69,7 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Trámite Id
      */
-    @Column(name = "PRES_INTTID", nullable = false, length = 50)
+    @Column(name = "PRES_INTTID", nullable = false, length = 255)
     private String tramiteId;
 
     /**
@@ -81,13 +81,13 @@ public class JTipoTramitacion extends BaseEntity {
     /**
      * Trámite Versión
      */
-    @Column(name = "PRES_INTTVE", nullable = false, precision = 3, scale = 0)
+    @Column(name = "PRES_INTTVE", nullable = false, precision = 10, scale = 0)
     private Integer tramiteVersion;
 
     /**
      * Trámite parámetros
      */
-    @Column(name = "PRES_INTTPA", nullable = false, length = 255)
+    @Column(name = "PRES_INTTPA", nullable = false, length = 1024)
     private String tramiteParametros;
 
     /**

@@ -453,7 +453,7 @@
                                              onblur="this.value = this.value.toUpperCase();"
                                              requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                              required="#{empty param['formDialog:closeButton'] and dialogServicio.isOpcionTelematicaDatos()}"
-                                             maxlength="50">
+                                             maxlength="255">
                                     <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
                                     <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$"/>
                                 </p:inputText>
@@ -471,7 +471,7 @@
                                              requiredMessage="#{labels['dict.obligatorio.version']}"
                                              onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"
                                              width="100px"
-                                             maxlength="3"
+                                             maxlength="10"
                                              style="width: 100px !important;"/>
 
                             </div>
@@ -504,7 +504,7 @@
                                              disabled="#{dialogServicio.isModoConsulta()  ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteParametros}"
-                                             maxlength="255"
+                                             maxlength="1024"
                                              styleClass="w95"/>
                             </div>
                         </div>

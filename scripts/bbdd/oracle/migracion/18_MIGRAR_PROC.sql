@@ -562,7 +562,7 @@ BEGIN
 				   V_PRWF_PRCODUAC ,
 				   V_PRWF_CODUAR,
 				   interno,
-				   SUBSTR(NVL(pro_respon, 'Desconegut'), 1, 255) AS prwf_rsnom, -- ejemplo: 100 caracteres
+				   SUBSTR(NVL(pro_respon, 'Desconegut'), 1, 255) AS prwf_rsnom,
 				   SUBSTR(NVL(pro_info, ''), 1, 100) AS prwf_rsema,
 				/*PRWF_RSTFNO,*/
 				   pro_codleg,
@@ -807,7 +807,10 @@ BEGIN
 								 dopr_orden,
 								 docpr_codlsd)
 								VALUES      (rs2_docpr_seq.NEXTVAL,
-								             orden,
+								             CASE
+									             WHEN orden > 99 THEN 99
+									             ELSE orden
+									         END,
 								             lstdoctram);
 
 								INSERT INTO rs2_tradopr

@@ -99,10 +99,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                  onblur="this.value = this.value.toUpperCase();"
                                  requiredMessage="#{labels['dict.obligatorio.identificador']}"
                                  required="#{empty param['formDialog:closeButton']}"
-                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="50"
-                                onpaste="validatePaste(event, /^[0-9_-a-zA-Z\.]{1,50}$/);">
+                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="255"
+                                onpaste="validatePaste(event, /^[0-9_-a-zA-Z\.]{1,255}$/);">
                         <p:keyFilter regEx="/[0-9_-a-zA-Z\.]/i" preventPaste="false"/>
-                        <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,50}$" />
+                        <f:validateRegex pattern="^[0-9_-a-zA-Z\.]{1,255}$" />
                     </p:inputText>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -113,7 +113,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                    requiredMessage="#{labels['dict.obligatorio.version']}"
                                    required="#{empty param['formDialog:closeButton']}"
                                     disabled="#{dialogTipoTramitacion.isModoConsulta()}" minValue="0"
-                                   maxValue="999" decimalPlaces="0"/>
+                                   maxValue="9999999999" decimalPlaces="0"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
@@ -157,7 +157,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
                                  requiredMessage="#{labels['dict.obligatorio.parametros']}"
                                  styleClass="w96" required="#{empty param['formDialog:closeButton']}"
-                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="255"/>
+                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="1024"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
