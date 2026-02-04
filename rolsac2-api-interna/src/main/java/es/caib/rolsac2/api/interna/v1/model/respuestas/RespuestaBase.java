@@ -3,6 +3,7 @@ package es.caib.rolsac2.api.interna.v1.model.respuestas;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -88,6 +89,7 @@ public class RespuestaBase {
 
     public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url, List<?> lista, long tiempoMiliSegundos) {
         super();
+        this.status = Response.Status.OK.getStatusCode() + "";
         Instant finish = Instant.now();
         ZoneId ZONA = ZoneId.of("Europe/Madrid");
         this.dateDownload = finish.atZone(ZONA).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -108,6 +110,7 @@ public class RespuestaBase {
             Integer totalCount, Integer itemsReturned, String pageSize, Integer totalPages,
             Integer page, String url, List<?> items, long tiempoEjecucion) {
         super();
+        this.status = Response.Status.OK.getStatusCode() + "";
         Instant finish = Instant.now();
         ZoneId ZONA = ZoneId.of("Europe/Madrid");
         this.dateDownload = finish.atZone(ZONA).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -123,6 +126,7 @@ public class RespuestaBase {
 
     public RespuestaBase(List<?> items, long tiempoEjecucion) {
         super();
+        this.status = Response.Status.OK.getStatusCode() + "";
         Instant finish = Instant.now();
         ZoneId ZONA = ZoneId.of("Europe/Madrid");
         this.dateDownload = finish.atZone(ZONA).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
