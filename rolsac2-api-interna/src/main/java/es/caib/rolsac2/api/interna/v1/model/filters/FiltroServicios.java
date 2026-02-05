@@ -598,7 +598,7 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
         if (orden != null) {
             resultado.setOrderBy(orden.getCampo());
-            resultado.setOrder(orden.getTipoOrden());
+            resultado.setAscendente(orden.getTipoOrden() != null && orden.getTipoOrden().equalsIgnoreCase("asc"));
         }
         if (this.buscarEnDescendientesUA != null) {
             resultado.setBuscarEnDescendientesUA(buscarEnDescendientesUA.compareTo(1) == 0);

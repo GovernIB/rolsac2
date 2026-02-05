@@ -715,6 +715,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setCodigoMateria(codigoMateria);
         }
 
+        if(this.orden != null) {
+            resultado.setOrderBy(orden.getCampo());
+            resultado.setAscendente(orden.getTipoOrden() != null && orden.getTipoOrden().equalsIgnoreCase("asc"));
+        }
+
         resultado.setTipo("P");
         resultado.setEsProcedimiento(true);
 
