@@ -109,6 +109,9 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
         if (filtro.isRellenoTipo()) {
             sql.append(" and PL.proceso.identificadorProceso = :tipo");
         }
+        if (filtro.isRellenoTipos()) {
+            sql.append(" and PL.proceso.identificadorProceso IN  (:tipos)");
+        }
 
         if (!total) {
             sql.append(" ORDER BY " + filtro.getOrderBy());
@@ -155,7 +158,9 @@ public class ProcesoLogRepositoryBean extends AbstractCrudRepository<JProcesoLog
         if (filtro.isRellenoTipo()) {
             query.setParameter("tipo", filtro.getTipo());
         }
-
+        if (filtro.isRellenoTipos()) {
+            query.setParameter("tipos", filtro.getTipos());
+        }
 
         if (!total && filtro.isPaginacionActiva()) {
             query.setMaxResults(filtro.getPaginaTamanyo());

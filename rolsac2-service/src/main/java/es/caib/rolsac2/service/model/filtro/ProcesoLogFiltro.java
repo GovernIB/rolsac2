@@ -5,6 +5,7 @@ import es.caib.rolsac2.service.model.orden.ProcesoLogOrden;
 import es.caib.rolsac2.service.model.types.TypeEstadoProceso;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * ProcesoLog Filtro.
@@ -13,168 +14,185 @@ import java.util.Date;
  */
 public class ProcesoLogFiltro extends AbstractFiltro {
 
-  /**
-   * Serial Version UID
-   */
-  private static final long serialVersionUID = 1L;
+    /**
+     * Serial Version UID
+     */
+    private static final long serialVersionUID = 1L;
 
-  /**
-   * Filtro codigo.
-   **/
-  private Long codigo;
+    /**
+     * Filtro codigo.
+     **/
+    private Long codigo;
 
-  /**
-   * Idioma.
-   **/
-  private String idioma;
+    /**
+     * Idioma.
+     **/
+    private String idioma;
 
-  /**
-   * Proceso.
-   **/
-  private ProcesoGridDTO proceso;
+    /**
+     * Proceso.
+     **/
+    private ProcesoGridDTO proceso;
 
-  private Date fechaInicio;
-  private Date fechaFin;
+    private Date fechaInicio;
+    private Date fechaFin;
 
-  /**
-   * Filtro estado.
-   **/
-  private TypeEstadoProceso estadoProceso;
+    /**
+     * Filtro estado.
+     **/
+    private TypeEstadoProceso estadoProceso;
 
-  /**
-   * Identificador
-   */
-  private String texto;
+    /**
+     * Identificador
+     */
+    private String texto;
 
-  private String tipo;
+    private String tipo;
 
-  /**
-   * @return the codigo
-   */
-  public Long getCodigo() {
-    return codigo;
-  }
+    private List<String> tipos;
 
-  /**
-   * @param codigo the codigo to set
-   */
-  public void setCodigo(final Long codigo) {
-    this.codigo = codigo;
-  }
+    /**
+     * @return the codigo
+     */
+    public Long getCodigo() {
+        return codigo;
+    }
 
-  public ProcesoGridDTO getProceso() {
-    return proceso;
-  }
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
+    }
 
-  public void setProceso(final ProcesoGridDTO proceso) {
-    this.proceso = proceso;
-  }
+    public ProcesoGridDTO getProceso() {
+        return proceso;
+    }
 
-  public Date getFechaInicio() {
-    return fechaInicio;
-  }
+    public void setProceso(final ProcesoGridDTO proceso) {
+        this.proceso = proceso;
+    }
 
-  public void setFechaInicio(final Date fechaInicio) {
-    this.fechaInicio = fechaInicio;
-  }
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
 
-
-  public Date getFechaFin() {
-    return fechaFin;
-  }
-
-  public void setFechaFin(final Date fechaFin) {
-    this.fechaFin = fechaFin;
-  }
-
-  public TypeEstadoProceso getEstadoProceso() {
-    return estadoProceso;
-  }
-
-  public void setEstadoProceso(final TypeEstadoProceso estadoProceso) {
-    this.estadoProceso = estadoProceso;
-  }
-
-  public String getTexto() {
-    return texto;
-  }
-
-  public void setTexto(String texto) {
-    this.texto = texto;
-  }
-
-  public String getTipo() {
-    return tipo;
-  }
-
-  public void setTipo(String tipo) {
-    this.tipo = tipo;
-  }
+    public void setFechaInicio(final Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
 
-  /**
-   * @return the idioma
-   */
-  @Override
-  public String getIdioma() {
-    return idioma;
-  }
+    public Date getFechaFin() {
+        return fechaFin;
+    }
 
-  /**
-   * @param idioma the idioma to set
-   */
-  @Override
-  public void setIdioma(final String idioma) {
-    this.idioma = idioma;
-  }
+    public void setFechaFin(final Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
 
-  /**
-   * Está relleno el código.
-   */
-  public boolean isRellenoCodigo() {
-    return this.getCodigo() != null;
-  }
+    public TypeEstadoProceso getEstadoProceso() {
+        return estadoProceso;
+    }
 
-  /**
-   * Está relleno los Fecha Fin.
-   */
-  public boolean isRellenoFechaFin() {
-    return this.getFechaFin() != null;
-  }
+    public void setEstadoProceso(final TypeEstadoProceso estadoProceso) {
+        this.estadoProceso = estadoProceso;
+    }
 
-  /**
-   * Está relleno los Fecha Fin.
-   */
-  public boolean isRellenoFechaInicio() {
-    return this.getFechaInicio() != null;
-  }
+    public String getTexto() {
+        return texto;
+    }
 
-  /**
-   * Está relleno proceso.
-   */
-  public boolean isRellenoProceso() {
-    return this.getProceso() != null && this.getProceso().getCodigo() != null;
-  }
+    public void setTexto(String texto) {
+        this.texto = texto;
+    }
 
-  /**
-   * Está relleno el Estado Proceso.
-   */
-  public boolean isRellenoEstadoProceso() {
-    return this.getEstadoProceso() != null && this.getEstadoProceso() != TypeEstadoProceso.VACIO;
-  }
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public List<String> getTipos() {
+        return tipos;
+    }
+
+    public void setTipos(List<String> tipos) {
+        this.tipos = tipos;
+    }
+
+    /**
+     * @return the idioma
+     */
+    @Override
+    public String getIdioma() {
+        return idioma;
+    }
+
+    /**
+     * @param idioma the idioma to set
+     */
+    @Override
+    public void setIdioma(final String idioma) {
+        this.idioma = idioma;
+    }
+
+    /**
+     * Está relleno el código.
+     */
+    public boolean isRellenoCodigo() {
+        return this.getCodigo() != null;
+    }
+
+    /**
+     * Está relleno los Fecha Fin.
+     */
+    public boolean isRellenoFechaFin() {
+        return this.getFechaFin() != null;
+    }
+
+    /**
+     * Está relleno los Fecha Fin.
+     */
+    public boolean isRellenoFechaInicio() {
+        return this.getFechaInicio() != null;
+    }
+
+    /**
+     * Está relleno proceso.
+     */
+    public boolean isRellenoProceso() {
+        return this.getProceso() != null && this.getProceso().getCodigo() != null;
+    }
+
+    /**
+     * Está relleno el Estado Proceso.
+     */
+    public boolean isRellenoEstadoProceso() {
+        return this.getEstadoProceso() != null && this.getEstadoProceso() != TypeEstadoProceso.VACIO;
+    }
 
 
-  /**
-   * Está relleno el código.
-   */
-  public boolean isRellenoTipo() {
-    return this.getTipo() != null && !this.getTipo().isEmpty();
-  }
+    /**
+     * Está relleno el código.
+     */
+    public boolean isRellenoTipo() {
+        return this.getTipo() != null && !this.getTipo().isEmpty();
+    }
 
-  @Override
-  public String getDefaultOrder() {
-    return ProcesoLogOrden.FECHA_INICIO.toString();
-  }
+
+    /**
+     * Está relleno el código.
+     */
+    public boolean isRellenoTipos() {
+        return this.getTipos() != null && !this.getTipos().isEmpty();
+    }
+
+    @Override
+    public String getDefaultOrder() {
+        return ProcesoLogOrden.FECHA_INICIO.toString();
+    }
 
 
 }

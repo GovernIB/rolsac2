@@ -177,10 +177,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
             public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
-                    /*if (sortField != null && !sortField.equals("filtroLog.orderBy") && !sortField.equals("filtro.orderBy")) {
-                        filtroLog.setOrderBy(sortField);
-                    }*/
-                    filtroLog.setTipo("SOLR_PUNT");
+                    filtroLog.setTipos(Arrays.asList("SOLR_PUNT", "SOLR"));
                     filtroLog.setAscendente(false);
                     filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
                     Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtroLog);

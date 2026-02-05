@@ -193,7 +193,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
                         }
                         filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtroLog.setTipo("SIA_PUNT");
+                    filtroLog.setTipos(Arrays.asList("SIA_PUNT", "SIA"));
                     filtroLog.setAscendente(false);
                     filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
                     Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtroLog);

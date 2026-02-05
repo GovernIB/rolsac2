@@ -3,20 +3,10 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
-import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
-import es.caib.rolsac2.service.facade.ProcesoLogServiceFacade;
-import es.caib.rolsac2.service.facade.ProcesoServiceFacade;
-import es.caib.rolsac2.service.facade.ProcesoTimerServiceFacade;
-import es.caib.rolsac2.service.facade.SystemServiceFacade;
-import es.caib.rolsac2.service.model.Constantes;
-import es.caib.rolsac2.service.model.IndexacionPDUDto;
-import es.caib.rolsac2.service.model.IndexacionSIADTO;
-import es.caib.rolsac2.service.model.ListaPropiedades;
-import es.caib.rolsac2.service.model.Pagina;
-import es.caib.rolsac2.service.model.ProcesoLogGridDTO;
+import es.caib.rolsac2.service.facade.*;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoPduFiltro;
-import es.caib.rolsac2.service.model.filtro.ProcesoSIAFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
@@ -33,11 +23,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -185,7 +171,7 @@ public class ViewProcesosPDU extends AbstractController implements Serializable 
                         }
                         filtro.setOrderBy(sortMeta.getField());
                     }
-                    filtroLog.setTipo("PDU_PUNT");
+                    filtroLog.setTipos(Arrays.asList("PDU_PUNT", "PDU"));
                     filtroLog.setAscendente(false);
                     filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
                     Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtroLog);
