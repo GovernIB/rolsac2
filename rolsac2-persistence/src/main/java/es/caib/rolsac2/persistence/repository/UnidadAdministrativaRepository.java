@@ -89,7 +89,7 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     void deleteByEntidad(Long id);
 
-    void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2);
+    void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2, NormativaDTO normativaBaja);
 
     void marcarBajaConNormativas(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2, NormativaDTO normativaBaja, List<NormativaGridDTO> normativasBaja);
 

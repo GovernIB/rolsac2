@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoLegitimacionTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoLegitimacionDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -132,5 +135,19 @@ public class JTipoLegitimacion extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(codigo, identificador);
+    }
+
+    public TipoLegitimacionDTO createDTOSimple() {
+        TipoLegitimacionDTO dto = new TipoLegitimacionDTO();
+        dto.setCodigo(this.codigo);
+        dto.setIdentificador(this.identificador);
+        if (this.descripcion != null) {
+            Literal desc = new Literal();
+            this.descripcion.forEach(d -> {
+                desc.add(new Traduccion(d.getIdioma(), d.getDescripcion()));
+            });
+            dto.setDescripcion(desc);
+        }
+        return dto;
     }
 }

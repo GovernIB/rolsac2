@@ -26,7 +26,6 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "responsable", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
     @Mapping(target = "usuariosUnidadAdministrativa", expression = "java(convertUsuariostoDTO(entity.getUsuarios()))")
     @Mapping(target = "temas", expression = "java(convertTematoDTO(entity.getTemas()))")
-    @Mapping(target = "normativas", expression = "java(convertNormativasDTO(entity.getNormativas()))")
     @Mapping(target = "padre", expression = "java(convertSencillo(entity.getPadre(), true))")
     UnidadAdministrativaDTO createDTO(JUnidadAdministrativa entity);
 
@@ -38,7 +37,6 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "responsable", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"responsableCV\"))")
     @Mapping(target = "usuariosUnidadAdministrativa", ignore = true)
     @Mapping(target = "temas", ignore = true)
-    @Mapping(target = "normativas", ignore = true)
     @Mapping(target = "padre", expression = "java(convertSencillo(entity.getPadre(), true))")
     UnidadAdministrativaDTO createDTOsinRelaciones(JUnidadAdministrativa entity, String parametroNulo);
 
@@ -67,7 +65,6 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "padre", ignore = true)
     @Mapping(target = "usuarios", ignore = true)
     @Mapping(target = "temas", ignore = true)
-    @Mapping(target = "normativas", ignore = true)
     JUnidadAdministrativa createEntity(UnidadAdministrativaDTO dto);
 
     @Override
@@ -78,7 +75,6 @@ public interface UnidadAdministrativaConverter extends Converter<JUnidadAdminist
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "usuarios", ignore = true)
     @Mapping(target = "temas", ignore = true)
-    @Mapping(target = "normativas", ignore = true)
     void mergeEntity(@MappingTarget JUnidadAdministrativa entity, UnidadAdministrativaDTO dto);
 
     default List<UnidadAdministrativaDTO> createDTOs(List<JUnidadAdministrativa> entities) {

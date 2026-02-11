@@ -179,8 +179,9 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
         }
         this.construirArbol();
 
-        if (this.data.isBorrado() && data.getNormativas() != null && !data.getNormativas().isEmpty()) {
-            normativaBaja = data.getNormativas().get(0);// unidadAdministrativaServiceFacade.getNormativaBaja(data.getCodigo());
+        normativas = unidadAdministrativaServiceFacade.getNormativaByUa(data.getCodigo(), UtilJSF.getSessionBean().getLang());
+        if (this.data.isBorrado() && normativas != null && !normativas.isEmpty()) {
+            normativaBaja = normativas.get(0);// unidadAdministrativaServiceFacade.getNormativaBaja(data.getCodigo());
         }
 
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
@@ -743,4 +744,5 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
     public void setMostrarProcsNormativas(boolean mostrarProcsNormativas) {
         this.mostrarProcsNormativas = mostrarProcsNormativas;
     }
+
 }

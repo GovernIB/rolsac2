@@ -1,6 +1,7 @@
 package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JNormativa;
+import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
 import es.caib.rolsac2.service.model.IndexacionDTO;
 import es.caib.rolsac2.service.model.NormativaDTO;
 import es.caib.rolsac2.service.model.NormativaGridDTO;
@@ -68,4 +69,13 @@ public interface NormativaRepository extends CrudRepository<JNormativa, Long> {
      * @return
      */
     String obtenerIdiomaEntidad(Long codigoNorm);
+
+    /**
+     * Pasar noramativa entre uas (de la original a la nueva, además de poner una norma de baja en la original)
+     *
+     * @param juaOriginal
+     * @param jnueva
+     * @param normativa
+     */
+    void pasarNormativasAUANueva(JUnidadAdministrativa juaOriginal, JUnidadAdministrativa jnueva, NormativaDTO normativa);
 }

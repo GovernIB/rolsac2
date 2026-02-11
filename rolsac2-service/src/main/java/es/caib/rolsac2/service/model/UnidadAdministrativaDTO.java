@@ -133,12 +133,6 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      */
     private Date fechaBaja;
 
-
-    /**
-     * Normativas
-     */
-    private List<NormativaDTO> normativas;
-
     /**
      * Numero para las evoluciones (no se guarda)
      */
@@ -736,24 +730,6 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
      */
     public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
-    }
-
-    /**
-     * Obtiene normativas.
-     *
-     * @return
-     */
-    public List<NormativaDTO> getNormativas() {
-        return normativas;
-    }
-
-    /**
-     * Establece normativas.
-     *
-     * @param normativas
-     */
-    public void setNormativas(List<NormativaDTO> normativas) {
-        this.normativas = normativas;
     }
 
     /**

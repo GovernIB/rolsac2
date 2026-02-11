@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoSilencioAdministrativoTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -36,7 +39,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
      * La consulta COUNT_BY_IDENTIFICADOR.
      */
     public static final String COUNT_BY_IDENTIFICADOR = "TipoSilencioAdministrativo.COUNT_BY_IDENTIFICADOR";
-    
+
     /**
      * Codigo
      */
@@ -60,7 +63,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -69,7 +72,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -78,7 +81,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -87,7 +90,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -96,7 +99,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoSilencioAdministrativoTraduccion> getDescripcion() {
         return descripcion;
@@ -105,7 +108,7 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoSilencioAdministrativoTraduccion> descripcion) {
         this.descripcion = descripcion;
@@ -120,4 +123,17 @@ public class JTipoSilencioAdministrativo extends BaseEntity {
                 '}';
     }
 
+    public TipoSilencioAdministrativoDTO createDTOSimple() {
+        TipoSilencioAdministrativoDTO dto = new TipoSilencioAdministrativoDTO();
+        dto.setCodigo(codigo);
+        dto.setIdentificador(identificador);
+        if (this.descripcion != null) {
+            Literal desc = new Literal();
+            this.descripcion.forEach(d -> {
+                desc.add(new Traduccion(d.getIdioma(), d.getDescripcion()));
+            });
+            dto.setDescripcion(desc);
+        }
+        return dto;
+    }
 }

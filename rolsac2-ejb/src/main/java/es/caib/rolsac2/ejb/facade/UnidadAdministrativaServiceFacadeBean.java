@@ -757,7 +757,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         String nombreAntiguo = getNombreUA(juaOriginal.getTraducciones());
         UnidadAdministrativaDTO uaOriginal = unidadAdministrativaConverter.createDTO(juaOriginal);
 
-        unidadAdministrativaRepository.marcarBaja(codigoUA, fechaBaja, perfil, usuario, "auditoria.uas.evolucionBasicaBaja", nombreAntiguo, getNombreLiteral(nombreNuevo));
+        unidadAdministrativaRepository.marcarBaja(codigoUA, fechaBaja, perfil, usuario, "auditoria.uas.evolucionBasicaBaja", nombreAntiguo, getNombreLiteral(nombreNuevo), null);
         UnidadAdministrativaDTO nueva = uaOriginal;
         nueva.setEntidad(entidad);
         nueva.setCodigo(null);
@@ -777,6 +777,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         //Mover todos los datos de normativas y ususarios a la nueva UA
         jnueva = unidadAdministrativaRepository.findById(jnueva.getCodigo());
         juaOriginal = unidadAdministrativaRepository.findById(codigoUA);
+        normativaRepository.pasarNormativasAUANueva(juaOriginal, jnueva, normativa);
+        /*
         if (juaOriginal.getNormativas() != null) {
             if (jnueva.getNormativas() == null) {
                 jnueva.setNormativas(new HashSet<>());
@@ -792,7 +794,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
                 normativaCierre.add(normativaRepository.getReference(normativa.getCodigo()));
                 juaOriginal.setNormativas(normativaCierre);
             }
-        }
+        }*/
 
         if (juaOriginal.getUsuarios() != null) {
             if (jnueva.getUsuarios() == null) {
@@ -1028,13 +1030,13 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
             //Damos de baja la UA y, si se ha asociado a alguna UA, lo hacemos
             JUnidadAdministrativa jua = unidadAdministrativaRepository.findById(ua);
-            unidadAdministrativaRepository.marcarBaja(ua, fechaBaja, perfil, usuario, "auditoria.uas.evolucionFusionBaja", getNombreUA(jua.getTraducciones()), nombreUAfusion);
-            Set<JNormativa> normativaCierre = new HashSet<>();
+            unidadAdministrativaRepository.marcarBaja(ua, fechaBaja, perfil, usuario, "auditoria.uas.evolucionFusionBaja", getNombreUA(jua.getTraducciones()), nombreUAfusion, normativaBaja);
+           /* Set<JNormativa> normativaCierre = new HashSet<>();
             if (normativaBaja != null) {
                 normativaCierre.add(normativaRepository.getReference(normativaBaja.getCodigo()));
             }
             jua.setNormativas(normativaCierre);
-            unidadAdministrativaRepository.update(jua);
+            unidadAdministrativaRepository.update(jua);*/
         }
     }
 

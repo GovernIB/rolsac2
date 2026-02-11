@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -54,7 +57,7 @@ public class JTipoFormaInicio extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -63,7 +66,7 @@ public class JTipoFormaInicio extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -72,7 +75,7 @@ public class JTipoFormaInicio extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -81,7 +84,7 @@ public class JTipoFormaInicio extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificacion  identificacion
+     * @param identificacion identificacion
      */
     public void setIdentificador(String identificacion) {
         this.identificador = identificacion;
@@ -90,7 +93,7 @@ public class JTipoFormaInicio extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoFormaInicioTraduccion> getDescripcion() {
         return descripcion;
@@ -99,7 +102,7 @@ public class JTipoFormaInicio extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoFormaInicioTraduccion> descripcion) {
         this.descripcion = descripcion;
@@ -125,4 +128,20 @@ public class JTipoFormaInicio extends BaseEntity {
         return "JTipoFormaInicio{" + "id=" + codigo + "identificador=" + identificador + '}';
     }
 
+
+    public TipoFormaInicioDTO toDTOSimple() {
+
+        TipoFormaInicioDTO dto = new TipoFormaInicioDTO();
+        dto.setCodigo(codigo);
+        dto.setIdentificador(identificador);
+        if (this.descripcion != null) {
+            Literal desc = new Literal();
+            this.descripcion.forEach(d -> {
+                //put(d.getIdioma(), d.getDescripcion());
+                desc.add(new Traduccion(d.getIdioma(), d.getDescripcion()));
+            });
+            dto.setDescripcion(desc);
+        }
+        return dto;
+    }
 }

@@ -40,8 +40,8 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
 
         //Iteramos sobre el literal para ver que idiomas se han rellenado
         List<String> idiomasRellenos = new ArrayList<>();
-        for(String idioma : descripcion.getIdiomas()) {
-            if(descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
+        for (String idioma : descripcion.getIdiomas()) {
+            if (descripcion.getTraduccion(idioma) != null && !descripcion.getTraduccion(idioma).isEmpty()) {
                 idiomasRellenos.add(idioma);
             }
         }
@@ -51,7 +51,7 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
             for (JTipoFormaInicioTraduccion jtrad : jTipoFormaInicio.getDescripcion()) {
                 jtrad.setTipoFormaInicio(jTipoFormaInicio);
             }
-        } else if(idiomasRellenos.size() >  jTipoFormaInicio.getDescripcion().size()) {
+        } else if (idiomasRellenos.size() > jTipoFormaInicio.getDescripcion().size()) {
             //En caso de que no se haya creado, comprobamos que tenga todas las traducciones (pueden haberse añadido nuevos idiomas)
             List<JTipoFormaInicioTraduccion> tradsAux = jTipoFormaInicio.getDescripcion();
             List<String> idiomasNuevos = new ArrayList<>(idiomasRellenos);
@@ -95,4 +95,5 @@ public interface TipoFormaInicioConverter extends Converter<JTipoFormaInicio, Ti
 
         return resultado;
     }
+
 }

@@ -382,7 +382,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
     }
 
     /**
-     * Actualiza la unidad administrativa de una normativa
+     * Actualiza en JNormativaUnidadAdministrativa la unidad administrativa fusionada
      *
      * @param idUAs
      * @param codigoUAfusion
@@ -390,14 +390,23 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
     @Override
     public void actualizarUA(List<Long> idUAs, Long codigoUAfusion) {
 
-        Query query = entityManager.createQuery("SELECT distinct j.normativa FROM  JNormativaUnidadAdministrativa j WHERE  j.unidadAdministrativa.codigo IN (:uas) ");
+        Query queryUpdate = entityManager.createQuery("UPDATE JNormativaUnidadAdministrativa j SET j.unidadAdministrativa.codigo = :codigoUAfusion WHERE j.unidadAdministrativa.codigo IN (:uas) ");
+        queryUpdate.setParameter("codigoUAfusion", codigoUAfusion);
+        queryUpdate.setParameter("uas", idUAs);
+        queryUpdate.executeUpdate();
+
+
+       /* Query query = entityManager.createQuery("SELECT distinct j.normativa FROM  JNormativaUnidadAdministrativa j WHERE  j.unidadAdministrativa.codigo IN (:uas) ");
         query.setParameter("uas", idUAs);
         List<JNormativa> jnormativas = query.getResultList();
         if (jnormativas != null) {
+
             JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigoUAfusion);
             jua.setNormativas(new HashSet<>(jnormativas));
             entityManager.merge(jua);
-        }
+
+
+        } */
 
     }
 
@@ -433,6 +442,42 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         Query query = entityManager.createQuery("select j.entidad.idiomaDefectoRest from JNormativa j where j.codigo = :codigoNorm ");
         query.setParameter("codigoNorm", codigoNorm);
         return (String) query.getSingleResult();
+    }
+
+    @Override
+    public void pasarNormativasAUANueva(JUnidadAdministrativa juaOriginal, JUnidadAdministrativa jnueva, NormativaDTO normativa) {
+        /** Método que se encarga de pasar las normativas de la unidad administrativa original a la nueva unidad administrativa nueva.
+         *   Además, si la normativa no es nula, asocia dicha normativa a la nueva unidad administrativa (quita las que tuviese antes).
+         */
+        Query query = entityManager.createQuery("SELECT distinct j.normativa FROM  JNormativaUnidadAdministrativa j WHERE  j.unidadAdministrativa.codigo = :codigoUAOriginal ");
+        query.setParameter("codigoUAOriginal", juaOriginal.getCodigo());
+        List<JNormativa> jnormativas = query.getResultList();
+        if (jnormativas != null) {
+            for (JNormativa jnormativa : jnormativas) {
+                //Si la normativa es distinta de la normativa que se pasa, se añade a la nueva unidad administrativa
+                if (normativa == null || !jnormativa.getCodigo().equals(normativa.getCodigo())) {
+                    Query queryInsert = entityManager.createNativeQuery("INSERT INTO RS2_UADNOR (UANO_CODUNA, UANO_CODNORM) VALUES (:codigoUADestino, :codigoNormativa) ");
+                    queryInsert.setParameter("codigoUADestino", jnueva.getCodigo());
+                    queryInsert.setParameter("codigoNormativa", jnormativa.getCodigo());
+                    queryInsert.executeUpdate();
+                }
+            }
+        }
+
+        //Borrar todas las normativas de la unidad administrativa original
+        Query queryDelete = entityManager.createNativeQuery("DELETE FROM RS2_UADNOR WHERE UANO_CODUNA = :codigoUAOriginal ");
+        queryDelete.setParameter("codigoUAOriginal", juaOriginal.getCodigo());
+        queryDelete.executeUpdate();
+
+
+        if (normativa != null) {
+
+            //Se añade la normativa pasada a la nueva unidad administrativa
+            Query queryInsertNormativa = entityManager.createNativeQuery("INSERT INTO RS2_UADNOR (UANO_CODUNA, UANO_CODNORM) VALUES (:codigoUADestino, :codigoNormativa) ");
+            queryInsertNormativa.setParameter("codigoUADestino", jnueva.getCodigo());
+            queryInsertNormativa.setParameter("codigoNormativa", normativa.getCodigo());
+            queryInsertNormativa.executeUpdate();
+        }
     }
 
 }

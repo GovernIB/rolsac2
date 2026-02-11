@@ -85,9 +85,11 @@ public class JUnidadAdministrativa extends BaseEntity {
     @JoinTable(name = "RS2_USERUA", joinColumns = {@JoinColumn(name = "UAUS_CODUA")}, inverseJoinColumns = {@JoinColumn(name = "UAUS_CODUSER")})
     private Set<JUsuario> usuarios;
 
+    /*
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_UADNOR", joinColumns = {@JoinColumn(name = "UANO_CODUNA")}, inverseJoinColumns = {@JoinColumn(name = "UANO_CODNORM")})
     private Set<JNormativa> normativas;
+    */
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_UATEMA", joinColumns = {@JoinColumn(name = "UATE_CODUNA")}, inverseJoinColumns = {@JoinColumn(name = "UATE_CODTEMA")})
@@ -247,14 +249,6 @@ public class JUnidadAdministrativa extends BaseEntity {
         this.usuarios = usuarios;
     }
 
-    public Set<JNormativa> getNormativas() {
-        return normativas;
-    }
-
-    public void setNormativas(Set<JNormativa> normativas) {
-        this.normativas = normativas;
-    }
-
     public Set<JTema> getTemas() {
         return temas;
     }
@@ -347,5 +341,27 @@ public class JUnidadAdministrativa extends BaseEntity {
         ua.setAbreviatura(abreviatura);
 
         return ua;
+    }
+
+    /**
+     * Se utiliza cuando viene desde la API REST, para evitar cargar toda la información de la unidad administrativa, que no es necesaria en ese caso.
+     *
+     * @return
+     */
+    public UnidadAdministrativaDTO toDTOSimple() {
+        UnidadAdministrativaDTO ua = new UnidadAdministrativaDTO();
+        ua.setCodigo(this.getCodigo());
+        ua.setCodigoDIR3(this.getCodigoDIR3());
+        ua.setIdentificador(this.getIdentificador());
+        Literal nombre = new Literal();
+        if (this.getTraducciones() != null) {
+            for (JUnidadAdministrativaTraduccion trad : this.getTraducciones()) {
+                nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+            }
+
+        }
+        ua.setNombre(nombre);
+        return ua;
+
     }
 }

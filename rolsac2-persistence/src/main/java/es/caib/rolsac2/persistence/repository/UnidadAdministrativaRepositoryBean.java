@@ -2,10 +2,7 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
 import es.caib.rolsac2.persistence.converter.UnidadAdministrativaConverter;
-import es.caib.rolsac2.persistence.model.JNormativa;
-import es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa;
-import es.caib.rolsac2.persistence.model.JUnidadAdministrativa;
-import es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria;
+import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion;
 import es.caib.rolsac2.persistence.util.ConstantesNegocio;
 import es.caib.rolsac2.service.model.*;
@@ -684,7 +681,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     public List<UnidadAdministrativaGridDTO> getUnidadesAdministrativaGridDTOByUsuario(Long codigo) {
 
         List<JUnidadAdministrativa> jUnidadAdministrativas = entityManager.createQuery("select distinct ua from JUnidadAdministrativa ua " +
-                        "LEFT OUTER JOIN ua.usuarios usuarios where usuarios.codigo = :codigoUsuario",
+                                "LEFT OUTER JOIN ua.usuarios usuarios where usuarios.codigo = :codigoUsuario",
                         JUnidadAdministrativa.class)
                 .setParameter("codigoUsuario", codigo)
                 .getResultList();
@@ -694,10 +691,10 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             for (JUnidadAdministrativa jua : jUnidadAdministrativas) {
                 UnidadAdministrativaGridDTO ua = new UnidadAdministrativaGridDTO();
                 ua.setCodigo(jua.getCodigo());
-                ua.setCodigoDIR3( jua.getCodigoDIR3());
-                ua.setIdentificador( jua.getIdentificador());
+                ua.setCodigoDIR3(jua.getCodigoDIR3());
+                ua.setIdentificador(jua.getIdentificador());
                 Literal nombre = new Literal();
-                if(jua.getTraducciones() != null) {
+                if (jua.getTraducciones() != null) {
                     for (JUnidadAdministrativaTraduccion trad : jua.getTraducciones()) {
                         nombre.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
                     }
@@ -801,7 +798,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     @Override
     public List<JUnidadAdministrativa> getUnidadesAdministrativaByNormativa(Long normativaId) {
         TypedQuery<JUnidadAdministrativa> query = null;
-        String sql = "SELECT a FROM JUnidadAdministrativa a LEFT OUTER JOIN a.normativas b WHERE b.codigo= :normativaId";
+        //String sql = "SELECT a FROM JUnidadAdministrativa a LEFT OUTER JOIN a.normativas b WHERE b.codigo= :normativaId";
+        String sql = "SELECT a FROM JNormativaUnidadAdministrativa  nua LEFT OUTER JOIN nua.unidadAdministrativa a WHERE nua.normativa.codigo= :normativaId";
         query = entityManager.createQuery(sql, JUnidadAdministrativa.class);
         query.setParameter("normativaId", normativaId);
 
@@ -1125,10 +1123,27 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2) {
+    public void marcarBaja(Long codigo, Date fechaBaja, TypePerfiles perfil, String usuario, String literal, String param1, String param2, NormativaDTO normativaBaja) {
         JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, codigo);
         jua.setFechaBaja(fechaBaja);
         jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
+
+        if (normativaBaja != null) {
+            //Tendría primero que comprobarse si ya existe la relación en JNormativaUnidadAdministrativa y si no existe, insertarla
+            Query query = entityManager.createQuery("SELECT count(j) FROM JNormativaUnidadAdministrativa j WHERE j.unidadAdministrativa.codigo = :codigoUA AND j.normativa.codigo = :codigoNormativa ")
+                    .setParameter("codigoUA", jua.getCodigo())
+                    .setParameter("codigoNormativa", normativaBaja.getCodigo());
+            query.getResultList();
+            Long count = (Long) query.getSingleResult();
+            if (count == 0) {
+                JNormativa jNormativa = entityManager.find(JNormativa.class, normativaBaja.getCodigo());
+                JNormativaUnidadAdministrativa jNormativaUA = new JNormativaUnidadAdministrativa();
+                jNormativaUA.setNormativa(jNormativa);
+                jNormativaUA.setUnidadAdministrativa(jua);
+                entityManager.persist(jNormativaUA);
+            }
+        }
+
         entityManager.merge(jua);
 
         JUnidadAdministrativaAuditoria jAuditoria = new JUnidadAdministrativaAuditoria();
@@ -1151,6 +1166,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             jAuditoria.setListaModificaciones(UtilJSON.toJSON(cambios));
         }
         jAuditoria.setAccion(TypeAccionAuditoria.BAJA.toString());
+
         entityManager.persist(jAuditoria);
     }
 
@@ -1161,18 +1177,40 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             jua.setFechaBaja(fechaBaja);
             jua.setEstado(ConstantesNegocio.UNIDADADMINISTRATIVA_ESTADO_BORRADA);
         }
-        Set<JNormativa> normativas = new HashSet<>();
+
+
         if (normativaBaja != null) {
-            JNormativa jNormativa = entityManager.find(JNormativa.class, normativaBaja.getCodigo());
-            normativas.add(jNormativa);
+            //Tendría primero que comprobarse si ya existe la relación en JNormativaUnidadAdministrativa y si no existe, insertarla
+            Query query = entityManager.createQuery("SELECT count(j) FROM JNormativaUnidadAdministrativa j WHERE j.unidadAdministrativa.codigo = :codigoUA AND j.normativa.codigo = :codigoNormativa ")
+                    .setParameter("codigoUA", jua.getCodigo())
+                    .setParameter("codigoNormativa", normativaBaja.getCodigo());
+            query.getResultList();
+            Long count = (Long) query.getSingleResult();
+            if (count == 0) {
+                JNormativa jNormativa = entityManager.find(JNormativa.class, normativaBaja.getCodigo());
+                JNormativaUnidadAdministrativa jNormativaUA = new JNormativaUnidadAdministrativa();
+                jNormativaUA.setNormativa(jNormativa);
+                jNormativaUA.setUnidadAdministrativa(jua);
+                entityManager.persist(jNormativaUA);
+            }
         }
         if (normativasBaja != null && !normativasBaja.isEmpty()) {
             for (NormativaGridDTO normativa : normativasBaja) {
-                JNormativa jNormativa = entityManager.find(JNormativa.class, normativa.getCodigo());
-                normativas.add(jNormativa);
+                //Tendría primero que comprobarse si ya existe la relación en JNormativaUnidadAdministrativa y si no existe, insertarla
+                Query query = entityManager.createQuery("SELECT count(j) FROM JNormativaUnidadAdministrativa j WHERE j.unidadAdministrativa.codigo = :codigoUA AND j.normativa.codigo = :codigoNormativa ")
+                        .setParameter("codigoUA", jua.getCodigo())
+                        .setParameter("codigoNormativa", normativa.getCodigo());
+                query.getResultList();
+                Long count = (Long) query.getSingleResult();
+                if (count == 0) {
+                    JNormativa jNormativa = entityManager.find(JNormativa.class, normativa.getCodigo());
+                    JNormativaUnidadAdministrativa jNormativaUA = new JNormativaUnidadAdministrativa();
+                    jNormativaUA.setNormativa(jNormativa);
+                    jNormativaUA.setUnidadAdministrativa(jua);
+                    entityManager.persist(jNormativaUA);
+                }
             }
         }
-        jua.setNormativas(normativas);
 
         entityManager.merge(jua);
 

@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoProcedimientoTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoProcedimientoDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -70,7 +73,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -79,7 +82,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -88,7 +91,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -97,7 +100,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -106,7 +109,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoProcedimientoTraduccion> getDescripcion() {
         return descripcion;
@@ -115,7 +118,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoProcedimientoTraduccion> descripcion) {
         if (this.descripcion == null || this.descripcion.isEmpty()) {
@@ -128,7 +131,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Obtiene entidad.
      *
-     * @return  entidad
+     * @return entidad
      */
     public JEntidad getEntidad() {
         return entidad;
@@ -137,7 +140,7 @@ public class JTipoProcedimiento extends BaseEntity {
     /**
      * Establece entidad.
      *
-     * @param entidad  entidad
+     * @param entidad entidad
      */
     public void setEntidad(JEntidad entidad) {
         this.entidad = entidad;
@@ -158,5 +161,19 @@ public class JTipoProcedimiento extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(codigo, identificador);
+    }
+
+    public TipoProcedimientoDTO createDTOSimple() {
+        TipoProcedimientoDTO dto = new TipoProcedimientoDTO();
+        dto.setCodigo(this.codigo);
+        dto.setIdentificador(this.identificador);
+        if (this.descripcion != null) {
+            Literal desc = new Literal();
+            this.descripcion.forEach(d -> {
+                desc.add(new Traduccion(d.getIdioma(), d.getDescripcion()));
+            });
+            dto.setDescripcion(desc);
+        }
+        return dto;
     }
 }

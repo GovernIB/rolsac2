@@ -1,6 +1,9 @@
 package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoViaTraduccion;
+import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.TipoViaDTO;
+import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
 import java.util.List;
@@ -60,7 +63,7 @@ public class JTipoVia extends BaseEntity {
     /**
      * Obtiene codigo.
      *
-     * @return  codigo
+     * @return codigo
      */
     public Long getCodigo() {
         return codigo;
@@ -69,7 +72,7 @@ public class JTipoVia extends BaseEntity {
     /**
      * Establece codigo.
      *
-     * @param id  id
+     * @param id id
      */
     public void setCodigo(Long id) {
         this.codigo = id;
@@ -78,7 +81,7 @@ public class JTipoVia extends BaseEntity {
     /**
      * Obtiene identificador.
      *
-     * @return  identificador
+     * @return identificador
      */
     public String getIdentificador() {
         return identificador;
@@ -87,7 +90,7 @@ public class JTipoVia extends BaseEntity {
     /**
      * Establece identificador.
      *
-     * @param identificador  identificador
+     * @param identificador identificador
      */
     public void setIdentificador(String identificador) {
         this.identificador = identificador;
@@ -96,7 +99,7 @@ public class JTipoVia extends BaseEntity {
     /**
      * Obtiene descripcion.
      *
-     * @return  descripcion
+     * @return descripcion
      */
     public List<JTipoViaTraduccion> getDescripcion() {
         return descripcion;
@@ -105,7 +108,7 @@ public class JTipoVia extends BaseEntity {
     /**
      * Establece descripcion.
      *
-     * @param descripcion  descripcion
+     * @param descripcion descripcion
      */
     public void setDescripcion(List<JTipoViaTraduccion> descripcion) {
         this.descripcion = descripcion;
@@ -126,5 +129,19 @@ public class JTipoVia extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(codigo, identificador);
+    }
+
+    public TipoViaDTO createDTOSimple() {
+        TipoViaDTO dto = new TipoViaDTO();
+        dto.setCodigo(this.codigo);
+        dto.setIdentificador(this.identificador);
+        if (this.descripcion != null) {
+            Literal desc = new Literal();
+            this.descripcion.forEach(d -> {
+                desc.add(new Traduccion(d.getIdioma(), d.getDescripcion()));
+            });
+            dto.setDescripcion(desc);
+        }
+        return dto;
     }
 }
