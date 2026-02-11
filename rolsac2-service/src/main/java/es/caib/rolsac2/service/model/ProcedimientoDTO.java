@@ -263,7 +263,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getLopdDerechos() != null) {
             procClonado.setLopdDerechos((Literal) this.getLopdDerechos().clone());
         }
-
+        
         if (this.getObjeto() != null) {
             procClonado.setObjeto((Literal) this.getObjeto().clone());
         }

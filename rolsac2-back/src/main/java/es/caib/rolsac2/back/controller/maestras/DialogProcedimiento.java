@@ -502,7 +502,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         boolean rellenoCategoriaPDU = data.getCategoriasPDU() != null && !data.getCategoriasPDU().isEmpty();
         boolean rellenoIdiomasIngles = data.isRellenoIdiomasPDU();
 
-        String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU") + " " + getLiteral("TypeProcedimientoEstado." + data.toString());
+        String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU");
         if (!rellenoCategoriaPDU) {
             if (!rellenoIdiomasIngles) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDUeIngles"), true);
