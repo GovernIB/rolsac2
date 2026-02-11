@@ -479,6 +479,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
+        if (data != null && "P".equals(data.getTipo()) && data.getEstado() == TypeProcedimientoEstado.MODIFICACION && data.isIntegrarPdu()) {
+            boolean correcto = checkPDU();
+            if (!correcto) {
+                return;
+            }
+        }
+
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "P");
         UtilJSF.anyadirMochila("procedimiento", this.data);
@@ -489,6 +496,36 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
         }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    private boolean checkPDU() {
+        boolean rellenoCategoriaPDU = data.getCategoriasPDU() != null && !data.getCategoriasPDU().isEmpty();
+        boolean rellenoIdiomasIngles = data.isRellenoIdiomasPDU();
+
+        String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU") + " " + getLiteral("TypeProcedimientoEstado." + data.toString());
+        if (!rellenoCategoriaPDU) {
+            if (!rellenoIdiomasIngles) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDUeIngles"), true);
+                return false;
+            } else {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU"), true);
+                return false;
+            }
+        } else if (!rellenoIdiomasIngles) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanIngles"), true);
+            return false;
+        }
+
+        if (data.getTramites() != null && !data.getTramites().isEmpty()) {
+            for (ProcedimientoTramiteDTO tram : data.getTramites()) {
+                if (!tram.isRellenoIdiomasPDU()) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanInglesTramites"), true);
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public void verMensajes() {

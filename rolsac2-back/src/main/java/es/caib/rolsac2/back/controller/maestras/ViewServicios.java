@@ -842,8 +842,6 @@ public class ViewServicios extends AbstractController implements Serializable {
                     }
                     Pagina<ServicioGridDTO> pagina = procedimientoService.findServiciosByFiltro(filtro);
 
-                    //Pagina<ProcedimientoBaseDTO> paginax = procedimientoService.findProcedimientosByFiltroRest(filtro);
-                    //new Servicios((ServicioDTO) paginax.getItems().get(0), null, filtro.getIdioma(), true);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {

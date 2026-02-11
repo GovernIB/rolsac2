@@ -652,7 +652,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getKeywords(), dataOriginal.getKeywords());
         }
 
-        if( UtilComparador.compareTo(this.getUaResponsableLiteral(), dataOriginal.getUaResponsableLiteral()) != 0) {
+        if (UtilComparador.compareTo(this.getUaResponsableLiteral(), dataOriginal.getUaResponsableLiteral()) != 0) {
             if (mostrarLog) {
                 LOG.error("ProcedimientoDTO.compareTo: this.getUaResponsableLiteral() != dataOriginal.getUaResponsableLiteral(). this.getUaResponsableLiteral()=" + this.getUaResponsableLiteral() + " dataOriginal.getUaResponsableLiteral()=" + dataOriginal.getUaResponsableLiteral());
             }
@@ -913,6 +913,10 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getNombreProcedimientoWorkFlow() == null || this.getNombreProcedimientoWorkFlow().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getNombreProcedimientoWorkFlow().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
             relleno = false;
         } else if (this.getObjeto() == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            relleno = false;
+        } else if (this.getDestinatarios() == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            relleno = false;
+        } else if (this.getTerminoResolucion() == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
             relleno = false;
         }
         return relleno;

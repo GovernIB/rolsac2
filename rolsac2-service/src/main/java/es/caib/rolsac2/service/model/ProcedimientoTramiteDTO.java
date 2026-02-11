@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.service.utils.UtilComparador;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
     private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoTramiteDTO.class);
 
     private Long codigo;
-
+    private Long codigoTramite;
     private Integer orden;
     private Integer fase;
 
@@ -193,6 +194,24 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    /**
+     * Obtiene codigo tramite.
+     *
+     * @return codigo tramite
+     */
+    public Long getCodigoTramite() {
+        return codigoTramite;
+    }
+
+    /**
+     * Establece codigo tramite.
+     *
+     * @param codigoTramite codigo tramite
+     */
+    public void setCodigoTramite(Long codigoTramite) {
+        this.codigoTramite = codigoTramite;
     }
 
     /**
@@ -579,6 +598,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         ProcedimientoTramiteDTO obj = null;
         try {
             obj = (ProcedimientoTramiteDTO) super.clone();
+            obj.setCodigoTramite(this.getCodigoTramite());
             obj.setOrden(this.getOrden());
             if (obj.tipoTramitacion != null) {
                 obj.tipoTramitacion = this.tipoTramitacion.clone();
@@ -797,19 +817,19 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
 
 
     public static int compareTo(List<ProcedimientoTramiteDTO> dato, List<ProcedimientoTramiteDTO> dato2, boolean mostrarLog) {
-        if ((dato == null || dato.size() == 0) && (dato2 == null || dato2.size() == 0)) {
+        if ((dato == null || dato.isEmpty()) && (dato2 == null || dato2.isEmpty())) {
             if (mostrarLog) {
                 LOG.error("Ambos son null o vacios");
             }
             return 0;
         }
-        if ((dato == null || dato.size() == 0) && (dato2 != null && dato2.size() > 0)) {
+        if ((dato == null || dato.isEmpty()) && (dato2 != null && !dato2.isEmpty())) {
             if (mostrarLog) {
                 LOG.error("El primero es null o vacio");
             }
             return -1;
         }
-        if ((dato != null && dato.size() > 0) && (dato2 == null || dato2.size() == 0)) {
+        if ((dato != null && !dato.isEmpty()) && (dato2 == null || dato2.isEmpty())) {
             if (mostrarLog) {
                 LOG.error("El segundo es null o vacio");
             }
@@ -924,5 +944,38 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
             LOG.error("Error al convertir a String el ProcedimientoTramiteDTO", e);
         }
         return sb.toString();
+    }
+
+    public boolean isRellenoIdiomasPDU() {
+        /** Si el nombre no está relleno, esta mal. **/
+        if (this.getNombre() == null || this.getNombre().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getNombre().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            return false;
+        }
+
+        /** Luego comprobar que si el idioma catalán está relleno, también esté el mismo campo en inglés relleno **/
+        if (this.getDocumentacion() != null && this.getDocumentacion().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getDocumentacion().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
+            if (this.getDocumentacion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDocumentacion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+                return false;
+            }
+        }
+
+        if (this.getRequisitos() != null && this.getRequisitos().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getRequisitos().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
+            if (this.getRequisitos().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getRequisitos().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+                return false;
+            }
+        }
+
+        if (this.getObservacion() != null && this.getObservacion().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getObservacion().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
+            if (this.getObservacion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObservacion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+                return false;
+            }
+        }
+        if (this.getTerminoMaximo() != null && this.getTerminoMaximo().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getTerminoMaximo().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
+            if (this.getTerminoMaximo().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getTerminoMaximo().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -268,9 +268,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         }*/
-        if(sessionBean.getUnidadActiva() != null) {
+        if (sessionBean.getUnidadActiva() != null) {
             filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-        }else{
+        } else {
             filtro.setIdUAInstructor(null);
         }
 
@@ -661,8 +661,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                         filtro.setIdsUAsHijasAux(unidadesHijasAux.subList(1000, unidadesHijasAux.size() - 1));
                     }
                     Pagina<ProcedimientoGridDTO> pagina = procedimientoService.findProcedimientosByFiltro(filtro);
-                    //Pagina<ProcedimientoBaseDTO> paginaRest = procedimientoService.findProcedimientosByFiltroRest(filtro);
-                    //Procedimientos proc = new Procedimientos((ProcedimientoDTO) paginaRest.getItems().get(0), null, filtro.getIdioma(), true);
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
