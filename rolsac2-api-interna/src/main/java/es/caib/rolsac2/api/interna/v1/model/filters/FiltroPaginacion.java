@@ -29,13 +29,13 @@ public class FiltroPaginacion extends EntidadJson<FiltroPaginacion> {
     /**
      * Page.
      **/
-    @Schema(required = false, type = SchemaType.INTEGER, name = "page", description = "Page", defaultValue = "0")
+    @Schema(required = false, type = SchemaType.INTEGER, name = "page", description = "Pagina", defaultValue = "0")
     private Integer page;
 
     /**
      * Size.
      **/
-    @Schema(required = false, type = SchemaType.INTEGER, name = "size", description = "Size", defaultValue = "10")
+    @Schema(required = false, type = SchemaType.INTEGER, name = "size", description = "Resultados por pagina", defaultValue = "10")
     private Integer size;
 
 //	public static FiltroPaginacion valueOf(final String json) {

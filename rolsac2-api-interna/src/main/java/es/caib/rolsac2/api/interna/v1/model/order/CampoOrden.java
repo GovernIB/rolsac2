@@ -18,7 +18,7 @@ public class CampoOrden extends EntidadJson<CampoOrden> {
     /**
      * campo.
      **/
-    @Schema(required = false, type = SchemaType.STRING, name = "campo", description = "Campo")
+    @Schema(required = false, type = SchemaType.STRING, name = "campo", description = "Campo por el que se ordena")
     private String campo;
 
     /**
