@@ -129,7 +129,10 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-2" style="margin-top:-5px">
+                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigoTramite']}:" for="txtCodigoTramite"/>
+                        <p:inputText id="txtCodigoTramite" value="#{dialogProcedimientoTramite.data.codigoTramite}"
+                                     styleClass="w95" disabled="true"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"

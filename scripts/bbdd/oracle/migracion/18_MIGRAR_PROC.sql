@@ -704,6 +704,7 @@ BEGIN
 
 					INSERT INTO rs2_prctrm
 					(prta_codigo,
+					 prta_codtram,
 					 prta_coduac,
 					 prta_codprwf,
 					 prta_trmpre,
@@ -720,6 +721,7 @@ BEGIN
 					 prta_orden,
 					 prta_trmtrm)
 					VALUES      ( rolsac1_tramites.tra_codi,
+					              rolsac1_tramites.tra_codi,
 					              V_PRWF_CODUAI,
 					              codigo_procwf,
 					              tipotram_plantilla,

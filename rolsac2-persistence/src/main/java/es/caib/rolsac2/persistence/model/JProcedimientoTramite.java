@@ -34,6 +34,13 @@ public class JProcedimientoTramite {
     @Column(name = "PRTA_CODIGO", nullable = false)
     private Long codigo;
 
+
+    /**
+     * Codigo
+     */
+    @Column(name = "PRTA_CODTRAM", nullable = false)
+    private Long codigoTramite;
+
     /**
      * Fase
      */
@@ -177,6 +184,24 @@ public class JProcedimientoTramite {
      */
     public void setCodigo(Long id) {
         this.codigo = id;
+    }
+
+    /**
+     * Obtiene codigo tramite.
+     *
+     * @return codigo tramite
+     */
+    public Long getCodigoTramite() {
+        return codigoTramite;
+    }
+
+    /**
+     * Establece codigo tramite.
+     *
+     * @param codigoTramite codigo tramite
+     */
+    public void setCodigoTramite(Long codigoTramite) {
+        this.codigoTramite = codigoTramite;
     }
 
     public Integer getOrden() {

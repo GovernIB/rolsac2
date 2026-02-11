@@ -242,10 +242,11 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     /**
      * Convert to DTO
      *
-     * @param jprocWF
-     * @return
+     * @param jprocWF      El procedimiento workflow a convertir
+     * @param simplificado Indica si se quiere un DTO simplificado (con menos información, para listados)
+     * @return Convierto un JProcedimientoWorkflow a un ProcedimientoBaseDTO, con la información necesaria para mostrarlo en un listado o en detalle dependiendo del valor de simplificado
      */
-    ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF);
+    ProcedimientoBaseDTO convertDTO(JProcedimientoWorkflow jprocWF, boolean simplificado);
 
     /**
      * Obtiene el idioma segun el codigo

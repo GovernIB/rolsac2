@@ -412,7 +412,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (dto.getKeywords() != null) {
             traduccion.setKeywords(dto.getKeywords().getTraduccion(traduccion.getIdioma()));
         }
-        if(dto.getUaResponsableLiteral() != null) {
+        if (dto.getUaResponsableLiteral() != null) {
             traduccion.setUaResponsable(dto.getUaResponsableLiteral().getTraduccion(traduccion.getIdioma()));
         }
     }
@@ -516,6 +516,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             if (((ProcedimientoDTO) proc).getTramites() != null) {
                 for (ProcedimientoTramiteDTO tramite : ((ProcedimientoDTO) proc).getTramites()) {
                     tramite.setCodigo(null);
+                    tramite.setCodigoTramite(null);
                     if (tramite.getTipoTramitacion() != null) {
                         tramite.getTipoTramitacion().setCodigo(null);
                     }
@@ -905,12 +906,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public ProcedimientoBaseDTO convertirDTO(Object obj) {
         JProcedimientoWorkflow jprocWF = (JProcedimientoWorkflow) obj;
-        return procedimientoRepository.convertDTO(jprocWF);
+        return procedimientoRepository.convertDTO(jprocWF, false);
     }
 
     private ProcedimientoBaseDTO getProcedimientoDTOByCodigoWF(Long codigoWF) {
         JProcedimientoWorkflow jprocWF = procedimientoRepository.getWFByCodigoWF(codigoWF);
-        return procedimientoRepository.convertDTO(jprocWF);
+        return procedimientoRepository.convertDTO(jprocWF, false);
     }
 
     @Override
