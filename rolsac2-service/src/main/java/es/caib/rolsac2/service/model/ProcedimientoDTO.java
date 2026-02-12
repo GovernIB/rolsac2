@@ -263,7 +263,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getLopdDerechos() != null) {
             procClonado.setLopdDerechos((Literal) this.getLopdDerechos().clone());
         }
-        
+
         if (this.getObjeto() != null) {
             procClonado.setObjeto((Literal) this.getObjeto().clone());
         }
@@ -908,18 +908,25 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
      * @return Devuelve true si están rellenos en inglés
      */
     public boolean isRellenoIdiomasPDU() {
-        boolean relleno = true;
+        return getRellenoIdiomasCamposPDU().isEmpty();
+    }
+
+    public List<String> getRellenoIdiomasCamposPDU() {
+        List<String> camposSinRellenar = new ArrayList<>();
 
         if (this.getNombreProcedimientoWorkFlow() == null || this.getNombreProcedimientoWorkFlow().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getNombreProcedimientoWorkFlow().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
-            relleno = false;
-        } else if (this.getObjeto() == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
-            relleno = false;
-        } else if (this.getDestinatarios() == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
-            relleno = false;
-        } else if (this.getTerminoResolucion() == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
-            relleno = false;
+            camposSinRellenar.add("dict.nombre");
         }
-        return relleno;
+        if (this.getObjeto() == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObjeto().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            camposSinRellenar.add("dict.objeto");
+        }
+        if (this.getDestinatarios() == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDestinatarios().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            camposSinRellenar.add("dict.destinatarios");
+        }
+        if (this.getTerminoResolucion() == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getTerminoResolucion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+            camposSinRellenar.add("dict.terminoResolucion");
+        }
+        return camposSinRellenar;
 
     }
 }

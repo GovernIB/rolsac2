@@ -500,30 +500,78 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     private boolean checkPDU() {
         boolean rellenoCategoriaPDU = data.getCategoriasPDU() != null && !data.getCategoriasPDU().isEmpty();
-        boolean rellenoIdiomasIngles = data.isRellenoIdiomasPDU();
-
-        String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU");
-        if (!rellenoCategoriaPDU) {
-            if (!rellenoIdiomasIngles) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDUeIngles"), true);
-                return false;
-            } else {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU"), true);
-                return false;
-            }
-        } else if (!rellenoIdiomasIngles) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanIngles"), true);
-            return false;
-        }
-
+        boolean rellenoCamposProc = data.isRellenoIdiomasPDU();
+        boolean rellenoTramites = true;
         if (data.getTramites() != null && !data.getTramites().isEmpty()) {
             for (ProcedimientoTramiteDTO tram : data.getTramites()) {
                 if (!tram.isRellenoIdiomasPDU()) {
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanInglesTramites"), true);
-                    return false;
+                    rellenoTramites = false;
+                    break;
                 }
             }
         }
+
+        if (!rellenoCategoriaPDU || !rellenoTramites || rellenoCamposProc) {
+            String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU") + "<br /><br />";
+            if (!rellenoCategoriaPDU) {
+                msgError += "  - " + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU") + "<br /><br />";
+            }
+            List<String> campos = data.getRellenoIdiomasCamposPDU();
+            if (campos != null && !campos.isEmpty()) {
+                String nombreCampos = "";
+                for (String campo : campos) {
+                    if (!nombreCampos.isEmpty()) {
+                        nombreCampos += ", ";
+                    }
+                    nombreCampos += getLiteral(campo);
+                }
+                msgError += "  - " + getLiteral("dialogProcedimientoFlujo.errorFaltanIngles", new Object[]{nombreCampos}) + "<br /><br />";
+            }
+
+            if (!rellenoTramites) {
+                for (ProcedimientoTramiteDTO tram : data.getTramites()) {
+                    if (!tram.isRellenoIdiomasPDU()) {
+                        List<String> camposTram = tram.getRellenoIdiomasCamposPDU();
+                        String nombreCamposTram = "";
+                        if (camposTram != null && !camposTram.isEmpty()) {
+                            for (String campo : camposTram) {
+                                if (!nombreCamposTram.isEmpty()) {
+                                    nombreCamposTram += ", ";
+                                }
+                                nombreCamposTram += getLiteral(campo);
+                            }
+                        }
+                        String identificador = tram.getNombre().getTraduccion("ca");
+                        msgError += "  - " + getLiteral("dialogProcedimientoFlujo.errorFaltanInglesTramites", new Object[]{identificador, nombreCamposTram}) + "<br /><br />";
+                    }
+                }
+            }
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError, true);
+            return false;
+        }
+
+        /**
+         if (!rellenoCategoriaPDU) {
+         if (!campos.isEmpty()) {
+         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDUeIngles"), true);
+         return false;
+         } else {
+         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU"), true);
+         return false;
+         }
+         } else if (!campos.isEmpty()) {
+         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanIngles"), true);
+         return false;
+         }
+
+         if (data.getTramites() != null && !data.getTramites().isEmpty()) {
+         for (ProcedimientoTramiteDTO tram : data.getTramites()) {
+         if (!tram.isRellenoIdiomasPDU()) {
+         UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, msgError + getLiteral("dialogProcedimientoFlujo.errorFaltanInglesTramites"), true);
+         return false;
+         }
+         }
+         }**/
 
         return true;
     }
