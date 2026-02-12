@@ -67,7 +67,8 @@ public class JProceso extends BaseEntity {
     /**
      * Parametros del a invocacion serializados en Json
      */
-    @Column(name = "PROCES_PARAMS", length = 2000)
+    @Lob
+    @Column(name = "PROCES_PARAMS")
     private String parametrosInvocacion;
 
     /**

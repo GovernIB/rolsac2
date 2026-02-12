@@ -66,7 +66,8 @@ public class JPlugin extends BaseEntity {
     /**
      * PROPIEDADES PLUGIN (JSON)
      */
-    @Column(name = "PLUG_PROPS", length = 4000)
+    @Lob
+    @Column(name = "PLUG_PROPS")
     private String propiedades;
 
     /**

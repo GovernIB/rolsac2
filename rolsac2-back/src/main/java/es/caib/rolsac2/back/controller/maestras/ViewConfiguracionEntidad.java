@@ -82,15 +82,20 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         if (!checkObligatorio()) {
             return;
         }
-        adaptIdiomas();
+        try {
+            adaptIdiomas();
 
-        this.data.setUaComun(uaDataComun);
+            this.data.setUaComun(uaDataComun);
 
-        administracionSupServiceFacade.updateEntidad(this.data);
+            administracionSupServiceFacade.updateEntidad(this.data);
 
-        UtilJSF.getSessionBean().setEntidad(this.data);
+            UtilJSF.getSessionBean().setEntidad(this.data);
 
-        addGlobalMessage(getLiteral("viewConfiguracionEntidad.actualizado"));
+            addGlobalMessage(getLiteral("viewConfiguracionEntidad.actualizado"));
+        } catch (Exception e) {
+            LOG.error("Error guardando la configuracion de entidad", e);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.errorGuardar"), true);
+        }
     }
 
     private boolean checkObligatorio() {

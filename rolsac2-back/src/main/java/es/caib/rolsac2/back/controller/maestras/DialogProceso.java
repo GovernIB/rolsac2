@@ -78,17 +78,22 @@ public class DialogProceso extends AbstractController implements Serializable {
             return;
         }
 
-        procesoServiceFacade.guardar(data);
+        try {
+            procesoServiceFacade.guardar(data);
 
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            final DialogResult result = new DialogResult();
+            if (this.getModoAcceso() != null) {
+                result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+            } else {
+                result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            }
+
+            result.setResult(data);
+            UtilJSF.closeDialog(result);
+        } catch (Exception e) {
+            LOG.error("Error guardando el proceso", e);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.errorGuardar"), true);
         }
-
-        result.setResult(data);
-        UtilJSF.closeDialog(result);
     }
 
     public void traducir() {

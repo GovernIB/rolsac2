@@ -51,13 +51,18 @@ public class ViewLOPD extends AbstractController implements Serializable {
             return;
         }
 
-        administracionSupServiceFacade.updateEntidad(this.data);
+        try {
+            administracionSupServiceFacade.updateEntidad(this.data);
 
-        UtilJSF.getSessionBean().setEntidad(this.data);
+            UtilJSF.getSessionBean().setEntidad(this.data);
 
-        // addGlobalMessage(getLiteral("msg.creaciocorrecta"));
+            // addGlobalMessage(getLiteral("msg.creaciocorrecta"));
 
-        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
+        } catch (Exception e) {
+            LOG.error("Error guardando la LOPD", e);
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.errorGuardar"), true);
+        }
 
     }
 
