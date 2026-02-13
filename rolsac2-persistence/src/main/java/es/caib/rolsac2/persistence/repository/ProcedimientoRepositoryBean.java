@@ -3553,17 +3553,18 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setUrlPdu(urlPdu);
         proc.setUaResponsableLiteral(uaResponsableLiteral);
 
-        // proc.setLopdInfoAdicional(lopdInfoAdicional);
-        proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
-        proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
-        proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
-        proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
-        proc.setCategoriasPDU(getCategoriasPDUByWF(proc.getCodigoWF()));
+        if (!simplificado) {
+            proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
+            proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
+            proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
+            proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
+            proc.setCategoriasPDU(getCategoriasPDUByWF(proc.getCodigoWF()));
 
-        // Reordenamos por posicion
-        Collections.sort(proc.getNormativas());
-        Collections.sort(proc.getDocumentos());
-        Collections.sort(proc.getCategoriasPDU());
+            // Reordenamos por posicion
+            Collections.sort(proc.getNormativas());
+            Collections.sort(proc.getDocumentos());
+            Collections.sort(proc.getCategoriasPDU());
+        }
 
         if (simplificado) {
             proc.setTemas(new ArrayList<>());
