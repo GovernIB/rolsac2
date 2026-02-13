@@ -483,6 +483,9 @@ public class JProcedimientoTramite {
      * @param jTipoTramitacion j tipo tramitacion
      */
     public void merge(ProcedimientoTramiteDTO elemento, JTipoTramitacion jTipoTramitacionPlantilla, JTipoTramitacion jTipoTramitacion) {
+        if (this.codigoTramite == null) {
+            this.codigoTramite = elemento.getCodigoTramite();
+        }
         this.setOrden(elemento.getOrden());
         this.setTramitPresencial(elemento.isTramitPresencial());
         this.setTramitElectronica(elemento.isTramitElectronica());
