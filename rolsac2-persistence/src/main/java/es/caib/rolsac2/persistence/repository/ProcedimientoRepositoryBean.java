@@ -26,6 +26,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -1837,6 +1838,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         entityManager.persist(jListaDocumentos);
                         nuevo.setListaModelos(jListaDocumentos);
                     }
+
+                    if (nuevo.getCodigoTramite() == null) {
+                        BigDecimal nextVal = (BigDecimal) entityManager.createNativeQuery("SELECT RS2_PRCTRM_SEQ.NEXTVAL FROM DUAL")
+                                .getSingleResult();
+                        nuevo.setCodigoTramite(nextVal.longValue());
+                    }
                     entityManager.persist(nuevo);
 
                     elemento.setCodigo(nuevo.getCodigo());
@@ -3083,6 +3090,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 }
                 if (jprocTramite.getTipoTramitacion() != null) {
                     entityManager.persist(jprocTramite.getTipoTramitacion());
+                }
+                if (jprocTramite.getCodigoTramite() == null) {
+                    BigDecimal nextVal = (BigDecimal) entityManager.createNativeQuery("SELECT RS2_PRCTRM_SEQ.NEXTVAL FROM DUAL")
+                            .getSingleResult();
+                    jprocTramite.setCodigoTramite(nextVal.longValue());
                 }
                 entityManager.persist(jprocTramite);
             }

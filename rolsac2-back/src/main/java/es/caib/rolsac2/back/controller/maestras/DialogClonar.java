@@ -68,7 +68,7 @@ public class DialogClonar extends AbstractController implements Serializable {
     ProcedimientoBaseDTO data;
 
     @Inject
-    ProcedimientoServiceFacade procedimentoService;
+    ProcedimientoServiceFacade procedimientoService;
 
     @Inject
     SystemServiceFacade systemService;
@@ -86,10 +86,10 @@ public class DialogClonar extends AbstractController implements Serializable {
             //data = procedimentoService.findServicioByCodigo(Long.valueOf(id));
         }
 
-        tieneWFDefinitivo = procedimentoService.tieneWF(Long.valueOf(id), TypeProcedimientoWorkflow.DEFINITIVO.getValor());
-        tieneWFEnModificacion = procedimentoService.tieneWF(Long.valueOf(id), TypeProcedimientoWorkflow.MODIFICACION.getValor());
+        tieneWFDefinitivo = procedimientoService.tieneWF(Long.valueOf(id), TypeProcedimientoWorkflow.DEFINITIVO.getValor());
+        tieneWFEnModificacion = procedimientoService.tieneWF(Long.valueOf(id), TypeProcedimientoWorkflow.MODIFICACION.getValor());
 
-        estadoWF = tieneWFDefinitivo ? false : true;
+        estadoWF = !tieneWFDefinitivo;
     }
 
 
@@ -112,7 +112,7 @@ public class DialogClonar extends AbstractController implements Serializable {
     public void clonar(boolean iEstadoWF) {
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-        Long idProcedimientoClonado = procedimentoService.clonarProcedimiento(idLong, iEstadoWF, usuario, ruta);
+        Long idProcedimientoClonado = procedimientoService.clonarProcedimiento(idLong, iEstadoWF, usuario, ruta);
 
         final DialogResult result = new DialogResult();
         result.setModoAcceso(TypeModoAcceso.CONSULTA);

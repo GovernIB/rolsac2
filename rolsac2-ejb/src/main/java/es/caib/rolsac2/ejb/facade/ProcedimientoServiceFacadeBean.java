@@ -516,6 +516,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             if (((ProcedimientoDTO) proc).getTramites() != null) {
                 for (ProcedimientoTramiteDTO tramite : ((ProcedimientoDTO) proc).getTramites()) {
                     tramite.setCodigo(null);
+                    /*tramite.setCodigoTramite(null);*/
                     if (tramite.getTipoTramitacion() != null) {
                         tramite.getTipoTramitacion().setCodigo(null);
                     }
