@@ -69,19 +69,115 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
 
         List<JProcedimientoTramite> jprocedimientosTramites = query.getResultList();
         List<ProcedimientoTramiteDTO> procedimientoTramites = new ArrayList<>();
-        if (jprocedimientosTramites != null) {
-            for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
-                ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
-                tramite.setTramitElectronica(jtramite.isTramitElectronica());
-                tramite.setTramitPresencial(jtramite.isTramitPresencial());
-                tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
-                if (jtramite.getTipoTramitacion() != null) {
-                    tramite.setPlantillaSel(null);
-                } else if (jtramite.getTipoTramitacionPlantilla() != null) {
-                    tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
-                    tramite.setTipoTramitacion(null);
+        if (filtro.isRellenoEstadoWF() && filtro.isRellenoCodigo()) {
+            if (jprocedimientosTramites != null) {
+                switch (filtro.getEstadoWF()) {
+                    //D=Definitivo,
+                    //M=Modificado,
+                    case "D":
+                    case "M":
+                        // WORFLOW (0: PUBLICADO / 1: EN MODIFICACION)
+                        // Si es D entonces 0
+                        // Si es M entonces 1
+                        boolean estado = !filtro.getEstadoWF().equals("D");
+                        for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
+                            if (jtramite.getProcedimiento() != null && jtramite.getProcedimiento().getWorkflow() == estado) {
+                                ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
+                                tramite.setTramitElectronica(jtramite.isTramitElectronica());
+                                tramite.setTramitPresencial(jtramite.isTramitPresencial());
+                                tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+                                if (jtramite.getTipoTramitacion() != null) {
+                                    tramite.setPlantillaSel(null);
+                                } else if (jtramite.getTipoTramitacionPlantilla() != null) {
+                                    tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
+                                    tramite.setTipoTramitacion(null);
+                                }
+                                procedimientoTramites.add(tramite);
+                            }
+                        }
+                        break;
+                    // A=Ambos (publicado y modificado))
+                    case "A":
+                        for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
+                            ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
+                            tramite.setTramitElectronica(jtramite.isTramitElectronica());
+                            tramite.setTramitPresencial(jtramite.isTramitPresencial());
+                            tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+                            if (jtramite.getTipoTramitacion() != null) {
+                                tramite.setPlantillaSel(null);
+                            } else if (jtramite.getTipoTramitacionPlantilla() != null) {
+                                tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
+                                tramite.setTipoTramitacion(null);
+                            }
+                            procedimientoTramites.add(tramite);
+                        }
+                        //T=Todos (publicado o modificado), con prioridad el publicado sino el modificado
+                    case "T":
+                        JProcedimientoTramite jtramitex = null;
+                        for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
+                            if (jtramite.getProcedimiento() != null && !jtramite.getProcedimiento().getWorkflow()) {
+                                jtramitex = jtramite;
+                                break;
+                            }
+                        }
+                        if (jtramitex != null) {
+                            for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
+                                if (jtramite.getProcedimiento() != null && jtramite.getProcedimiento().getWorkflow()) {
+                                    jtramitex = jtramite;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (jtramitex == null && !jprocedimientosTramites.isEmpty()) {
+                            //Este caso no debería cumplirse, eso significa que el procedimiento no tiene workflow ni publicado ni modificado, pero por si acaso, se coge el primero de la lista
+                            jtramitex = jprocedimientosTramites.get(0);
+                        }
+
+                        ProcedimientoTramiteDTO tramiter = converter.createDTO(jtramitex);
+                        tramiter.setTramitElectronica(jtramitex.isTramitElectronica());
+                        tramiter.setTramitPresencial(jtramitex.isTramitPresencial());
+                        tramiter.setTramitTelefonica(jtramitex.isTramitTelefonica());
+                        if (jtramitex.getTipoTramitacion() != null) {
+                            tramiter.setPlantillaSel(null);
+                        } else if (jtramitex.getTipoTramitacionPlantilla() != null) {
+                            tramiter.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramitex.getTipoTramitacionPlantilla()));
+                            tramiter.setTipoTramitacion(null);
+                        }
+                        procedimientoTramites.add(tramiter);
+                        break;
+                    default:
+                        for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
+                            ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
+                            tramite.setTramitElectronica(jtramite.isTramitElectronica());
+                            tramite.setTramitPresencial(jtramite.isTramitPresencial());
+                            tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+                            if (jtramite.getTipoTramitacion() != null) {
+                                tramite.setPlantillaSel(null);
+                            } else if (jtramite.getTipoTramitacionPlantilla() != null) {
+                                tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
+                                tramite.setTipoTramitacion(null);
+                            }
+                            procedimientoTramites.add(tramite);
+                        }
+                        break;
                 }
-                procedimientoTramites.add(tramite);
+            } else {
+                if (jprocedimientosTramites != null) {
+                    for (JProcedimientoTramite jtramite : jprocedimientosTramites) {
+                        ProcedimientoTramiteDTO tramite = converter.createDTO(jtramite);
+                        tramite.setTramitElectronica(jtramite.isTramitElectronica());
+                        tramite.setTramitPresencial(jtramite.isTramitPresencial());
+                        tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+                        if (jtramite.getTipoTramitacion() != null) {
+                            tramite.setPlantillaSel(null);
+                        } else if (jtramite.getTipoTramitacionPlantilla() != null) {
+                            tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
+                            tramite.setTipoTramitacion(null);
+                        }
+                        procedimientoTramites.add(tramite);
+                    }
+                }
             }
         }
         return procedimientoTramites;
@@ -337,7 +433,6 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
         }
         return "";
     }
-
 
 
 }

@@ -1825,6 +1825,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     if (elemento.getUnidadAdministrativa() != null) {
                         jua = entityManager.find(JUnidadAdministrativa.class, elemento.getUnidadAdministrativa().getCodigo());
                     }
+                    nuevo.setCodigoTramite(elemento.getCodigoTramite());
                     nuevo.setUnidadAdministrativa(jua);
                     nuevo.setProcedimiento(jprocWF);
                     nuevo.merge(elemento, jTipoTramitacionPlantilla, jTipoTramitacion);

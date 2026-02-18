@@ -478,7 +478,7 @@ public class SiaUtils {
             // final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaResponsable().getCodigo());
             // final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(siaUA.getUa().getCodigo());
             if (codigoDir3SiaUA.equals(codigoDir3IdCentro)) {
-                mensajeError.append("El procediment aquesta associat directament a l'entitat arrel.");
+                mensajeError.append("El procediment està associat directament a l'entitat arrel.");
                 noAsociadoSiaUA = false;
             }
         }

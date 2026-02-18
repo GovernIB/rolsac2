@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TRAMITE)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TRAMITE, name = Constantes.ENTIDAD_TRAMITE)
@@ -118,7 +119,8 @@ public class TramiteResource {
     @Operation(operationId = "getPorId", summary = "Obtiene una trámite", description = "Obtiene el trámite con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getPorId(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception {
+    public Response getPorId(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
+                             @Parameter(description = "Estados WF, siendo los valores \"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o sino modificado), A=Ambos (publicado y modificado)) ", name = "estadoWF", in = ParameterIn.QUERY) @QueryParam("estadoWF") final String estadoWF) throws Exception {
 
         Instant start = Instant.now();
         ProcedimientoTramiteFiltro fg = new ProcedimientoTramiteFiltro();
@@ -129,6 +131,7 @@ public class TramiteResource {
             fg.setIdioma(idiomaPorDefecto);
         }
         fg.setCodigo(Long.valueOf(codigo));
+        fg.setEstadoWF(Objects.requireNonNullElse(estadoWF, "T"));
 
 
         URI uriCompleta = uriInfo.getRequestUri();
