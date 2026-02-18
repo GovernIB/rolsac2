@@ -22,6 +22,7 @@ import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
@@ -332,7 +333,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             indexacionPDURepository.deleteByCodElemento(dtoAntiguo.getCodigo());
         }
 
-        crearAuditoria(dtoAntiguo, dto, perfil, null, TypeAccionAuditoria.MODIFICACION.toString());
+        crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.modificar", TypeAccionAuditoria.MODIFICACION.toString());
     }
 
     private void updateWF(ProcedimientoBaseDTO dto, JProcedimientoWorkflow jProcWF, String ruta) throws RecursoNoEncontradoException {
@@ -516,7 +517,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             if (((ProcedimientoDTO) proc).getTramites() != null) {
                 for (ProcedimientoTramiteDTO tramite : ((ProcedimientoDTO) proc).getTramites()) {
                     tramite.setCodigo(null);
-                    /*tramite.setCodigoTramite(null);*/
                     if (tramite.getTipoTramitacion() != null) {
                         tramite.getTipoTramitacion().setCodigo(null);
                     }
@@ -1175,6 +1175,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         }
 
         // Primero borramos el wf destino (si es de destinto wf)
+        String literalFlujo = "auditoria.flujo." + (data.getEstado() == null ? "" : data.getEstado().toString()) + "." + (estadoDestino == null ? "" : estadoDestino.toString());
         if (TypeProcedimientoEstado.distintoWorkflow(data.getEstado(), estadoDestino)) {
 
             Long codigoWF = procedimientoRepository.getCodigoByWF(data.getCodigo(), true);
@@ -1188,21 +1189,24 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
             if (procDestino == null && data.getCodigo() != null) {
                 if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
-                    generarAuditoria("auditoria.flujo." + data.getEstado().toString() + "." + estadoDestino.toString(), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.BAJA.toString());
+                    generarAuditoria(literalFlujo, data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.BAJA.toString());
                 } else {
-                    generarAuditoria("auditoria.flujo." + data.getEstado().toString() + "." + (estadoDestino == null ? "" : estadoDestino.toString()), data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.MODIFICACION.toString());
+                    generarAuditoria(literalFlujo, data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.MODIFICACION.toString());
                 }
 
             } else {
                 if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
-                    crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + "." + estadoDestino.toString(), TypeAccionAuditoria.BAJA.toString());
+                    crearAuditoria(procDestino, data, perfil, literalFlujo, TypeAccionAuditoria.BAJA.toString());
                 } else {
-                    crearAuditoria(procDestino, data, perfil, "auditoria.flujo." + data.getEstado().toString() + "." + (estadoDestino == null ? "" : estadoDestino.toString()), TypeAccionAuditoria.MODIFICACION.toString());
+                    crearAuditoria(procDestino, data, perfil, literalFlujo, TypeAccionAuditoria.MODIFICACION.toString());
                 }
             }
 
             // Borramos el wf destino
             procedimientoRepository.deleteWF(data.getCodigo(), estadoDestino.getWorkflowSegunEstado().getValor());
+        } else {
+            // Cambio de estado en el mismo wf
+            generarAuditoria(literalFlujo, data.getCodigo(), data.getUsuarioAuditoria(), perfil, TypeAccionAuditoria.MODIFICACION.toString());
         }
 
         // Segundo actualizamos el dato
@@ -1493,6 +1497,38 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         //Tramites
         procedimientoRepository.clonarTramites(idProcedimientoWF, idProcWFClonado, ruta);
+
+      //Auditoria
+        try {
+            List<AuditoriaCambio> cambios = new ArrayList<>();
+            //Mensaje de clonación
+            AuditoriaCambio cambioClon = new AuditoriaCambio();
+            cambioClon.setIdCampo("auditoria.procedimiento.clonar");
+            AuditoriaValorCampo valorClon = new AuditoriaValorCampo();
+            valorClon.setValorNuevo(idProcedimiento.toString());
+            cambioClon.getValoresModificados().add(valorClon);
+            cambios.add(cambioClon);
+
+            //Mensaje de transición de flujo
+            JProcedimientoWorkflow jprocWFOriginal = procedimientoRepository.getWF(idProcedimiento, wfSeleccionado);
+            AuditoriaCambio cambioFlujo = new AuditoriaCambio();
+            cambioFlujo.setIdCampo("auditoria.flujo." + jprocWFOriginal.getEstado() + "." + TypeProcedimientoEstado.MODIFICACION.toString());
+            cambios.add(cambioFlujo);
+
+            String auditoriaJson = JSONUtil.toJSON(cambios);
+            JProcedimientoAuditoria jprocAudit = new JProcedimientoAuditoria();
+            jprocAudit.setProcedimiento(jprocClonado);
+            Calendar calendar = Calendar.getInstance();
+            jprocAudit.setFechaModificacion(calendar.getTime());
+            jprocAudit.setListaModificaciones(auditoriaJson);
+            jprocAudit.setUsuarioModificacion(usuario);
+            jprocAudit.setUsuarioPerfil("");
+            jprocAudit.setLiteralFlujo("auditoria.flujo.clonar");
+            jprocAudit.setAccion(TypeAccionAuditoria.ALTA.toString());
+            this.auditoriaRepository.guardar(jprocAudit);
+        } catch (Exception e) {
+            LOG.error("Error creando auditoria de clonación", e);
+        }
 
         return idProcWFClonado;
     }
