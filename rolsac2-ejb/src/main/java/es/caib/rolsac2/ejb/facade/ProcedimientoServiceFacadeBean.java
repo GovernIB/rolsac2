@@ -1178,7 +1178,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         String literalFlujo = "auditoria.flujo." + (data.getEstado() == null ? "" : data.getEstado().toString()) + "." + (estadoDestino == null ? "" : estadoDestino.toString());
         if (TypeProcedimientoEstado.distintoWorkflow(data.getEstado(), estadoDestino)) {
 
-            Long codigoWF = procedimientoRepository.getCodigoByWF(data.getCodigo(), true);
+            Long codigoWF = procedimientoRepository.getCodigoByWF(data.getCodigo(), estadoDestino.getWorkflowSegunEstado().getValor());
             ProcedimientoBaseDTO procDestino = null;
             if (data instanceof ProcedimientoDTO && codigoWF != null) {
                 procDestino = getProcedimientoDTOByCodigoWF(codigoWF);

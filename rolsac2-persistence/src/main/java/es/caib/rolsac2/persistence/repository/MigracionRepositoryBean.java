@@ -24,6 +24,7 @@ import javax.persistence.ParameterMode;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -266,7 +267,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
     @Override
     public List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz) {
         /** Obtiene los procedimientos que tienen mensajes asociados, tabla R1_PROCEDIMIENTOS_MENSAJES, y que cuelgan de la UA raiz */
-        Query query = this.entityManager.createNativeQuery("   SELECT DISTINCT PMN_PROCODI  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE CHECK_CUELGA_UA_PROC(PRO_CODUNA, " + uaRaiz + ") = 1 ");
+        Query query = this.entityManager.createNativeQuery("   SELECT DISTINCT PMN_PROCODI  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI IN  (SELECT PROC_CODIGO FROM RS2_PROC )  ");
         return query.getResultList();
     }
 
@@ -289,14 +290,34 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
         Query query = this.entityManager.createNativeQuery("   SELECT PMN_PROCODI, PMN_USUARIO, PMN_GESTOR, PMN_TEXTO, PMN_FECCRE, PMN_FECLEC, PMN_LEIDO, PMN_USULEC  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI = " + idProcMsg);
         List<Object[]> resultados = query.getResultList();
         List<Mensaje> mensajes = new ArrayList<>();
+        boolean pendienteAdmContenido = false;
+        boolean pendienteGestor = false;
         if (resultados != null) {
             for (Object[] resultado : resultados) {
                 Mensaje mensajeObj = new Mensaje();
                 mensajeObj.setUsuario((String) resultado[1]);
-                mensajeObj.setAdmContenido(((BigDecimal) resultado[2]).intValue() == 0);
+                if (((BigDecimal) resultado[2]).intValue() == 1) {
+                    //Es gestor
+                    mensajeObj.setAdmContenido(false);
+                    mensajeObj.setPendienteMensajesSupervisor(true);
+                    if (resultado[6] != null && 0 == ((BigDecimal) resultado[6]).intValue()) {
+                        mensajeObj.setPendienteMensajesSupervisor(false);
+                        pendienteAdmContenido = true;
+                    }
+                } else {
+                    //Es adm contenido
+                    mensajeObj.setAdmContenido(true);
+                    mensajeObj.setPendienteMensajesGestor(true);
+                    if (resultado[6] != null && 0 == ((BigDecimal) resultado[6]).intValue()) {
+                        mensajeObj.setPendienteMensajesGestor(false);
+                        pendienteGestor = true;
+                    }
+                }
                 mensajeObj.setMensaje((String) resultado[3]);
-                mensajeObj.setFecha((String) resultado[4]);
-                mensajeObj.setFechaReal((java.util.Date) resultado[5]);
+                //Resultado[4] es un Timestamp , hay que convertirlo a String
+                final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                //mensajeObj.setFechaReal((java.util.Date) resultado[6]);
                 //mensajeObj.set(((BigDecimal) resultado[6]).intValue() == 1);
                 //mensajeObj.set((String) resultado[7]);
                 mensajes.add(mensajeObj);
@@ -305,8 +326,10 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
         }
         JProcedimiento procedimiento = this.entityManager.find(JProcedimiento.class, idProcMsg);
         procedimiento.setMensajes(UtilJSON.toJSON(mensajes));
+        procedimiento.setMensajesPendienteGestor(pendienteGestor);
+        procedimiento.setMensajesPendienteSupervisor(pendienteAdmContenido);
         entityManager.merge(procedimiento);
-        return "Migració missatges proc " + idProcMsg + " : " + mensajes.size() + " mensajes migrados.";
+        return "Migració missatges proc " + idProcMsg + " : " + mensajes.size() + " mensajes migrados. \n ";
     }
 
     @Override

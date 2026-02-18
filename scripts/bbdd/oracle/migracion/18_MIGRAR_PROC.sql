@@ -946,13 +946,13 @@ BEGIN
 						              SUBSTR(
 								              COALESCE(
 										              (
-											              SELECT MAX(TUN_NOMBRE)
+											              SELECT MAX(NULLIF(TRIM(TUN_NOMBRE), ''))
 											              FROM R1_UNIADM_TRAD
 											              WHERE TUN_CODUNA = V_PRWF_CODUAI
 												            AND TUN_CODIDI = rolsac1_tradproc.tpr_codidi
 										              ),
 										              (
-											              SELECT MAX(TUN_NOMBRE)
+											              SELECT MAX(NULLIF(TRIM(TUN_NOMBRE), ''))
 											              FROM R1_UNIADM_TRAD
 											              WHERE TUN_CODUNA = V_PRWF_CODUAI
 												            AND TUN_CODIDI = 'ca'
