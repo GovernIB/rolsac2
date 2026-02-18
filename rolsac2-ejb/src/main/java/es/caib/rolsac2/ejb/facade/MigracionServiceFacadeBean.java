@@ -262,5 +262,24 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         }
         return resultado.toString();
     }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz) {
+        return migracionRepository.getProcedimientosMensajes(idEntidad, uaRaiz);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public String migrarMensajes(List<BigDecimal> idProcs, Long entidad, Long uaRaiz) {
+        StringBuilder resultado = new StringBuilder();
+        if (idProcs != null) {
+            for (BigDecimal idProcServ : idProcs) {
+                String resultadoProc = migracionRepository.importarMensajes(idProcServ.longValue(), entidad);
+                resultado.append(resultadoProc);
+            }
+        }
+        return resultado.toString();
+    }
 }
 

@@ -162,4 +162,22 @@ public interface MigracionRepository extends CrudRepository<JProceso, Long> {
      * @param tipoficheroExterno
      */
     void migrarArchivo(Long idFichero, Long codigoFicheroRolsac1, TypeFicheroExterno tipoficheroExterno);
+
+    /**
+     * Obtiene los procedimientos/servicios con mensajes
+     *
+     * @param idEntidad
+     * @param uaRaiz
+     * @return
+     */
+    List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz);
+
+    /**
+     * Migra los mensajes de procedimientos/servicios
+     *
+     * @param idProcMsg
+     * @param entidad
+     * @return
+     */
+    String importarMensajes(long idProcMsg, Long entidad);
 }

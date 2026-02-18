@@ -2,13 +2,16 @@ package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.persistence.model.JDocumentoNormativaTraduccion;
 import es.caib.rolsac2.persistence.model.JFicheroExterno;
+import es.caib.rolsac2.persistence.model.JProcedimiento;
 import es.caib.rolsac2.persistence.model.JProceso;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion;
 import es.caib.rolsac2.service.model.Literal;
+import es.caib.rolsac2.service.model.Mensaje;
 import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.migracion.FicheroInfo;
 import es.caib.rolsac2.service.model.types.TypeFicheroExterno;
+import es.caib.rolsac2.service.utils.UtilJSON;
 import org.hibernate.procedure.ProcedureOutputs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -258,6 +261,52 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             doc.setDocumento(jficheroExterno);
             entityManager.merge(doc);
         }
+    }
+
+    @Override
+    public List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz) {
+        /** Obtiene los procedimientos que tienen mensajes asociados, tabla R1_PROCEDIMIENTOS_MENSAJES, y que cuelgan de la UA raiz */
+        Query query = this.entityManager.createNativeQuery("   SELECT DISTINCT PMN_PROCODI  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE CHECK_CUELGA_UA_PROC(PRO_CODUNA, " + uaRaiz + ") = 1 ");
+        return query.getResultList();
+    }
+
+    @Override
+    public String importarMensajes(long idProcMsg, Long entidad) {
+        /** Teniendo en cuenta que R1_PROCEDIMIENTOS_MENSAJES es :
+         * PMN_CODI	NUMBER(19,0)
+         * PMN_PROCODI	NUMBER(19,0)
+         * PMN_USUARIO	VARCHAR2(125 CHAR)
+         * PMN_GESTOR	NUMBER(1,0)
+         * PMN_TEXTO	VARCHAR2(256 CHAR)
+         * PMN_FECCRE	DATE
+         * PMN_FECLEC	DATE
+         * PMN_LEIDO	NUMBER(1,0)
+         * PMN_USULEC	VARCHAR2(100 CHAR)
+         *
+         * Hay que obtener todas las filas de R1_PROCEDIMIENTOS_MENSAJES  con PMN_PROCODI = idProcMsg ordenando por PMN_FECCRE  y migrarlas a la tabla de mensajes de JProcedimiento.mensajes (mensajes es un json de varios mensajes)
+         * **/
+
+        Query query = this.entityManager.createNativeQuery("   SELECT PMN_PROCODI, PMN_USUARIO, PMN_GESTOR, PMN_TEXTO, PMN_FECCRE, PMN_FECLEC, PMN_LEIDO, PMN_USULEC  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI = " + idProcMsg);
+        List<Object[]> resultados = query.getResultList();
+        List<Mensaje> mensajes = new ArrayList<>();
+        if (resultados != null) {
+            for (Object[] resultado : resultados) {
+                Mensaje mensajeObj = new Mensaje();
+                mensajeObj.setUsuario((String) resultado[1]);
+                mensajeObj.setAdmContenido(((BigDecimal) resultado[2]).intValue() == 0);
+                mensajeObj.setMensaje((String) resultado[3]);
+                mensajeObj.setFecha((String) resultado[4]);
+                mensajeObj.setFechaReal((java.util.Date) resultado[5]);
+                //mensajeObj.set(((BigDecimal) resultado[6]).intValue() == 1);
+                //mensajeObj.set((String) resultado[7]);
+                mensajes.add(mensajeObj);
+
+            }
+        }
+        JProcedimiento procedimiento = this.entityManager.find(JProcedimiento.class, idProcMsg);
+        procedimiento.setMensajes(UtilJSON.toJSON(mensajes));
+        entityManager.merge(procedimiento);
+        return "Migració missatges proc " + idProcMsg + " : " + mensajes.size() + " mensajes migrados.";
     }
 
     @Override

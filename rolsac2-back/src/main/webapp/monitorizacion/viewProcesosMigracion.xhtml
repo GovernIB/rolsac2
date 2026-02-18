@@ -195,6 +195,13 @@ Pàgina amb el llistat de processos automàtics
                         </p:selectBooleanCheckbox>
 
                 </div>
+                    <div class="ui-g-12 ui-md-12 ui-lg-12 text-align-left ml10">
+                        <p:selectBooleanCheckbox id="chkCargarMsg" value="#{viewProcesosMigracion.cargarMensajes}" styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarMensajes']}" >
+                            <p:ajax process="@this"  event="change" update="chkCargarProc chkCargarUAs" />
+                        </p:selectBooleanCheckbox>
+
+                    </div>
                 <div class="ui-g-12 ui-md-12 ui-lg-12 text-align-left ml10">
                     <p:selectBooleanCheckbox id="cargarDocumentos" value="#{viewProcesosMigracion.cargarDocumentos}" styleClass="ml-2"
                                              itemLabel="#{labels['viewProcesosMigracion.cargarDocumentos']}" >

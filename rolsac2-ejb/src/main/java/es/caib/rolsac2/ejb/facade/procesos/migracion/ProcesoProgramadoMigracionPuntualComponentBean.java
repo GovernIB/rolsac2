@@ -95,6 +95,8 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             String cargarDatosProcedimientos = params.getPropiedad("cargarProcedimientos");
             String cargarDatosServicios = params.getPropiedad("cargarServicios");
             String cargarDocumentos = params.getPropiedad("cargarDocumentos");
+            String cargarMensajes = params.getPropiedad("cargarMensajes");
+
             String usuarios = params.getPropiedad("usuarios");
             Long entidad = Long.valueOf(params.getPropiedad("entidad"));
             Long uaRaiz = Long.valueOf(params.getPropiedad("uaRaiz"));
@@ -210,6 +212,24 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                 mensajeTraza.append("FI MIGRACIO SERVICIOS \n");
                 detalles.addPropiedad("Cargar datos Servicios", "Ejecutado correctamente");
                 estadoMigracion += "Migrado los servicios 100%\n";
+            }
+            if (cargarMensajes != null && "true".equals(cargarMensajes)) {
+                mensajeTraza.append("INICI MIGRACIO MISSATGES \n");
+                List<BigDecimal> idProcs = migracionService.getProcedimientosMensajes(idEntidad, uaRaiz);
+                if (idProcs != null && !idProcs.isEmpty()) {
+                    // Recorre el array en bloques de 10 elementos
+                    for (int i = 0; i < idProcs.size(); i += TAMANYO_BLOQUE) {
+
+                        // Obtiene el bloque actual de 10 elementos
+                        List<BigDecimal> bloque = obtenerBloque(idProcs, i, TAMANYO_BLOQUE);
+                        String result = migracionService.migrarMensajes(bloque, entidad, uaRaiz);
+                        mensajeTraza.append(result);
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Mensajes " + getPorcentaje(i, idProcs.size()) + " \n\n" + mensajeTraza.toString());
+                    }
+                }
+                mensajeTraza.append("FI MIGRACIO MISSATGES \n");
+                detalles.addPropiedad("Cargar datos Mensajes", "Ejecutado correctamente");
+                estadoMigracion += "Migrado los mensajes 100%\n";
             }
             if (cargarDocumentos != null && "true".equals(cargarDocumentos)) {
                 mensajeTraza.append("MIGRAMOS DOCUMENTOS DOCUMENTOS \n");

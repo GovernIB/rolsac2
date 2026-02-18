@@ -66,6 +66,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
     private boolean cargarServicios;
     private boolean cargarUsuarios;
     private boolean cargarDocumentos;
+    private boolean cargarMensajes;
 
     //Usuarios
     private List<UsuarioDTO> usuarios;
@@ -98,6 +99,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
         cargarUsuarios = true;
         cargarServicios = false;
         cargarDocumentos = false;
+        cargarMensajes = false;
 
         uas = migracionServiceFacade.getUnidadAdministrativasRaiz();
         if (uas != null && !uas.isEmpty()) {
@@ -196,6 +198,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
         listaPropiedades.addPropiedad("cargarServicios", cargarServicios ? "true" : "false");
         listaPropiedades.addPropiedad("cargarUsuarios", cargarUsuarios ? "true" : "false");
         listaPropiedades.addPropiedad("cargarDocumentos", cargarDocumentos ? "true" : "false");
+        listaPropiedades.addPropiedad("cargarMensajes", cargarMensajes ? "true" : "false");
         listaPropiedades.addPropiedad("entidad", UtilJSF.getSessionBean().getEntidad().getCodigo().toString());
         String sUsuarios = "";
         if (usuarios != null && !usuarios.isEmpty()) {
@@ -410,5 +413,13 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
 
     public void setCargarDocumentos(boolean cargarDocumentos) {
         this.cargarDocumentos = cargarDocumentos;
+    }
+
+    public boolean isCargarMensajes() {
+        return cargarMensajes;
+    }
+
+    public void setCargarMensajes(boolean cargarMensajes) {
+        this.cargarMensajes = cargarMensajes;
     }
 }

@@ -159,4 +159,23 @@ public interface MigracionServiceFacade {
      * @return
      */
     String migrarDocumentos(FicheroInfo ficheroInfo, Long entidad, Long uaRaiz, String pathAlmacenamientoRolsac1, String pathAlmacenamiento, TypeFicheroExterno tipoficheroExterno);
+
+    /**
+     * Obtiene la lista de mensajes de procs/servicios.
+     *
+     * @param idEntidad
+     * @param uaRaiz
+     * @return
+     */
+    List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz);
+
+    /**
+     * Migra los mensajes de procs/servicios.
+     *
+     * @param bloque
+     * @param entidad
+     * @param uaRaiz
+     * @return
+     */
+    String migrarMensajes(List<BigDecimal> bloque, Long entidad, Long uaRaiz);
 }
