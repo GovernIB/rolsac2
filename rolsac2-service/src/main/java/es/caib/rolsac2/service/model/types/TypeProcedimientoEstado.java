@@ -110,7 +110,19 @@ public enum TypeProcedimientoEstado {
     }
 
     public String getLiteralMensajePendiente(String idioma) {
-        return "es.caib.rolsac2.procServ.accion." + valor + "." + idioma;
+        String sufijo = valor;
+        switch (this) {
+            case PENDIENTE_PUBLICAR:
+                sufijo = "S";
+                break;
+            case PENDIENTE_CERRAR:
+                sufijo = "T";
+                break;
+            case CERRADO:
+                sufijo = "B";
+                break;
+        }
+        return "es.caib.rolsac2.procServ.accion." + sufijo + "." + idioma;
     }
 
     public boolean isEstadoValidacionPDU() {
