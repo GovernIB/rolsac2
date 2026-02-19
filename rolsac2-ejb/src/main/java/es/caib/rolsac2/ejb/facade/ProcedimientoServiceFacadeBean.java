@@ -22,9 +22,9 @@ import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaGridDTO;
+import es.caib.rolsac2.service.model.auditoria.AuditoriaValorCampo;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoDocumentoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
@@ -1326,9 +1326,45 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<ProcedimientoTramiteDTO> findProcedimientoTramiteByFiltroRest(ProcedimientoTramiteFiltro filtro) {
         try {
-            List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
-            long total = procedimientoTramiteRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
+            if (filtro.getCodigoTramite() != null && filtro.getEstadoWF() != null) {
+                List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
+                List<ProcedimientoTramiteDTO> defs = new ArrayList<>();
+                switch (filtro.getEstadoWF()) {
+                    case "A":
+                        defs.addAll((items));
+                        break;
+                    case "B":
+                    case "M":
+                        boolean definitivo = "M".equals(filtro.getEstadoWF());
+                        for (ProcedimientoTramiteDTO item : items) {
+                            if (item.getProcedimiento().getWorkflow() == definitivo) {
+                                defs.add(item);
+                                break;
+                            }
+                        }
+                        break;
+                    case "T":
+                        for (ProcedimientoTramiteDTO item : items) {
+                            if (item.getProcedimiento().getWorkflow() == TypeProcedimientoWorkflow.DEFINITIVO.getValor()) {
+                                defs.add(item);
+                                break;
+                            }
+                        }
+                        if (defs.isEmpty() && !items.isEmpty()) {
+                            defs.add(items.get(0));
+                        }
+                        break;
+                    default:
+                        defs = items;
+                }
+
+                return new Pagina<>(defs, defs.size());
+
+            } else {
+                List<ProcedimientoTramiteDTO> items = procedimientoTramiteRepository.findPagedByFiltroRest(filtro);
+                long total = procedimientoTramiteRepository.countByFiltro(filtro);
+                return new Pagina<>(items, total);
+            }
         } catch (Exception e) {
             LOG.error("Error", e);
             List<ProcedimientoTramiteDTO> items = new ArrayList<>();
@@ -1498,7 +1534,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         //Tramites
         procedimientoRepository.clonarTramites(idProcedimientoWF, idProcWFClonado, ruta);
 
-      //Auditoria
+        //Auditoria
         try {
             List<AuditoriaCambio> cambios = new ArrayList<>();
             //Mensaje de clonación

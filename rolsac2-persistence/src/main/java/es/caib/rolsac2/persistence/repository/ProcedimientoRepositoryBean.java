@@ -2578,6 +2578,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         if (filtro.isRellenoVersion()) {
+            sql.append(" AND  WF.codigo = :codigoTrmaite");
+        }
+
+        if (filtro.isRellenoVersion()) {
             if (filtro.getEsProcedimiento()) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND ( tipo.tramiteVersion = :version) ) ");
@@ -2867,6 +2871,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoVersion()) {
             query.setParameter("version", filtro.getVersion());
         }
+        if (filtro.isRellenoCodigoTramite()) {
+            query.setParameter("codigoTrmaite", filtro.getCodigoTramite());
+        }
+
         if (filtro.isRellenoIdTramiteTelematico()) {
             query.setParameter("idTramiteTelematico", filtro.getIdTramiteTelematico());
         }

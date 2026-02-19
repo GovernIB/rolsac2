@@ -115,6 +115,7 @@ public class Tramite extends EntidadBase<Tramite> {
             procedimiento = procedimientoDTO == null ? null : procedimientoDTO.getCodigo();
         }
         generaLinks(urlBase);
+        this.setCodigo(elem.getCodigoTramite());
     }
 
     public Tramite() {

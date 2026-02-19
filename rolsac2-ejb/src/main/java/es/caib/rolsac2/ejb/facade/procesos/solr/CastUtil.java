@@ -25,7 +25,7 @@ public class CastUtil {
         indexData.setCategoria(EnumCategoria.ROLSAC_TRAMITE);
         indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
         indexData.setCategoriaPadre(EnumCategoria.ROLSAC_PROCEDIMIENTO);
-        indexData.setElementoId(tramite.getCodigo().toString());
+        indexData.setElementoId(tramite.getCodigoTramite().toString());
         indexData.setCategoriaRaiz(EnumCategoria.ROLSAC_PROCEDIMIENTO);
         indexData.setElementoIdRaiz(procedimiento.getCodigo().toString());
 
