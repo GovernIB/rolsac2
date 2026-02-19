@@ -232,7 +232,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton id="btnClonar" value="#{labels['dict.clonar']}" styleClass="mr-2" icon="pi pi-file-o"
                                              iconPos="top" actionListener="#{viewServicios.clonarServicio}" update="messages "
-                                             disabled="#{viewServicios.datoSeleccionado == null}"
+                                             disabled="#{viewServicios.datoSeleccionado == null  or viewServicios.isClonarBorrarDisabled()}"
                                              process="@this" rendered="#{!viewServicios.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoClonar}"
                                         update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar"/>
@@ -265,7 +265,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" styleClass="mr-2" icon="pi pi-trash"
                                              iconPos="top" action="#{viewServicios.borrarProcedimiento}" process="@form"
                                              update="messages dataTable  btnEditar btnConsultar btnBorrar btnClonar" onstart="startEliminando()"
-                                             oncomplete="stopEliminando()" disabled="#{viewServicios.datoSeleccionado == null}">
+                                             oncomplete="stopEliminando()" disabled="#{viewServicios.datoSeleccionado == null or viewServicios.isClonarBorrarDisabled()}"
+                                             rendered="#{!viewServicios.isModoConsulta()}">
                                 <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"

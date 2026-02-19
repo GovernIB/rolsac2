@@ -328,7 +328,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
 
-            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            TypeModoAcceso modo = BooleanUtils.isTrue((datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) || (datoSeleccionado.getEstado().equals("PV") && this.isGestor())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
             String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
             abrirVentana(modo, proc, estados);
 
@@ -1202,5 +1202,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             editable = true;
         }
         return editable;
+    }
+
+    public boolean isClonarBorrarDisabled() {
+        return this.isGestor() && this.datoSeleccionado.getComun() == true;
     }
 }

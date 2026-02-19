@@ -253,7 +253,8 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.tasa']}:"
                                        for="txtTasa"/>
                         <p:selectBooleanCheckbox id="txtTasa"
-                                                 value="#{dialogServicio.data.tieneTasa}"/>
+                                                 value="#{dialogServicio.data.tieneTasa}" disabled="#{dialogServicio.isModoConsulta()}"
+                        />
                     </div>
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:"
@@ -405,9 +406,9 @@
                         <!--Aquí es mapear luego con los bools que tiene tipoTramitacion para ello-->
                         <p:selectManyCheckbox id="canalesTramitacion"
                                               value="#{dialogServicio.canalesSeleccionados}">
-                            <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL" id="telematico"/>
-                            <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE"/>
-                            <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN"/>
+                            <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL" id="telematico" itemDisabled="#{dialogServicio.isModoConsulta()}"/>
+                            <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE" itemDisabled="#{dialogServicio.isModoConsulta()}"/>
+                            <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN" itemDisabled="#{dialogServicio.isModoConsulta()}"/>
                             <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica panelFormCanales"
                                     event="change" listener="#{dialogServicio.cambiaTipo}"/>
                         </p:selectManyCheckbox>
@@ -544,7 +545,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.lopd.activo']}:"
                                        for="txtActivoLOPD"/>
                         <p:selectBooleanCheckbox id="txtActivoLOPD"
-                                                 value="#{dialogServicio.data.activoLOPD}">
+                                                 value="#{dialogServicio.data.activoLOPD}" disabled="#{dialogServicio.isModoConsulta()}">
                             <p:ajax event="change" oncomplete="checkActivoLOPD();"
                                     update="panelDocumentoLOPD dataDocumentosLopd paneldataDocumentosLopd"/>
                         </p:selectBooleanCheckbox>

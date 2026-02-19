@@ -1782,18 +1782,23 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public boolean isMostrarBtnFlujo() {
         if (this.isGestor()) {
             if (this.data.getComun() == 1) {
-                //Si es comun , no mostrar boton
+                // Si es común, no mostrar botón
                 return false;
-            } else {
-                return !this.isNoEditable();
             }
-        } else if (this.isInformador()) {
-            return false;
-        } else if (this.isAdministradorContenidos()) {
-            return true;
-        } else {
+            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+                // En caso de estar pendiente de validación, no mostrar botón
+                return false;
+            }
+            return !this.isNoEditable();
+        }
+        if (this.isInformador()) {
             return false;
         }
+        if (this.isAdministradorContenidos()) {
+            return true;
+        }
+        return false;
+
     }
 
     public void setMostrarBtnFlujo(boolean mostrarBtnFlujo) {
