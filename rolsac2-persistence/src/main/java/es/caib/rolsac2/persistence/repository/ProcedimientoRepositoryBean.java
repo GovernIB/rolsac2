@@ -1644,9 +1644,14 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 borrarTramite(tramite);
             }
         }
+
         //Lo ultimo es borrar el propio WF
-        entityManager.remove(jprocWF);
-		entityManager.flush();        
+        JProcedimientoWorkflow ref =
+                entityManager.getReference(JProcedimientoWorkflow.class, jprocWF.getCodigo());
+
+        entityManager.remove(ref);
+        entityManager.flush();
+
     }
 
     @Override
