@@ -22,6 +22,8 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.validation.ValidationException;
@@ -40,6 +42,7 @@ import java.util.Objects;
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TRAMITE)
 @Tag(description = Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_TRAMITE, name = Constantes.ENTIDAD_TRAMITE)
 public class TramiteResource {
+    private static final Logger LOG = LoggerFactory.getLogger(TramiteResource.class);
 
     @EJB
     ProcedimientoServiceFacade procedimientoService;
@@ -69,6 +72,7 @@ public class TramiteResource {
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTramites(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de trámites: " + FiltroTramite.SAMPLE, name = "filtro", content = @Content(example = FiltroTramite.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTramite.class))) FiltroTramite filtro) throws ValidationException {
+
 
         Instant start = Instant.now();
         if (filtro == null) {
@@ -132,7 +136,7 @@ public class TramiteResource {
         }
         fg.setCodigoTramite(Long.valueOf(codigo));
         fg.setEstadoWF(Objects.requireNonNullElse(estadoWF, "T"));
-        
+
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 

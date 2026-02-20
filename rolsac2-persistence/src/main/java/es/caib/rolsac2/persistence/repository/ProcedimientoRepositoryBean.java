@@ -1644,9 +1644,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 borrarTramite(tramite);
             }
         }
-
         //Lo ultimo es borrar el propio WF
         entityManager.remove(jprocWF);
+		entityManager.flush();        
     }
 
     @Override
@@ -2577,7 +2577,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-        if (filtro.isRellenoVersion()) {
+        if (filtro.isRellenoCodigoTramite()) {
             sql.append(" AND  WF.codigo = :codigoTrmaite");
         }
 

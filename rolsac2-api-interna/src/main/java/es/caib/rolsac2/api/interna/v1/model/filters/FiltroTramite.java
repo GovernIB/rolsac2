@@ -243,4 +243,22 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
         this.codigoTipoTramitacion = codigoTipoTramitacion;
     }
 
+    @Override
+    public String toString() {
+        return "FiltroTramite{" +
+                "orden=" + orden +
+                ", idEntidad=" + idEntidad +
+                ", fase=" + fase +
+                ", codigoUnidadAdministrativa=" + codigoUnidadAdministrativa +
+                ", codigoProcedimiento=" + codigoProcedimiento +
+                ", codigoProcedimientoWF=" + codigoProcedimientoWF +
+                ", codigoTipoTramitacion=" + codigoTipoTramitacion +
+                ", filtroPaginacion=" + filtroPaginacion +
+                ", texto='" + texto + '\'' +
+                ", estadoWF='" + estadoWF + '\'' +
+                ", idTramite='" + idTramite + '\'' +
+                ", idPlataforma='" + idPlataforma + '\'' +
+                ", version=" + version +
+                '}';
+    }
 }

@@ -5,6 +5,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacion
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumIdiomas;
 import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -739,7 +740,12 @@ public class CastUtil {
             nomUnidadAministrativa = proc.getUaResponsable().getNombre().getTraduccion("ca");
         }
 
-        final boolean esProcSerInterno = contienePOInterno(proc.getPublicosObjetivo());
+        boolean esProcSerInterno = contienePOInterno(proc.getPublicosObjetivo());
+
+        if (proc.getEstado() == TypeProcedimientoEstado.CERRADO) {
+            //Si está cerrado, se considera interno aunque no tenga público objetivo interno, para evitar que aparezca en SEUCAIB
+            esProcSerInterno = true;
+        }
 
         // Recorremos las traducciones
         for (final String keyIdioma : proc.getNombreProcedimientoWorkFlow().getIdiomas()) {
@@ -859,6 +865,7 @@ public class CastUtil {
         indexData.setFechaActualizacion(proc.getFechaActualizacion());
         indexData.setFechaPublicacion(proc.getFechaPublicacion());
         indexData.setFechaCaducidad(proc.getFechaCaducidad());
+
 
         if (esProcSerInterno) {
             indexData.setInterno(true);
