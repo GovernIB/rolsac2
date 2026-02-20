@@ -168,8 +168,11 @@ public class SessionBean implements Serializable {
     }
 
     public void cargarAlertas() {
-        alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), seguridad.getPerfiles(), lang);
-
+        if (this.perfil != null) {
+            alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), Collections.singletonList(this.perfil), lang);
+        } else {
+            alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), seguridad.getPerfiles(), lang);
+        }
     }
 
     /************************************************************************************************************************************************
