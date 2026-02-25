@@ -318,68 +318,49 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     break;
                 case "A":
                     List<JProcedimientoWorkflow> jprocsA = query.getResultList();
-                    List<Long> idProcsA = getIdsProcedimientos(jprocsA);
-                    List<JProcedimientoDocumento> documentosA = getDocumentosLopd(idProcsA);
-                    for (Object proc : jprocsA) {
-                        if (proc != null) {
-                            JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
-                            ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA, true);
-                            procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
-                            if (!ignorarDocumentos) {
-                                procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentosA, filtro.getIdioma()));
-                            }
-                            procs.add(procDTO);
-
-
-                        }
-                    }
-                    break;
-                case "T":
-                    List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
-                    for (Object[] proc : jprocs) {
-                        if (proc != null) {
-                            JProcedimientoWorkflow publicado = (JProcedimientoWorkflow) proc[0];
-                            JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[1];
-
-                            if (publicado != null) {
-                                seleccionado = publicado;
-                            } else {
-                                seleccionado = modificado;
-                            }
-
-                            if (seleccionado == null) {
-                                continue;
-                            }
-                            List<Long> idProcsT = new ArrayList<>();
-                            idProcsT.add(seleccionado.getCodigo());
-                            List<JProcedimientoDocumento> documentosT = null;
-                            if (!ignorarDocumentos) {
-                                documentosT = getDocumentosLopd(idProcsT);
-                            }
-
-                            if (seleccionado != null) {
-                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionado, true);
-                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
+                    if (jprocsA != null && !jprocsA.isEmpty()) {
+                        List<Long> idProcsA = getIdsProcedimientos(jprocsA);
+                        List<JProcedimientoDocumento> documentosA = getDocumentosLopd(idProcsA);
+                        for (Object proc : jprocsA) {
+                            if (proc != null) {
+                                JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
+                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA, true);
+                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
                                 if (!ignorarDocumentos) {
-                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosT, filtro.getIdioma()));
+                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentosA, filtro.getIdioma()));
                                 }
                                 procs.add(procDTO);
                             }
                         }
                     }
                     break;
+                case "T":
                 default:
-                    List<JProcedimientoWorkflow> jprocsD = query.getResultList();
-                    List<Long> idProcsD = getIdsProcedimientos(jprocsD);
-                    List<JProcedimientoDocumento> documentosD = getDocumentosLopd(idProcsD);
-                    for (Object proc : jprocsD) {
-                        if (proc != null) {
-                            seleccionado = (JProcedimientoWorkflow) proc;
-                            if (seleccionado != null) {
-                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionado, true);
-                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionado.getProcedimiento()), filtro.getIdioma()));
+                    List<Object[]> jprocsT = query.getResultList();
+                    if (jprocsT != null && !jprocsT.isEmpty()) {
+                        List<Long> idProcsT = new ArrayList<>();
+                        for (Object[] fila : jprocsT) {
+                            if (fila[1] != null) idProcsT.add(((JProcedimientoWorkflow) fila[1]).getCodigo());
+                            if (fila[2] != null) idProcsT.add(((JProcedimientoWorkflow) fila[2]).getCodigo());
+                        }
+                        List<JProcedimientoDocumento> documentosT = getDocumentosLopd(idProcsT);
+                        for (Object[] fila : jprocsT) {
+                            JProcedimiento j = (JProcedimiento) fila[0];
+                            JProcedimientoWorkflow wf = (JProcedimientoWorkflow) fila[1];
+                            JProcedimientoWorkflow wf2 = (JProcedimientoWorkflow) fila[2];
+
+                            JProcedimientoWorkflow seleccionadoT = null;
+                            if (wf != null) {
+                                seleccionadoT = wf;
+                            } else if (wf2 != null) {
+                                seleccionadoT = wf2;
+                            }
+
+                            if (seleccionadoT != null) {
+                                ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoT, true);
+                                procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoT.getProcedimiento()), filtro.getIdioma()));
                                 if (!ignorarDocumentos) {
-                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionado, documentosD, filtro.getIdioma()));
+                                    procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoT, documentosT, filtro.getIdioma()));
                                 }
                                 procs.add(procDTO);
                             }
@@ -388,21 +369,38 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     break;
             }
         } else {
-            List<JProcedimientoWorkflow> jprocsA = query.getResultList();
-            List<Long> idProcs = getIdsProcedimientos(jprocsA);
-            List<JProcedimientoDocumento> documentos = getDocumentosLopd(idProcs);
-            for (Object proc : jprocsA) {
-                if (proc != null) {
-                    JProcedimientoWorkflow seleccionadoA = (JProcedimientoWorkflow) proc;
+            List<Object[]> jprocsNull = query.getResultList();
+            if (jprocsNull != null && !jprocsNull.isEmpty()) {
+                List<Long> idProcsNull = new ArrayList<>();
+                for (Object[] fila : jprocsNull) {
+                    if (fila[1] != null) idProcsNull.add(((JProcedimientoWorkflow) fila[1]).getCodigo());
+                    if (fila[2] != null) idProcsNull.add(((JProcedimientoWorkflow) fila[2]).getCodigo());
+                }
+                List<JProcedimientoDocumento> documentosNull = getDocumentosLopd(idProcsNull);
+                for (Object[] fila : jprocsNull) {
+                    JProcedimiento j = (JProcedimiento) fila[0];
+                    JProcedimientoWorkflow wf = (JProcedimientoWorkflow) fila[1];
+                    JProcedimientoWorkflow wf2 = (JProcedimientoWorkflow) fila[2];
 
-                    ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoA, true);
-                    procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoA.getProcedimiento()), filtro.getIdioma()));
-                    if (!ignorarDocumentos) {
-                        procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoA, documentos, filtro.getIdioma()));
+                    JProcedimientoWorkflow seleccionadoNull = null;
+                    if (wf != null) {
+                        seleccionadoNull = wf;
+                    } else if (wf2 != null) {
+                        seleccionadoNull = wf2;
                     }
-                    procs.add(procDTO);
 
-
+                    if (seleccionadoNull != null) {
+                        ProcedimientoBaseDTO procDTO = convertDTO(seleccionadoNull, true);
+                        procDTO.setLopdResponsable(getLopdReponsable(getWFPublicado(seleccionadoNull.getProcedimiento()), filtro.getIdioma()));
+                        if (!ignorarDocumentos) {
+                            procDTO.setDocumentosLOPD(getDocumentosLOPD(seleccionadoNull, documentosNull, filtro.getIdioma()));
+                        }
+                        procs.add(procDTO);
+                    } else {
+                        // Caso null: procedimiento sin versiones
+                        ProcedimientoBaseDTO procDTO = createDTO(j);
+                        procs.add(procDTO);
+                    }
                 }
             }
         }
@@ -2145,18 +2143,66 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         StringBuilder sql;
         boolean ambosWf = false;
         if (isTotal) {
-            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + "  LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            String joinWf;
+            String joinWf2;
+            String whereExtra = "";
+            if (filtro.getEstadoWF() != null) {
+                switch (filtro.getEstadoWF()) {
+                    case "D":
+                        joinWf = " INNER JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor();
+                        joinWf2 = " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor();
+                        break;
+                    case "M":
+                        joinWf = " LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor();
+                        joinWf2 = " INNER JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor();
+                        break;
+                    case "A":
+                        joinWf = " INNER JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor();
+                        joinWf2 = " INNER JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor();
+                        break;
+                    case "T":
+                        joinWf = " LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor();
+                        joinWf2 = " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor();
+                        break;
+                    default:
+                        joinWf = " LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor();
+                        joinWf2 = " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor();
+                        break;
+                }
+            } else {
+                joinWf = " LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor();
+                joinWf2 = " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor();
+            }
+
+            sql = new StringBuilder("SELECT count(j) FROM JProcedimiento j ");
+            sql.append(joinWf).append(joinWf2);
+            sql.append(" LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            sql.append(whereExtra);
             ambosWf = true;
         } else if (isRest) {
-            if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("D")) {
-                sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
-            } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("M")) {
-                sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = true LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma  LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
-            } else if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("T")) {
-                sql = new StringBuilder("SELECT  wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");//and((wf.workflow = true and wf2.workflow is null) or (wf.workflow = true and wf2.workflow = false) or (wf.workflow is null and wf2.workflow = false))
-                ambosWf = true;
+            if (filtro.getEstadoWF() != null) {
+                switch (filtro.getEstadoWF()) {
+                    case "D":
+                        sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
+                        break;
+                    case "M":
+                        sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma  LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma where 1 = 1 ");
+                        break;
+                    case "A":
+                        sql = new StringBuilder("SELECT  wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " INNER JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma where 1 = 1 ");
+                        break;
+                    case "T":
+                        sql = new StringBuilder("SELECT j, wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+                        ambosWf = true;
+                        break;
+                    default:
+                        sql = new StringBuilder("SELECT j, wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+                        ambosWf = true;
+                        break;
+                }
             } else {
-                sql = new StringBuilder("SELECT wf FROM JProcedimiento j INNER JOIN j.procedimientoWF WF ON wf.workflow = true or wf.workflow = false LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma  where 1 = 1 ");
+                sql = new StringBuilder("SELECT j, wf, wf2 FROM JProcedimiento j LEFT JOIN j.procedimientoWF WF WITH wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT JOIN j.procedimientoWF WF2 WITH wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma=:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+                ambosWf = true;
             }
         } else {
             sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1 and rownum = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor, wf.uaInstructor.codigo FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
