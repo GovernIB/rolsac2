@@ -164,7 +164,7 @@ public class ViewTipoTramitacion extends AbstractController implements Serializa
             params.put(TypeParametroVentana.ID.toString(), this.datoSeleccionado.getCodigo().toString());
         }
         params.put(TypeParametroVentana.PLANTILLA.toString(), "S");
-        UtilJSF.openDialog("dialogTipoTramitacion", modoAcceso, params, true, 780, 550);
+        UtilJSF.openDialog("dialogTipoTramitacion", modoAcceso, params, true, 780, 520);
     }
 
     public void borrarTipoTramitacion() {

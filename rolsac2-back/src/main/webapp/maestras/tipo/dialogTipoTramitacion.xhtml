@@ -121,6 +121,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <div class="ui-g-12 ui-md-3 ui-lg-4">
                     <p:selectOneMenu id="txtCodPlatTramitacion"
                                      requiredMessage="#{labels['dict.obligatorio.plataformaTramitacion']}"
+                                     required="#{empty param['formDialog:closeButton']}"
                                      value="#{dialogTipoTramitacion.data.codPlatTramitacion}"
                                      converter="#{platTramitElectronicaConverter}"
                                      styleClass="w90" disabled="#{dialogTipoTramitacion.isModoConsulta()}">
@@ -155,24 +156,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtTramiteParametros" value="#{dialogTipoTramitacion.data.tramiteParametros}"
-                                 requiredMessage="#{labels['dict.obligatorio.parametros']}"
-                                 styleClass="w96" required="#{empty param['formDialog:closeButton']}"
-                                  disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="1024"/>
-                </div>
-
-                <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel for="@next" value="#{labels['viewTipoTramitacion.platTramitacion']}:"/>
-                </div>
-                <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <p:selectBooleanCheckbox value="#{dialogTipoTramitacion.data.tramitElectronica}"
-                                             itemLabel="#{labels['viewTipoTramitacion.tramitElectronica']}"
-                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"
-                                             />
-
-                    <p:selectBooleanCheckbox value="#{dialogTipoTramitacion.data.tramitPresencial}"
-                                             itemLabel="#{labels['viewTipoTramitacion.tramitPresencial']}"
-                                             disabled="#{dialogTipoTramitacion.isModoConsulta()}"
-                                             />
+                                 styleClass="w96" disabled="#{dialogTipoTramitacion.isModoConsulta()}" maxlength="1024"/>
                 </div>
             </div>
         </p:panel>
