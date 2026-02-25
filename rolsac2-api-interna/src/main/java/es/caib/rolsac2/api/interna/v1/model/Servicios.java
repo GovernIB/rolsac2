@@ -138,6 +138,10 @@ public class Servicios extends EntidadBase {
     private String responsableTelefono;
     @Schema(description = "nombreProcedimientoWorkFlow", type = SchemaType.STRING, required = false)
     private String nombreProcedimientoWorkFlow;
+
+    @Schema(description = "datosContacto", required = false)
+    private DatosContacto datosContacto;
+
     @Schema(description = "terminoResolucion", type = SchemaType.STRING, required = false)
     private String terminoResolucion;
     @Schema(description = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
@@ -239,6 +243,14 @@ public class Servicios extends EntidadBase {
             if (elem.getUaResponsable() != null) {
                 linkUnidadAdministrativaResponsable = this.generaLink(elem.getUaResponsable().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(elem.getUaResponsable(), idioma, idiomaPorDefecto));
             }
+
+            this.datosContacto = new DatosContacto();
+            if (elem.getUaResponsable() != null) {
+                this.datosContacto.setServicioResponsable(getDescripcionUA(elem.getUaResponsable(), idioma, idiomaPorDefecto));
+            }
+            this.datosContacto.setPersonaACargo(elem.getResponsable());
+            this.datosContacto.setEmailIncidencias(elem.getIncidenciasEmail());
+
             this.hateoasEnabled = hateoasEnabled;
 
             generaLinks(urlBase);
@@ -760,6 +772,14 @@ public class Servicios extends EntidadBase {
 
     public void setNombreProcedimientoWorkFlow(String nombreProcedimientoWorkFlow) {
         this.nombreProcedimientoWorkFlow = nombreProcedimientoWorkFlow;
+    }
+
+    public DatosContacto getDatosContacto() {
+        return datosContacto;
+    }
+
+    public void setDatosContacto(DatosContacto datosContacto) {
+        this.datosContacto = datosContacto;
     }
 
     public String getTerminoResolucion() {
