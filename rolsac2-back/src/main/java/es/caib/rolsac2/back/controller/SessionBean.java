@@ -365,6 +365,9 @@ public class SessionBean implements Serializable {
         sesionDTO.setIdioma(lang);
 
         systemServiceBean.updateSesion(sesionDTO);
+
+        // Se recargan las alertas para mostrar las correspondientes al nuevo perfil
+        cargarAlertas();
     }
 
     /**
