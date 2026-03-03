@@ -221,6 +221,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
 
         listaDestinatarios = administracionEntService.getEmailUsuarios(listaUsuariosDestinatarios);
+        //listaDestinatarios.add("inventado@indra.es");
         if (listaDestinatarios == null || listaDestinatarios.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimientoFlujo.errormail"), true);
             return;

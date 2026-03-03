@@ -18,7 +18,7 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 
     public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"texto\":\"string\"," + Constantes.SALTO_LINEA
             + "\"faseProc\":0," + Constantes.SALTO_LINEA + "\"codPlatTramitacion\":0," + Constantes.SALTO_LINEA
-            + "\"plantilla\":\"boolean\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA
+            + "\"plantilla\":\"0\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA
             + "\"filtroPaginacion\":{\"page\":0,\"size\":10}" + "}";
 
     public static final String SAMPLE_JSON = "{" + "\"texto\":null," + "\"plantilla\":null," + "\"faseProc\":null,"
@@ -104,12 +104,12 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
         this.filtroPaginacion = filtroPaginacion;
     }
 
-    public Boolean getPlantilla() {
-        return plantilla != null ? plantilla == 1 : null;
+    public Integer getPlantilla() {
+        return plantilla;
     }
 
-    public void setPlantilla(Boolean plantilla) {
-        this.plantilla = plantilla != null ? (plantilla ? 1 : 0) : null;
+    public void setPlantilla(Integer plantilla) {
+        this.plantilla = plantilla;
     }
 
     public Integer getFaseProc() {

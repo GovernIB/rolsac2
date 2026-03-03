@@ -25,7 +25,7 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroNormativas.class);
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"idUA\":0," + Constantes.SALTO_LINEA + "\"idUAsHijas\":[0, ...]," + Constantes.SALTO_LINEA + "\"fechaBoletin\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"codigoTipoNormativa\":0," + Constantes.SALTO_LINEA + "\"codigoTipoBoletin\":0," + Constantes.SALTO_LINEA + "\"numero\":\"string\"," + Constantes.SALTO_LINEA + "\"fechaAprobacion\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"texto\":\"string\"," + Constantes.SALTO_LINEA + "\"vigente\":\"boolean\"," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"idUA\":0," + Constantes.SALTO_LINEA + "\"idUAsHijas\":[0, ...]," + Constantes.SALTO_LINEA + "\"fechaBoletin\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"codigoTipoNormativa\":0," + Constantes.SALTO_LINEA + "\"codigoTipoBoletin\":0," + Constantes.SALTO_LINEA + "\"numero\":\"string\"," + Constantes.SALTO_LINEA + "\"fechaAprobacion\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"texto\":\"string\"," + Constantes.SALTO_LINEA + "\"vigente\":\"0\"," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "}";
 
     public static final String SAMPLE_JSON = "{" + "\"idUA\":null," + "\"idUAsHijas\":null," + "\"fechaBoletin\":null," + "\"codigoTipoNormativa\":null," + "\"codigoTipoBoletin\":null," + "\"numero\":null," + "\"fechaAprobacion\":null," + "\"idEntidad\":null," + "\"texto\":null," + "\"vigente\":null," + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "}";
 
@@ -230,11 +230,11 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
         this.fechaAprobacion = fechaAprobacion;
     }
 
-    public Boolean getVigente() {
-        return vigente != null ? vigente == 1 : null;
+    public Integer getVigente() {
+        return vigente;
     }
 
-    public void setVigente(Boolean vigente) {
-        this.vigente = vigente != null ? (vigente ? 1 : 0) : null;
+    public void setVigente(Integer vigente) {
+        this.vigente = vigente;
     }
 }

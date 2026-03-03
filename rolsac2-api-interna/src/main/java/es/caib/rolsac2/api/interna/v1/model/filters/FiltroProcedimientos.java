@@ -682,7 +682,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setTramiteTelematico(canalPresentacion);
         }
 
-        if(this.telematico != null){
+        if (this.telematico != null) {
             resultado.setTelematico(this.telematico == 1);
         }
 
@@ -699,23 +699,23 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setBuscarEnDescendientesUA(buscarEnDescendientesUA.compareTo(1) == 0);
         }
         if (this.activo != null) {
-        	resultado.setVisibleSEDE(activo == 1 ? "S" : "N");
+            resultado.setVisibleSEDE(activo == 1 ? "S" : "N");
         }
 
-        if(this.disponibleFuncionarioHabilitado != null) {
+        if (this.disponibleFuncionarioHabilitado != null) {
             resultado.setDisponibleFuncionarioHabilitado(this.disponibleFuncionarioHabilitado == 1 ? "S" : "N");
         }
 
-        if(this.disponibleApoderadoHabilitado != null) {
+        if (this.disponibleApoderadoHabilitado != null) {
             resultado.setTramitacionPersonaApoderada(this.disponibleApoderadoHabilitado == 1 ? "S" : "N");
         }
 
-        if(this.codigoMateria != null) {
+        if (this.codigoMateria != null) {
 
             resultado.setCodigoMateria(codigoMateria);
         }
 
-        if(this.orden != null) {
+        if (this.orden != null) {
             resultado.setOrderBy(orden.getCampo());
             resultado.setAscendente(orden.getTipoOrden() != null && orden.getTipoOrden().equalsIgnoreCase("asc"));
         }
@@ -767,28 +767,28 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.activo = activo;
     }
 
-    public void setDisponibleFuncionarioHabilitado(Boolean disponibleFuncionarioHabilitado) {
-        this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado != null ? (disponibleFuncionarioHabilitado ? 1 : 0) : null;
+    public Integer getTelematico() {
+        return telematico;
     }
 
-    public Boolean getDisponibleFuncionarioHabilitado() {
-        return disponibleFuncionarioHabilitado != null ? disponibleFuncionarioHabilitado == 1 : null;
+    public void setTelematico(Integer telematico) {
+        this.telematico = telematico;
     }
 
-    public void setDisponibleApoderadoHabilitado(Boolean disponibleApoderadoHabilitado) {
-        this.disponibleApoderadoHabilitado = disponibleApoderadoHabilitado != null ? (disponibleApoderadoHabilitado ? 1 : 0) : null;
+    public Integer getDisponibleFuncionarioHabilitado() {
+        return disponibleFuncionarioHabilitado;
     }
 
-    public Boolean getDisponibleApoderadoHabilitado() {
-        return disponibleApoderadoHabilitado != null ? disponibleApoderadoHabilitado == 1 : null;
+    public void setDisponibleFuncionarioHabilitado(Integer disponibleFuncionarioHabilitado) {
+        this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado;
     }
 
-    public Boolean getTelematico() {
-        return telematico != null ? telematico == 1 : null;
+    public Integer getDisponibleApoderadoHabilitado() {
+        return disponibleApoderadoHabilitado;
     }
 
-    public void setTelematico(Boolean telematico) {
-        this.telematico = telematico != null ? (telematico ? 1 : 0) : null;
+    public void setDisponibleApoderadoHabilitado(Integer disponibleApoderadoHabilitado) {
+        this.disponibleApoderadoHabilitado = disponibleApoderadoHabilitado;
     }
 
     public Long getCodigoMateria() {
