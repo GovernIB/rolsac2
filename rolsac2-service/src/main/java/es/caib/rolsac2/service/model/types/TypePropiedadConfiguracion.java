@@ -48,6 +48,11 @@ public enum TypePropiedadConfiguracion {
     PDU_SERVICIOS_URL("pdu.urlServ"),
     BACKEND_IDIOMAS("back.idiomas"),
     DEBUG_ACTIVO("debug.activar"),
+
+    /**
+     * Limite numero de elementos respuestas API Interna
+     */
+    API_MAX_LIMIT("api.max.limit")
     ;
 
     /**

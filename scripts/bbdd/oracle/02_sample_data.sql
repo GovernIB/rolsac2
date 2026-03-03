@@ -863,6 +863,7 @@ INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUE
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.urlProc', 'https://www.caib.es/seucaib/%s/200/persones/tramites/tramite/%d', 'Indica la url para abrir un procedimiento al enviarse a PDU', 1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.urlServ', 'https://www.caib.es/seucaib/%s/200/persones/tramites/tramite/%d', 'Indica la url para abrir un procedimiento al enviarse a PDU', 1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'debug.activar', 'N','Para activar un modo debug en java y xhtml',0);
+INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'api.max.limit', '0','Límite máximo de elementos devueltos por la API interna. 0 = Sin límite',0);
 
 /** UNIDAD ORGANIZATIVA DIR3 **/
 /*insert into rs2_uniorg (ORG_CODIGO,ORG_CODDIR3,ORG_CODPADRE,ORG_CODENTI,ORG_DENOM,ORG_VERSION) values (RS2_UNIORG_SEQ.nextval, 'A04003003', null, 1, 'GOIB',0);*/
