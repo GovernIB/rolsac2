@@ -108,10 +108,10 @@ public class Servicios extends EntidadBase {
     private TypeProcedimientoWorkflow workflow;
     @Schema(description = "estado", type = SchemaType.STRING, required = false)
     private TypeProcedimientoEstado estado;
-    @Schema(description = "interno", type = SchemaType.BOOLEAN, required = false)
-    private boolean interno;
-    @Schema(description = "publicado", type = SchemaType.BOOLEAN, required = false)
-    private boolean publicado;
+    @Schema(description = "interno", type = SchemaType.INTEGER, required = false)
+    private Integer interno;
+    @Schema(description = "publicado", type = SchemaType.INTEGER, required = false)
+    private Integer publicado;
     @Schema(description = "fechaCaducidad", required = false)
     private Calendar fechaCaducidad;
 
@@ -124,12 +124,12 @@ public class Servicios extends EntidadBase {
     private Link linkUnidadAdministrativaInstructora;
     @Schema(description = "uaInstructor", type = SchemaType.INTEGER, required = false)
     private Long uaInstructor;
-    @Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
-    private Boolean habilitadoApoderado;
+    @Schema(description = "habilitadoApoderado", type = SchemaType.INTEGER, required = false)
+    private Integer habilitadoApoderado;
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
     private String habilitadoFuncionario;
-    @Schema(description = "tieneTasa", type = SchemaType.BOOLEAN, required = false)
-    private boolean tieneTasa = false;
+    @Schema(description = "tieneTasa", type = SchemaType.INTEGER, required = false)
+    private Integer tieneTasa = 0;
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
     @Schema(description = "incidenciasEmail", type = SchemaType.STRING, required = false)
@@ -144,14 +144,14 @@ public class Servicios extends EntidadBase {
 
     @Schema(description = "terminoResolucion", type = SchemaType.STRING, required = false)
     private String terminoResolucion;
-    @Schema(description = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitPresencial;
-    @Schema(description = "tramitElectronica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitElectronica;
-    @Schema(description = "tramitTelefonica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitTelefonica;
-    @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
-    private boolean activoLOPD;
+    @Schema(description = "tramitPresencial", type = SchemaType.INTEGER, required = false)
+    private Integer tramitPresencial;
+    @Schema(description = "tramitElectronica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitElectronica;
+    @Schema(description = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitTelefonica;
+    @Schema(description = "activoLOPD", type = SchemaType.INTEGER, required = false)
+    private Integer activoLOPD;
 
     @Schema(description = "link_tipoTramitacion", required = false)
     private Link link_tipoTramitacion;
@@ -180,7 +180,7 @@ public class Servicios extends EntidadBase {
         if (elem != null) {
             this.codigo = elem.getCodigo();
             this.comun = elem.getComun();
-            this.activoLOPD = elem.isActivoLOPD();
+            this.activoLOPD = elem.isActivoLOPD() ? 1 : 0;
             this.codigoSIA = elem.getCodigoSIA() == null ? null : elem.getCodigoSIA();
             this.codigoWF = elem.getCodigoWF();
             this.nombre = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccionConValor(idioma, idiomaPorDefecto);
@@ -191,28 +191,28 @@ public class Servicios extends EntidadBase {
             this.fechaActualizacion = elem.getFechaActualizacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaActualizacion());
             this.fechaCaducidad = elem.getFechaCaducidad() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaCaducidad());
             this.fechaSIA = elem.getFechaSIA() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaSIA());
-            this.habilitadoApoderado = elem.isHabilitadoApoderado();
+            this.habilitadoApoderado = elem.isHabilitadoApoderado() ? 1 : 0;
             this.habilitadoFuncionario = elem.getHabilitadoFuncionario();
-            this.interno = elem.isInterno();
+            this.interno = elem.isInterno() ? 1 : 0;
             this.lopdResponsable = elem.getLopdResponsable();
             this.nombreProcedimientoWorkFlow = elem.getNombreProcedimientoWorkFlow() == null ? null : elem.getNombreProcedimientoWorkFlow().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.objeto = elem.getObjeto() == null ? null : elem.getObjeto().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.observaciones = elem.getObservaciones() == null ? null : elem.getObservaciones().getTraduccionConValor(idioma, idiomaPorDefecto);
-            this.publicado = elem.isPublicado();
+            this.publicado = elem.isPublicado() ? 1 : 0;
             this.requisitos = elem.getRequisitos() == null ? null : elem.getRequisitos().getTraduccionConValor(idioma, idiomaPorDefecto);
             this.responsableEmail = elem.getResponsableEmail();
             this.incidenciasEmail = elem.getIncidenciasEmail();
             this.responsableTelefono = elem.getResponsableTelefono();
             this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccionConValor(idioma, idiomaPorDefecto);
-            this.tieneTasa = elem.isTieneTasa();
+            this.tieneTasa = elem.isTieneTasa() ? 1 : 0;
             this.tipo = elem.getTipo();
-            this.tramitElectronica = elem.isTramitElectronica();
-            this.tramitTelefonica = elem.isTramitTelefonica();
-            this.tramitPresencial = elem.isTramitPresencial();
+            this.tramitElectronica = elem.isTramitElectronica() ? 1 : 0;
+            this.tramitTelefonica = elem.isTramitTelefonica() ? 1 : 0;
+            this.tramitPresencial = elem.isTramitPresencial() ? 1 : 0;
             this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
             this.uaResponsable = elem.getUaResponsable() == null ? null : elem.getUaResponsable().getCodigo();
             this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow();
-            if (this.tramitElectronica) {
+            if (this.tramitElectronica != null && this.tramitElectronica == 1) {
                 this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
                 this.plantillaSel = elem.getPlantillaSel() == null ? null : elem.getPlantillaSel().getCodigo();
             }
@@ -638,28 +638,28 @@ public class Servicios extends EntidadBase {
     /**
      * @return get the interno
      */
-    public boolean isInterno() {
+    public Integer getInterno() {
         return interno;
     }
 
     /**
      * @param interno the interno to set
      */
-    public void setInterno(boolean interno) {
+    public void setInterno(Integer interno) {
         this.interno = interno;
     }
 
     /**
      * @return get the publicado
      */
-    public boolean isPublicado() {
+    public Integer getPublicado() {
         return publicado;
     }
 
     /**
      * @param publicado the publicado to set
      */
-    public void setPublicado(boolean publicado) {
+    public void setPublicado(Integer publicado) {
         this.publicado = publicado;
     }
 
@@ -718,11 +718,7 @@ public class Servicios extends EntidadBase {
         this.uaInstructor = uaInstructor;
     }
 
-    public Boolean isHabilitadoApoderado() {
-        return habilitadoApoderado;
-    }
-
-    public void setHabilitadoApoderado(Boolean habilitadoApoderado) {
+    public void setHabilitadoApoderado(Integer habilitadoApoderado) {
         this.habilitadoApoderado = habilitadoApoderado;
     }
 
@@ -734,11 +730,11 @@ public class Servicios extends EntidadBase {
         this.habilitadoFuncionario = habilitadoFuncionario;
     }
 
-    public boolean isTieneTasa() {
+    public Integer getTieneTasa() {
         return tieneTasa;
     }
 
-    public void setTieneTasa(boolean tieneTasa) {
+    public void setTieneTasa(Integer tieneTasa) {
         this.tieneTasa = tieneTasa;
     }
 
@@ -790,35 +786,35 @@ public class Servicios extends EntidadBase {
         this.terminoResolucion = terminoResolucion;
     }
 
-    public boolean isTramitPresencial() {
+    public Integer getTramitPresencial() {
         return tramitPresencial;
     }
 
-    public void setTramitPresencial(boolean tramitPresencial) {
+    public void setTramitPresencial(Integer tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
     }
 
-    public boolean isTramitElectronica() {
+    public Integer getTramitElectronica() {
         return tramitElectronica;
     }
 
-    public void setTramitElectronica(boolean tramitElectronica) {
+    public void setTramitElectronica(Integer tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
     }
 
-    public boolean isTramitTelefonica() {
+    public Integer getTramitTelefonica() {
         return tramitTelefonica;
     }
 
-    public void setTramitTelefonica(boolean tramitTelefonica) {
+    public void setTramitTelefonica(Integer tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }
 
-    public boolean isActivoLOPD() {
+    public Integer getActivoLOPD() {
         return activoLOPD;
     }
 
-    public void setActivoLOPD(boolean activoLOPD) {
+    public void setActivoLOPD(Integer activoLOPD) {
         this.activoLOPD = activoLOPD;
     }
 
@@ -870,7 +866,7 @@ public class Servicios extends EntidadBase {
         this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
     }
 
-    public Boolean getHabilitadoApoderado() {
+    public Integer getHabilitadoApoderado() {
         return habilitadoApoderado;
     }
 }

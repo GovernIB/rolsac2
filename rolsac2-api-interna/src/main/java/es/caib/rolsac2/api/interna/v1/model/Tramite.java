@@ -27,8 +27,8 @@ public class Tramite extends EntidadBase<Tramite> {
     @Schema(description = "fase", name = "fase", type = SchemaType.INTEGER, required = false)
     private Integer fase;
 
-    @Schema(description = "tasaAsociada", name = "tasaAsociada", type = SchemaType.BOOLEAN, required = false)
-    private Boolean tasaAsociada;
+    @Schema(description = "tasaAsociada", name = "tasaAsociada", type = SchemaType.INTEGER, required = false)
+    private Integer tasaAsociada;
 
     @Schema(description = "requisitos", name = "requisitos", type = SchemaType.STRING, required = false)
     private String requisitos;
@@ -60,14 +60,14 @@ public class Tramite extends EntidadBase<Tramite> {
     /**
      * Tipos de presentacion: telematica, presencial o telefonica.
      **/
-    @Schema(description = "tramitPresencial", name = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitPresencial;
+    @Schema(description = "tramitPresencial", name = "tramitPresencial", type = SchemaType.INTEGER, required = false)
+    private Integer tramitPresencial;
 
-    @Schema(description = "tramitElectronica", name = "tramitElectronica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitElectronica;
+    @Schema(description = "tramitElectronica", name = "tramitElectronica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitElectronica;
 
-    @Schema(description = "tramitTelefonica", name = "tramitTelefonica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitTelefonica;
+    @Schema(description = "tramitTelefonica", name = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitTelefonica;
 
     /**
      * codigo
@@ -152,11 +152,11 @@ public class Tramite extends EntidadBase<Tramite> {
         this.fase = fase;
     }
 
-    public Boolean getTasaAsociada() {
+    public Integer getTasaAsociada() {
         return tasaAsociada;
     }
 
-    public void setTasaAsociada(Boolean tasaAsociada) {
+    public void setTasaAsociada(Integer tasaAsociada) {
         this.tasaAsociada = tasaAsociada;
     }
 
@@ -224,27 +224,27 @@ public class Tramite extends EntidadBase<Tramite> {
         this.fechaCierre = fechaCierre;
     }
 
-    public boolean isTramitPresencial() {
+    public Integer getTramitPresencial() {
         return tramitPresencial;
     }
 
-    public void setTramitPresencial(boolean tramitPresencial) {
+    public void setTramitPresencial(Integer tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
     }
 
-    public boolean isTramitElectronica() {
+    public Integer getTramitElectronica() {
         return tramitElectronica;
     }
 
-    public void setTramitElectronica(boolean tramitElectronica) {
+    public void setTramitElectronica(Integer tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
     }
 
-    public boolean isTramitTelefonica() {
+    public Integer getTramitTelefonica() {
         return tramitTelefonica;
     }
 
-    public void setTramitTelefonica(boolean tramitTelefonica) {
+    public void setTramitTelefonica(Integer tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }
 

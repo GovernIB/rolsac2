@@ -46,8 +46,8 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
     /**
      * Indica si es de tipo plantilla
      **/
-    @Schema(name = "plantilla", description = "plantilla", type = SchemaType.BOOLEAN, required = false)
-    private Boolean plantilla;
+    @Schema(name = "plantilla", description = "plantilla", type = SchemaType.INTEGER, required = false)
+    private Integer plantilla;
 
     /**
      * FiltroPaginacion.
@@ -77,7 +77,7 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
         }
 
         if (this.plantilla != null) {
-            resultado.setTipoPlantilla(plantilla);
+            resultado.setTipoPlantilla(plantilla == 1);
         }
 
         if (this.faseProc != null) {
@@ -105,11 +105,11 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
     }
 
     public Boolean getPlantilla() {
-        return plantilla;
+        return plantilla != null ? plantilla == 1 : null;
     }
 
     public void setPlantilla(Boolean plantilla) {
-        this.plantilla = plantilla;
+        this.plantilla = plantilla != null ? (plantilla ? 1 : 0) : null;
     }
 
     public Integer getFaseProc() {

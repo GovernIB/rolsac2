@@ -41,7 +41,8 @@ public class TipoLegitimacion extends EntidadBase<TipoLegitimacion> {
     /**
      * Legitimacion
      **/
-    private boolean porDefecto;
+    @Schema(description = "porDefecto", name = "porDefecto", type = SchemaType.INTEGER, required = false)
+    private Integer porDefecto;
 
     public TipoLegitimacion(TipoLegitimacionDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
         super(nodo, urlBase, idioma, hateoasEnabled);
@@ -111,11 +112,11 @@ public class TipoLegitimacion extends EntidadBase<TipoLegitimacion> {
         this.identificador = identificador;
     }
 
-    public boolean isPorDefecto() {
-        return porDefecto;
+    public Boolean getPorDefecto() {
+        return porDefecto != null ? porDefecto == 1 : null;
     }
 
-    public void setPorDefecto(boolean porDefecto) {
-        this.porDefecto = porDefecto;
+    public void setPorDefecto(Boolean porDefecto) {
+        this.porDefecto = porDefecto != null ? (porDefecto ? 1 : 0) : null;
     }
 }

@@ -71,8 +71,8 @@ public class Normativa extends EntidadBase<Normativa> {
     @Schema(description = "nombreResponsable", type = SchemaType.STRING, required = false)
     private String nombreResponsable;//
 
-    @Schema(description = "vigente", type = SchemaType.BOOLEAN, required = false)
-    private Boolean vigente;
+    @Schema(description = "vigente", type = SchemaType.INTEGER, required = false)
+    private Integer vigente;
 
     // -- LINKS--//
     // -- se duplican las entidades para poder generar la clase link en funcion de
@@ -244,10 +244,10 @@ public class Normativa extends EntidadBase<Normativa> {
     }
 
     public Boolean getVigente() {
-        return vigente;
+        return vigente != null ? vigente == 1 : null;
     }
 
     public void setVigente(Boolean vigente) {
-        this.vigente = vigente;
+        this.vigente = vigente != null ? (vigente ? 1 : 0) : null;
     }
 }

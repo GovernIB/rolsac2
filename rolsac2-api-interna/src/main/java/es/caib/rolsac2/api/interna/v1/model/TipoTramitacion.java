@@ -43,20 +43,20 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
     /**
      * Tramitación presencial
      */
-    @Schema(description = "tramitPresencial", name = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitPresencial;
+    @Schema(description = "tramitPresencial", name = "tramitPresencial", type = SchemaType.INTEGER, required = false)
+    private Integer tramitPresencial;
 
     /**
      * Tramitación electrónica
      */
-    @Schema(description = "tramitElectronica", name = "tramitElectronica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitElectronica;
+    @Schema(description = "tramitElectronica", name = "tramitElectronica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitElectronica;
 
     /**
      * Tramitacion telefonica
      */
-    @Schema(description = "tramitTelefonica", name = "tramitTelefonica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitTelefonica;
+    @Schema(description = "tramitTelefonica", name = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitTelefonica;
 
     /**
      * Url
@@ -101,8 +101,8 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
     /**
      * Indica si es una plantilla
      **/
-    @Schema(description = "plantilla", name = "plantilla", type = SchemaType.BOOLEAN, required = false)
-    private boolean plantilla;
+    @Schema(description = "plantilla", name = "plantilla", type = SchemaType.INTEGER, required = false)
+    private Integer plantilla;
 
     @Schema(description = "link_entidad", required = false)
     private Link link_entidad;
@@ -175,28 +175,28 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
         this.tramiteId = tramiteId;
     }
 
-    public boolean isTramitPresencial() {
-        return tramitPresencial;
+    public Boolean getTramitPresencial() {
+        return tramitPresencial != null ? tramitPresencial == 1 : null;
     }
 
-    public void setTramitPresencial(boolean tramitPresencial) {
-        this.tramitPresencial = tramitPresencial;
+    public void setTramitPresencial(Boolean tramitPresencial) {
+        this.tramitPresencial = tramitPresencial != null ? (tramitPresencial ? 1 : 0) : null;
     }
 
-    public boolean isTramitElectronica() {
-        return tramitElectronica;
+    public Boolean getTramitElectronica() {
+        return tramitElectronica != null ? tramitElectronica == 1 : null;
     }
 
-    public void setTramitElectronica(boolean tramitElectronica) {
-        this.tramitElectronica = tramitElectronica;
+    public void setTramitElectronica(Boolean tramitElectronica) {
+        this.tramitElectronica = tramitElectronica != null ? (tramitElectronica ? 1 : 0) : null;
     }
 
-    public boolean isTramitTelefonica() {
-        return tramitTelefonica;
+    public Boolean getTramitTelefonica() {
+        return tramitTelefonica != null ? tramitTelefonica == 1 : null;
     }
 
-    public void setTramitTelefonica(boolean tramitTelefonica) {
-        this.tramitTelefonica = tramitTelefonica;
+    public void setTramitTelefonica(Boolean tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica != null ? (tramitTelefonica ? 1 : 0) : null;
     }
 
     public String getUrl() {
@@ -255,12 +255,12 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
         this.tramiteParametros = tramiteParametros;
     }
 
-    public boolean isPlantilla() {
-        return plantilla;
+    public Boolean getPlantilla() {
+        return plantilla != null ? plantilla == 1 : null;
     }
 
-    public void setPlantilla(boolean plantilla) {
-        this.plantilla = plantilla;
+    public void setPlantilla(Boolean plantilla) {
+        this.plantilla = plantilla != null ? (plantilla ? 1 : 0) : null;
     }
 
     public Link getLink_entidad() {

@@ -219,6 +219,16 @@ public class Utiles {
 					value = stringToBoolean((String) value);
 				}
 				valueClasses[0] = boolean.class;
+			} else if (propertyClass.equals(Integer.class) || propertyClass.equals(int.class)) {
+				if (value.getClass().equals(Boolean.class) || value.getClass().equals(boolean.class)) {
+					value = (Boolean) value ? 1 : 0;
+					valueClasses[0] = Integer.class;
+				} else if (value.getClass().equals(String.class)) {
+					value = "1".equals(value) || "true".equalsIgnoreCase((String)value) ? 1 : 0;
+					valueClasses[0] = Integer.class;
+				} else {
+					valueClasses[0] = value.getClass();
+				}
 			} else if (Date.class.equals(propertyClass)) {
 				value = value; // Para evitar problemas con java.sql.Timestamp.
 				valueClasses[0] = Date.class;

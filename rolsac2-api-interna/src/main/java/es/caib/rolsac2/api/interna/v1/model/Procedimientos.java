@@ -78,8 +78,8 @@ public class Procedimientos extends EntidadBase {
     /**
      *
      **/
-    @Schema(description = "estadoSIA", type = SchemaType.BOOLEAN, required = false)
-    private boolean estadoSIA;
+    @Schema(description = "estadoSIA", type = SchemaType.STRING, required = false)
+    private String estadoSIA;
 
     /**
      *
@@ -175,10 +175,10 @@ public class Procedimientos extends EntidadBase {
     private TypeProcedimientoWorkflow workflow;
     @Schema(description = "estado", type = SchemaType.STRING, required = false)
     private TypeProcedimientoEstado estado;
-    @Schema(description = "interno", type = SchemaType.BOOLEAN, required = false)
-    private boolean interno;
-    @Schema(description = "publicado", type = SchemaType.BOOLEAN, required = false)
-    private boolean publicado;
+    @Schema(description = "interno", type = SchemaType.INTEGER, required = false)
+    private Integer interno;
+    @Schema(description = "publicado", type = SchemaType.INTEGER, required = false)
+    private Integer publicado;
 
     @Schema(description = "iniciacion", required = false)
     private Inicio iniciacion;
@@ -192,14 +192,14 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "tipoVia", type = SchemaType.INTEGER, required = false)
     private Long tipoVia;
 
-    @Schema(description = "habilitadoApoderado", type = SchemaType.BOOLEAN, required = false)
-    private boolean habilitadoApoderado;
+    @Schema(description = "habilitadoApoderado", type = SchemaType.INTEGER, required = false)
+    private Integer habilitadoApoderado;
 
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
     private String habilitadoFuncionario;
 
-    @Schema(description = "tieneTasa", type = SchemaType.BOOLEAN, required = false)
-    private boolean tieneTasa = false;
+    @Schema(description = "tieneTasa", type = SchemaType.INTEGER, required = false)
+    private Integer tieneTasa = 0;
 
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
@@ -219,14 +219,14 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "terminoResolucion", type = SchemaType.STRING, required = false)
     private String terminoResolucion;
 
-    @Schema(description = "tramitElectronica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitElectronica;
+    @Schema(description = "tramitElectronica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitElectronica;
 
-    @Schema(description = "tramitPresencial", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitPresencial;
+    @Schema(description = "tramitPresencial", type = SchemaType.INTEGER, required = false)
+    private Integer tramitPresencial;
 
-    @Schema(description = "tramitTelefonica", type = SchemaType.BOOLEAN, required = false)
-    private boolean tramitTelefonica;
+    @Schema(description = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
+    private Integer tramitTelefonica;
     //	@Schema(description = "mensajes", type = SchemaType.STRING, required = false)
     //    private String mensajes;
     //	@Schema(description = "usuarioAuditoria", type = SchemaType.STRING, required = false)
@@ -238,11 +238,11 @@ public class Procedimientos extends EntidadBase {
     //	@Schema(description = "pendienteMensajesSupervisor", type = SchemaType.BOOLEAN, required = false)
     //    private boolean pendienteMensajesSupervisor = false;
 
-    @Schema(description = "activoLOPD", type = SchemaType.BOOLEAN, required = false)
-    private boolean activoLOPD = false;
+    @Schema(description = "activoLOPD", type = SchemaType.INTEGER, required = false)
+    private Integer activoLOPD = 0;
 
-    @Schema(description = "esPdu", type = SchemaType.BOOLEAN, required = false)
-    private boolean esPdu;
+    @Schema(description = "esPdu", type = SchemaType.INTEGER, required = false)
+    private Integer esPdu;
 
 
     public Procedimientos() {
@@ -307,8 +307,7 @@ public class Procedimientos extends EntidadBase {
             }
             this.datosContacto.setPersonaACargo(nodo.getResponsable());
             this.datosContacto.setEmailIncidencias(nodo.getIncidenciasEmail());
-
-            this.esPdu = nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0;
+            this.esPdu = (nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0) ? 1 : 0;
         } catch (final Exception e) {
             LOG.error("Error generando procedimiento " + this.codigo, e);
         }
@@ -489,14 +488,14 @@ public class Procedimientos extends EntidadBase {
     /**
      * @return the estadoSIA
      */
-    public boolean getEstadoSIA() {
+    public String getEstadoSIA() {
         return estadoSIA;
     }
 
     /**
      * @param estadoSIA the estadoSIA to set
      */
-    public void setEstadoSIA(final boolean estadoSIA) {
+    public void setEstadoSIA(final String estadoSIA) {
         this.estadoSIA = estadoSIA;
     }
 
@@ -632,19 +631,19 @@ public class Procedimientos extends EntidadBase {
         this.estado = estado;
     }
 
-    public boolean isInterno() {
+    public Integer getInterno() {
         return interno;
     }
 
-    public void setInterno(boolean interno) {
+    public void setInterno(Integer interno) {
         this.interno = interno;
     }
 
-    public boolean isPublicado() {
+    public Integer getPublicado() {
         return publicado;
     }
 
-    public void setPublicado(boolean publicado) {
+    public void setPublicado(Integer publicado) {
         this.publicado = publicado;
     }
 
@@ -695,11 +694,11 @@ public class Procedimientos extends EntidadBase {
         this.tipoProcedimiento = tipoProcedimiento;
     }
 
-    public boolean isHabilitadoApoderado() {
+    public Integer getHabilitadoApoderado() {
         return habilitadoApoderado;
     }
 
-    public void setHabilitadoApoderado(boolean habilitadoApoderado) {
+    public void setHabilitadoApoderado(Integer habilitadoApoderado) {
         this.habilitadoApoderado = habilitadoApoderado;
     }
 
@@ -711,11 +710,11 @@ public class Procedimientos extends EntidadBase {
         this.habilitadoFuncionario = habilitadoFuncionario;
     }
 
-    public boolean isTieneTasa() {
+    public Integer getTieneTasa() {
         return tieneTasa;
     }
 
-    public void setTieneTasa(boolean tieneTasa) {
+    public void setTieneTasa(Integer tieneTasa) {
         this.tieneTasa = tieneTasa;
     }
 
@@ -763,11 +762,11 @@ public class Procedimientos extends EntidadBase {
         this.tipoVia = tipoVia;
     }
 
-    public boolean isActivoLOPD() {
+    public Integer getActivoLOPD() {
         return activoLOPD;
     }
 
-    public void setActivoLOPD(boolean activoLOPD) {
+    public void setActivoLOPD(Integer activoLOPD) {
         this.activoLOPD = activoLOPD;
     }
 
@@ -880,40 +879,37 @@ public class Procedimientos extends EntidadBase {
         this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
     }
 
-    public boolean isTramitElectronica() {
+    public Integer getTramitElectronica() {
         return tramitElectronica;
     }
 
-    public void setTramitElectronica(boolean tramitElectronica) {
+    public void setTramitElectronica(Integer tramitElectronica) {
         this.tramitElectronica = tramitElectronica;
     }
 
-    public boolean isTramitPresencial() {
+    public Integer getTramitPresencial() {
         return tramitPresencial;
     }
 
-    public void setTramitPresencial(boolean tramitPresencial) {
+    public void setTramitPresencial(Integer tramitPresencial) {
         this.tramitPresencial = tramitPresencial;
     }
 
-    public boolean isTramitTelefonica() {
+    public Integer getTramitTelefonica() {
         return tramitTelefonica;
     }
 
-    public void setTramitTelefonica(boolean tramitTelefonica) {
+    public void setTramitTelefonica(Integer tramitTelefonica) {
         this.tramitTelefonica = tramitTelefonica;
     }
 
-    public boolean isEsPdu() {
+    public Integer getEsPdu() {
         return esPdu;
     }
 
-    public void setEsPdu(boolean esPdu) {
+    public void setEsPdu(Integer esPdu) {
         this.esPdu = esPdu;
     }
 
-    public boolean isEstadoSIA() {
-        return estadoSIA;
-    }
 
 }

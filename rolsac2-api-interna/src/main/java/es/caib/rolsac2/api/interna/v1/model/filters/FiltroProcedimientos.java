@@ -125,7 +125,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     private String canalPresentacion;
 
     @Schema(name = "telematico", description = "1 - Telematico, 2 - No telematico.", type = SchemaType.INTEGER, required = false)
-    private Boolean telematico;
+    private Integer telematico;
 
     /**
      * tramiteVigente.
@@ -224,8 +224,8 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(name = "fechaActualizacionSia", description = "Fecha de actualización de SIA (DD/MM/YYYY)", type = SchemaType.STRING, required = false)
     private String fechaActualizacionSia;
 
-    @Schema(name = "esPdu", description = "Indica si el procedimiento esta integrado con PDU.", type = SchemaType.BOOLEAN, required = false)
-    private Boolean esPdu;
+    @Schema(name = "esPdu", description = "Indica si el procedimiento esta integrado con PDU.", type = SchemaType.INTEGER, required = false)
+    private Integer esPdu;
 
     /**
      * buscarEnDescendientesUA.
@@ -239,11 +239,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(name = "activo", description = "Corresponde a visible en SEDE. 1- Visible, 0 - No visible.", type = SchemaType.INTEGER, required = false)
     private Integer activo;
 
-    @Schema(name = "disponibleFuncionarioHabilitado", description = "1 - Habilitado, 2 - No habilitado.", type = SchemaType.BOOLEAN, required = false)
-    private Boolean disponibleFuncionarioHabilitado;
+    @Schema(name = "disponibleFuncionarioHabilitado", description = "1 - Habilitado, 2 - No habilitado.", type = SchemaType.INTEGER, required = false)
+    private Integer disponibleFuncionarioHabilitado;
 
-    @Schema(name = "disponibleApoderadoHabilitado", description = "1 - Habilitado, 2 - No habilitado.", type = SchemaType.BOOLEAN, required = false)
-    private Boolean disponibleApoderadoHabilitado;
+    @Schema(name = "disponibleApoderadoHabilitado", description = "1 - Habilitado, 2 - No habilitado.", type = SchemaType.INTEGER, required = false)
+    private Integer disponibleApoderadoHabilitado;
 
     @Schema(name = "codigoMateria", description = "Codigo de materia. Este valor se puede sacar del metodo /services/v1/tipos_materia", type = SchemaType.STRING, required = false)
     private Long codigoMateria;
@@ -514,11 +514,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.estadoWF = estadoWF;
     }
 
-    public Boolean getEsPdu() {
+    public Integer getEsPdu() {
         return esPdu;
     }
 
-    public void setEsPdu(Boolean esPdu) {
+    public void setEsPdu(Integer esPdu) {
         this.esPdu = esPdu;
     }
 
@@ -683,7 +683,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
 
         if(this.telematico != null){
-            resultado.setTelematico(this.telematico);
+            resultado.setTelematico(this.telematico == 1);
         }
 
         if (this.codigoPlantilla != null) {
@@ -693,7 +693,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
 
         if (this.esPdu != null) {
-            resultado.setIntegradoPdu(esPdu);
+            resultado.setIntegradoPdu(esPdu == 1);
         }
         if (this.buscarEnDescendientesUA != null) {
             resultado.setBuscarEnDescendientesUA(buscarEnDescendientesUA.compareTo(1) == 0);
@@ -703,11 +703,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
 
         if(this.disponibleFuncionarioHabilitado != null) {
-            resultado.setDisponibleFuncionarioHabilitado(this.disponibleFuncionarioHabilitado ? "S" : "N");
+            resultado.setDisponibleFuncionarioHabilitado(this.disponibleFuncionarioHabilitado == 1 ? "S" : "N");
         }
 
         if(this.disponibleApoderadoHabilitado != null) {
-            resultado.setTramitacionPersonaApoderada(this.disponibleApoderadoHabilitado ? " S" : "N");
+            resultado.setTramitacionPersonaApoderada(this.disponibleApoderadoHabilitado == 1 ? "S" : "N");
         }
 
         if(this.codigoMateria != null) {
@@ -768,27 +768,27 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     }
 
     public void setDisponibleFuncionarioHabilitado(Boolean disponibleFuncionarioHabilitado) {
-        this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado;
+        this.disponibleFuncionarioHabilitado = disponibleFuncionarioHabilitado != null ? (disponibleFuncionarioHabilitado ? 1 : 0) : null;
     }
 
     public Boolean getDisponibleFuncionarioHabilitado() {
-        return disponibleFuncionarioHabilitado;
+        return disponibleFuncionarioHabilitado != null ? disponibleFuncionarioHabilitado == 1 : null;
     }
 
     public void setDisponibleApoderadoHabilitado(Boolean disponibleApoderadoHabilitado) {
-        this.disponibleApoderadoHabilitado = disponibleApoderadoHabilitado;
+        this.disponibleApoderadoHabilitado = disponibleApoderadoHabilitado != null ? (disponibleApoderadoHabilitado ? 1 : 0) : null;
     }
 
     public Boolean getDisponibleApoderadoHabilitado() {
-        return disponibleApoderadoHabilitado;
+        return disponibleApoderadoHabilitado != null ? disponibleApoderadoHabilitado == 1 : null;
     }
 
     public Boolean getTelematico() {
-        return telematico;
+        return telematico != null ? telematico == 1 : null;
     }
 
     public void setTelematico(Boolean telematico) {
-        this.telematico = telematico;
+        this.telematico = telematico != null ? (telematico ? 1 : 0) : null;
     }
 
     public Long getCodigoMateria() {

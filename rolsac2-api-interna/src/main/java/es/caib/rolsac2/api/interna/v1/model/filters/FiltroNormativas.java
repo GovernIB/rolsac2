@@ -83,8 +83,8 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
     /**
      * texto.
      **/
-    @Schema(name = "vigente", description = "vigente", type = SchemaType.BOOLEAN, required = false)
-    private Boolean vigente;
+    @Schema(name = "vigente", description = "vigente", type = SchemaType.INTEGER, required = false)
+    private Integer vigente;
 
     /**
      * @return the texto
@@ -159,7 +159,7 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
         }
 
         if (this.vigente != null) {
-            resultado.setVigente(this.vigente);
+            resultado.setVigente(this.vigente == 1);
         }
 
         return resultado;
@@ -231,10 +231,10 @@ public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
     }
 
     public Boolean getVigente() {
-        return vigente;
+        return vigente != null ? vigente == 1 : null;
     }
 
     public void setVigente(Boolean vigente) {
-        this.vigente = vigente;
+        this.vigente = vigente != null ? (vigente ? 1 : 0) : null;
     }
 }

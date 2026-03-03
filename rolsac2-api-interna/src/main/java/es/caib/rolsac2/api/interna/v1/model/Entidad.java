@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Dades d'un Entidad.
+ * Dades d'una Entidad.
  *
  * @author Indra
  */
@@ -28,8 +28,8 @@ public class Entidad extends EntidadBase<Entidad> {
     @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = false)
     private String identificador;
 
-    @Schema(description = "activa", name = "activa", type = SchemaType.BOOLEAN, required = false)
-    private Boolean activa;
+    @Schema(description = "activa", name = "activa", type = SchemaType.INTEGER, required = false)
+    private Integer activa;
 
     @Schema(description = "rolAdmin", name = "rolAdmin", type = SchemaType.STRING, required = false)
     private String rolAdmin;
@@ -134,11 +134,11 @@ public class Entidad extends EntidadBase<Entidad> {
     }
 
     public Boolean getActiva() {
-        return activa;
+        return activa != null ? activa == 1 : null;
     }
 
     public void setActiva(Boolean activa) {
-        this.activa = activa;
+        this.activa = activa != null ? (activa ? 1 : 0) : null;
     }
 
     public String getRolAdmin() {

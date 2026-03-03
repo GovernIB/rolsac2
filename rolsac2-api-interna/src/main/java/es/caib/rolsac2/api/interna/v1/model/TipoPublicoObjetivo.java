@@ -35,8 +35,8 @@ public class TipoPublicoObjetivo extends EntidadBase<TipoPublicoObjetivo> {
     /**
      * empleadoPublico
      */
-    @Schema(description = "empleadoPublico", name = "empleadoPublico", type = SchemaType.BOOLEAN, required = false)
-    private Boolean empleadoPublico;
+    @Schema(description = "empleadoPublico", name = "empleadoPublico", type = SchemaType.INTEGER, required = false)
+    private Integer empleadoPublico;
 
     /**
      * codigo
@@ -114,10 +114,10 @@ public class TipoPublicoObjetivo extends EntidadBase<TipoPublicoObjetivo> {
     }
 
     public Boolean getEmpleadoPublico() {
-        return empleadoPublico;
+        return empleadoPublico != null ? empleadoPublico == 1 : null;
     }
 
     public void setEmpleadoPublico(Boolean empleadoPublico) {
-        this.empleadoPublico = empleadoPublico;
+        this.empleadoPublico = empleadoPublico != null ? (empleadoPublico ? 1 : 0) : null;
     }
 }
