@@ -139,7 +139,7 @@ public class Procedimientos extends EntidadBase {
     /**
      * es comun
      **/
-    @Schema(description = "comun", type = SchemaType.BOOLEAN, required = false)
+    @Schema(description = "comun", type = SchemaType.INTEGER, required = false)
     private int comun;
 
     //	@Schema
@@ -910,6 +910,5 @@ public class Procedimientos extends EntidadBase {
     public void setEsPdu(Integer esPdu) {
         this.esPdu = esPdu;
     }
-
 
 }
