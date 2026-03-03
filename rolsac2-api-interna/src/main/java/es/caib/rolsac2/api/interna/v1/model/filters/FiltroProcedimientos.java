@@ -640,7 +640,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
         if (this.filtroPaginacion != null) {
             resultado.setPaginacionActiva(true);
-            resultado.setPaginaFirst(filtroPaginacion.getPage());
+            resultado.setPaginaFirst(filtroPaginacion.getOffset());
             resultado.setPaginaTamanyo(filtroPaginacion.getSize());
         }
 

@@ -90,4 +90,15 @@ public class FiltroPaginacion extends EntidadJson<FiltroPaginacion> {
     public void setSize(Integer size) {
         this.size = size;
     }
+
+    /**
+     * Calcula el primer valor de la paginación a partir de la página y el tamaño.
+     * @return the offset
+     */
+    public Integer getOffset() {
+        if (page == null || size == null) {
+            return 0;
+        }
+        return page * size;
+    }
 }

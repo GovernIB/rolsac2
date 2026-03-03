@@ -99,7 +99,7 @@ public class RespuestaBase {
         this.totalPages = (paginaTamanyo != null && paginaTamanyo > 0)
                 ? (int) Math.ceil((double) total / paginaTamanyo)
                 : 0;
-        this.page = paginaFirst;
+        this.page = paginaFirst == 0 ? 0 : paginaFirst / paginaTamanyo;
         this.items = lista;
         this.tiempo = tiempoMiliSegundos;
 
@@ -118,7 +118,7 @@ public class RespuestaBase {
         this.itemsReturned = itemsReturned;
         this.pageSize = pageSize;
         this.totalPages = totalPages;
-        this.page = page;
+        this.page = page == 0 ? 0 : page / Integer.parseInt(pageSize);
         this.items = items;
         this.tiempo = tiempoEjecucion;
     }

@@ -94,7 +94,7 @@ public class TipoPublicoObjetivoEntidadResource {
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
-            fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+            fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
 
         URI uriCompleta = uriInfo.getRequestUri();

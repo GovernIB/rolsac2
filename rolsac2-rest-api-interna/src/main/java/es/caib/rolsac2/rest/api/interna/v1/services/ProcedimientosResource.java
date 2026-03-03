@@ -104,7 +104,7 @@ public class ProcedimientosResource {
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
-            fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+            fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
         if (debugActivo) LOG.error(" listarProcedimientos: filtro final: {}", fg);
 

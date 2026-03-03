@@ -79,7 +79,7 @@ public class EntidadesResource {
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
-            fg.setPaginaFirst(filtro.getFiltroPaginacion().getPage());
+            fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
 
         URI uriCompleta = uriInfo.getRequestUri();
@@ -111,7 +111,7 @@ public class EntidadesResource {
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro != null) {
             fg.setPaginaTamanyo(filtro.getSize());
-            fg.setPaginaFirst(filtro.getPage());
+            fg.setPaginaFirst(filtro.getPage() * filtro.getSize());
         }
 
         URI uriCompleta = uriInfo.getRequestUri();
