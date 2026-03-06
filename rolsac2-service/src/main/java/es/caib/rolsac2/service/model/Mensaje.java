@@ -14,10 +14,16 @@ public final class Mensaje extends ModelApi implements Comparable {
      */
     private String usuario;
 
+    private String usuarioLeido;
     /**
-     * Valor
+     * Fecha
      */
     private String fecha;
+
+    /**
+     * Fecha leido
+     */
+    private String fechaLeido;
 
     /**
      * Fecha real
@@ -145,6 +151,22 @@ public final class Mensaje extends ModelApi implements Comparable {
 
     public void setFechaEmail(Date fechaEmail) {
         this.fechaEmail = fechaEmail;
+    }
+
+    public String getFechaLeido() {
+        return fechaLeido;
+    }
+
+    public void setFechaLeido(String fechaLeido) {
+        this.fechaLeido = fechaLeido;
+    }
+
+    public String getUsuarioLeido() {
+        return usuarioLeido;
+    }
+
+    public void setUsuarioLeido(String usuarioLeido) {
+        this.usuarioLeido = usuarioLeido;
     }
 
     @Override

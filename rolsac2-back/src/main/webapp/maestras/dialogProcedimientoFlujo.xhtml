@@ -119,7 +119,7 @@
                                                          rendered="#{dialogProcedimientoFlujo.isAdministradorContenidos() and mensaje.isPendienteMensajesSupervisor()}"
                                                          process="@this"/>
                                     </td>
-                                    <td class="backgroundAdmContenido borderIzqArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
+                                    <td class="backgroundAdmContenido borderIzqArribaAbajo" style="padding: 10px;">#{dialogProcedimientoFlujo.getUsuario(mensaje.usuario)}</td>
                                     <td class="backgroundAdmContenido borderArribaAbajo" style="padding: 20px;">
                                         <table>
                                             <tr>
@@ -133,6 +133,18 @@
                                                     </h:outputText>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                    <td>
+                                                        <h:panelGroup rendered="#{mensaje.fechaLeido != null}">
+                                                            <b><h:outputText value="#{labels['dict.correoLeidoEl']} " /></b>
+                                                            <h:outputText value="#{mensaje.fechaLeido}"> <br />
+                                                                <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                                            </h:outputText>
+                                                            <h:outputText value="- #{dialogProcedimientoFlujo.getUsuario(mensaje.usuarioLeido)}" /><br />
+                                                        </h:panelGroup>
+                                                    </td>
+                                                </tr>
+
                                         </table>
                                     </td>
                                     <td class="backgroundAdmContenido borderDerArribaAbajo" style="padding: 10px;">
@@ -166,12 +178,24 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <h:outputText value="#{labels['dict.correoEnviadoEl']} :" rendered="#{mensaje.fechaEmail != null}" />
+                                                    <b><h:outputText value="#{labels['dict.correoEnviadoEl']} :" rendered="#{mensaje.fechaEmail != null}" /></b>
                                                     <h:outputText value="#{mensaje.fechaEmail}">
                                                         <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                                     </h:outputText>
                                                 </td>
                                             </tr>
+                                                <tr>
+                                                    <td>
+                                                        <h:panelGroup rendered="#{mensaje.fechaLeido != null}">
+                                                            <h:outputText value="#{labels['dict.correoLeidoEl']} " />
+                                                            <h:outputText value="#{mensaje.fechaLeido}"> <br />
+                                                                <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                                            </h:outputText>
+                                                            <h:outputText value="- #{dialogProcedimientoFlujo.getUsuario(mensaje.usuarioLeido)}" /><br />
+                                                        </h:panelGroup>
+                                                    </td>
+                                                </tr>
+
                                         </table>
                                     </td>
                                     <td class="backgroundGestor borderArribaAbajo" style="padding: 10px;">
@@ -179,7 +203,7 @@
                                             <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                         </h:outputText>
                                     </td>
-                                    <td class="backgroundGestor borderDerArribaAbajo" style="padding: 10px;">#{mensaje.usuario}</td>
+                                    <td class="backgroundGestor borderDerArribaAbajo" style="padding: 10px;">#{dialogProcedimientoFlujo.getUsuario(mensaje.usuario)}</td>
                                     <td>
                                             <p:commandButton action="#{dialogProcedimientoFlujo.marcarComoLeido(status.index)}"
                                                              value="#{labels['dict.marcarComoLeido']}"

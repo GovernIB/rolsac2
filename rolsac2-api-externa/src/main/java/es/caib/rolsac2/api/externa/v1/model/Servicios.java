@@ -674,7 +674,7 @@ public class Servicios extends EntidadBase {
         this.uaInstructor = uaInstructor;
     }
 
-    public Boolean isHabilitadoApoderado() {
+    public boolean isHabilitadoApoderado() {
         return habilitadoApoderado;
     }
 

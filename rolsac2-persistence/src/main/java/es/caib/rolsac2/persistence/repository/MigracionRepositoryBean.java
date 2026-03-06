@@ -286,7 +286,9 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
          *
          * Hay que obtener todas las filas de R1_PROCEDIMIENTOS_MENSAJES  con PMN_PROCODI = idProcMsg ordenando por PMN_FECCRE  y migrarlas a la tabla de mensajes de JProcedimiento.mensajes (mensajes es un json de varios mensajes)
          * **/
-
+        if (idProcMsg == 3963394L) {
+            String parar = "";
+        }
         Query query = this.entityManager.createNativeQuery("   SELECT PMN_PROCODI, PMN_USUARIO, PMN_GESTOR, PMN_TEXTO, PMN_FECCRE, PMN_FECLEC, PMN_LEIDO, PMN_USULEC  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI = " + idProcMsg);
         List<Object[]> resultados = query.getResultList();
         List<Mensaje> mensajes = new ArrayList<>();
@@ -296,27 +298,43 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
             for (Object[] resultado : resultados) {
                 Mensaje mensajeObj = new Mensaje();
                 mensajeObj.setUsuario((String) resultado[1]);
+                mensajeObj.setUsuarioLeido((String) resultado[7]);
                 if (((BigDecimal) resultado[2]).intValue() == 1) {
                     //Es gestor
                     mensajeObj.setAdmContenido(false);
                     mensajeObj.setPendienteMensajesSupervisor(true);
-                    if (resultado[6] != null && 0 == ((BigDecimal) resultado[6]).intValue()) {
+                    if (resultado[6] != null) {
+                        mensajeObj.setPendienteMensajesGestor(0 == ((BigDecimal) resultado[6]).intValue());
                         mensajeObj.setPendienteMensajesSupervisor(false);
-                        pendienteAdmContenido = true;
+                        if (0 == ((BigDecimal) resultado[6]).intValue()) {
+                            pendienteAdmContenido = true;
+                        }
+
                     }
                 } else {
                     //Es adm contenido
                     mensajeObj.setAdmContenido(true);
                     mensajeObj.setPendienteMensajesGestor(true);
-                    if (resultado[6] != null && 0 == ((BigDecimal) resultado[6]).intValue()) {
+                    if (resultado[6] != null) {
                         mensajeObj.setPendienteMensajesGestor(false);
-                        pendienteGestor = true;
+                        mensajeObj.setPendienteMensajesSupervisor((0 == ((BigDecimal) resultado[6]).intValue()));
+                        if (0 == ((BigDecimal) resultado[6]).intValue()) {
+
+                            pendienteGestor = true;
+                        }
+                        ;
                     }
                 }
                 mensajeObj.setMensaje((String) resultado[3]);
                 //Resultado[4] es un Timestamp , hay que convertirlo a String
-                final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                if (resultado[4] != null) {
+                    final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                }
+                if (resultado[5] != null) {
+                    final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    mensajeObj.setFechaLeido(sdf.format((java.util.Date) resultado[5]));
+                }
                 //mensajeObj.setFechaReal((java.util.Date) resultado[6]);
                 //mensajeObj.set(((BigDecimal) resultado[6]).intValue() == 1);
                 //mensajeObj.set((String) resultado[7]);

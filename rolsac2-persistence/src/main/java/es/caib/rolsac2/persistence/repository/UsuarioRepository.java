@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.UsuarioGridDTO;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
@@ -47,4 +48,6 @@ public interface UsuarioRepository extends CrudRepository<JUsuario, Long> {
     List<UsuarioGridDTO> getUsuariosByUas(List<Long> uas);
 
     List<String> getEmailUsuarios(java.util.List<java.lang.String> listaDestinatarios);
+
+    Map<String, String> getNombreUsuarios(List<String> idUsuarios);
 }

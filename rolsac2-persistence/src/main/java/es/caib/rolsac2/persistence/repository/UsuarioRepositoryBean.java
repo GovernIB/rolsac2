@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Stateless
@@ -271,6 +272,20 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
         Query query = entityManager.createQuery("SELECT j.email FROM JUsuario j WHERE j.identificador IN (:listaDestinatarios) ");
         query.setParameter("listaDestinatarios", listaDestinatarios);
         return query.getResultList();
+    }
+
+    @Override
+    public Map<String, String> getNombreUsuarios(List<String> idUsuarios) {
+        Query query = entityManager.createQuery("SELECT j.identificador, j.nombre FROM JUsuario j WHERE j.identificador IN (:listaDestinatarios) ");
+        query.setParameter("listaDestinatarios", idUsuarios);
+        List<Object[]> resultList = query.getResultList();
+        Map<String, String> resultado = new java.util.HashMap<>();
+        if (resultList != null) {
+            for (Object[] usuario : resultList) {
+                resultado.put((String) usuario[0], (String) usuario[1]);
+            }
+        }
+        return resultado;
     }
 
     @Override

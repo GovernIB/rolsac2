@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.filtro.PluginFiltro;
 import es.caib.rolsac2.service.model.filtro.UsuarioFiltro;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AdministracionEntServiceFacade {
 
@@ -274,4 +275,12 @@ public interface AdministracionEntServiceFacade {
      * @return Devuelve una lista de emails de los usuarios.
      */
     List<String> getEmailUsuarios(List<String> listaDestinatarios);
+
+    /**
+     * Obtener la lista de los nombres de los usuarios.
+     *
+     * @param idUsuarios Lista de identificadores de usuarios.
+     * @return Devuelve una lista de nombres de los usuarios.
+     */
+    Map<String, String> getNombreUsuarios(List<String> idUsuarios);
 }

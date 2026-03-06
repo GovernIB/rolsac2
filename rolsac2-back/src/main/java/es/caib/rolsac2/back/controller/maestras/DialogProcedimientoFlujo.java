@@ -44,7 +44,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     private String literalEstadoActual;
     private String estadoProcedimiento;
     private String consultarSoloMensajes;
-
+    private Map<String, String> nombreUsuarios;
 
     private RespuestaFlujo data;
 
@@ -164,12 +164,41 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             }
         }
 
+        nombreUsuarios = new HashMap<>();
         if (mensajes != null && !mensajes.isEmpty()) {
-            Collections.sort(mensajes);
+            Collections.sort(mensajes, new Comparator<Mensaje>() {
+                @Override
+                public int compare(Mensaje o1, Mensaje o2) {
+                    // Si las fechas no son nulas, ordenamos por fecha (más reciente primero)
+                    if (o1.getFechaReal() != null && o2.getFechaReal() != null) {
+                        return o2.getFechaReal().compareTo(o1.getFechaReal());
+                    } else if (o1.getFechaReal() != null) {
+                        return -1; // o1 es "menor" que o2 (va antes)
+                    } else if (o2.getFechaReal() != null) {
+                        return 1; // o1 es "mayor" que o2 (va después)
+                    } else {
+                        return 0; // ambos son iguales en términos de orden
+                    }
+                }
+            });
             ValidacionTipoUtils.normalizarMensajes(mensajes);
+            List<String> idUsuarios = new ArrayList<>();
+            for (Mensaje mensaje : mensajes) {
+                if (mensaje.getUsuario() != null && !mensaje.getUsuario().isEmpty() && !idUsuarios.contains(mensaje.getUsuario())) {
+                    idUsuarios.add(mensaje.getUsuario());
+                }
+            }
+            nombreUsuarios = administracionEntService.getNombreUsuarios(idUsuarios);
         }
 
         tipo = (String) UtilJSF.getValorMochilaByKey("tipo");
+    }
+
+    public String getUsuario(String usuario) {
+        if (usuario == null) {
+            return "";
+        }
+        return nombreUsuarios.getOrDefault(usuario, usuario);
     }
 
     public void guardarOEnviarMail() {
@@ -432,6 +461,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             this.mensajes.get(posicion).setPendienteMensajesSupervisor(false);
         }
 
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        this.mensajes.get(posicion).setFechaLeido(sdf.format(new Date()));
+        this.mensajes.get(posicion).setUsuarioLeido(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
         //Sanitizamos mensajes por si hubiera el carÃ¡cter de apÃ³strofe (')
         ValidacionTipoUtils.sanitizarMensajes(mensajes);
         String mensajesJSON = UtilJSON.toJSON(mensajes);

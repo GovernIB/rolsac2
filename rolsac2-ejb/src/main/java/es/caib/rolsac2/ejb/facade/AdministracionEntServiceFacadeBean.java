@@ -1,6 +1,5 @@
 package es.caib.rolsac2.ejb.facade;
 
-import es.caib.rolsac2.commons.plugins.traduccion.api.Idioma;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.*;
@@ -25,10 +24,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Logged
 @ExceptionTranslate
@@ -468,6 +464,12 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<String> getEmailUsuarios(List<String> listaDestinatarios) {
         return usuarioRepository.getEmailUsuarios(listaDestinatarios);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Map<String, String> getNombreUsuarios(List<String> idUsuarios) {
+        return usuarioRepository.getNombreUsuarios(idUsuarios);
     }
 
 
