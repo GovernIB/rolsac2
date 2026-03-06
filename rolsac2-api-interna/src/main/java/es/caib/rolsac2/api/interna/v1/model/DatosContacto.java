@@ -17,8 +17,8 @@ public class DatosContacto {
     @Schema(description = "Servicio o sección responsable", type = SchemaType.STRING, required = false)
     private String servicioResponsable;
 
-    @Schema(description = "Nombre de la persona a cargo", type = SchemaType.STRING, required = false)
-    private String personaACargo;
+    @Schema(description = "Nombre de la persona responsable", type = SchemaType.STRING, required = false)
+    private String personaResponsable;
 
     @Schema(description = "Dirección de correo electrónico para gestionar incidencias", type = SchemaType.STRING, required = false)
     private String emailIncidencias;
@@ -26,9 +26,9 @@ public class DatosContacto {
     public DatosContacto() {
     }
 
-    public DatosContacto(String servicioResponsable, String personaACargo, String emailIncidencias) {
+    public DatosContacto(String servicioResponsable, String personaResponsable, String emailIncidencias) {
         this.servicioResponsable = servicioResponsable;
-        this.personaACargo = personaACargo;
+        this.personaResponsable = personaResponsable;
         this.emailIncidencias = emailIncidencias;
     }
 
@@ -40,12 +40,12 @@ public class DatosContacto {
         this.servicioResponsable = servicioResponsable;
     }
 
-    public String getPersonaACargo() {
-        return personaACargo;
+    public String getPersonaResponsable() {
+        return personaResponsable;
     }
 
-    public void setPersonaACargo(String personaACargo) {
-        this.personaACargo = personaACargo;
+    public void setPersonaResponsable(String personaResponsable) {
+        this.personaResponsable = personaResponsable;
     }
 
     public String getEmailIncidencias() {

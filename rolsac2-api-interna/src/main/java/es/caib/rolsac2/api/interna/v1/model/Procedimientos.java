@@ -303,7 +303,7 @@ public class Procedimientos extends EntidadBase {
             if (nodo.getUaResponsable() != null) {
                 this.datosContacto.setServicioResponsable(getDescripcionUA(nodo.getUaResponsable(), idioma, idiomaPorDefecto));
             }
-            this.datosContacto.setPersonaACargo(nodo.getResponsable());
+            this.datosContacto.setPersonaResponsable(nodo.getResponsable());
             this.datosContacto.setEmailIncidencias(nodo.getIncidenciasEmail());
             this.esPdu = (nodo.getEstadoPdu() != null && nodo.getEstadoPdu().compareTo(1) == 0) ? 1 : 0;
         } catch (final Exception e) {

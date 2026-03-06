@@ -247,7 +247,7 @@ public class Servicios extends EntidadBase {
             if (elem.getUaResponsable() != null) {
                 this.datosContacto.setServicioResponsable(getDescripcionUA(elem.getUaResponsable(), idioma, idiomaPorDefecto));
             }
-            this.datosContacto.setPersonaACargo(elem.getResponsable());
+            this.datosContacto.setPersonaResponsable(elem.getResponsable());
             this.datosContacto.setEmailIncidencias(elem.getIncidenciasEmail());
 
             this.hateoasEnabled = hateoasEnabled;
