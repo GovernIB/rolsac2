@@ -87,8 +87,7 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "fechaSIA", required = false)
     private Calendar fechaSIA;
 
-    @Schema(description = "responsable", type = SchemaType.STRING, required = false)
-    private String responsable;
+
     /*
      * private java.lang.String resultat; private boolean ventanillaUnica;
      */
@@ -204,8 +203,7 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
 
-    @Schema(description = "incidenciasEmail", type = SchemaType.STRING, required = false)
-    private String incidenciasEmail;
+
 
     @Schema(description = "responsableTelefono", type = SchemaType.STRING, required = false)
     private String responsableTelefono;
@@ -726,13 +724,7 @@ public class Procedimientos extends EntidadBase {
         this.responsableEmail = responsableEmail;
     }
 
-    public String getIncidenciasEmail() {
-        return incidenciasEmail;
-    }
 
-    public void setIncidenciasEmail(String incidenciasEmail) {
-        this.incidenciasEmail = incidenciasEmail;
-    }
 
     public String getResponsableTelefono() {
         return responsableTelefono;
@@ -867,13 +859,7 @@ public class Procedimientos extends EntidadBase {
         this.uaCompetente = uaCompetente;
     }
 
-    public String getResponsable() {
-        return responsable;
-    }
 
-    public void setResponsable(String responsable) {
-        this.responsable = responsable;
-    }
 
     public void setLinkUnidadAdministrativaInstructora(Link linkUnidadAdministrativaInstructora) {
         this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
