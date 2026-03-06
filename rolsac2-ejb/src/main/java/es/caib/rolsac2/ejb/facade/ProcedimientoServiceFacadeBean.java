@@ -436,7 +436,19 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void deleteWF(Long idWF) throws RecursoNoEncontradoException {
-        procedimientoRepository.deleteWF(idWF);
+        JProcedimientoWorkflow jprocWF = procedimientoRepository.getWFByCodigoWF(idWF);
+
+        // cuando un procedimiento este publicado o cerrado no se puede borrar el estado
+        if (jprocWF != null && !TypeProcedimientoEstado.PUBLICADO.toString().equals(jprocWF.getEstado()) && !TypeProcedimientoEstado.CERRADO.toString().equals(jprocWF.getEstado())) {
+
+            JProcedimiento jproc = jprocWF.getProcedimiento();
+            procedimientoRepository.deleteWF(idWF);
+
+            // revisar que no quede JProcedimiento
+            if (jproc.getProcedimientoWF() == null) {
+                procedimientoRepository.delete(jproc);
+            }
+        }
     }
 
     @Override

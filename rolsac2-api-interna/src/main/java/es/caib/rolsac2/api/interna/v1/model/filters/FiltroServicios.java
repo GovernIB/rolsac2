@@ -42,141 +42,141 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Filtro de paginacion", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**
      * Lista de campos a ordenar.
      **/
-    @Schema(description = "Lista de campos por los que ordenar", required = false)
+    @Schema(name = "orden", description = "Filtro de orden", required = false)
     private CampoOrden orden;
 
     /**
      * listaCodigosNormativas.
      **/
-    @Schema(description = "listaCodigosNormativas", required = false)
+    @Schema(name = "listaCodigosNormativas", description = "Lista de codigos de normativas separados por comas. Se pueden consultar en el metodo /services/v1/tipos_normativa", required = false)
     private List<Long> listaCodigosNormativas;
 
     /**
      * listaCodigosPublicosObjetivos.
      **/
-    @Schema(description = "listaCodigosPublicosObjetivos", required = false)
+    @Schema(name = "listaCodigosPublicosObjetivos", description = "Lista de codigos de publico objetivo separados por comas. Se pueden consultar en el metodo /services/v1/publicos_objetivo", required = false)
     private List<Long> listaCodigosPublicosObjetivos;
 
     /**
      * listaCodigosMaterias.
      **/
-    @Schema(description = "listaCodigosMaterias", required = false)
+    @Schema(name = "listaCodigosMaterias", description = "Lista de codigos de materias separados por comas. Se pueden consultar en el metodo /services/v1/tipos_materia", required = false)
     private List<Long> listaCodigosMaterias;
 
     /**
      * codigoUA.
      **/
-    @Schema(description = "codigoUA", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoUA", description = "Codigo de la unidad administrativa. Este valor puede sacarse del metodo /services/v1/unidades_administrativas", type = SchemaType.INTEGER, required = false)
     private Long codigoUA;
 
     /**
      * codigoPlantilla.
      **/
-    @Schema(description = "codigoPlantilla", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoPlantilla", description = "Codigo plantilla", type = SchemaType.INTEGER, required = false)
     private Long codigoPlantilla;
 
     /**
      * codigoPlataforma.
      **/
-    @Schema(description = "codigoPlataforma", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoPlataforma", description = "Este valor puede sacarse del metodo /services/v1/plataformas", type = SchemaType.INTEGER, required = false)
     private Long codigoPlataforma;
 
     /**
      * codigo.
      **/
-    @Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigo", description = "Codigo del servicio. Este valor puede consultarse en el metodo /services/v1/servicios", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     /**
      * codigo.
      **/
-    @Schema(description = "codigos", required = false)
+    @Schema(name = "codigos", description = "Lista de codigos de servicios separada por comas.", required = false)
     private List<Long> codigos;
 
 
     /**
      * codigoUADir3.
      **/
-    @Schema(description = "codigoUADir3", type = SchemaType.STRING, required = false)
+    @Schema(name = "codigoUADir3", description = "Codigo dir3 de la unidad administrativa. Puede obtenerlo respectivamente con los metodos /services/v1/unidades_administrativas/codigoDir3/{codigo} y /services/v1/unidades_administrativas/codigoDir3/{codigos}", type = SchemaType.STRING, required = false)
     private String codigoUADir3;
 
     /**
      * estadoWF.
      **/
-    @Schema(description = "estadoWF", type = SchemaType.STRING, required = false)
+    @Schema(name = "estadoWF", description = "D – Definitivo, M = Modificado, T = Publicado o modificado, A = Publicado y modificado.", type = SchemaType.STRING, required = false)
     private String estadoWF;
 
 
     /**
      * estado.
      **/
-    @Schema(description = "estado", type = SchemaType.STRING, required = false)
+    @Schema(name = "estado", description = "PV – Pendiente de validación, M – En modificación, P – Publicado, PT – Pendiente de cerrar, T – Cerrado.", type = SchemaType.STRING, required = false)
     private String estado;
 
     /**
      * estados.
      **/
-    @Schema(description = "estados", type = SchemaType.STRING, required = false)
+    @Schema(name = "estados", description = "Lista de estados. (PV – Pendiente de validación, M – En modificación, P – Publicado, PT – Pendiente de cerrar, T – Cerrado)", type = SchemaType.STRING, required = false)
     private List<String> estados;
 
     /**
      * Entidad
      */
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Codigo de la entidad. Se puede consultar en el metodo /services/v1/entidades", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * textos.
      **/
-    @Schema(description = "textos", type = SchemaType.STRING, required = false)
+    @Schema(name = "textos", description = "Compara con codigo procedimiento, nombre, estado, codigo SIA, estado SIA y codigo dir3 SIA.", type = SchemaType.STRING, required = false)
     private String textos;
 
     /**
      * textos.
      **/
-    @Schema(description = "titulo", type = SchemaType.STRING, required = false)
+    @Schema(name = "titulo", description = "Titulo del servicio.", type = SchemaType.STRING, required = false)
     private String titulo;
 
     /**
      * fechaPublicacionDesde.
      **/
-    @Schema(description = "fechaPublicacionDesde", type = SchemaType.STRING, required = false)
+    @Schema(name = "fechaPublicacionDesde", description = "Fecha de publicacion igual o superior", type = SchemaType.STRING, required = false)
     private String fechaPublicacionDesde;
 
     /**
      * fechaPublicacionHasta.
      **/
-    @Schema(description = "fechaPublicacionHasta", type = SchemaType.STRING, required = false)
+    @Schema(name = "fechaPublicacionHasta", description = "Fecha de publicacion igual o anterior", type = SchemaType.STRING, required = false)
     private String fechaPublicacionHasta;
 
     /**
      * comun.
      **/
-    @Schema(description = "comun", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "comun", description = "1 – Comunes, 0 – No comunes", type = SchemaType.INTEGER, required = false)
     private Integer comun;
 
     /**
      * codigoSia.
      **/
-    @Schema(description = "codigoSia", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoSia", description = "Codigo sia", type = SchemaType.INTEGER, required = false)
     private Integer codigoSia;
 
     /**
      * estadoSia.
      **/
-    @Schema(description = "estadoSia", type = SchemaType.STRING, required = false)
+    @Schema(name = "estadoSia", description = "Valores posibles: A (Alta), B (Baja), N (No integrado).", type = SchemaType.STRING, required = false)
     private String estadoSia;
 
     /**
      * fechaActualizacionSia.
      **/
-    @Schema(description = "fechaActualizacionSia", type = SchemaType.STRING, required = false)
+    @Schema(name = "fechaActualizacionSia", description = "Fecha de actualización de SIA (DD/MM/YYYY)", type = SchemaType.STRING, required = false)
     private String fechaActualizacionSia;
 
     @Schema(description = "idTramite", type = SchemaType.STRING, required = false)
@@ -194,16 +194,16 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
     /**
      * buscarEnDescendientesUA.
      **/
-    @Schema(description = "buscarEnDescendientesUA", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "buscarEnDescendientesUA", description = "Buscar en descendientes UA. 1 - Si, 0 - No.", type = SchemaType.INTEGER, required = false)
     private Integer buscarEnDescendientesUA;
 
     /**
      * activo corresponde a visible en SEDE.
      **/
-    @Schema(description = "activo corresponde a visible en SEDE", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "activo", description = "Corresponde a visible en SEDE. 1- Visible, 0 - No visible.", type = SchemaType.INTEGER, required = false)
     private Integer activo;
 
-    @Schema(description = "codigoMateria", type = SchemaType.STRING, required = false)
+    @Schema(name = "codigoMateria", description = "Codigo de materia. Este valor se puede sacar del metodo /services/v1/tipos_materia", type = SchemaType.STRING, required = false)
     private Long codigoMateria;
 
     @Schema(description = "codigoTramiteTelematico", type = SchemaType.STRING, required = false)
