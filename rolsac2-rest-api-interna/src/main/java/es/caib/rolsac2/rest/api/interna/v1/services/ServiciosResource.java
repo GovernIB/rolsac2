@@ -124,15 +124,35 @@ public class ServiciosResource {
 
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
-            fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
+            fg.setPaginaTamanyo(Integer.parseInt(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT)));
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
 
+        // Limitar el número total de elementos según API_MAX_LIMIT
+        Integer apiMaxLimit = null;
+    	try {
+            String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
+	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+	        if (apiMaxLimit > 0) {
+		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+		        if (offset >= apiMaxLimit) {
+		            fg.setPaginaFirst(0);
+		            fg.setPaginaTamanyo(0);
+		        } else if (offset + size > apiMaxLimit) {
+		            fg.setPaginaTamanyo(apiMaxLimit - offset);
+		        }
+	        } else {
+	        	apiMaxLimit = null;
+	        }
+    	} catch (NumberFormatException e){
+    		apiMaxLimit = null;
+        }
 
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -263,11 +283,11 @@ public class ServiciosResource {
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
 
-    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, String idiomaPorDefecto, Instant start, String url) {
+    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, String idiomaPorDefecto, Instant start, String url, Integer apiMaxLimit) {
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = servicioService.findProcedimientosByFiltroRest(filtro);
 
         List<Servicios> lista = new ArrayList<>();
@@ -281,8 +301,14 @@ public class ServiciosResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
+        // Limitar el total de elementos reportado según API_MAX_LIMIT
+        int total = (int) resultadoBusqueda.getTotal();
+        if (apiMaxLimit != null && total > apiMaxLimit) {
+            total = apiMaxLimit;
+        }
+
         return new RespuestaBase(
-                (int) resultadoBusqueda.getTotal(),
+                total,
                 lista.size(),
                 filtro.getPaginaTamanyo(),
                 filtro.getPaginaFirst(),

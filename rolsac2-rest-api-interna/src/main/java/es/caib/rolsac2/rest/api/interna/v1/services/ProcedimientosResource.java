@@ -100,11 +100,32 @@ public class ProcedimientosResource {
         } else {
             fg.setIdioma(idiomaPorDefecto);
         }
-
+ 
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
+        }
+
+        // Limitar el número total de elementos según API_MAX_LIMIT
+        Integer apiMaxLimit = null;
+    	try {
+            String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
+	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+	        if (apiMaxLimit > 0) {
+		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+		        if (offset >= apiMaxLimit) {
+		            fg.setPaginaFirst(0);
+		            fg.setPaginaTamanyo(0);
+		        } else if (offset + size > apiMaxLimit) {
+		            fg.setPaginaTamanyo(apiMaxLimit - offset);
+		        }
+	        } else {
+	        	apiMaxLimit = null;
+	        }
+    	} catch (NumberFormatException e){
+    		LOG.warn("Limite de la respuesta de la API no valido: ", e);
         }
         if (debugActivo) LOG.error(" listarProcedimientos: filtro final: {}", fg);
 
@@ -112,7 +133,7 @@ public class ProcedimientosResource {
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
     }
 
     private void checkDebug() {
@@ -392,10 +413,10 @@ public class ProcedimientosResource {
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto, final Instant start, String url) {
+    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto, final Instant start, String url, Integer apiMaxLimit) {
         if (debugActivo) LOG.error(" getRespuesta: filtro: {}", filtro);
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
         if (debugActivo) LOG.error(" getRespuesta: resultadoBusqueda: {}", resultadoBusqueda);
@@ -408,13 +429,18 @@ public class ProcedimientosResource {
             if (debugActivo) LOG.error(" getRespuesta: añadido procedimiento a la lista: {}", elemento);
         }
 
+        // Limitar el total de elementos reportado según API_MAX_LIMIT
+        int total = (int) resultadoBusqueda.getTotal();
+        if (apiMaxLimit != null && total > apiMaxLimit) {
+            total = apiMaxLimit;
+        }
+
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
         if (debugActivo) LOG.error(" getRespuesta: tiempoMiliSegundos: {}", tiempoMiliSegundos);
 
-
         return new RespuestaBase(
-                (int) resultadoBusqueda.getTotal(),
+                total,
                 lista.size(),
                 filtro.getPaginaTamanyo(),
                 filtro.getPaginaFirst(),

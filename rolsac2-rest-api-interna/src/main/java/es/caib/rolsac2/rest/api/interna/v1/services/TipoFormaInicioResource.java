@@ -82,10 +82,31 @@ public class TipoFormaInicioResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
 
+        // Limitar el número total de elementos según API_MAX_LIMIT
+        Integer apiMaxLimit = null;
+    	try {
+            String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
+	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+	        if (apiMaxLimit > 0) {
+		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+		        if (offset >= apiMaxLimit) {
+		            fg.setPaginaFirst(0);
+		            fg.setPaginaTamanyo(0);
+		        } else if (offset + size > apiMaxLimit) {
+		            fg.setPaginaTamanyo(apiMaxLimit - offset);
+		        }
+	        } else {
+	        	apiMaxLimit = null;
+	        }
+    	} catch (NumberFormatException e){
+    		apiMaxLimit = null;
+        }
+
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -115,10 +136,10 @@ public class TipoFormaInicioResource {
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaBase getRespuesta(TipoFormaInicioFiltro fg, Instant start, String url) {
+    private RespuestaBase getRespuesta(TipoFormaInicioFiltro fg, Instant start, String url, Integer apiMaxLimit) {
         Pagina<TipoFormaInicioDTO> resultadoBusqueda = tipoFormaInicioService.findByFiltroRest(fg);
 
         List<TipoFormaInicio> lista = new ArrayList<>();
@@ -129,15 +150,19 @@ public class TipoFormaInicioResource {
             lista.add(elemento);
         }
 
+        // Limitar el total de elementos reportado según API_MAX_LIMIT
+        int total = (int) resultadoBusqueda.getTotal();
+        if (apiMaxLimit != null && total > apiMaxLimit) {
+            total = apiMaxLimit;
+        }
+
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
 
-
         return new RespuestaBase(
-                (int) resultadoBusqueda.getTotal(),
+                total,
                 lista.size(),
-                fg.getPaginaTamanyo().toString(),
-                (int) Math.ceil((double) resultadoBusqueda.getTotal() / fg.getPaginaTamanyo()),
+                fg.getPaginaTamanyo(),
                 fg.getPaginaFirst(),
                 url,
                 lista,
