@@ -113,11 +113,11 @@ public class TipoPublicoObjetivo extends EntidadBase<TipoPublicoObjetivo> {
         this.identificador = identificador;
     }
 
-    public Boolean getEmpleadoPublico() {
-        return empleadoPublico != null ? empleadoPublico == 1 : null;
+    public Integer getEmpleadoPublico() {
+        return empleadoPublico;
     }
 
-    public void setEmpleadoPublico(Boolean empleadoPublico) {
-        this.empleadoPublico = empleadoPublico != null ? (empleadoPublico ? 1 : 0) : null;
+    public void setEmpleadoPublico(Integer empleadoPublico) {
+        this.empleadoPublico = empleadoPublico;
     }
 }

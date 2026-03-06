@@ -243,11 +243,11 @@ public class Normativa extends EntidadBase<Normativa> {
         return codigo;
     }
 
-    public Boolean getVigente() {
-        return vigente != null ? vigente == 1 : null;
+    public Integer getVigente() {
+        return vigente;
     }
 
-    public void setVigente(Boolean vigente) {
-        this.vigente = vigente != null ? (vigente ? 1 : 0) : null;
+    public void setVigente(Integer vigente) {
+        this.vigente = vigente;
     }
 }

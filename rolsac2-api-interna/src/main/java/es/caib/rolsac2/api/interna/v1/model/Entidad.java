@@ -133,12 +133,12 @@ public class Entidad extends EntidadBase<Entidad> {
         this.identificador = identificador;
     }
 
-    public Boolean getActiva() {
-        return activa != null ? activa == 1 : null;
+    public Integer getActiva() {
+        return activa;
     }
 
-    public void setActiva(Boolean activa) {
-        this.activa = activa != null ? (activa ? 1 : 0) : null;
+    public void setActiva(Integer activa) {
+        this.activa = activa;
     }
 
     public String getRolAdmin() {

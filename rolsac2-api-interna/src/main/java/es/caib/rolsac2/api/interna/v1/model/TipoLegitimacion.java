@@ -112,11 +112,11 @@ public class TipoLegitimacion extends EntidadBase<TipoLegitimacion> {
         this.identificador = identificador;
     }
 
-    public Boolean getPorDefecto() {
-        return porDefecto != null ? porDefecto == 1 : null;
+    public Integer getPorDefecto() {
+        return porDefecto;
     }
 
-    public void setPorDefecto(Boolean porDefecto) {
-        this.porDefecto = porDefecto != null ? (porDefecto ? 1 : 0) : null;
+    public void setPorDefecto(Integer porDefecto) {
+        this.porDefecto = porDefecto;
     }
 }

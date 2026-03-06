@@ -175,28 +175,28 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
         this.tramiteId = tramiteId;
     }
 
-    public Boolean getTramitPresencial() {
-        return tramitPresencial != null ? tramitPresencial == 1 : null;
+    public Integer getTramitPresencial() {
+        return tramitPresencial;
     }
 
-    public void setTramitPresencial(Boolean tramitPresencial) {
-        this.tramitPresencial = tramitPresencial != null ? (tramitPresencial ? 1 : 0) : null;
+    public void setTramitPresencial(Integer tramitPresencial) {
+        this.tramitPresencial = tramitPresencial;
     }
 
-    public Boolean getTramitElectronica() {
-        return tramitElectronica != null ? tramitElectronica == 1 : null;
+    public Integer getTramitElectronica() {
+        return tramitElectronica;
     }
 
-    public void setTramitElectronica(Boolean tramitElectronica) {
-        this.tramitElectronica = tramitElectronica != null ? (tramitElectronica ? 1 : 0) : null;
+    public void setTramitElectronica(Integer tramitElectronica) {
+        this.tramitElectronica = tramitElectronica;
     }
 
-    public Boolean getTramitTelefonica() {
-        return tramitTelefonica != null ? tramitTelefonica == 1 : null;
+    public Integer getTramitTelefonica() {
+        return tramitTelefonica;
     }
 
-    public void setTramitTelefonica(Boolean tramitTelefonica) {
-        this.tramitTelefonica = tramitTelefonica != null ? (tramitTelefonica ? 1 : 0) : null;
+    public void setTramitTelefonica(Integer tramitTelefonica) {
+        this.tramitTelefonica = tramitTelefonica;
     }
 
     public String getUrl() {
@@ -255,12 +255,12 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
         this.tramiteParametros = tramiteParametros;
     }
 
-    public Boolean getPlantilla() {
-        return plantilla != null ? plantilla == 1 : null;
+    public Integer getPlantilla() {
+        return plantilla;
     }
 
-    public void setPlantilla(Boolean plantilla) {
-        this.plantilla = plantilla != null ? (plantilla ? 1 : 0) : null;
+    public void setPlantilla(Integer plantilla) {
+        this.plantilla = plantilla;
     }
 
     public Link getLink_entidad() {
