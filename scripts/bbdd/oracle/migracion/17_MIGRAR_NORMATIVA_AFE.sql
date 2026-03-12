@@ -18,7 +18,9 @@ BEGIN
                     SELECT AFNO_TIPAFNO,AFNO_NORORG,AFNO_NORAFE
                      FROM RS2_AFECTA
                         ) 
-             AND AFE_CODNOR IN (SELECT NORM_CODIGO FROM RS2_NORMA );
+             AND AFE_CODNOR IN (SELECT NORM_CODIGO FROM RS2_NORMA )
+	         AND AFE_CODNOA IN (SELECT NORM_CODIGO FROM RS2_NORMA)
+       ;
         
        dbms_lob.writeappend(l_clob, length('Las afectaciones se han migrado.'), 'Las afectaciones se han migrado se han migrado.');
  

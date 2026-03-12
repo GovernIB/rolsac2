@@ -323,14 +323,23 @@ BEGIN
           tipotram := NULL;
 
 SELECT ser_traid,
-       ser_traver,
+       CASE
+	       WHEN VALIDATE_CONVERSION(ser_traver AS NUMBER) = 1
+		       THEN TRIM(ser_traver)
+	       ELSE '1'
+	       END,
        ser_ctelem,
        ser_cprese,
        ser_ctelef,
        ser_params,
        ser_codplt
-INTO   traid, traver, ctelem, cprese,
-    ctelef, params, codpln
+INTO   traid,
+	traver,
+	ctelem,
+	cprese,
+	ctelef,
+	params,
+	codpln
 FROM   r1_servicios
 WHERE  ser_codi = codigo;
 
@@ -554,7 +563,7 @@ SELECT codigo_procwf,
        interno,
        Coalesce (ser_nomrsp, 'Desconegut'),
        ser_correo,
-       ser_telefo,
+       SUBSTR(ser_telefo, 1, 25) AS ser_telefo,
        ser_codleg,
        tipotram_plantilla,
        ser_fecpub,
