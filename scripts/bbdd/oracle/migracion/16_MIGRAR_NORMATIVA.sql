@@ -1,8 +1,8 @@
-create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEntidad NUMBER, resultado OUT CLOB) AS 
+create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEntidad NUMBER, resultado OUT CLOB) AS
     /* SET SERVEROUTPUT ON; */
     /** GRANT: GRANT SELECT ON ROLSAC.RSC_NORMAT TO ROLSAC2;
-               GRANT SELECT ON ROLSAC.RSC_TRANOR TO ROLSAC2; 
-    **/  
+               GRANT SELECT ON ROLSAC.RSC_TRANOR TO ROLSAC2;
+    **/
     /** RSC_NORMAT (* INDICA QUE EL CAMPO NO SE MIGRA):
             NOR_CODI    ---> CODIGO NORMATIVA [UNAD_CODIGO]
            *NOR_TYPE    ---> INDICA EL TIPO PERO DE UNA MANERA PECULIAR EN ROLSAC1 (normativa o normativaRemoto)
@@ -23,7 +23,7 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
             NOR_NUMNOR  ---> NUMERO NORMATIVA [NORM_BOLENUM]
            *NOR_VALIDAANT -> VALIDA ANTIGUO?
            *NOR_CODBOLANT -> COD. BOLETIN ANTIGUO?
-           *NOR_TYPEN   ---> CODIGO VIEJOS 
+           *NOR_TYPEN   ---> CODIGO VIEJOS
            *NOR_VALIDN   --> CODIGO VIEJOS
            *NOR_CODBON   -->  CODIGO VIEJOS
            *NOR_CODBOL_ANT -> CODIGO BOLETIN ANTIGUO
@@ -31,17 +31,17 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
         (TRADUCCIONES) RSC_TRANOR:
             TNO_CODNOR  ---> CODIGO NORMATIVA [TRNO_CODTPNO]
             TNO_CODIDI  ---> IDIOMA     [TRNO_IDIOMA]
-           *TNO_SECCIO 
-           *TNO_APARTA 
-           *TNO_PAGINI 
-           *TNO_PAGFIN 
+           *TNO_SECCIO
+           *TNO_APARTA
+           *TNO_PAGINI
+           *TNO_PAGFIN
             TNO_TITULO  ---> TITULO [TRNO_TITUL]
             TNO_ENLACE  ---> ENLACE/URL [TRNO_URL]
            *TNO_RESPON  ---> NOMBRE RESPONSABLE [TRNO_RESPNOM]
            *TNO_CODARC
-           *TNO_OBSERV 
+           *TNO_OBSERV
 
-        RS2_NORMA 
+        RS2_NORMA
             NORM_CODIGO   --> CODIGO NORMATIVA
             NORM_CODENTI  --> CODIGO DE LA ENTIDAD
             NORM_TIPNOR   --> TIPO NORMATIVA
@@ -49,10 +49,10 @@ create or replace PROCEDURE "MIGRAR_NORMATIVA" (codigoNormativa NUMBER, codigoEn
             NORM_FCAPRO   --> FECHA APROBACION
             NORM_BOLECOD  --> BOLETIN CODIGO
             NORM_BOLEFEC  --> BOLETIN FECHA
-            NORM_BOLENUM  --> BOLETIN NUMERO 
+            NORM_BOLENUM  --> BOLETIN NUMERO
             NORM_ESTADO   --> ESTADO
 
-        (CAMPOS SIN RELACION)             
+        (CAMPOS SIN RELACION)
 
         RELACIONES:
             RS2_DOCNORM   --> DOCUMENTOS NORM
@@ -129,7 +129,7 @@ FROM R1_NORMAT_TRAD
 WHERE TNO_CODNOR = codigoNormativa;
 
 IF EXISTE = 0 AND TOTAL_TRADS > 0
-       THEN   
+       THEN
              /** CAPTURAMOS POR SI SE PRODUCE UN ERROR NO PREVISTO */
 BEGIN
 
@@ -201,11 +201,11 @@ WHERE TRNO_CODTPNO = codigoNormativa
 IF EXISTE_TRAD_ES = 0 AND EXISTE_TRAD_CA = 1
                 THEN
                         INSERT INTO RS2_TRANORM(
-                                TRNO_CODIGO, 
+                                TRNO_CODIGO,
                                 TRNO_CODTPNO,
                                 TRNO_IDIOMA,
                                 TRNO_TITUL,
-                                TRNO_URL, 
+                                TRNO_URL,
                                 TRNO_RESPNOM)
 SELECT  RS2_TRAUNAD_SEQ.NEXTVAL,
         TRNO_CODTPNO,
@@ -274,7 +274,7 @@ WHERE NORM_CODIGO = normAFECTA.AFE_CODNOA;
 
 
 IF EXISTE_RELACION = 0 AND EXISTE_NORMATIVA = 1
-                    THEN 
+                    THEN
                         INSERT INTO RS2_AFECTA (AFNO_CODIGO, AFNO_TIPAFNO, AFNO_NORORG, AFNO_NORAFE)
                           VALUES (RS2_AFECTA_SEQ.nextval, normAFECTA.AFE_CODTIA, codigoNormativa, normAFECTA.AFE_CODNOA);
 END IF;
@@ -297,7 +297,7 @@ WHERE NORM_CODIGO = normAFECTA.AFE_CODNOR;
 
 
 IF EXISTE_RELACION = 0 AND EXISTE_NORMATIVA = 1
-                    THEN 
+                    THEN
                         INSERT INTO RS2_AFECTA (AFNO_CODIGO, AFNO_TIPAFNO, AFNO_NORORG, AFNO_NORAFE)
                           VALUES (RS2_AFECTA_SEQ.nextval, normAFECTA.AFE_CODTIA, normAFECTA.AFE_CODNOR, codigoNormativa);
 END IF;
@@ -322,7 +322,7 @@ END IF;
  
     dbms_lob.close(l_clob);
     resultado := l_clob;
-EXCEPTION 
+EXCEPTION
     WHEN OTHERS THEN
             ROLLBACK;
             dbms_output.put_line('SQLCODE:' || SQLCODE);

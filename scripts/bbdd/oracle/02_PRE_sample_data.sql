@@ -1,22 +1,24 @@
--- De momento, no hay datos iniciales
-/* Entidad por defecto */
 set escape on;
 Insert into RS2_ENTIDA (ENTI_CODIGO,ENTI_IDENTI,ENTI_ACTIVA,ENTI_ROLADE,ENTI_ROLADC,ENTI_ROLGES,ENTI_ROLINF,ENTI_LOGO, ENTI_IDIPER, ENTI_IDIDEF, ENTI_IDIOBL) values (1 ,'GOIB','1','RS2_ADE','RS2_ADC','RS2_GES','RS2_INF',null, 'es;ca;en;', 'ca', 'es;ca;');
 
 Insert into RS2_TRAENT (TREN_CODIGO,TREN_CODENT,TREN_IDIOMA,TREN_DESCRI, TREN_LOPDFI, TREN_LOPDDS, TREN_LOPDDR, TREN_LOPDCB, TREN_LOPDPL, TREN_UACOMU) values (RS2_TRAENT_SEQ.NEXTVAL,1,'ca','GOIB descenti ca','Tramitació del procediment','El destinatari de la lopd','El dret de la lopd', 'De conformitat amb el reglament (UE) 2016/679 i la legistació vigente en matèria de protecció de dades, s''informa del tractament de les dades personales que contè aquest tràmit', 'http://www.caib.es/plantillaCAT.pdf' ,'L''òrgan directiu (direcció general o secretaria general) competent per a la tramitació del procediment/servei');
 Insert into RS2_TRAENT (TREN_CODIGO,TREN_CODENT,TREN_IDIOMA,TREN_DESCRI, TREN_LOPDFI, TREN_LOPDDS, TREN_LOPDDR, TREN_LOPDCB, TREN_LOPDPL, TREN_UACOMU) values (RS2_TRAENT_SEQ.NEXTVAL,1,'es','GOIB descenti es','Tramitación del procedimiento','El destinatario de la lopd','El derecho de la lopd','De conformidad con el reglamento (UE) 2016/679 y la legistación vigente en materia de protección de datos, se informa del tratamiento de los datos personales que contiene este trámite', 'http://www.caib.es/plantillaESP.pdf' ,'El órgano directivo (dirección general o secretaría general) competente para la tramitación del procedimiento/servicio');
 
-
-/*Usuario por defecto*/
-Insert into RS2_USER (USER_CODIGO,USER_USER, USER_NOMBRE, USER_EMAIL) values (RS2_USER_SEQ.NEXTVAL,'rolsac2', 'nom usuari', 'rolsac2@info.com');
-Insert into RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSER) values (RS2_TRAUSER_SEQ.NEXTVAL, RS2_USER_SEQ.CURRVAL, 'es', 'Observaciones ES');
-Insert into RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSER) values (RS2_TRAUSER_SEQ.NEXTVAL, RS2_USER_SEQ.CURRVAL, 'ca', 'Observaciones CA');
-
-/*UA por defecto*/
 Insert into RS2_UNIADM (UNAD_CODIGO,UNAD_CODENTI,UNAD_TIPOUA,UNAD_UNADPADRE,UNAD_DIR3,UNAD_IDENTI,UNAD_TFNO,UNAD_FAX,UNAD_EMAIL,UNAD_DOMINI,UNAD_RSPNOM,UNAD_RSPSEX,UNAD_RSPEMA,UNAD_ORDEN,UNAD_VERSION)
 values (1,1,null,null,'A04003003',null,null,null,null,null,null,null,null,'1','1');
 Insert into RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_ABREVI,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,1,'es','Gobierno de las Islas Baleares',null,null,null, EMPTY_CLOB());
 Insert into RS2_TRAUNAD (TRUA_CODIGO,TRUA_CODUNAD,TRUA_IDIOMA,TRUA_NOMBRE,TRUA_PRESEN,TRUA_URLWEB,TRUA_ABREVI,TRUA_RSPCV) values (RS2_TRAUNAD_SEQ.NEXTVAL,1,'ca','Govern de les Illes Balears',null,null,null, EMPTY_CLOB());
+
+Insert into RS2_USER (USER_CODIGO,USER_USER, USER_NOMBRE, USER_EMAIL) values (RS2_USER_SEQ.NEXTVAL,'rolsac2', 'nom usuari', 'rolsac2@info.com');
+Insert into RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSER) values (RS2_TRAUSER_SEQ.NEXTVAL, RS2_USER_SEQ.CURRVAL, 'es', 'Observaciones ES');
+Insert into RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSER) values (RS2_TRAUSER_SEQ.NEXTVAL, RS2_USER_SEQ.CURRVAL, 'ca', 'Observaciones CA');
+
+Insert into RS2_USERUA (UAUS_CODUSER,UAUS_CODUA) values (RS2_USER_SEQ.CURRVAL,1);
+Insert into RS2_USENTI (USEN_CODUSER,USEN_CODENTI) values (RS2_USER_SEQ.CURRVAL,1);
+
+Insert into RS2_USER (USER_CODIGO,USER_USER, USER_NOMBRE, USER_EMAIL) values (RS2_USER_SEQ.NEXTVAL,'u100748', 'Maria Estela Pisano Pérez', 'u100748@caib.es');
+Insert into RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSER) values (RS2_TRAUSER_SEQ.NEXTVAL, RS2_USER_SEQ.CURRVAL, 'es', 'Observaciones ES');
+Insert into RS2_TRAUSER (TRUS_CODIGO, TRUS_CODUS, TRUS_IDIOMA, TRUS_OBSER) values (RS2_TRAUSER_SEQ.NEXTVAL, RS2_USER_SEQ.CURRVAL, 'ca', 'Observaciones CA');
 
 Insert into RS2_USERUA (UAUS_CODUSER,UAUS_CODUA) values (RS2_USER_SEQ.CURRVAL,1);
 Insert into RS2_USENTI (USEN_CODUSER,USEN_CODENTI) values (RS2_USER_SEQ.CURRVAL,1);
@@ -56,8 +58,6 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de PDU', 'es.caib.rolsac2.commons.plu
         '[{"codigo":"url","valor":"https://webgate.acceptance.ec.europa.eu/youreurope/sdg/public/dtx","orden":null},{"codigo":"usr","valor":"api-pdu","orden":null},{"codigo":"pwd","valor":"XXXXXX","orden":null}]',
         'pluginsib.pdu.', 'PDU');
 
-
-/** Inserción de procesos automáticos **/
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'TEST', 'Proceso de prueba', null, 1, '[{"codigo":"valida","valor":"true"}]');
 insert into RS2_PROCEX (procex_codigo, procex_instan, procex_fecha) VALUES ('MAESTRO', 'XXXX', to_date('1998/05/31:12:00:00AM', 'yyyy/mm/dd:hh:mi:ssam'));
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'SIA_PUNT', 'Proceso de lanzamiento puntual SIA', null, 1, '[{"codigo":"valida","valor":"true"}]');
@@ -72,7 +72,6 @@ Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI
 Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU','Proceso lanzamiento periódico PDU','30 1 * * * ?','1','[]');
 Insert into RS2_PROCES (PROCES_CODIGO,PROCES_CODENTI,PROCES_IDENTI,PROCES_DESCRI,PROCES_CRON,PROCES_ACTIVO,PROCES_PARAMS) values (RS2_PROCES_SEQ.NEXTVAL,1,'PDU_PUNT','Proceso lanzamiento puntual PDU',null,'1','[]');
 
-/** Los 3 tipos de publico objetivo basico y entidad que son 1.Ciudadano 2.Empresa 3.Administración . **/
 INSERT INTO RS2_TIPOPUB(TPPO_CODIGO, TPPO_IDENTI, TPPO_EMPPUB)
 VALUES (1, 'CIUDADANO', 0);
 INSERT INTO RS2_TRATPPO(TRTP_CODIGO, TRTP_CODTPPO, TRTP_IDIOMA, TRTP_DESCRI)
@@ -145,7 +144,6 @@ VALUES (RS2_TRATPSP_SEQ.NEXTVAL, 3852166, 'ca','Empleat públic');
 INSERT INTO RS2_TRATPSP(TRSP_CODIGO, TRSP_CODTPSP, TRSP_IDIOMA, TRSP_DESCR)
 VALUES (RS2_TRATPSP_SEQ.NEXTVAL, 3852166, 'en','Public employee');
 
-/** Las materias cogiendo de la tabla ROLSAC1 RSC_SIAMAT **/
 INSERT INTO RS2_TIPOMSI(TPMS_CODIGO, TPMS_IDENTI, TPMS_CODSIA)
 VALUES (21, 'AGRICULTURA_PESCA', 21);
 INSERT INTO RS2_TRATPMS(TRTI_CODIGO, TRTI_CODTPMS, TRTI_IDIOMA, TRTI_DESCRI)
@@ -356,7 +354,6 @@ VALUES (RS2_TRATPMS_SEQ.NEXTVAL, 53, 'es', 'Comunicación');
 INSERT INTO RS2_TRATPMS(TRTI_CODIGO, TRTI_CODTPMS, TRTI_IDIOMA, TRTI_DESCRI)
 VALUES (RS2_TRATPMS_SEQ.NEXTVAL, 53, 'ca', 'Comunicació');
 
-/** Los sexos segun rolsac1 **/
 INSERT INTO RS2_TIPOSEX(TPSX_CODIGO, TPSX_IDENTI)
 VALUES (1, 'MASCULINO');
 INSERT INTO RS2_TRATPSX(TRTS_CODIGO, TRTS_CODTPSX, TRTS_IDIOMA, TRTS_DESCRI)
@@ -370,8 +367,6 @@ INSERT INTO RS2_TRATPSX(TRTS_CODIGO, TRTS_CODTPSX, TRTS_IDIOMA, TRTS_DESCRI)
 VALUES (RS2_TRATPSX_SEQ.NEXTVAL, 2, 'es', 'Femenino');
 INSERT INTO RS2_TRATPSX(TRTS_CODIGO, TRTS_CODTPSX, TRTS_IDIOMA, TRTS_DESCRI)
 VALUES (RS2_TRATPSX_SEQ.NEXTVAL, 2, 'ca', 'Femení');
-
-/** Los tipos de normativas. **/
 
 INSERT INTO RS2_TIPONOR(TPNO_CODIGO , TPNO_IDENTI, TPNO_CODSIA, TPNO_IDBOIB) VALUES (1,'LEY', 7,	2);
 INSERT INTO RS2_TRATPNO(TRTN_CODIGO,TRTN_CODTPNO,TNTR_DESCR,TRTN_IDIOMA) VALUES (RS2_TRATPNO_SEQ.NEXTVAL, 1,'Ley','es');
@@ -433,12 +428,10 @@ INSERT INTO RS2_TIPONOR(TPNO_CODIGO , TPNO_IDENTI, TPNO_CODSIA, TPNO_IDBOIB) VAL
 INSERT INTO RS2_TRATPNO(TRTN_CODIGO,TRTN_CODTPNO,TNTR_DESCR,TRTN_IDIOMA) VALUES (RS2_TRATPNO_SEQ.NEXTVAL, 66,'Desconegut','ca');
 INSERT INTO RS2_TRATPNO(TRTN_CODIGO,TRTN_CODTPNO,TNTR_DESCR,TRTN_IDIOMA) VALUES (RS2_TRATPNO_SEQ.NEXTVAL, 66,'Desconocido','es');
 
-/** TIPO BOLETIN **/
 INSERT INTO RS2_BOLETI (BOLE_CODIGO, BOLE_IDENTI, BOLE_NOMBRE, BOLE_URL ) VALUES (1, 'BOIB', 'BOIB', 'http://boib.caib.es/pdf/2009015/mp2.pdf' );
 INSERT INTO RS2_BOLETI (BOLE_CODIGO, BOLE_IDENTI, BOLE_NOMBRE, BOLE_URL ) VALUES (21, 'BOE', 'BOE', null );
 INSERT INTO RS2_BOLETI (BOLE_CODIGO, BOLE_IDENTI, BOLE_NOMBRE, BOLE_URL ) VALUES (22, 'DOUE', 'DOUE', null);
 
-/** TIPO PROCEDIMIENTO  */
 INSERT INTO RS2_TIPOPRO(TPPR_CODIGO, TPPR_CODENTI, TPPR_IDENTI) VALUES (1,1,'ORDENACION_ADMINISTRATIVA');
 INSERT INTO RS2_TRATPPR (TRTP_CODIGO, TRTP_CODTPPR,TRTP_IDIOMA,TRTP_DESCR) VALUES (RS2_TRATPPR_SEQ.NEXTVAL,1,'es','Ordenación administrativa');
 INSERT INTO RS2_TRATPPR (TRTP_CODIGO, TRTP_CODTPPR,TRTP_IDIOMA,TRTP_DESCR) VALUES (RS2_TRATPPR_SEQ.NEXTVAL,1,'ca','Ordenació administrativa');
@@ -489,7 +482,6 @@ INSERT INTO RS2_TRATPPR (TRTP_CODIGO, TRTP_CODTPPR,TRTP_IDIOMA,TRTP_DESCR) VALUE
 INSERT INTO RS2_TRATPPR (TRTP_CODIGO, TRTP_CODTPPR,TRTP_IDIOMA,TRTP_DESCR) VALUES (RS2_TRATPPR_SEQ.NEXTVAL,2628636,'ca','Acreditacions, Homologacions i Titulacions');
 INSERT INTO RS2_TRATPPR (TRTP_CODIGO, TRTP_CODTPPR,TRTP_IDIOMA,TRTP_DESCR) VALUES (RS2_TRATPPR_SEQ.NEXTVAL,2628636,'en','Accreditations, Approvals, and Qualifications');
 
-/** Tipos de forma de inicio **/
 INSERT INTO RS2_TIPOFOI (TPFI_CODIGO, TPFI_IDENTI) VALUES (439059,'INSTANCIA_DE_PARTE');
 INSERT INTO RS2_TRATPFI (TRTF_CODIGO,TRTF_CODTPFI,TRTF_IDIOMA,TRTF_DESCRI ) VALUES (RS2_TRATPFI_SEQ.NEXTVAL,439059,'es','Instancia de parte');
 INSERT INTO RS2_TRATPFI (TRTF_CODIGO,TRTF_CODTPFI,TRTF_IDIOMA,TRTF_DESCRI ) VALUES (RS2_TRATPFI_SEQ.NEXTVAL,439059,'ca','Instància de part');
@@ -502,7 +494,6 @@ INSERT INTO RS2_TIPOFOI (TPFI_CODIGO, TPFI_IDENTI) VALUES (467084, 'INSTANCIA_PA
 INSERT INTO RS2_TRATPFI (TRTF_CODIGO,TRTF_CODTPFI,TRTF_IDIOMA,TRTF_DESCRI ) VALUES (RS2_TRATPFI_SEQ.NEXTVAL,467084,'es','Instancia de parte o de oficio');
 INSERT INTO RS2_TRATPFI (TRTF_CODIGO,TRTF_CODTPFI,TRTF_IDIOMA,TRTF_DESCRI ) VALUES (RS2_TRATPFI_SEQ.NEXTVAL,467084,'ca','Instància de part o d''ofici');
 
-/** Silencio administrativo . **/
 INSERT INTO RS2_TIPOSAD (TPSA_CODIGO, TPSA_IDENTI) VALUES (2725139, 'POSITIVO');
 INSERT INTO RS2_TRATPSA (TRTS_CODIGO,TRTS_CODTPSA,TRTS_IDIOMA,TRTS_DESCRI) VALUES(RS2_TRATPSA_SEQ.NEXTVAL,2725139,'es','Positivo');
 INSERT INTO RS2_TRATPSA (TRTS_CODIGO,TRTS_CODTPSA,TRTS_IDIOMA,TRTS_DESCRI) VALUES(RS2_TRATPSA_SEQ.NEXTVAL,2725139,'ca','Positiu');
@@ -523,7 +514,6 @@ INSERT INTO RS2_TIPOSAD (TPSA_CODIGO, TPSA_IDENTI) VALUES (2725143, 'SEGON_NORMA
 INSERT INTO RS2_TRATPSA (TRTS_CODIGO,TRTS_CODTPSA,TRTS_IDIOMA,TRTS_DESCRI) VALUES(RS2_TRATPSA_SEQ.NEXTVAL,2725143,'es','Según normativa aplicable');
 INSERT INTO RS2_TRATPSA (TRTS_CODIGO,TRTS_CODTPSA,TRTS_IDIOMA,TRTS_DESCRI) VALUES(RS2_TRATPSA_SEQ.NEXTVAL,2725143,'ca','Segon normativa aplicable');
 
-/** Tipo Legitimación **/
  INSERT INTO RS2_TIPOLEG (TPLE_CODIGO, TPLE_IDENTI, TPLE_DEFECT) VALUES (3910056 , 'EJECUCION_CONTRATO', '0');
 INSERT INTO RS2_TRATPLE (TRTL_CODIGO, TRTL_CODTPLE, TRTL_IDIOMA, TRTL_DESCRI) values (RS2_TRATPLE_SEQ.NEXTVAL, 3910056, 'ca', 'Execució d''un contracte' );
 INSERT INTO RS2_TRATPLE (TRTL_CODIGO, TRTL_CODTPLE, TRTL_IDIOMA, TRTL_DESCRI) values (RS2_TRATPLE_SEQ.NEXTVAL, 3910056, 'es', 'Ejecución de un contrato');
@@ -544,7 +534,6 @@ INSERT INTO RS2_TIPOLEG (TPLE_CODIGO, TPLE_IDENTI, TPLE_DEFECT) VALUES (3910696,
 INSERT INTO RS2_TRATPLE (TRTL_CODIGO, TRTL_CODTPLE, TRTL_IDIOMA, TRTL_DESCRI) values (RS2_TRATPLE_SEQ.NEXTVAL, 3910696, 'ca', 'Protegir interessos vitals de l''interessat o d''altra persona física');
 INSERT INTO RS2_TRATPLE (TRTL_CODIGO, TRTL_CODTPLE, TRTL_IDIOMA, TRTL_DESCRI) values (RS2_TRATPLE_SEQ.NEXTVAL, 3910696, 'es', 'Proteger intereses vitales del interesado o de otra persona física');
 
-/** Plataforma de tramitación electrónica **/
 INSERT INTO RS2_PLATRE (PTTR_CODIGO, PTTR_CODENTI, PTTR_IDENTI) VALUES ('1', 1, 'SISTRA1');
 INSERT INTO RS2_TRAPLATRE (TRPT_CODIGO, TRPT_CODPTTR, TRPT_IDIOMA, TRPT_URL, TRPT_DESCR) VALUES (RS2_TRAPTTR_SEQ.NEXTVAL, '1', 'ca',
                                                                                                  'https://www.caib.es/sistrafront/sistrafront/inicio?language=ca\&modelo=${idTramitePlataforma}\&version=${versionTramitePlatorma}\&parametros=${parametros}',
@@ -561,7 +550,6 @@ INSERT INTO RS2_TRAPLATRE (TRPT_CODIGO, TRPT_CODPTTR, TRPT_IDIOMA, TRPT_URL, TRP
 'https://www.caib.es/sistramitfront/asistente/iniciarTramite.html?tramite=${idTramitePlataforma}\&version=${versionTramitePlatorma}\&idioma=es\&servicioCatalogo=${servicio}\&idTramiteCatalogo=${idTramiteRolsac}\&parametros=${parametros}',
 'Plataforma de tramitació SISTRA2');
 
-/** Plantillas de trámites **/
 INSERT INTO RS2_TRMPRE (PRES_CODIGO,PRES_TRPRES,PRES_TRELEC,PRES_INTPTR,PRES_INTTID,PRES_INTTVE,PRES_INTTPA,PRES_PLANTI,PRES_CODENTI,PRES_TRTEL,PRES_FASEPROC) VALUES (3946941,0,0,2,'CAIB.OAE.INS_ALE_OFICI',1,'',1,1,0,1);
 INSERT INTO RS2_TRMPRE (PRES_CODIGO,PRES_TRPRES,PRES_TRELEC,PRES_INTPTR,PRES_INTTID,PRES_INTTVE,PRES_INTTPA,PRES_PLANTI,PRES_CODENTI,PRES_TRTEL,PRES_FASEPROC) VALUES (3946942,0,0,2,'CAIB.SIMPL_DOC.TRAMIT_PLANTILLA',1,'',1,1,0,1);
 INSERT INTO RS2_TRMPRE (PRES_CODIGO,PRES_TRPRES,PRES_TRELEC,PRES_INTPTR,PRES_INTTID,PRES_INTTVE,PRES_INTTPA,PRES_PLANTI,PRES_CODENTI,PRES_TRTEL,PRES_FASEPROC) VALUES (3946943,0,0,2,'CAIB.OAE.INS_ALE_AUD',1,'',1,1,0,2);
@@ -603,7 +591,6 @@ INSERT INTO RS2_TRATPTRA (TRTT_CODIGO,TRTT_CODTPTRA,TRTT_IDIOMA,TRTT_DESCRI,TRTT
 INSERT INTO RS2_TRATPTRA (TRTT_CODIGO,TRTT_CODTPTRA,TRTT_IDIOMA,TRTT_DESCRI,TRTT_URL) VALUES (RS2_TRATPTRA_SEQ.NEXTVAL,3946941,'ca','b) Al·legacions d''ofici (procediments sancionadors i similars)',null);
 INSERT INTO RS2_TRATPTRA (TRTT_CODIGO,TRTT_CODTPTRA,TRTT_IDIOMA,TRTT_DESCRI,TRTT_URL) VALUES (RS2_TRATPTRA_SEQ.NEXTVAL,3946941,'es','b) Alegaciones de oficio (procedimientos sancionadoras y similares)',null);
 
-/** Tipo de via **/
 Insert into RS2_TIPOVIA (TPVI_CODIGO, TPVI_IDENTI) values (0, 'NO');
 Insert into RS2_TRATPVI (TRTV_CODIGO, TRTV_CODTPVI, TRTV_IDIOMA, TRTV_DESCRI) values (RS2_TRATPVI_SEQ.NEXTVAL, 0, 'ca', 'No');
 Insert into RS2_TRATPVI (TRTV_CODIGO, TRTV_CODTPVI, TRTV_IDIOMA, TRTV_DESCRI) values (RS2_TRATPVI_SEQ.NEXTVAL, 0, 'es', 'No');
@@ -611,7 +598,6 @@ Insert into RS2_TIPOVIA (TPVI_CODIGO, TPVI_IDENTI) values (1, 'SI');
 Insert into RS2_TRATPVI (TRTV_CODIGO, TRTV_CODTPVI, TRTV_IDIOMA, TRTV_DESCRI) values (RS2_TRATPVI_SEQ.NEXTVAL, 1, 'ca', 'Sí');
 Insert into RS2_TRATPVI (TRTV_CODIGO, TRTV_CODTPVI, TRTV_IDIOMA, TRTV_DESCRI) values (RS2_TRATPVI_SEQ.NEXTVAL, 1, 'es', 'Sí');
 
-/** TEMAS **/
 Insert into RS2_TEMA (TEMA_CODENTI,TEMA_CODIGO,TEMA_IDENTI,TEMA_PADRE,TEMA_MATHPATH,TEMA_MATSIA) values ('1','1','MATERIAS',null,null,null);
 Insert into RS2_TEMA (TEMA_CODIGO,TEMA_CODENTI,TEMA_IDENTI,TEMA_PADRE,TEMA_MATHPATH,TEMA_MATSIA) values ('2','1','ECONOMIA_EMP_TRABAJO','1','1',null);
 Insert into RS2_TEMA (TEMA_CODIGO,TEMA_CODENTI,TEMA_IDENTI,TEMA_PADRE,TEMA_MATHPATH,TEMA_MATSIA) values ('3','1','EDUCACION_CULTURA_DEPORTE','1','1',null);
@@ -749,7 +735,6 @@ Insert into RS2_TRATEMA (TRTE_CODIGO,TRTE_CODTEMA,TNTR_DESCR,TRTE_IDIOMA) values
 Insert into RS2_TRATEMA (TRTE_CODIGO,TRTE_CODTEMA,TNTR_DESCR,TRTE_IDIOMA) values ('1085','2632891','Recursos Hídrics','ca');
 Insert into RS2_TRATEMA (TRTE_CODIGO,TRTE_CODTEMA,TNTR_DESCR,TRTE_IDIOMA) values ('1086','2632891','Recursos Hídricos','es');
 
-/** TIPO UNIDAD ADMINISTRATIVAS **/
 Insert into RS2_TIPOUNA (TPUA_CODIGO,TPUA_CODENTI,TPUA_IDENTI) values ('1','1','PRESIDENCIA');
 Insert into RS2_TIPOUNA (TPUA_CODIGO,TPUA_CODENTI,TPUA_IDENTI) values ('5375','1','DIRECCION_GENERAL');
 Insert into RS2_TIPOUNA (TPUA_CODIGO,TPUA_CODENTI,TPUA_IDENTI) values ('5581','1','ORGANISMOS_EMPRESAS_PUBLICAS_AMBOS');
@@ -839,7 +824,6 @@ Insert into RS2_TRATPUA (TRTU_CODIGO,TRTU_CODTPUA,TRTU_DESCRI,TRTU_CRGMAS,TRTU_C
 Insert into RS2_TRATPUA (TRTU_CODIGO,TRTU_CODTPUA,TRTU_DESCRI,TRTU_CRGMAS,TRTU_CRGFEM,TRTU_TRCMAS,TRTU_TRCFEM,TRTU_IDIOMA) values (RS2_TRATPUA_SEQ.NEXTVAL,'3834891','Secretaria del Gabinet','Cap de la Secretaria del Gabinet','Cap de la Secretaria del Gabinet','Sr.','Sra.','ca');
 Insert into RS2_TRATPUA (TRTU_CODIGO,TRTU_CODTPUA,TRTU_DESCRI,TRTU_CRGMAS,TRTU_CRGFEM,TRTU_TRCMAS,TRTU_TRCFEM,TRTU_IDIOMA) values (RS2_TRATPUA_SEQ.NEXTVAL,'3834891','Jefe/a de la Secretaría del Gabinete','Jefe de la Secretaría del Gabinete','Jefa de la Secretaría del Gabinete','Sr.','Sra.','es');
 
-/** AFECTACION **/
 Insert into RS2_TIPOAFE (TPAN_CODIGO,TPAN_IDENTI) values ('1','CORRECCION');
 Insert into RS2_TIPOAFE (TPAN_CODIGO,TPAN_IDENTI) values ('2','AFECTACION1');
 Insert into RS2_TIPOAFE (TPAN_CODIGO,TPAN_IDENTI) values ('4','AFECTACION2');
@@ -851,15 +835,66 @@ Insert into RS2_TRATPAN (TRTA_CODIGO,TRTA_CODTPAN,TRTA_IDIOMA,TRTA_DESCRI) value
 Insert into RS2_TRATPAN (TRTA_CODIGO,TRTA_CODTPAN,TRTA_IDIOMA,TRTA_DESCRI) values (RS2_TRATPAN_SEQ.NEXTVAL,'4','es','Afectacio2');
 Insert into RS2_TRATPAN (TRTA_CODIGO,TRTA_CODTPAN,TRTA_IDIOMA,TRTA_DESCRI) values (RS2_TRATPAN_SEQ.NEXTVAL,'4','ca','Afectacio2');
 
-/** CONFIGURACION GLOBAL **/
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'ua.mostrar.procsNormativas', 'S','Para mostrar en la ventana de UAs los procedimientos y normativas (hace más lenta la ventana)',1);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'idiomaDefecto', 'ca','En el caso de los tipos que no cuelgan de entidad, en caso de no pasarse el idioma en el restapi, para saber que idioma coger.',0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'deshabilitar.certificado', 'false', 'Para deshabilitar la comprobación de certificado en la conexión con el servicio de notificaciones, sólo necesario para desarrollo', 0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.proc.enlace', 'https://www.caib.es/rolsac2back/maestras/viewProcedimientos.xhtml?codigoProc=', 'Al enviar un email, es el enlace al procedimiento con su código', 0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.serv.enlace', 'https://www.caib.es/rolsac2back/maestras/viewServicios.xhtml?codigoServ=', 'Al enviar un email, es el enlace al servicio con su código', 0);
 SET DEFINE OFF;
-INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.email.inicio.ca', '<!doctype html><html lang="ca"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="x-apple-disable-message-reformatting"/><title>Missatge rebut</title></head><body style="margin:0; padding:0; background:#f4f6f8;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f6f8; padding:24px 0;"><tr><td align="center" style="padding:0 12px;"><table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px; max-width:600px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(16,24,40,.08);"><tr><td style="padding:20px 24px 10px;"><img src="https://www.caib.es/webgoib/documents/20121/144636/logo-160.png/2efc9dd9-930d-0547-e46f-ed99a445ef73?version=3.0&t=1715841299814" alt="Logo CAIB" style="display:block; height:48px; width:auto; border:0;"/></td></tr><tr><td style="padding:0 24px 8px; font-family:Arial, Helvetica, sans-serif;"><h1 style="margin:0; font-size:20px; line-height:28px; color:#111827;">Has rebut un missatge</h1></td></tr><tr><td style="padding:0 24px 14px; font-family:Arial, Helvetica, sans-serif; color:#374151; font-size:14px; line-height:22px;"><p style="margin:12px 0 0;">S&apos;ha rebut un missatge de l&apos;usuari <strong style="color:#111827;">{0}</strong>.</p><p style="margin:8px 0 0;">A continuaci&oacute;, el contingut del missatge:</p></td></tr><tr><td style="padding:0 24px 18px;"><div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:14px; font-family:Arial, Helvetica, sans-serif; color:#111827; font-size:14px; line-height:22px; white-space:pre-wrap;">{1}</div></td></tr><tr><td style="padding:0 24px 22px; font-family:Arial, Helvetica, sans-serif;"><a href="{2}" style="display:inline-block; padding:12px 16px; background:#0b5fff; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none; border-radius:10px;">Accedir al procediment en ROLSAC2</a><br/><br/>URL: {2}</td></tr><tr><td style="padding:16px 24px 22px; font-family:Arial, Helvetica, sans-serif; color:#6b7280; font-size:12px; line-height:18px;"><p style="margin:0;">Aquest correu ha estat generat autom&agrave;ticament. Si us plau, no responguis directament a aquest missatge.</p><p style="margin:6px 0 0;">&copy; Govern de les Illes Balears</p></td></tr></table></td></tr></table></body></html>', '&Eacute;s el text que s''envia per email. &Eacute;s important destacar que el camp {0} &eacute;s el nom de l''usuari, el camp {1} &eacute;s l''email que es vol enviar i el camp {2} &eacute;s l''adre&ccedil;a en ROLSAC2.', 0);
-INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'email.email.inicio.es', '<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="x-apple-disable-message-reformatting"/><title>Mensaje recibido</title></head><body style="margin:0; padding:0; background:#f4f6f8;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f6f8; padding:24px 0;"><tr><td align="center" style="padding:0 12px;"><table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px; max-width:600px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(16,24,40,.08);"><tr><td style="padding:20px 24px 10px;"><img src="https://www.caib.es/webgoib/documents/20121/144636/logo-160.png/2efc9dd9-930d-0547-e46f-ed99a445ef73?version=3.0&t=1715841299814" alt="Logo CAIB" style="display:block; height:48px; width:auto; border:0;"/></td></tr><tr><td style="padding:0 24px 8px; font-family:Arial, Helvetica, sans-serif;"><h1 style="margin:0; font-size:20px; line-height:28px; color:#111827;">Has recibido un mensaje</h1></td></tr><tr><td style="padding:0 24px 14px; font-family:Arial, Helvetica, sans-serif; color:#374151; font-size:14px; line-height:22px;"><p style="margin:12px 0 0;">Se ha recibido un mensaje del usuario <strong style="color:#111827;">{0}</strong>.</p><p style="margin:8px 0 0;">A continuaci&oacute;n, el contenido del mensaje:</p></td></tr><tr><td style="padding:0 24px 18px;"><div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:14px; font-family:Arial, Helvetica, sans-serif; color:#111827; font-size:14px; line-height:22px; white-space:pre-wrap;">{1}</div></td></tr><tr><td style="padding:0 24px 22px; font-family:Arial, Helvetica, sans-serif;"><a href="{2}" style="display:inline-block; padding:12px 16px; background:#0b5fff; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none; border-radius:10px;">Acceder al procedimiento en ROLSAC2</a><br/><br/>URL: {2}</td></tr><tr><td style="padding:16px 24px 22px; font-family:Arial, Helvetica, sans-serif; color:#6b7280; font-size:12px; line-height:18px;"><p style="margin:0;">Este correo ha sido generado autom&aacute;ticamente. Por favor, no respondas directamente a este mensaje.</p><p style="margin:6px 0 0;">&copy; Govern de les Illes Balears</p></td></tr></table></td></tr></table></body></html>', 'Es el texto que se env&iacute;a por email. Es importante destacar que el campo {0} es el nombre del usuario, el campo {1} es el email que se quiere enviar y el campo {2} es la direcci&oacute;n en ROLSAC2.', 0);
+INSERT INTO RS2_CNFGLO
+(CFG_CODIGO, CFG_PROP, CFG_VALOR, CFG_DESCR, CFG_NOMOD)
+VALUES (
+RS2_CNFGLO_SEQ.NEXTVAL,
+'email.email.inicio.ca',
+'<!doctype html><html lang="ca"><head>' ||
+'<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>' ||
+'<meta name="x-apple-disable-message-reformatting"/><title>Missatge rebut</title></head>' ||
+'<body style="margin:0; padding:0; background:#f4f6f8;">' ||
+'<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f6f8; padding:24px 0;">' ||
+'<tr><td align="center" style="padding:0 12px;">' ||
+'<table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px; max-width:600px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(16,24,40,.08);">' ||
+'<tr><td style="padding:20px 24px 10px;"><img src="https://www.caib.es/webgoib/documents/20121/144636/logo-160.png/2efc9dd9-930d-0547-e46f-ed99a445ef73?version=3.0&t=1715841299814" alt="Logo CAIB" style="display:block; height:48px; width:auto; border:0;"/></td></tr>' ||
+'<tr><td style="padding:0 24px 8px; font-family:Arial, Helvetica, sans-serif;"><h1 style="margin:0; font-size:20px; line-height:28px; color:#111827;">Has rebut un missatge</h1></td></tr>' ||
+'<tr><td style="padding:0 24px 14px; font-family:Arial, Helvetica, sans-serif; color:#374151; font-size:14px; line-height:22px;">' ||
+'<p style="margin:12px 0 0;">S''ha rebut un missatge de l''usuari <strong style="color:#111827;">{0}</strong>.</p>' ||
+'<p style="margin:8px 0 0;">A continuació, el contingut del missatge:</p></td></tr>' ||
+'<tr><td style="padding:0 24px 18px;"><div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:14px; font-family:Arial, Helvetica, sans-serif; color:#111827; font-size:14px; line-height:22px; white-space:pre-wrap;">{1}</div></td></tr>' ||
+'<tr><td style="padding:0 24px 22px; font-family:Arial, Helvetica, sans-serif;">' ||
+'<a href="{2}" style="display:inline-block; padding:12px 16px; background:#0b5fff; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none; border-radius:10px;">Accedir al procediment en ROLSAC2</a><br/><br/>URL: {2}</td></tr>' ||
+'<tr><td style="padding:16px 24px 22px; font-family:Arial, Helvetica, sans-serif; color:#6b7280; font-size:12px; line-height:18px;">' ||
+'<p style="margin:0;">Aquest correu ha estat generat automàticament. Si us plau, no responguis directament a aquest missatge.</p>' ||
+'<p style="margin:6px 0 0;">&copy; Govern de les Illes Balears</p></td></tr>' ||
+'</table></td></tr></table></body></html>',
+'És el text que s''envia per email. El camp {0} és el nom de l''usuari, el camp {1} és el missatge i el camp {2} és l''adreça en ROLSAC2.',
+0
+);
+INSERT INTO RS2_CNFGLO
+(CFG_CODIGO, CFG_PROP, CFG_VALOR, CFG_DESCR, CFG_NOMOD)
+VALUES (
+RS2_CNFGLO_SEQ.NEXTVAL,
+'email.email.inicio.es',
+'<!doctype html><html lang="es"><head>' ||
+'<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>' ||
+'<meta name="x-apple-disable-message-reformatting"/><title>Mensaje recibido</title></head>' ||
+'<body style="margin:0; padding:0; background:#f4f6f8;">' ||
+'<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f6f8; padding:24px 0;">' ||
+'<tr><td align="center" style="padding:0 12px;">' ||
+'<table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px; max-width:600px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(16,24,40,.08);">' ||
+'<tr><td style="padding:20px 24px 10px;"><img src="https://www.caib.es/webgoib/documents/20121/144636/logo-160.png/2efc9dd9-930d-0547-e46f-ed99a445ef73?version=3.0&t=1715841299814" alt="Logo CAIB" style="display:block; height:48px; width:auto; border:0;"/></td></tr>' ||
+'<tr><td style="padding:0 24px 8px; font-family:Arial, Helvetica, sans-serif;"><h1 style="margin:0; font-size:20px; line-height:28px; color:#111827;">Has recibido un mensaje</h1></td></tr>' ||
+'<tr><td style="padding:0 24px 14px; font-family:Arial, Helvetica, sans-serif; color:#374151; font-size:14px; line-height:22px;">' ||
+'<p style="margin:12px 0 0;">Se ha recibido un mensaje del usuario <strong style="color:#111827;">{0}</strong>.</p>' ||
+'<p style="margin:8px 0 0;">A continuación, el contenido del mensaje:</p></td></tr>' ||
+'<tr><td style="padding:0 24px 18px;"><div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:14px; font-family:Arial, Helvetica, sans-serif; color:#111827; font-size:14px; line-height:22px; white-space:pre-wrap;">{1}</div></td></tr>' ||
+'<tr><td style="padding:0 24px 22px; font-family:Arial, Helvetica, sans-serif;">' ||
+'<a href="{2}" style="display:inline-block; padding:12px 16px; background:#0b5fff; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none; border-radius:10px;">Acceder al procedimiento en ROLSAC2</a><br/><br/>URL: {2}</td></tr>' ||
+'<tr><td style="padding:16px 24px 22px; font-family:Arial, Helvetica, sans-serif; color:#6b7280; font-size:12px; line-height:18px;">' ||
+'<p style="margin:0;">Este correo ha sido generado automáticamente. Por favor, no respondas directamente a este mensaje.</p>' ||
+'<p style="margin:6px 0 0;">&copy; Govern de les Illes Balears</p></td></tr>' ||
+'</table></td></tr></table></body></html>',
+'Es el texto que se envía por email. El campo {0} es el nombre del usuario, el campo {1} es el mensaje y el campo {2} es la dirección en ROLSAC2.',
+0
+);
 SET DEFINE ON;
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'back.idiomas', 'ca,es','Especifica los idiomas del back (idiomas permitidos ca y es).',0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'pdu.parentUrl', 'https://www.caib.es/seucaib/', 'Indica la url padre al enviarse hacia PDU', 1);
@@ -868,11 +903,6 @@ INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUE
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'debug.activar', 'N','Para activar un modo debug en java y xhtml',0);
 INSERT INTO RS2_CNFGLO(CFG_CODIGO, CFG_PROP,CFG_VALOR,CFG_DESCR,CFG_NOMOD) VALUES (RS2_CNFGLO_SEQ.NEXTVAL, 'api.max.limit', '0','Límite máximo de elementos devueltos por la API interna. 0 = Sin límite',0);
 
-/** UNIDAD ORGANIZATIVA DIR3 **/
-/*insert into rs2_uniorg (ORG_CODIGO,ORG_CODDIR3,ORG_CODPADRE,ORG_CODENTI,ORG_DENOM,ORG_VERSION) values (RS2_UNIORG_SEQ.nextval, 'A04003003', null, 1, 'GOIB',0);*/
-
-
-/** CATEGORÍAS PDU **/
 -- A1
 INSERT INTO RS2_CATPDU (CPDU_CODIGO, CPDU_IDENTIF, CPDU_CODENTI) VALUES (RS2_CATPDU_SEQ.NEXTVAL, 'A1',1);
 INSERT INTO RS2_TRACPDU (TPDU_CODIGO, TPDU_CATPDU, TPDU_IDIOMA, TPDU_DESCRI) VALUES (RS2_TRACPDU_SEQ.NEXTVAL, RS2_CATPDU_SEQ.CURRVAL, 'es', 'Documentos requeridos para ciudadanos de la Unión, sus familiares que no son ciudadanos de la Unión, menores que viajan solos y ciudadanos no pertenecientes a la Unión cuando viajan a través de las fronteras dentro de la Unión (DNI, visa, pasaporte)');
