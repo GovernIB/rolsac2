@@ -286,6 +286,7 @@ AS
 	-- Excepción específica para el -20001
 	ex_ua_no_migrada EXCEPTION;
 	PRAGMA EXCEPTION_INIT(ex_ua_no_migrada, -20001);
+	v_uaresp  VARCHAR2(1000 CHAR) ;
 BEGIN
 	dbms_lob.Createtemporary(l_clob, TRUE);
 
@@ -921,6 +922,31 @@ BEGIN
 
 					IF rolsac1_tradproc.tpr_nombre IS NOT NULL
 					THEN
+
+						/* Primer intento: idioma de la traducción */
+						SELECT SUBSTR(
+								       COALESCE(MAX(NULLIF(TRIM(TUN_NOMBRE), '')), ''),
+								       1,
+								       1000
+						       )
+						INTO v_uaresp
+						FROM R1_UNIADM_TRAD
+						WHERE TUN_CODUNA = V_PRWF_CODUAI
+						  AND TUN_CODIDI = rolsac1_tradproc.tpr_codidi;
+
+						/* Si no encuentra nada, segundo intento: catalán */
+						IF v_uaresp IS NULL OR TRIM(v_uaresp) = '' THEN
+							SELECT SUBSTR(
+									       COALESCE(MAX(NULLIF(TRIM(TUN_NOMBRE), '')), ''),
+									       1,
+									       1000
+							       )
+							INTO v_uaresp
+							FROM R1_UNIADM_TRAD
+							WHERE TUN_CODUNA = V_PRWF_CODUAI
+							  AND TUN_CODIDI = 'ca';
+						END IF;
+
 						INSERT INTO rs2_traprwf
 						(trpw_codigo,
 						 trpw_codprwf,
@@ -943,26 +969,7 @@ BEGIN
 						              rolsac1_tradproc.tpr_resolucion,
 						              rolsac1_tradproc.tpr_lopdfi,
 						              rolsac1_tradproc.tpr_lopdds,
-						              SUBSTR(
-								              COALESCE(
-										              (
-											              SELECT MAX(NULLIF(TRIM(TUN_NOMBRE), ''))
-											              FROM R1_UNIADM_TRAD
-											              WHERE TUN_CODUNA = V_PRWF_CODUAI
-												            AND TUN_CODIDI = rolsac1_tradproc.tpr_codidi
-										              ),
-										              (
-											              SELECT MAX(NULLIF(TRIM(TUN_NOMBRE), ''))
-											              FROM R1_UNIADM_TRAD
-											              WHERE TUN_CODUNA = V_PRWF_CODUAI
-												            AND TUN_CODIDI = 'ca'
-										              ),
-										              ''
-								              ),
-								              1,
-								              1000
-						              )
-
+						              v_uaresp
 						            );
 
 						/** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
@@ -990,6 +997,19 @@ BEGIN
 			IF existe_trad_es = 0
 				AND existe_trad_ca = 1 THEN
 
+				IF v_uaresp IS NULL
+				THEN
+					SELECT SUBSTR(
+							       COALESCE(MAX(NULLIF(TRIM(TUN_NOMBRE), '')), ''),
+							       1,
+							       1000
+					       )
+					INTO v_uaresp
+					FROM R1_UNIADM_TRAD
+					WHERE TUN_CODUNA = V_PRWF_CODUAI
+					  AND TUN_CODIDI = 'ca';
+				END IF;
+
 				INSERT INTO rs2_traprwf
 				(trpw_codigo,
 				 trpw_codprwf,
@@ -1000,7 +1020,8 @@ BEGIN
 				 trpw_obser,
 				 trpw_prreso,
 				 trpw_dpfina,
-				 trpw_dpdest)
+				 trpw_dpdest,
+				 trpw_uaresp)
 				SELECT rs2_traprwf_seq.NEXTVAL,
 				       trpw_codprwf,
 				       'es',
@@ -1010,7 +1031,8 @@ BEGIN
 				       trpw_obser,
 				       trpw_prreso,
 				       trpw_dpfina,
-				       trpw_dpdest
+				       trpw_dpdest,
+				       v_uaresp
 				FROM   rs2_traprwf
 				WHERE  trpw_idioma = 'ca'
 				  AND trpw_codprwf IN (SELECT prwf_codigo

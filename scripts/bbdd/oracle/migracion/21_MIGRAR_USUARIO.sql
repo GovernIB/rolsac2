@@ -99,7 +99,8 @@ BEGIN
 			select count(*)
 			into EXISTE_UA_USER
 			FROM RS2_USERUA
-			WHERE UAUS_CODUA = codigoUA;
+			WHERE UAUS_CODUA = codigoUA
+			   AND UAUS_CODUSER = usu_codigo_r2;
 
 			select count(*)
 			into EXISTE_UA_ROLSAC2
