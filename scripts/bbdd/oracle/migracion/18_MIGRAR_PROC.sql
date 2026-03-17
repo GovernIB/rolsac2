@@ -283,6 +283,7 @@ AS
 	V_pro_coduna               NUMBER(10, 0);
 	V_pro_coduna_resol         NUMBER(10, 0);
 	V_PRO_CODUNA_SERV          NUMBER(10, 0);
+	V_CODORG              NUMBER(10, 0);
 	-- Excepción específica para el -20001
 	ex_ua_no_migrada EXCEPTION;
 	PRAGMA EXCEPTION_INIT(ex_ua_no_migrada, -20001);
@@ -702,6 +703,15 @@ BEGIN
 						(lsdo_codigo)
 						VALUES      (lstdoctram);
 					END IF;
+
+					IF rolsac1_tramites.TRA_ORGCOMP IS NULL
+					THEN
+						v_codorg := V_PRWF_CODUAI;
+					ELSE
+						V_CODORG := obtenerUAconDIR3(rolsac1_tramites.TRA_ORGCOMP);
+					END IF;
+
+
 
 					INSERT INTO rs2_prctrm
 					(prta_codigo,
