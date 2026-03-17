@@ -233,7 +233,7 @@ BEGIN
 			       UNA_DOMINI,
 			       codigoEntidad,
 			       CASE
-				       WHEN UNA_CODEST IS NOT NULL AND REGEXP_LIKE(UNA_CODEST, '^\d+$')
+				       WHEN UNA_CODEST IS NOT NULL AND REGEXP_LIKE(TRIM(UNA_CODEST), '^\d+$')
 					       THEN TO_NUMBER(UNA_CODEST)
 				       ELSE 1
 				       END,

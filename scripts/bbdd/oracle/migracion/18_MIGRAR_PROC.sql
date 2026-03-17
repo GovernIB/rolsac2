@@ -488,7 +488,7 @@ BEGIN
 
 			IF V_PRWF_CODUAI IS NULL or
 			   V_PRWF_CODUAR IS NULL
-			   THEN
+			THEN
 				RAISE_APPLICATION_ERROR(
 						-20010,
 						'La Unitat Administrativa Responsable és nul, comprovi el procediment perquè té assignat una Unitat Administrativa que no penja de l''arrel GOIB.'
@@ -813,7 +813,7 @@ BEGIN
 								             CASE
 									             WHEN orden > 99 THEN 99
 									             ELSE orden
-									         END,
+									             END,
 								             lstdoctram);
 
 								INSERT INTO rs2_tradopr
@@ -931,7 +931,7 @@ BEGIN
 						       )
 						INTO v_uaresp
 						FROM R1_UNIADM_TRAD
-						WHERE TUN_CODUNA = V_PRWF_CODUAI
+						WHERE TUN_CODUNA = v_pro_coduna
 						  AND TUN_CODIDI = rolsac1_tradproc.tpr_codidi;
 
 						/* Si no encuentra nada, segundo intento: catalán */
@@ -943,7 +943,7 @@ BEGIN
 							       )
 							INTO v_uaresp
 							FROM R1_UNIADM_TRAD
-							WHERE TUN_CODUNA = V_PRWF_CODUAI
+							WHERE TUN_CODUNA = v_pro_coduna
 							  AND TUN_CODIDI = 'ca';
 						END IF;
 
@@ -1006,7 +1006,7 @@ BEGIN
 					       )
 					INTO v_uaresp
 					FROM R1_UNIADM_TRAD
-					WHERE TUN_CODUNA = V_PRWF_CODUAI
+					WHERE TUN_CODUNA = v_pro_coduna
 					  AND TUN_CODIDI = 'ca';
 				END IF;
 
