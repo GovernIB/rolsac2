@@ -109,10 +109,13 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
         if (mensajes == null) {
             mensajes = new ArrayList<>();
-        }/*
+        }
+
+        /*
         if (estadoActual != null && !estadoActual.isEmpty()) {
             literalEstadoActual = getLiteral("TypeProcedimientoEstado." + estadoActual);
         }*/
+
         if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
             mostrarEstados = false;
         } else {
@@ -330,7 +333,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             sb.append(mensaje.getUsuario());
             sb.append(" - " + (mensaje.isAdmContenido() ? getLiteral("TypePerfiles.RS2_ADC") : getLiteral("TypePerfiles.RS2_GES")));
             sb.append("):");
-            sb.append(mensaje.getFecha());
+            //sb.append(mensaje.getFecha());
             sb.append("\n\n");
         }
         return sb.toString();
@@ -372,8 +375,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             if (literal != null && valorLiteral != null && !valorLiteral.isEmpty()) {
                 Mensaje msg = new Mensaje();
                 final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                String fecha = sdf.format((Date) Calendar.getInstance().getTime());
-                msg.setFecha(fecha);
+                //String fecha = sdf.format((Date) Calendar.getInstance().getTime());
+                //msg.setFecha(fecha);
                 msg.setFechaReal((Date) Calendar.getInstance().getTime());
                 String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
                 msg.setUsuario(usuario);
@@ -394,8 +397,8 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             }
             Mensaje msg = new Mensaje();
             final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String fecha = sdf.format((Date) Calendar.getInstance().getTime());
-            msg.setFecha(fecha);
+            //String fecha = sdf.format((Date) Calendar.getInstance().getTime());
+            //msg.setFecha(fecha);
             msg.setFechaReal((Date) Calendar.getInstance().getTime());
             String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
             msg.setUsuario(usuario);
@@ -713,4 +716,3 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
     }
 }
-

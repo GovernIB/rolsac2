@@ -329,7 +329,8 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                 //Resultado[4] es un Timestamp , hay que convertirlo a String
                 if (resultado[4] != null) {
                     final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                    //mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                    mensajeObj.setFechaReal((java.util.Date) resultado[4]);
                 }
                 if (resultado[5] != null) {
                     final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
