@@ -304,23 +304,21 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                     mensajeObj.setAdmContenido(false);
                     mensajeObj.setPendienteMensajesSupervisor(true);
                     if (resultado[6] != null) {
-                        mensajeObj.setPendienteMensajesGestor(0 == ((BigDecimal) resultado[6]).intValue());
-                        mensajeObj.setPendienteMensajesSupervisor(false);
+                        mensajeObj.setPendienteMensajesGestor(false);
+                        mensajeObj.setPendienteMensajesSupervisor(0 == ((BigDecimal) resultado[6]).intValue());
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
-                            pendienteAdmContenido = true;
+                        	pendienteAdmContenido = true;
                         }
-
                     }
                 } else {
                     //Es adm contenido
                     mensajeObj.setAdmContenido(true);
                     mensajeObj.setPendienteMensajesGestor(true);
                     if (resultado[6] != null) {
-                        mensajeObj.setPendienteMensajesGestor(false);
-                        mensajeObj.setPendienteMensajesSupervisor((0 == ((BigDecimal) resultado[6]).intValue()));
+                        mensajeObj.setPendienteMensajesGestor((0 == ((BigDecimal) resultado[6]).intValue()));
+                        mensajeObj.setPendienteMensajesSupervisor(false);
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
-
-                            pendienteGestor = true;
+                        	pendienteGestor = true;
                         }
                         ;
                     }
