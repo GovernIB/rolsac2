@@ -733,7 +733,7 @@ BEGIN
 					 prta_trmtrm)
 					VALUES      ( rolsac1_tramites.tra_codi,
 					              rolsac1_tramites.tra_codi,
-					              V_PRWF_CODUAI,
+					              V_CODORG,
 					              codigo_procwf,
 					              tipotram_plantilla,
 					              lstdoctram,
