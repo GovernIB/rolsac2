@@ -325,15 +325,18 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     }
 
     public String estructurarCopiaChat() {
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         StringBuilder sb = new StringBuilder();
-        for (Mensaje mensaje : mensajes) {
+        //for (Mensaje mensaje : mensajes) {
+        for (int i = mensajes.size() - 1; i >= 0; i--) {
+            Mensaje mensaje = mensajes.get(i);
             sb.append(mensaje.getMensaje());
             sb.append("\n");
             sb.append("(");
             sb.append(mensaje.getUsuario());
             sb.append(" - " + (mensaje.isAdmContenido() ? getLiteral("TypePerfiles.RS2_ADC") : getLiteral("TypePerfiles.RS2_GES")));
             sb.append("):");
-            //sb.append(mensaje.getFecha());
+            sb.append(sdf.format(mensaje.getFechaReal()));
             sb.append("\n\n");
         }
         return sb.toString();

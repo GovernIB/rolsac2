@@ -307,7 +307,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                         mensajeObj.setPendienteMensajesGestor(false);
                         mensajeObj.setPendienteMensajesSupervisor(0 == ((BigDecimal) resultado[6]).intValue());
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
-                        	pendienteAdmContenido = true;
+                            pendienteAdmContenido = true;
                         }
                     }
                 } else {
@@ -318,7 +318,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                         mensajeObj.setPendienteMensajesGestor((0 == ((BigDecimal) resultado[6]).intValue()));
                         mensajeObj.setPendienteMensajesSupervisor(false);
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
-                        	pendienteGestor = true;
+                            pendienteGestor = true;
                         }
                         ;
                     }
@@ -463,5 +463,3 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
 
 }
-
-
