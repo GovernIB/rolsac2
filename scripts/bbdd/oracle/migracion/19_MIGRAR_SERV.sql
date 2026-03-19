@@ -605,7 +605,6 @@ FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
                            trpw_destin,
                            trpw_obser,
                            trpw_svreq,
-                           trpw_prreso,
                            trpw_dpfina,
                            trpw_dpdest,
 						   trpw_uaresp)
@@ -616,7 +615,6 @@ FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
                            rolsac1_tradserv.tsr_objeto,
                            rolsac1_tradserv.tsr_destin,
                            rolsac1_tradserv.tsr_observ,
-                           rolsac1_tradserv.tsr_ulrser,
                            rolsac1_tradserv.tsr_requis,
                            rolsac1_tradserv.tsr_lopdfi,
                            rolsac1_tradserv.tsr_lopdds,
