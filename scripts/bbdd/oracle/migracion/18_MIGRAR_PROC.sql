@@ -672,13 +672,13 @@ BEGIN
 					INTO   total_doc_tram_modelos
 					FROM   r1_tramites_doc
 					WHERE  dtr_codtra = rolsac1_tramites.tra_codi
-					  AND dtr_tipus = 0;
+					  AND dtr_tipus = 1;
 
 					SELECT Count(*)
 					INTO   total_doc_tram_relacionado
 					FROM   r1_tramites_doc
 					WHERE  dtr_codtra = rolsac1_tramites.tra_codi
-					  AND dtr_tipus = 1;
+					  AND dtr_tipus = 0;
 
 					lstdoctram := NULL;
 
