@@ -232,10 +232,10 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         try {
             FicheroRolsac1 ficheroRolsac1 = ficheroRepository.getFicheroRolsac(infoDoc.getCodigoFicheroRolsac1(), pathAlmacenamientoRolsac1);
             if (ficheroRolsac1.getFilename() == null || ficheroRolsac1.getFilename().isEmpty()) {
-                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se migrado porque no tiene filename correcto.\n";
+                return "\tFic  " + infoDoc.getCodigoFicheroRolsac1() + " NO  migrado, filename incorrecto.\n";
             }
             if (ficheroRolsac1.getContenido() == null) {
-                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se migrado porque no tiene contenido.\n";
+                return "\tFic  " + infoDoc.getCodigoFicheroRolsac1() + " NO migrado, sin contenido.\n";
             }
             Long idPadre;
             if (tipoficheroExterno == TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS) {
@@ -244,20 +244,22 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
                 idPadre = migracionRepository.getNormativa(infoDoc.getCodigoDocumentoTraduccion());
             }
             if (idPadre == null) {
-                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se ha encontrado el contenido padre.\n";
+                return "\tFic  " + infoDoc.getCodigoFicheroRolsac1() + " NO ref padre.\n";
             }
             infoDoc.setCodigoPadre(idPadre);
             Long idFichero = ficheroRepository.createFicheroExternoMigracion(ficheroRolsac1.getContenido(), ficheroRolsac1.getFilename(), tipoficheroExterno, idPadre, pathAlmacenamiento, ficheroRolsac1.getCodigo());
             migracionRepository.migrarArchivo(idFichero, infoDoc.getCodigoDocumentoTraduccion(), tipoficheroExterno);
-            resultado.append("\tFichero de rolsac1 ");
+            resultado.append("\tFic ");
             resultado.append(infoDoc.getCodigoFicheroRolsac1());
-            resultado.append(" migrado correctamente \n");
+            resultado.append(" OK \n");
         } catch (Exception e) {
             log.error("Error migrando fichero " + infoDoc, e);
-            resultado.append("\tFichero de rolsac1 ");
+            resultado.append("\tFichero  ");
             resultado.append(infoDoc.getCodigoFicheroRolsac1());
             resultado.append(" ha dado un error. Error:");
-            resultado.append(e.getMessage());
+            if (e.getMessage() != null) {
+                resultado.append(e.getMessage(), 0, Math.min(100, e.getMessage().length()));
+            }
             resultado.append(" \n");
         }
         return resultado.toString();
