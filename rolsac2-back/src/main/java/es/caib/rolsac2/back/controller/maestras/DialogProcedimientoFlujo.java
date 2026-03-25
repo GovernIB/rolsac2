@@ -109,10 +109,27 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
         if (mensajes == null) {
             mensajes = new ArrayList<>();
-        }/*
+        }
+
+        // Reconstruir fechaReal para mensajes
+        if (mensajes != null && !mensajes.isEmpty()) {
+            final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            for (Mensaje msg : mensajes) {
+                if (msg.getFechaReal() == null && msg.getFecha() != null && !msg.getFecha().isEmpty()) {
+                    try {
+                        msg.setFechaReal(sdf.parse(msg.getFecha()));
+                    } catch (Exception e) {
+                        LOG.warn("Error parsing fecha '{}' en mensajes", msg.getFecha(), e);
+                    }
+                }
+            }
+        }
+
+        /*
         if (estadoActual != null && !estadoActual.isEmpty()) {
             literalEstadoActual = getLiteral("TypeProcedimientoEstado." + estadoActual);
         }*/
+
         if (consultarSoloMensajes != null && "S".equals(consultarSoloMensajes)) {
             mostrarEstados = false;
         } else {
@@ -713,4 +730,3 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         }
     }
 }
-
