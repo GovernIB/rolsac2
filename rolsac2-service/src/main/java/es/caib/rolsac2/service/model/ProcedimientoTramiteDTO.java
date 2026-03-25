@@ -957,15 +957,16 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
             idiomasRellenos.add("dialogProcedimientoTramite.nombreTramite");
         }
 
-        /** Luego comprobar que si el idioma catalán está relleno, también esté el mismo campo en inglés relleno **/
-        if (this.getDocumentacion() != null && this.getDocumentacion().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getDocumentacion().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
-            if (this.getDocumentacion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDocumentacion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
-                idiomasRellenos.add("dialogProcedimientoTramite.documentacion");
-            }
-        } else if (this.getDocumentacion() == null || this.getDocumentacion().estaVacio()) {
-            idiomasRellenos.add("dialogProcedimientoTramite.documentacion");
-        }
+        /** Luego comprobar que si el idioma catalán está relleno, también esté el mismo campo en inglés relleno
+         if (this.getDocumentacion() != null && this.getDocumentacion().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getDocumentacion().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
+         if (this.getDocumentacion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getDocumentacion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+         idiomasRellenos.add("dialogProcedimientoTramite.documentacion");
+         }
+         } else if (this.getDocumentacion() == null || this.getDocumentacion().estaVacio()) {
+         idiomasRellenos.add("dialogProcedimientoTramite.documentacion");
+         } **/
 
+        /** Luego comprobar que si el idioma catalán está relleno, también esté el mismo campo en inglés relleno  **/
         if (this.getRequisitos() != null && this.getRequisitos().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getRequisitos().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
             if (this.getRequisitos().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getRequisitos().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
                 idiomasRellenos.add("dialogProcedimientoTramite.requisitos");
@@ -974,14 +975,14 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
             idiomasRellenos.add("dialogProcedimientoTramite.requisitos");
         }
 
-
-        if (this.getObservacion() != null && this.getObservacion().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getObservacion().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
-            if (this.getObservacion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObservacion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
-                idiomasRellenos.add("dialogProcedimientoTramite.observaciones");
-            }
-        } else if (this.getObservacion() == null || this.getObservacion().estaVacio()) {
-            idiomasRellenos.add("dialogProcedimientoTramite.observaciones");
-        }
+        /**
+         if (this.getObservacion() != null && this.getObservacion().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getObservacion().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
+         if (this.getObservacion().getTraduccion(Idioma.INGLES.getIdioma()) == null || this.getObservacion().getTraduccion(Idioma.INGLES.getIdioma()).isEmpty()) {
+         idiomasRellenos.add("dialogProcedimientoTramite.observaciones");
+         }
+         } else if (this.getObservacion() == null || this.getObservacion().estaVacio()) {
+         idiomasRellenos.add("dialogProcedimientoTramite.observaciones");
+         } **/
 
 
         if (this.getTerminoMaximo() != null && this.getTerminoMaximo().getTraduccion(Idioma.CATALAN.getIdioma()) != null && !this.getTerminoMaximo().getTraduccion(Idioma.CATALAN.getIdioma()).isEmpty()) {
