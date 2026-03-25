@@ -569,7 +569,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
         if (this.codigoPublicoObjetivo != null) {
             TipoPublicoObjetivoDTO po = new TipoPublicoObjetivoDTO();
-            po.setCodigo(codigoFormaInicio);
+            po.setCodigo(codigoPublicoObjetivo);
             resultado.setPublicoObjetivo(po);
         }
 
