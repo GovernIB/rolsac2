@@ -110,6 +110,9 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
             if (borrarDatos != null && "true".equals(borrarDatos)) {
                 String result = migracionService.ejecutarMetodo("MIGRAR_BORRARDATOS", entidad.toString(), uaRaiz.toString()) + "\n";
                 mensajeTraza.append(result);
+                String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+                result = migracionService.borrarFileSystem(ruta);
+                mensajeTraza.append(result);
                 detalles.addPropiedad("Borrar datos", "Ejecutado correctamente");
                 estadoMigracion += "Borrado los datos 100%\n";
             }

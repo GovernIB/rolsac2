@@ -24,8 +24,14 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Servicio que da soporte a la entidad de negocio Peticionstancia.
@@ -282,6 +288,112 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
             }
         }
         return resultado.toString();
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR})
+    public String borrarFileSystem(String path) {
+        StringBuilder resultado = new StringBuilder();
+
+        // Validaciones de seguridad
+        if (path == null) {
+            log.warn("Intento de borrar path nulo");
+            return "ERROR: El path no puede ser nulo.\n";
+        }
+
+        if (path.trim().isEmpty()) {
+            log.warn("Intento de borrar path vacío");
+            return "ERROR: El path no puede estar vacío.\n";
+        }
+
+        if ("/".equals(path) || "\\".equals(path) || "C:\\".equalsIgnoreCase(path) || "C:/".equalsIgnoreCase(path)) {
+            log.warn("Intento de borrar path raíz: " + path);
+            return "ERROR: No se permite borrar el directorio raíz del sistema.\n";
+        }
+
+        // Normalizar el path
+        String normalizedPath = path.trim();
+
+        try {
+            Path directoryPath = Paths.get(normalizedPath);
+
+            // Verificar que el directorio existe
+            if (!Files.exists(directoryPath)) {
+                resultado.append("AVISO: El directorio no existe: ").append(normalizedPath).append("\n");
+                return resultado.toString();
+            }
+
+            // Verificar que es un directorio
+            if (!Files.isDirectory(directoryPath)) {
+                resultado.append("ERROR: La ruta especificada no es un directorio: ").append(normalizedPath).append("\n");
+                return resultado.toString();
+            }
+
+            log.info("Iniciando borrado de directorio: " + normalizedPath);
+
+            // Contar archivos y directorios antes de borrar
+            long[] contadores = contarArchivosYDirectorios(directoryPath);
+            long totalArchivos = contadores[0];
+            long totalDirectorios = contadores[1];
+
+            // Borrar recursivamente solo el contenido (no la carpeta raíz)
+            try (Stream<Path> pathStream = Files.walk(directoryPath)) {
+                pathStream.sorted(Comparator.reverseOrder())
+                        .filter(filePath -> !filePath.equals(directoryPath)) // Excluir la carpeta raíz
+                        .forEach(filePath -> {
+                            try {
+                                Files.delete(filePath);
+                                log.debug("Borrado: " + filePath);
+                            } catch (IOException e) {
+                                log.error("Error al borrar: " + filePath, e);
+                                resultado.append("ERROR al borrar: ").append(filePath).append(" - ").append(e.getMessage()).append("\n");
+                            }
+                        });
+            }
+
+            // Verificar resultado
+            resultado.append("Contenido del directorio borrado exitosamente.\n");
+            resultado.append("Total borrado: ").append(totalArchivos).append(" archivos y ")
+                    .append(totalDirectorios).append(" directorios.\n");
+
+            log.info("Borrado completado: " + normalizedPath);
+
+        } catch (IOException e) {
+            log.error("Error al borrar el directorio: " + normalizedPath, e);
+            resultado.append("ERROR: No se pudo borrar el directorio. ").append(e.getMessage()).append("\n");
+        } catch (SecurityException e) {
+            log.error("Error de seguridad al borrar el directorio: " + normalizedPath, e);
+            resultado.append("ERROR DE SEGURIDAD: No se tienen permisos para borrar el directorio. ")
+                    .append(e.getMessage()).append("\n");
+        } catch (Exception e) {
+            log.error("Error inesperado al borrar el directorio: " + normalizedPath, e);
+            resultado.append("ERROR INESPERADO: ").append(e.getMessage()).append("\n");
+        }
+
+        return resultado.toString();
+    }
+
+    /**
+     * Cuenta recursivamente el número de archivos y directorios en un path.
+     *
+     * @param directoryPath Path del directorio
+     * @return Array con [0] = número de archivos, [1] = número de directorios
+     * @throws IOException Si hay error al recorrer el directorio
+     */
+    private long[] contarArchivosYDirectorios(Path directoryPath) throws IOException {
+        long[] contadores = new long[2]; // [0] = archivos, [1] = directorios
+
+        try (Stream<Path> pathStream = Files.walk(directoryPath)) {
+            pathStream.forEach(path -> {
+                if (Files.isRegularFile(path)) {
+                    contadores[0]++;
+                } else if (Files.isDirectory(path) && !path.equals(directoryPath)) {
+                    contadores[1]++;
+                }
+            });
+        }
+
+        return contadores;
     }
 }
 
