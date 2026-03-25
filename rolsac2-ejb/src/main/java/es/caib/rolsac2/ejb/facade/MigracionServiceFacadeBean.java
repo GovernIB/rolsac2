@@ -329,44 +329,61 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
                 return resultado.toString();
             }
 
-            log.info("Iniciando borrado de directorio: " + normalizedPath);
+            log.info("Iniciando borrado de carpetas específicas en: " + normalizedPath);
 
-            // Contar archivos y directorios antes de borrar
-            long[] contadores = contarArchivosYDirectorios(directoryPath);
-            long totalArchivos = contadores[0];
-            long totalDirectorios = contadores[1];
+            // Carpetas específicas a borrar
+            String[] carpetasABorrar = {"normativas", "proced", "temp"};
+            long totalArchivos = 0;
+            long totalDirectorios = 0;
 
-            // Borrar recursivamente solo el contenido (no la carpeta raíz)
-            try (Stream<Path> pathStream = Files.walk(directoryPath)) {
-                pathStream.sorted(Comparator.reverseOrder())
-                        .filter(filePath -> !filePath.equals(directoryPath)) // Excluir la carpeta raíz
-                        .forEach(filePath -> {
-                            try {
-                                Files.delete(filePath);
-                                log.debug("Borrado: " + filePath);
-                            } catch (IOException e) {
-                                log.error("Error al borrar: " + filePath, e);
-                                resultado.append("ERROR al borrar: ").append(filePath).append(" - ").append(e.getMessage()).append("\n");
-                            }
-                        });
+            for (String carpeta : carpetasABorrar) {
+                Path carpetaPath = directoryPath.resolve(carpeta);
+
+                if (Files.exists(carpetaPath) && Files.isDirectory(carpetaPath)) {
+                    log.info("Borrando carpeta: " + carpeta);
+                    resultado.append("Borrando carpeta: ").append(carpeta).append("\n");
+
+                    // Contar antes de borrar
+                    long[] contadores = contarArchivosYDirectorios(carpetaPath);
+                    totalArchivos += contadores[0];
+                    totalDirectorios += contadores[1] + 1; // +1 por la carpeta misma
+
+                    // Borrar recursivamente la carpeta y su contenido
+                    try (Stream<Path> pathStream = Files.walk(carpetaPath)) {
+                        pathStream.sorted(Comparator.reverseOrder())
+                                .forEach(filePath -> {
+                                    try {
+                                        Files.delete(filePath);
+                                        log.debug("Borrado: " + filePath);
+                                    } catch (IOException e) {
+                                        log.error("Error al borrar: " + filePath, e);
+                                        resultado.append("  ERROR al borrar: ").append(filePath.getFileName())
+                                                .append(" - ").append(e.getMessage()).append("\n");
+                                    }
+                                });
+                    }
+
+                    resultado.append("  Carpeta '").append(carpeta).append("' borrada.\n");
+                } else {
+                    resultado.append("  Carpeta '").append(carpeta).append("' no existe o no es directorio.\n");
+                }
             }
 
-            // Verificar resultado
-            resultado.append("Contenido del directorio borrado exitosamente.\n");
+            resultado.append("\nProceso completado.\n");
             resultado.append("Total borrado: ").append(totalArchivos).append(" archivos y ")
                     .append(totalDirectorios).append(" directorios.\n");
 
             log.info("Borrado completado: " + normalizedPath);
 
         } catch (IOException e) {
-            log.error("Error al borrar el directorio: " + normalizedPath, e);
-            resultado.append("ERROR: No se pudo borrar el directorio. ").append(e.getMessage()).append("\n");
+            log.error("Error al borrar carpetas en: " + normalizedPath, e);
+            resultado.append("ERROR: No se pudieron borrar las carpetas. ").append(e.getMessage()).append("\n");
         } catch (SecurityException e) {
-            log.error("Error de seguridad al borrar el directorio: " + normalizedPath, e);
-            resultado.append("ERROR DE SEGURIDAD: No se tienen permisos para borrar el directorio. ")
+            log.error("Error de seguridad al borrar carpetas en: " + normalizedPath, e);
+            resultado.append("ERROR DE SEGURIDAD: No se tienen permisos. ")
                     .append(e.getMessage()).append("\n");
         } catch (Exception e) {
-            log.error("Error inesperado al borrar el directorio: " + normalizedPath, e);
+            log.error("Error inesperado al borrar carpetas en: " + normalizedPath, e);
             resultado.append("ERROR INESPERADO: ").append(e.getMessage()).append("\n");
         }
 
