@@ -953,7 +953,7 @@ BEGIN
 							       )
 							INTO v_uaresp
 							FROM R1_UNIADM_TRAD
-							WHERE TUN_CODUNA = v_pro_coduna
+							WHERE TUN_CODUNA = v_PRO_CODUNA_SERV
 							  AND TUN_CODIDI = 'ca';
 						END IF;
 
@@ -1016,7 +1016,7 @@ BEGIN
 					       )
 					INTO v_uaresp
 					FROM R1_UNIADM_TRAD
-					WHERE TUN_CODUNA = v_pro_coduna
+					WHERE TUN_CODUNA = v_PRO_CODUNA_SERV
 					  AND TUN_CODIDI = 'ca';
 				END IF;
 

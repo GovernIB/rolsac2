@@ -304,22 +304,20 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                     mensajeObj.setAdmContenido(false);
                     mensajeObj.setPendienteMensajesSupervisor(true);
                     if (resultado[6] != null) {
-                        mensajeObj.setPendienteMensajesGestor(0 == ((BigDecimal) resultado[6]).intValue());
-                        mensajeObj.setPendienteMensajesSupervisor(false);
+                        mensajeObj.setPendienteMensajesGestor(false);
+                        mensajeObj.setPendienteMensajesSupervisor(0 == ((BigDecimal) resultado[6]).intValue());
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
                             pendienteAdmContenido = true;
                         }
-
                     }
                 } else {
                     //Es adm contenido
                     mensajeObj.setAdmContenido(true);
                     mensajeObj.setPendienteMensajesGestor(true);
                     if (resultado[6] != null) {
-                        mensajeObj.setPendienteMensajesGestor(false);
-                        mensajeObj.setPendienteMensajesSupervisor((0 == ((BigDecimal) resultado[6]).intValue()));
+                        mensajeObj.setPendienteMensajesGestor((0 == ((BigDecimal) resultado[6]).intValue()));
+                        mensajeObj.setPendienteMensajesSupervisor(false);
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
-
                             pendienteGestor = true;
                         }
                         ;
@@ -329,7 +327,8 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                 //Resultado[4] es un Timestamp , hay que convertirlo a String
                 if (resultado[4] != null) {
                     final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                    //mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
+                    mensajeObj.setFechaReal((java.util.Date) resultado[4]);
                 }
                 if (resultado[5] != null) {
                     final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -464,5 +463,3 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
 
 
 }
-
-
