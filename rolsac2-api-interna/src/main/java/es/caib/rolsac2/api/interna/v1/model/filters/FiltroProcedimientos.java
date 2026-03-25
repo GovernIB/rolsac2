@@ -653,7 +653,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         }
 
         if (this.comun != null) {
-            resultado.setComun(comun.toString());
+            resultado.setComun(comun == 1 ? "S" : "N");
         }
 
         if (this.codigoSia != null) {

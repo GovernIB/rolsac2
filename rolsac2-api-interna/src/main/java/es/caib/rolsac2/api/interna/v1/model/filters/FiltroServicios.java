@@ -553,7 +553,7 @@ public class FiltroServicios extends EntidadJson<FiltroServicios> {
         }
 
         if (this.comun != null) {
-            resultado.setComun(comun.toString());
+            resultado.setComun(comun == 1 ? "S" : "N");
         }
 
         if (this.codigoSia != null) {
