@@ -262,7 +262,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
         for (Object[] proc : jprocs) {
             if (proc != null) {
-                JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[0];
+                JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[2];
                 JProcedimientoWorkflow publicado = (JProcedimientoWorkflow) proc[1];
 
                 ProcedimientoCompletoDTO procCompleto = new ProcedimientoCompletoDTO();

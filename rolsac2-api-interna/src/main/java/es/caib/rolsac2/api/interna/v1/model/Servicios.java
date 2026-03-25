@@ -190,7 +190,7 @@ public class Servicios extends EntidadBase {
             this.fechaActualizacion = elem.getFechaActualizacion() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaActualizacion());
             this.fechaCaducidad = elem.getFechaCaducidad() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaCaducidad());
             this.fechaSIA = elem.getFechaSIA() == null ? null : Utiles.convertDateToJavaUtilCalendar(elem.getFechaSIA());
-            this.habilitadoApoderado = elem.isHabilitadoApoderado() ? 1 : 0;
+            this.habilitadoApoderado = elem.isHabilitadoApoderado() == null ? null : (elem.isHabilitadoApoderado() ? 1 : 0);
             this.habilitadoFuncionario = elem.getHabilitadoFuncionario();
             this.interno = elem.isInterno() ? 1 : 0;
             this.lopdResponsable = elem.getLopdResponsable();
@@ -244,8 +244,12 @@ public class Servicios extends EntidadBase {
             }
 
             this.datosContacto = new DatosContacto();
-            if (elem.getUaResponsable() != null) {
-                this.datosContacto.setServicioResponsable(getDescripcionUA(elem.getUaResponsable(), idioma, idiomaPorDefecto));
+            if (elem.getUaResponsableLiteral() != null) {
+                String servicioResponsable = elem.getUaResponsableLiteral().getTraduccionConValor(idioma, idiomaPorDefecto);
+                if (servicioResponsable == null) {
+                    servicioResponsable = elem.getUaResponsableLiteral().getTraduccion();
+                }
+                this.datosContacto.setServicioResponsable(servicioResponsable);
             }
             this.datosContacto.setPersonaResponsable(elem.getResponsable());
             this.datosContacto.setEmailIncidencias(elem.getIncidenciasEmail());
