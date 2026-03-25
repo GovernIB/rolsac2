@@ -2330,9 +2330,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoPublicoObjetivos()) {
             if (ambosWf) {
-                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.tipoPublicoObjetivo.tipo.codigo IN (:publicoObjetivos) ) ");
             } else {
-                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.tipoPublicoObjetivo.tipo.codigo IN (:publicoObjetivos) ) ");
             }
         }
         if (filtro.isRellenoMaterias()) {
