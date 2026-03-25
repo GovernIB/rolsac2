@@ -96,6 +96,12 @@ public class ProcedimientoGridDTO extends ModelApi {
     private boolean mensajesPendienteSupervisor;
 
     /**
+     * Fechas del procedimiento para visibilidad
+     **/
+    private Date fechaPublicacion;
+    private Date fechaDespublicacion;
+
+    /**
      * Información tramite inicio
      **/
     private Long tramiteInicioCodigo;
@@ -451,6 +457,21 @@ public class ProcedimientoGridDTO extends ModelApi {
         this.mensajesPendienteSupervisor = mensajesPendienteSupervisor;
     }
 
+    public Date getFechaPublicacion() {
+        return fechaPublicacion;
+    }
+
+    public void setFechaPublicacion(Date fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public Date getFechaDespublicacion() {
+        return fechaDespublicacion;
+    }
+
+    public void setFechaDespublicacion(Date fechaDespublicacion) {
+        this.fechaDespublicacion = fechaDespublicacion;
+    }
 
     /**
      * Icono de visibilidad
@@ -490,14 +511,17 @@ public class ProcedimientoGridDTO extends ModelApi {
         }
     }
 
+    /**
+     * Verifica si el procedimiento es visible en SEDE.
+     */
     private boolean isVisible() {
         final Date now = new Date();
-        final boolean tieneTramiteInicio = this.tramiteInicioCodigo != null;
-        final boolean noCaducado = (getTramiteIniciofechaCierre() == null || getTramiteIniciofechaCierre().after(now));
-        final boolean publicado = (getTramiteInicioFechaPublicacion() == null || getTramiteInicioFechaPublicacion().before(now));
 
-        final boolean visible = this.estado != null && (this.estado.contains(TypeProcedimientoEstado.PUBLICADO.toString()) || this.estado.contains(TypeProcedimientoEstado.PENDIENTE_CERRAR.toString()));
-        return tieneTramiteInicio && visible && noCaducado && publicado;
+        final boolean esPublicado = this.estado != null && this.estado.contains(TypeProcedimientoEstado.PUBLICADO.toString());
+        final boolean fechaPublicacionValida = getFechaPublicacion() == null || getFechaPublicacion().before(now);
+        final boolean noCaducado = getFechaDespublicacion() == null || getFechaDespublicacion().after(now);
+
+        return esPublicado && fechaPublicacionValida && noCaducado;
     }
 
     @Override

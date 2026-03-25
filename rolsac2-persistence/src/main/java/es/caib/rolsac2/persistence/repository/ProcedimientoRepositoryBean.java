@@ -241,9 +241,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     }
                 }
 
+                procedimientoGridDTO.setFechaPublicacion((Date) jproc[16]);
+                procedimientoGridDTO.setFechaDespublicacion((Date) jproc[17]);
                 procedimientoGridDTO.setMensajesPendienteGestor((Boolean) jproc[18]);
                 procedimientoGridDTO.setMensajesPendienteSupervisor((Boolean) jproc[19]);
-
                 procedimientoGridDTO.setUaInstructor("" + ((Long) jproc[20]));
 
                 procs.add(procedimientoGridDTO);
