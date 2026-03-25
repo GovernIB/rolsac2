@@ -67,11 +67,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"/>
 
             </div>
-            <div class="d-flex justify-content-center align-content-center h25px mt-2">
-
-                <p:selectBooleanCheckbox value="#{dialogLiteral.sustitucion}" styleClass="ml-2"
-                                         itemLabel="#{labels['dialogTraduccion.sustituirValor']}"/>
-            </div>
 
             <div class="row p-3">
                  <c:forEach var="idioma" items="#{dialogLiteral.idiomasAMostrar}">

@@ -44,6 +44,7 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         serv.setObservaciones(Literal.createInstance(idiomas));
         serv.setTipoTramitacion(TipoTramitacionDTO.createInstance(idiomas));
         serv.setKeywords(Literal.createInstance(idiomas));
+        serv.setUaResponsableLiteral(Literal.createInstance(idiomas));
         serv.setTramitElectronica(true);
         return serv;
     }
