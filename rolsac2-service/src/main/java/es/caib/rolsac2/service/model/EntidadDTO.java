@@ -38,6 +38,8 @@ public class EntidadDTO extends ModelApi {
 
     private String idiomasObligatorios;
 
+    private Integer nivelTemasMaximo;
+
 
     /**
      * LOPD Datos
@@ -86,6 +88,7 @@ public class EntidadDTO extends ModelApi {
             this.idiomaDefectoRest = otro.idiomaDefectoRest;
             this.idiomasPermitidos = otro.idiomasPermitidos;
             this.idiomasObligatorios = otro.idiomasObligatorios;
+            this.nivelTemasMaximo = otro.nivelTemasMaximo;
             this.lopdDerechos = otro.lopdDerechos == null ? null : (Literal) otro.lopdDerechos.clone();
             ;
             this.lopdFinalidad = otro.lopdFinalidad == null ? null : (Literal) otro.lopdFinalidad.clone();
@@ -443,6 +446,14 @@ public class EntidadDTO extends ModelApi {
         this.admContenidoSeleccionIdioma = admContenidoSeleccionIdioma;
     }
 
+    public Integer getNivelTemasMaximo() {
+        return nivelTemasMaximo;
+    }
+
+    public void setNivelTemasMaximo(Integer nivelTemasMaximo) {
+        this.nivelTemasMaximo = nivelTemasMaximo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -454,7 +465,7 @@ public class EntidadDTO extends ModelApi {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo, descripcion, idiomaDefectoRest, idiomasPermitidos, idiomasObligatorios);
+        return Objects.hash(codigo, activa, rolAdmin, rolAdminContenido, rolGestor, rolInformador, logo, descripcion, idiomaDefectoRest, idiomasPermitidos, idiomasObligatorios, nivelTemasMaximo);
     }
 
     @Override
@@ -464,6 +475,6 @@ public class EntidadDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "EntidadDTO{" + "codigo=" + codigo + ", identificador='" + identificador + '\'' + ", activa=" + activa + ", rolAdmin='" + rolAdmin + '\'' + ", rolAdminContenido='" + rolAdminContenido + '\'' + ", rolGestor='" + rolGestor + '\'' + ", rolInformador='" + rolInformador + '\'' + ", logo=" + logo + ", descripcion=" + descripcion + ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' + ", idiomasPermitidos='" + idiomasPermitidos + '\'' + ", idiomasObligatorios='" + idiomasObligatorios + '\'' + '}';
+        return "EntidadDTO{" + "codigo=" + codigo + ", identificador='" + identificador + '\'' + ", activa=" + activa + ", rolAdmin='" + rolAdmin + '\'' + ", rolAdminContenido='" + rolAdminContenido + '\'' + ", rolGestor='" + rolGestor + '\'' + ", rolInformador='" + rolInformador + '\'' + ", logo=" + logo + ", descripcion=" + descripcion + ", idiomaDefectoRest='" + idiomaDefectoRest + '\'' + ", idiomasPermitidos='" + idiomasPermitidos + '\'' + ", idiomasObligatorios='" + idiomasObligatorios + '\'' + ", nivelTemasMaximo=" + nivelTemasMaximo + '}';
     }
 }

@@ -11,6 +11,7 @@ import es.caib.rolsac2.persistence.repository.TemaRepository;
 import es.caib.rolsac2.persistence.repository.TipoMateriaSIARepository;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
 import es.caib.rolsac2.service.exception.RecursoNoEncontradoException;
+import es.caib.rolsac2.service.exception.TemaNivelMaximoException;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
@@ -32,6 +33,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Logged
 @ExceptionTranslate
@@ -42,6 +44,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(TemaServiceFacadeBean.class);
     private static final String ERROR_LITERAL = "Error";
+    private static final int DEFAULT_NIVEL_TEMAS_MAXIMO = 3;
 
     @Inject
     TemaRepository temaRepository;
@@ -86,6 +89,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
         }
+        validarNivelTemasMaximo(dto, null, null);
         JTema jTema = converter.createEntity(dto);
         String path = "";
         //Calculamos path con el que se guardará el objeto
@@ -113,6 +117,7 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         if (dto.getTipoMateriaSIA() != null) {
             jTipoMateriaSIA = tipoMateriaSIARepository.findById(dto.getTipoMateriaSIA().getCodigo());
         }
+        validarNivelTemasMaximo(dto, jTema, idioma);
         this.verificarModificacionTemaPadre(dto, jTema, idioma);
         jTema.setEntidad(jEntidad);
 
@@ -192,13 +197,77 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
         return temaRepository.checkIdentificador(identificador, idEntidad);
     }
 
+    private void validarNivelTemasMaximo(TemaDTO dto, JTema temaActual, String idioma) {
+        if (dto == null || dto.getEntidad() == null || dto.getEntidad().getCodigo() == null) {
+            return;
+        }
+
+        JEntidad entidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
+        Integer nivelMaximo = entidad.getNivelTemasMaximo();
+        int nivelMaximoFinal = nivelMaximo != null ? nivelMaximo : DEFAULT_NIVEL_TEMAS_MAXIMO;
+
+        Long padreNuevoId = dto.getTemaPadre() != null ? dto.getTemaPadre().getCodigo() : null;
+        if (padreNuevoId == null) {
+            return;
+        }
+
+        if (temaActual != null) {
+            Long padreActualId = temaActual.getTemaPadre() != null ? temaActual.getTemaPadre().getCodigo() : null;
+            if (Objects.equals(padreActualId, padreNuevoId)) {
+                return;
+            }
+        }
+
+        JTema temaPadre = temaRepository.getReference(padreNuevoId);
+        int nivelPadre = calcularNivelDesdeMathPath(temaPadre.getMathPath());
+        int nivelNuevoTema = nivelPadre + 1;
+
+        int profundidadSubarbol = 1;
+        if (temaActual != null) {
+            int nivelActual = calcularNivelDesdeMathPath(temaActual.getMathPath());
+            String prefix;
+            if (temaActual.getMathPath() == null || temaActual.getMathPath().isEmpty()) {
+                prefix = temaActual.getCodigo() + ";";
+            } else {
+                prefix = temaActual.getMathPath() + ";" + temaActual.getCodigo() + ";";
+            }
+            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(prefix, idioma);
+            for (JTema hijo : hijosAll) {
+                int nivelHijo = calcularNivelDesdeMathPath(hijo.getMathPath());
+                int profundidadRelativa = (nivelHijo - nivelActual) + 1;
+                if (profundidadRelativa > profundidadSubarbol) {
+                    profundidadSubarbol = profundidadRelativa;
+                }
+            }
+        }
+
+        int nivelMaximoResultado = nivelNuevoTema + profundidadSubarbol - 1;
+        if (nivelMaximoResultado > nivelMaximoFinal) {
+            throw new TemaNivelMaximoException(nivelMaximoFinal);
+        }
+    }
+
+    private int calcularNivelDesdeMathPath(String mathPath) {
+        if (mathPath == null || mathPath.isEmpty()) {
+            return 1;
+        }
+        String[] segmentos = mathPath.split(";");
+        return segmentos.length + 1;
+    }
+
 
     private void verificarModificacionTemaPadre(TemaDTO temaActualizado, JTema jTema, String idioma) {
         if (temaActualizado.getTemaPadre() != null && jTema.getTemaPadre() != null) {
             if (jTema.getTemaPadre().getCodigo().compareTo(temaActualizado.getTemaPadre().getCodigo()) != 0) {
                 String mathPathAntiguo = jTema.getMathPath();
                 String mathPathNuevo = temaActualizado.getMathPath();
-                List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo + jTema.getCodigo().toString(), idioma);
+                String prefixBusqueda;
+                if (mathPathAntiguo == null || mathPathAntiguo.isEmpty()) {
+                    prefixBusqueda = jTema.getCodigo().toString() + ";";
+                } else {
+                    prefixBusqueda = mathPathAntiguo + ";" + jTema.getCodigo().toString() + ";";
+                }
+                List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(prefixBusqueda, idioma);
                 for (JTema tema : hijosAll) {
                     String mathPath = tema.getMathPath();
                     String mathPathActualizado = mathPath.replace(mathPathAntiguo, mathPathNuevo);
@@ -208,16 +277,21 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
                 JTema temaPadre = temaRepository.getReference(temaActualizado.getTemaPadre().getCodigo());
                 jTema.setTemaPadre(temaPadre);
                 String mathPathPadre = temaPadre.getMathPath();
-                if (mathPathPadre != null) {
-                    String mathPath = mathPathPadre += temaPadre.getCodigo().toString();
-                    jTema.setMathPath(mathPath);
+                if (mathPathPadre != null && !mathPathPadre.isEmpty()) {
+                    jTema.setMathPath(mathPathPadre + ";" + temaPadre.getCodigo().toString());
                 } else {
                     jTema.setMathPath(temaPadre.getCodigo().toString());
                 }
             }
         } else if (temaActualizado.getTemaPadre() == null && jTema.getTemaPadre() != null) {
             String mathPathAntiguo = jTema.getMathPath();
-            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(mathPathAntiguo, idioma);
+            String prefixBusqueda;
+            if (mathPathAntiguo == null || mathPathAntiguo.isEmpty()) {
+                prefixBusqueda = jTema.getCodigo().toString() + ";";
+            } else {
+                prefixBusqueda = mathPathAntiguo + ";" + jTema.getCodigo().toString() + ";";
+            }
+            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(prefixBusqueda, idioma);
             for (JTema tema : hijosAll) {
                 String mathPath = tema.getMathPath();
                 String mathPathActualizado = mathPath.replace(mathPathAntiguo, "");
@@ -228,7 +302,8 @@ public class TemaServiceFacadeBean implements TemaServiceFacade {
             jTema.setMathPath(null);
         } else if (temaActualizado.getTemaPadre() != null && jTema.getTemaPadre() == null) {
 
-            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(temaActualizado.getCodigo().toString(), idioma);
+            String prefixBusqueda = temaActualizado.getCodigo().toString() + ";";
+            List<JTema> hijosAll = temaRepository.getHijosTodosNiveles(prefixBusqueda, idioma);
             for (JTema tema : hijosAll) {
                 String mathPath = temaActualizado.getMathPath() + tema.getMathPath();
                 tema.setMathPath(mathPath);

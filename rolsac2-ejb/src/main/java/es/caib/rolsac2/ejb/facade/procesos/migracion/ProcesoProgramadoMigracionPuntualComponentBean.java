@@ -71,7 +71,6 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
     }
 
     private final static Integer TAMANYO_BLOQUE = 10;
-    private final static Integer INTERVALO_AUDITORIA = 50; // Auditar cada 50 elementos para evitar sobrecarga transaccional
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
@@ -109,9 +108,6 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
 
             if (borrarDatos != null && "true".equals(borrarDatos)) {
                 String result = migracionService.ejecutarMetodo("MIGRAR_BORRARDATOS", entidad.toString(), uaRaiz.toString()) + "\n";
-                mensajeTraza.append(result);
-                String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-                result = migracionService.borrarFileSystem(ruta);
                 mensajeTraza.append(result);
                 detalles.addPropiedad("Borrar datos", "Ejecutado correctamente");
                 estadoMigracion += "Borrado los datos 100%\n";
@@ -246,10 +242,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                     for (int i = 0; i < idDocs.size(); i++) {
                         String result = migracionService.migrarDocumentos(idDocs.get(i), entidad, uaRaiz, rutaRolsac1, ruta, TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS);
                         mensajeTraza.append(result);
-                        // Auditar solo cada INTERVALO_AUDITORIA documentos para evitar crear demasiadas transacciones
-                        if (i % INTERVALO_AUDITORIA == 0 || i == idDocs.size() - 1) {
-                            procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Doc proced/serv " + getPorcentaje(i, idDocs.size()) + " \n\n" + mensajeTraza.toString());
-                        }
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Doc proced/serv " + getPorcentaje(i, idDocs.size()) + " \n\n" + mensajeTraza.toString());
                     }
                     estadoMigracion += "Migrado los docs procedimientos/servicios 100%\n";
                 }
@@ -260,10 +253,7 @@ public class ProcesoProgramadoMigracionPuntualComponentBean implements ProcesoPr
                     for (int i = 0; i < idDocs.size(); i++) {
                         String result = migracionService.migrarDocumentos(idDocs.get(i), entidad, uaRaiz, rutaRolsac1, ruta, TypeFicheroExterno.NORMATIVA_DOCUMENTO);
                         mensajeTraza.append(result);
-                        // Auditar solo cada INTERVALO_AUDITORIA documentos para evitar crear demasiadas transacciones
-                        if (i % INTERVALO_AUDITORIA == 0 || i == idDocs.size() - 1) {
-                            procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Doc normativas " + getPorcentaje(i, idDocs.size()) + " \n\n" + mensajeTraza.toString());
-                        }
+                        procesosExecComponent.auditarMitadProceso(instanciaProceso, estadoMigracion + "\n Estado actual: Migrando Doc normativas " + getPorcentaje(i, idDocs.size()) + " \n\n" + mensajeTraza.toString());
                     }
                     estadoMigracion += "Migrado los docs normativas 100%\n";
                 }

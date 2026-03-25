@@ -239,6 +239,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
+                            <p:outputLabel value="#{labels['dialogEntidad.temas.maximo']}:" for="txtNivelTemasMaximo"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-8 ui-lg-5">
+                            <p:inputNumber id="txtNivelTemasMaximo" value="#{viewConfiguracionEntidad.nivelTemasMaximo}"
+                                minValue="0" maxValue="9" decimalPlaces="0" maxlength="1" autoNumericOptions="{'overrideMinMaxLimits': 'doNothing'}"
+                                disabled="#{viewConfiguracionEntidad.isModoConsulta()}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <p:outputLabel value="#{labels['dialogEntidad.logo']}:" for=""/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
@@ -260,7 +270,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                           cancelLabel="#{labels['dict.cancelar']}"
                                                           styleClass=""
                                                           auto="true"
-                                                          
+
                                             />
                                         </c:when>
                                         <c:otherwise>
@@ -274,7 +284,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         </c:otherwise>
                                     </c:choose>
                                 </p:panel>
- 
+
                             </c:if>
 
                         </div>

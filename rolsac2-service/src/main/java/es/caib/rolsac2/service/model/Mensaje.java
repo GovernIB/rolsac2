@@ -18,7 +18,7 @@ public final class Mensaje extends ModelApi implements Comparable {
     /**
      * Fecha
      */
-    //private String fecha;
+    private String fecha;
 
     /**
      * Fecha leido
@@ -74,20 +74,18 @@ public final class Mensaje extends ModelApi implements Comparable {
      *
      * @return fecha
      */
-    /*public String getFecha() {
+    public String getFecha() {
         return fecha;
     }
-    */
 
     /**
      * Establece fecha.
      *
      * @param fecha fecha
      */
-    /*public void setFecha(String fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
-    */
 
     /**
      * Obtiene mensaje.
@@ -188,8 +186,7 @@ public final class Mensaje extends ModelApi implements Comparable {
             return -1;
         }
         if (this.getFechaReal() == null && mensaje2.getFechaReal() == null) {
-        	// Ya no deberia pasar que las fechas reales son nulas
-            return 1; //mensaje2.compareTo(this.getFechaReal());//this.getFecha().compareTo(((Mensaje) o).getFecha());
+            return mensaje2.compareTo(this.getFecha());//this.getFecha().compareTo(((Mensaje) o).getFecha());
         } else {
             return mensaje2.getFechaReal().after(this.getFechaReal()) ? 1 : -1;
         }

@@ -147,6 +147,16 @@ public class TemaComponent extends UIInput implements NamingContainer {
         UtilJSF.openDialog(direccion, modoAcceso, params, true, 590, 375);
     }
 
+    public void limpiarSeleccion() {
+        TemaDTO temaVacio = new TemaDTO();
+        this.setValue(temaVacio);
+        setearTextos(temaVacio);
+        if (texto != null) {
+            texto.setValue(null);
+            texto.setSubmittedValue(null);
+        }
+    }
+
     public UIInput getTexto() {
         return texto;
     }

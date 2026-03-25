@@ -5,6 +5,7 @@ import es.caib.rolsac2.back.controller.SessionBean;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
+import es.caib.rolsac2.service.exception.ServiceException;
 import es.caib.rolsac2.service.facade.AdministracionSupServiceFacade;
 import es.caib.rolsac2.service.facade.TemaServiceFacade;
 import es.caib.rolsac2.service.model.EntidadDTO;
@@ -85,12 +86,6 @@ public class DialogTema extends AbstractController implements Serializable {
             if (data.getTemaPadre() == null) {
                 //Si es root, porque no tiene padre, no se le puede dejar seleccionar un padre.
                 quitarSeleccionarTema = true;
-            } else if (data.getTemaPadre().getTemaPadre() == null) {
-                boolean tieneHijos = temaServiceFacade.tieneHijos(data.getCodigo());
-                if (tieneHijos) {
-                    //Si el padre es root y no tiene hijos, no se le puede dejar seleccionar un padre.
-                    quitarSeleccionarTema = true;
-                }
             }
 
         }
@@ -107,19 +102,24 @@ public class DialogTema extends AbstractController implements Serializable {
             this.data.setTemaPadre(null);
         }
 
-        if (this.data.getCodigo() == null) {
-            temaServiceFacade.create(this.data);
-        } else {
-            if (this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() != null) {
-                if (this.data.getTemaPadre().getMathPath() == null) {
-                    this.data.setMathPath(this.data.getTemaPadre().getCodigo().toString());
-                } else {
-                    String path = this.data.getTemaPadre().getMathPath();
-                    path += ";" + this.data.getTemaPadre().getCodigo();
+        try {
+            if (this.data.getCodigo() == null) {
+                temaServiceFacade.create(this.data);
+            } else {
+                if (this.data.getTemaPadre() != null && this.data.getTemaPadre().getCodigo() != null) {
+                    if (this.data.getTemaPadre().getMathPath() == null) {
+                        this.data.setMathPath(this.data.getTemaPadre().getCodigo().toString());
+                    } else {
+                        String path = this.data.getTemaPadre().getMathPath();
+                        path += ";" + this.data.getTemaPadre().getCodigo();
+                    }
                 }
-            }
-            temaServiceFacade.update(this.data, this.getIdioma());
+                temaServiceFacade.update(this.data, this.getIdioma());
 
+            }
+        } catch (ServiceException e) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, e.getLocalizedMessage(), true);
+            return;
         }
 
         //Retornamos resultado

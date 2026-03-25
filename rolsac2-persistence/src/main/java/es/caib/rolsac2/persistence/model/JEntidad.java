@@ -105,6 +105,12 @@ public class JEntidad extends BaseEntity {
     private String idiomasObligatorios;
 
     /**
+     * Máximo número de temas
+     **/
+    @Column(name = "ENTI_NIVTEMMAX", nullable = true)
+    private Integer nivelTemasMaximo;
+
+    /**
      * Indica si el administrador de contenido tiene un idioma por defecto
      **/
     @Column(name = "ENTI_ADCPRI", nullable = true)
@@ -346,6 +352,24 @@ public class JEntidad extends BaseEntity {
      */
     public void setIdiomasObligatorios(String idiomasObligatorios) {
         this.idiomasObligatorios = idiomasObligatorios;
+    }
+
+    /**
+     * Obtiene nivel máximo de temas.
+     *
+     * @return nivel máximo de temas
+     */
+    public Integer getNivelTemasMaximo() {
+        return nivelTemasMaximo;
+    }
+
+    /**
+     * Establece el nivel máximo de temas.
+     *
+     * @param nivelTemasMaximo nivel máximo de temas
+     */
+    public void setNivelTemasMaximo(Integer nivelTemasMaximo) {
+        this.nivelTemasMaximo = nivelTemasMaximo;
     }
 
     /**

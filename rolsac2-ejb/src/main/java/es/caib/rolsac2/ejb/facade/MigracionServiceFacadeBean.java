@@ -24,14 +24,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Servicio que da soporte a la entidad de negocio Peticionstancia.
@@ -238,10 +232,10 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         try {
             FicheroRolsac1 ficheroRolsac1 = ficheroRepository.getFicheroRolsac(infoDoc.getCodigoFicheroRolsac1(), pathAlmacenamientoRolsac1);
             if (ficheroRolsac1.getFilename() == null || ficheroRolsac1.getFilename().isEmpty()) {
-                return "\tFic  " + infoDoc.getCodigoFicheroRolsac1() + " NO  migrado, filename incorrecto.\n";
+                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se migrado porque no tiene filename correcto.\n";
             }
             if (ficheroRolsac1.getContenido() == null) {
-                return "\tFic  " + infoDoc.getCodigoFicheroRolsac1() + " NO migrado, sin contenido.\n";
+                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se migrado porque no tiene contenido.\n";
             }
             Long idPadre;
             if (tipoficheroExterno == TypeFicheroExterno.PROCEDIMIENTO_DOCUMENTOS) {
@@ -250,22 +244,20 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
                 idPadre = migracionRepository.getNormativa(infoDoc.getCodigoDocumentoTraduccion());
             }
             if (idPadre == null) {
-                return "\tFic  " + infoDoc.getCodigoFicheroRolsac1() + " NO ref padre.\n";
+                return "\tFichero de rolsac1 " + infoDoc.getCodigoFicheroRolsac1() + " NO se ha encontrado el contenido padre.\n";
             }
             infoDoc.setCodigoPadre(idPadre);
             Long idFichero = ficheroRepository.createFicheroExternoMigracion(ficheroRolsac1.getContenido(), ficheroRolsac1.getFilename(), tipoficheroExterno, idPadre, pathAlmacenamiento, ficheroRolsac1.getCodigo());
             migracionRepository.migrarArchivo(idFichero, infoDoc.getCodigoDocumentoTraduccion(), tipoficheroExterno);
-            resultado.append("\tFic ");
+            resultado.append("\tFichero de rolsac1 ");
             resultado.append(infoDoc.getCodigoFicheroRolsac1());
-            resultado.append(" OK \n");
+            resultado.append(" migrado correctamente \n");
         } catch (Exception e) {
             log.error("Error migrando fichero " + infoDoc, e);
-            resultado.append("\tFichero  ");
+            resultado.append("\tFichero de rolsac1 ");
             resultado.append(infoDoc.getCodigoFicheroRolsac1());
             resultado.append(" ha dado un error. Error:");
-            if (e.getMessage() != null) {
-                resultado.append(e.getMessage(), 0, Math.min(100, e.getMessage().length()));
-            }
+            resultado.append(e.getMessage());
             resultado.append(" \n");
         }
         return resultado.toString();
@@ -288,129 +280,6 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
             }
         }
         return resultado.toString();
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR})
-    public String borrarFileSystem(String path) {
-        StringBuilder resultado = new StringBuilder();
-
-        // Validaciones de seguridad
-        if (path == null) {
-            log.warn("Intento de borrar path nulo");
-            return "ERROR: El path no puede ser nulo.\n";
-        }
-
-        if (path.trim().isEmpty()) {
-            log.warn("Intento de borrar path vacío");
-            return "ERROR: El path no puede estar vacío.\n";
-        }
-
-        if ("/".equals(path) || "\\".equals(path) || "C:\\".equalsIgnoreCase(path) || "C:/".equalsIgnoreCase(path)) {
-            log.warn("Intento de borrar path raíz: " + path);
-            return "ERROR: No se permite borrar el directorio raíz del sistema.\n";
-        }
-
-        // Normalizar el path
-        String normalizedPath = path.trim();
-
-        try {
-            Path directoryPath = Paths.get(normalizedPath);
-
-            // Verificar que el directorio existe
-            if (!Files.exists(directoryPath)) {
-                resultado.append("AVISO: El directorio no existe: ").append(normalizedPath).append("\n");
-                return resultado.toString();
-            }
-
-            // Verificar que es un directorio
-            if (!Files.isDirectory(directoryPath)) {
-                resultado.append("ERROR: La ruta especificada no es un directorio: ").append(normalizedPath).append("\n");
-                return resultado.toString();
-            }
-
-            log.info("Iniciando borrado de carpetas específicas en: " + normalizedPath);
-
-            // Carpetas específicas a borrar
-            String[] carpetasABorrar = {"normativas", "proced", "temp"};
-            long totalArchivos = 0;
-            long totalDirectorios = 0;
-
-            for (String carpeta : carpetasABorrar) {
-                Path carpetaPath = directoryPath.resolve(carpeta);
-
-                if (Files.exists(carpetaPath) && Files.isDirectory(carpetaPath)) {
-                    log.info("Borrando carpeta: " + carpeta);
-                    resultado.append("Borrando carpeta: ").append(carpeta).append("\n");
-
-                    // Contar antes de borrar
-                    long[] contadores = contarArchivosYDirectorios(carpetaPath);
-                    totalArchivos += contadores[0];
-                    totalDirectorios += contadores[1] + 1; // +1 por la carpeta misma
-
-                    // Borrar recursivamente la carpeta y su contenido
-                    try (Stream<Path> pathStream = Files.walk(carpetaPath)) {
-                        pathStream.sorted(Comparator.reverseOrder())
-                                .forEach(filePath -> {
-                                    try {
-                                        Files.delete(filePath);
-                                        log.debug("Borrado: " + filePath);
-                                    } catch (IOException e) {
-                                        log.error("Error al borrar: " + filePath, e);
-                                        resultado.append("  ERROR al borrar: ").append(filePath.getFileName())
-                                                .append(" - ").append(e.getMessage()).append("\n");
-                                    }
-                                });
-                    }
-
-                    resultado.append("  Carpeta '").append(carpeta).append("' borrada.\n");
-                } else {
-                    resultado.append("  Carpeta '").append(carpeta).append("' no existe o no es directorio.\n");
-                }
-            }
-
-            resultado.append("\nProceso completado.\n");
-            resultado.append("Total borrado: ").append(totalArchivos).append(" archivos y ")
-                    .append(totalDirectorios).append(" directorios.\n");
-
-            log.info("Borrado completado: " + normalizedPath);
-
-        } catch (IOException e) {
-            log.error("Error al borrar carpetas en: " + normalizedPath, e);
-            resultado.append("ERROR: No se pudieron borrar las carpetas. ").append(e.getMessage()).append("\n");
-        } catch (SecurityException e) {
-            log.error("Error de seguridad al borrar carpetas en: " + normalizedPath, e);
-            resultado.append("ERROR DE SEGURIDAD: No se tienen permisos. ")
-                    .append(e.getMessage()).append("\n");
-        } catch (Exception e) {
-            log.error("Error inesperado al borrar carpetas en: " + normalizedPath, e);
-            resultado.append("ERROR INESPERADO: ").append(e.getMessage()).append("\n");
-        }
-
-        return resultado.toString();
-    }
-
-    /**
-     * Cuenta recursivamente el número de archivos y directorios en un path.
-     *
-     * @param directoryPath Path del directorio
-     * @return Array con [0] = número de archivos, [1] = número de directorios
-     * @throws IOException Si hay error al recorrer el directorio
-     */
-    private long[] contarArchivosYDirectorios(Path directoryPath) throws IOException {
-        long[] contadores = new long[2]; // [0] = archivos, [1] = directorios
-
-        try (Stream<Path> pathStream = Files.walk(directoryPath)) {
-            pathStream.forEach(path -> {
-                if (Files.isRegularFile(path)) {
-                    contadores[0]++;
-                } else if (Files.isDirectory(path) && !path.equals(directoryPath)) {
-                    contadores[1]++;
-                }
-            });
-        }
-
-        return contadores;
     }
 }
 

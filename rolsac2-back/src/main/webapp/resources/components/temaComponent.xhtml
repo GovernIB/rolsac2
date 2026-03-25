@@ -13,18 +13,20 @@
                       shortDescription="Indica si es solo lectura. Valores posibles: true, false o null"/>
         <cc:attribute name="idioma" required="true"/>
         <cc:attribute name="codigoTema" required="false" />
+        <cc:attribute name="deshabilitarLimpiar" type="java.lang.Boolean"
+                  shortDescription="Indica si el boton de limpiar esta deshabilitado"/>
     </cc:interface>
     <cc:implementation>
         <span id="#{cc.clientId}" style="white-space:nowrap">
             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeModoAcceso" var="ModoAcceso"/>
-            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1" disabled="true"/>
+            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w80 mr-1" disabled="true"/>
             <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"/>
             <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"/>
             <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>
             <p:inputText id="textoIdioma" binding="#{cc.textoIdioma}" style="display:none"/>
             <p:commandButton action="#{cc.abrirVentana()}"
                              icon="pi pi-sitemap"
-                             value=" "
+                             value=""
                              styleClass="w45px h25px iconoUAselector"
                              process="@this"
                              disabled="#{cc.isModoCrear()}"
@@ -32,6 +34,14 @@
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
                              update="#{cc.updateElementos}"/>
             </p:commandButton>
+            <p:commandButton actionListener="#{cc.limpiarSeleccion()}"
+                             icon="pi pi-times"
+                             value=""
+                             styleClass="w45px h25px iconoUAselector"
+                             process="@this"
+                             update="#{cc.updateElementos}"
+                             disabled="#{cc.attrs.deshabilitarLimpiar}"
+            />
         </span>
     </cc:implementation>
 </ui:component>

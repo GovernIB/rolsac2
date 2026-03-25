@@ -61,6 +61,8 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
 
     private List<String> idiomasObligatorios = new ArrayList<>();
 
+    private Integer nivelTemasMaximo;
+
     private Literal uaDataComun;
 
     private StreamedContent file;
@@ -75,6 +77,9 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         uaDataComun = (Literal)data.getUaComun().clone();
 
         setIdiomas();
+
+        // Inicializar nivelTemasMaximo desde la entidad
+        this.nivelTemasMaximo = data.getNivelTemasMaximo() != null ? data.getNivelTemasMaximo() : 3; // valor por defecto 3
     }
 
     public void guardar() {
@@ -82,10 +87,16 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         if (!checkObligatorio()) {
             return;
         }
+        if (!checkNivelTemasMax(this.nivelTemasMaximo)) {
+            return;
+        }
         try {
+
             adaptIdiomas();
 
             this.data.setUaComun(uaDataComun);
+
+            this.data.setNivelTemasMaximo(this.nivelTemasMaximo);
 
             administracionSupServiceFacade.updateEntidad(this.data);
 
@@ -206,6 +217,16 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
             if (!idiomasPermitidos.contains(idioma)) {
                 idiomasObligatorios.remove(idioma);
             }
+        }
+    }
+
+    public boolean checkNivelTemasMax(Integer nivelTemasMax) {
+        if (nivelTemasMaximo != null && (3 <= nivelTemasMax && nivelTemasMax <= 9)) {
+            return true;
+        } else {
+            LOG.error(getLiteral("msg.nivelTemasFueraRango"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.nivelTemasFueraRango"), true);
+            return false;
         }
     }
 
@@ -336,6 +357,14 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
 
     public void setIdiomasObligatorios(List<String> idiomasObligatorios) {
         this.idiomasObligatorios = idiomasObligatorios;
+    }
+
+    public Integer getNivelTemasMaximo() {
+    	return nivelTemasMaximo;
+    }
+
+    public void setNivelTemasMaximo(Integer nivelTemasMaximo) {
+    	this.nivelTemasMaximo = nivelTemasMaximo;
     }
 
     public StreamedContent getFile() {

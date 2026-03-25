@@ -77,9 +77,11 @@ public class TreeUtils {
         if (children != null && !children.isEmpty()) {
             Object[] childrenArray = children.toArray();
             Arrays.sort(childrenArray, comparator);
+            children.clear();
             for (int i = 0; i < childrenArray.length; i++) {
-                LOG.error("Error, pendiente revisasr");
+                //LOG.error("Error, pendiente revisasr");
                 //children.setSibling(i, (TreeNode) childrenArray[i]);
+                children.add((TreeNode) childrenArray[i]);
             }
 
             for (int i = 0; i < children.size(); i++) {

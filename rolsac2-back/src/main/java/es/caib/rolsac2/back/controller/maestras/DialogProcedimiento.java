@@ -511,7 +511,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        if (!rellenoCategoriaPDU || !rellenoTramites || !rellenoCamposProc) {
+        if (!rellenoCategoriaPDU || !rellenoTramites || rellenoCamposProc) {
             String msgError = getLiteral("dialogProcedimientoFlujo.errorMoverPDU") + "<br /><br />";
             if (!rellenoCategoriaPDU) {
                 msgError += "  - " + getLiteral("dialogProcedimientoFlujo.errorFaltanCategoriasPDU") + "<br /><br />";

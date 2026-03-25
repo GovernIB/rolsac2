@@ -156,7 +156,7 @@ public interface MigracionServiceFacade {
      * @param ficheroInfo
      * @param entidad
      * @param uaRaiz
-     * @return Resultado de la operación
+     * @return
      */
     String migrarDocumentos(FicheroInfo ficheroInfo, Long entidad, Long uaRaiz, String pathAlmacenamientoRolsac1, String pathAlmacenamiento, TypeFicheroExterno tipoficheroExterno);
 
@@ -165,7 +165,7 @@ public interface MigracionServiceFacade {
      *
      * @param idEntidad
      * @param uaRaiz
-     * @return Resultado de la operación
+     * @return
      */
     List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz);
 
@@ -175,15 +175,7 @@ public interface MigracionServiceFacade {
      * @param bloque
      * @param entidad
      * @param uaRaiz
-     * @return Resultado de la operación
+     * @return
      */
     String migrarMensajes(List<BigDecimal> bloque, Long entidad, Long uaRaiz);
-
-    /**
-     * Borra el filesystem.
-     *
-     * @param path Ruta del filesystem
-     * @return Resultado de la operación
-     */
-    String borrarFileSystem(String path);
 }
