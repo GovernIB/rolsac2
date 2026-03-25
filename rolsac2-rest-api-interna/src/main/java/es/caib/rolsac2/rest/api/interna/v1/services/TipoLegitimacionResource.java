@@ -56,7 +56,7 @@ public class TipoLegitimacionResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listarTiposLegitimacion", summary = "Lista de tipos de legitimacion", description = "Lista todos los tipos de legitimacion disponibles")
+    @Operation(operationId = "listarTiposLegitimacion", summary = "Lista de tipos de legitimacion", description = "Lista todos los tipos de legitimación disponibles")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposLegitimacion(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoLegitimacion.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoLegitimacion.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoLegitimacion.class))) FiltroTipoLegitimacion filtro) throws ValidationException {

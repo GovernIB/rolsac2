@@ -58,7 +58,7 @@ public class TipoPublicoObjetivoEntidadResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listar", summary = "Lista las tipos de público objetivo entidad", description = "Lista las tipos de público objetivo entidad disponibles en funcion de los filtros")
+    @Operation(operationId = "listar", summary = "Lista las tipos de público objetivo entidad", description = "Lista los tipos de público objetivo entidad disponibles en función de los filtros")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivoEntidad.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listar(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de tipos de público objetivo entidad: " + FiltroTipoPublicoObjetivoEntidad.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoPublicoObjetivoEntidad.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoPublicoObjetivoEntidad.class))) FiltroTipoPublicoObjetivoEntidad filtro) throws ValidationException {
