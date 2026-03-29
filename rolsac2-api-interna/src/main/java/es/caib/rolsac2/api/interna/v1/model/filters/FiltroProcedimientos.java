@@ -29,9 +29,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     public static final String CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION = "fechaActualizacion";
     public static final String CAMPO_ORD_PROCEDIMIENTO_CODIGO = "codigo";
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPublicoObjetivo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":[0]," + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"codigoFormaInicio\":\"codigo\"," + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigoTipoProcedimiento\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoSilencioAdministrativo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoFinVia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigo\":\"0\"," + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":\"0/1\", (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoTram\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":\"0\"," + Constantes.SALTO_LINEA + "\"tramiteVigente\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"canalPresentacion\":\"string\"," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"esPDU\":\"true,false\"" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"listaCodigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"listaCodigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"telematico\":\"0/1\", (1=telematico)" + Constantes.SALTO_LINEA + "\"disponibleFuncionarioHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"disponibleApoderadoHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPublicoObjetivo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":[0]," + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"codigoFormaInicio\":\"codigo\"," + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigoTipoProcedimiento\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoSilencioAdministrativo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoFinVia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigo\":\"0\"," + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":\"0/1\", (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoTram\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":\"0\"," + Constantes.SALTO_LINEA + "\"tramiteVigente\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"canalPresentacion\":\"string\"," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"esPDU\":\"true,false\"" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"codigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"codigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"codigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"telematico\":\"0/1\", (1=telematico)" + Constantes.SALTO_LINEA + "\"disponibleFuncionarioHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"disponibleApoderadoHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
 
-    public static final String SAMPLE_JSON = "{" + "\"codigoUA\":null," + "\"codigoUADir3\":null," + "\"buscarEnDescendientesUA\":null," + "\"codigoPublicoObjetivo\":null," + "\"codigos\":null," + "\"textos\":null," + "\"codigoFormaInicio\":null," + "\"activo\":null," + "\"titulo\":null," + "\"codigoTipoProcedimiento\":null," + "\"codigoSilencioAdministrativo\":null," + "\"codigoFinVia\":null," + "\"codigo\":null," + "\"estadoWF\":null," + "\"comun\":null," + "\"codigoSia\":null," + "\"codigoTram\":null," + "\"codigoPlantilla\":null," + "\"codigoPlataforma\":null," + "\"tramiteVigente\":null," + "\"canalPresentacion\":null," + "\"estado\":null," + "\"estados\":null," + "\"estadoSia\":null," + "\"fechaActualizacionSia\":null," + "\"listaCodigosNormativas\":null," + "\"listaCodigosPublicosObjetivos\":null," + "\"listaCodigosMaterias\":null," + "\"fechaPublicacionDesde\":null," + "\"fechaPublicacionHasta\":null," + "\"telematico\":null," + "\"disponibleFuncionarioHabilitado\":null," + "\"disponibleApoderadoHabilitado\":null," + "\"idEntidad\":null," + "\"esPdu\":null," + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\"orden\":null" + "}";
+    public static final String SAMPLE_JSON = "{" + "\"codigoUA\":null," + "\"codigoUADir3\":null," + "\"buscarEnDescendientesUA\":null," + "\"codigoPublicoObjetivo\":null," + "\"codigos\":null," + "\"textos\":null," + "\"codigoFormaInicio\":null," + "\"activo\":null," + "\"titulo\":null," + "\"codigoTipoProcedimiento\":null," + "\"codigoSilencioAdministrativo\":null," + "\"codigoFinVia\":null," + "\"codigo\":null," + "\"estadoWF\":null," + "\"comun\":null," + "\"codigoSia\":null," + "\"codigoTram\":null," + "\"codigoPlantilla\":null," + "\"codigoPlataforma\":null," + "\"tramiteVigente\":null," + "\"canalPresentacion\":null," + "\"estado\":null," + "\"estados\":null," + "\"estadoSia\":null," + "\"fechaActualizacionSia\":null," + "\"codigosNormativas\":null," + "\"codigosPublicosObjetivos\":null," + "\"codigosMaterias\":null," + "\"fechaPublicacionDesde\":null," + "\"fechaPublicacionHasta\":null," + "\"telematico\":null," + "\"disponibleFuncionarioHabilitado\":null," + "\"disponibleApoderadoHabilitado\":null," + "\"idEntidad\":null," + "\"esPdu\":null," + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\"orden\":null" + "}";
 
     /**
      * FiltroPaginacion.
@@ -52,22 +52,22 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     private CampoOrden orden;
 
     /**
-     * listaCodigosNormativas.
+     * codigosNormativas.
      **/
-    @Schema(name = "listaCodigosNormativas", description = "Lista de codigos de normativas separados por comas. Se pueden consultar en el metodo /services/v1/tipos_normativa", required = false)
-    private List<Long> listaCodigosNormativas;
+    @Schema(name = "codigosNormativas", description = "Lista de codigos de normativas separados por comas. Se pueden consultar en el metodo /services/v1/tipos_normativa", required = false)
+    private List<Long> codigosNormativas;
 
     /**
-     * listaCodigosPublicosObjetivos.
+     * codigosPublicosObjetivos.
      **/
-    @Schema(name = "listaCodigosPublicosObjetivos", description = "Lista de codigos de publico objetivo separados por comas. Se pueden consultar en el metodo /services/v1/publicos_objetivo", required = false)
-    private List<Long> listaCodigosPublicosObjetivos;
+    @Schema(name = "codigosPublicosObjetivos", description = "Lista de codigos de publico objetivo separados por comas. Se pueden consultar en el metodo /services/v1/publicos_objetivo", required = false)
+    private List<Long> codigosPublicosObjetivos;
 
     /**
-     * listaCodigosMaterias.
+     * codigosMaterias.
      **/
-    @Schema(name = "listaCodigosMaterias", description = "Lista de codigos de materias separados por comas. Se pueden consultar en el metodo /services/v1/tipos_materia", required = false)
-    private List<Long> listaCodigosMaterias;
+    @Schema(name = "codigosMaterias", description = "Lista de codigos de materias separados por comas. Se pueden consultar en el metodo /services/v1/tipos_materia", required = false)
+    private List<Long> codigosMaterias;
 
     /**
      * codigoUA.
@@ -255,12 +255,12 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         return textos;
     }
 
-    public List<Long> getListaCodigosNormativas() {
-        return listaCodigosNormativas;
+    public List<Long> getCodigosNormativas() {
+        return codigosNormativas;
     }
 
-    public void setListaCodigosNormativas(List<Long> listaCodigosNormativas) {
-        this.listaCodigosNormativas = listaCodigosNormativas;
+    public void setCodigosNormativas(List<Long> codigosNormativas) {
+        this.codigosNormativas = codigosNormativas;
     }
 
     public Long getCodigoUA() {
@@ -448,20 +448,20 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.fechaPublicacionHasta = fechaPublicacionHasta;
     }
 
-    public List<Long> getListaCodigosPublicosObjetivos() {
-        return listaCodigosPublicosObjetivos;
+    public List<Long> getCodigosPublicosObjetivos() {
+        return codigosPublicosObjetivos;
     }
 
-    public void setListaCodigosPublicosObjetivos(List<Long> listaCodigosPublicosObjetivos) {
-        this.listaCodigosPublicosObjetivos = listaCodigosPublicosObjetivos;
+    public void setCodigosPublicosObjetivos(List<Long> codigosPublicosObjetivos) {
+        this.codigosPublicosObjetivos = codigosPublicosObjetivos;
     }
 
-    public List<Long> getListaCodigosMaterias() {
-        return listaCodigosMaterias;
+    public List<Long> getCodigosMaterias() {
+        return codigosMaterias;
     }
 
-    public void setListaCodigosMaterias(List<Long> listaCodigosMaterias) {
-        this.listaCodigosMaterias = listaCodigosMaterias;
+    public void setCodigosMaterias(List<Long> codigosMaterias) {
+        this.codigosMaterias = codigosMaterias;
     }
 
     /**
@@ -605,9 +605,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setIdEntidad(idEntidad);
         }
 
-        if (this.listaCodigosNormativas != null) {
+        if (this.codigosNormativas != null) {
             List<NormativaGridDTO> lista = new ArrayList<NormativaGridDTO>();
-            for (Long cod : listaCodigosNormativas) {
+            for (Long cod : codigosNormativas) {
                 NormativaGridDTO norm = new NormativaGridDTO();
                 norm.setCodigo(cod);
                 lista.add(norm);
@@ -616,9 +616,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setNormativas(lista);
         }
 
-        if (this.listaCodigosPublicosObjetivos != null) {
+        if (this.codigosPublicosObjetivos != null) {
             List<TipoPublicoObjetivoEntidadGridDTO> lista = new ArrayList<TipoPublicoObjetivoEntidadGridDTO>();
-            for (Long cod : listaCodigosPublicosObjetivos) {
+            for (Long cod : codigosPublicosObjetivos) {
                 TipoPublicoObjetivoEntidadGridDTO po = new TipoPublicoObjetivoEntidadGridDTO();
                 po.setCodigo(cod);
                 lista.add(po);
@@ -627,9 +627,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setPublicoObjetivos(lista);
         }
 
-        if (this.listaCodigosMaterias != null) {
+        if (this.codigosMaterias != null) {
             List<TipoMateriaSIAGridDTO> lista = new ArrayList<TipoMateriaSIAGridDTO>();
-            for (Long cod : listaCodigosMaterias) {
+            for (Long cod : codigosMaterias) {
                 TipoMateriaSIAGridDTO mat = new TipoMateriaSIAGridDTO();
                 mat.setCodigo(cod);
                 lista.add(mat);
