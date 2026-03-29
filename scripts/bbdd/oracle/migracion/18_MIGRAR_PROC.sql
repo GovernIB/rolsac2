@@ -484,7 +484,7 @@ BEGIN
 			WHERE  pro_codi = codigo;
 
 			V_PRWF_CODUAI := obtenerUAconDIR3( v_pro_coduna);
-			V_PRWF_PRCODUAC := obtenerUAconDIR3(NVL (v_pro_coduna_resol, v_pro_coduna));
+			V_PRWF_PRCODUAC := obtenerUAconDIR3(v_pro_coduna_resol);
 			V_PRWF_CODUAR := obtenerUAconDIR3( NVL (v_PRO_CODUNA_SERV, v_pro_coduna) );
 
 			IF V_PRWF_CODUAI IS NULL or
