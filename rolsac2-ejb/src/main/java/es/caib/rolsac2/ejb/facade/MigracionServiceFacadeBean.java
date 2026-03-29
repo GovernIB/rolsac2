@@ -332,7 +332,7 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
             log.info("Iniciando borrado de carpetas específicas en: " + normalizedPath);
 
             // Carpetas específicas a borrar
-            String[] carpetasABorrar = {"normativas", "proced", "temp"};
+            String[] carpetasABorrar = {"normativas", "proced", "temp","arxius"};
             long totalArchivos = 0;
             long totalDirectorios = 0;
 
@@ -413,4 +413,4 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         return contadores;
     }
 }
-
+""
