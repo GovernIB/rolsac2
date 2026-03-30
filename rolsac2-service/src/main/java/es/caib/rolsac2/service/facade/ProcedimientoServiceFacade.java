@@ -1,5 +1,6 @@
 package es.caib.rolsac2.service.facade;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
@@ -87,7 +88,7 @@ public interface ProcedimientoServiceFacade {
      * @param codigoWF
      * @return
      */
-    ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF);
+    ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF, IPluginIndexacion pluginIndexacion);
 
     /**
      * Retorna un servicio amb el proc/serv indicat per l'identificador.
@@ -103,7 +104,7 @@ public interface ProcedimientoServiceFacade {
      * @param codigoWF
      * @return
      */
-    ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF);
+    ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF, IPluginIndexacion pluginIndexacion);
 
     /**
      * Devuelve una página con las fichas relacionado con los parámetros del filtro
@@ -186,7 +187,7 @@ public interface ProcedimientoServiceFacade {
     Long getCodigoPublicado(Long codProc);
 
 
-    DataIndexacion findDataIndexacionTram(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, PathUA pathUA);
+    DataIndexacion findDataIndexacionTram(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, PathUA pathUA, IPluginIndexacion pluginIndexacion);
 
     /**
      * Obtiene los mensajes de un procedimiento
@@ -206,9 +207,9 @@ public interface ProcedimientoServiceFacade {
 
 //    Pagina<IndexacionPDUDto> getProcedimientosParaIndexacionPdu(Long idEntidad);
 
-    IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA, String ruta);
+    IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA, String ruta, IPluginIndexacion pluginIndexacion);
 
-    IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA, String ruta);
+    IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA, String ruta, IPluginIndexacion pluginIndexacion);
 
     Pagina<ProcedimientoDocumentoDTO> findProcedimientoDocumentoByFiltroRest(ProcedimientoDocumentoFiltro filtro);
 

@@ -143,4 +143,14 @@ public class PluginIndexacionMock extends AbstractPluginProperties implements IP
     public String isElasticActivo() {
         return "true(MOCK)";
     }
+
+    @Override
+    public String getPropiedadInternaProc() {
+        return "http://ejemploSOLR.url.procedimiento/interno/{idioma}/{idPublicoObjetivo}/{nombrePubObjetivo}/{idProcedimiento}";
+    }
+
+    @Override
+    public String getPropiedadInternaServ() {
+        return "http://ejemploSOLR.url.servicio/interno/{idioma}/{idPublicoObjetivo}/{nombrePubObjetivo}/{idProcedimiento}";
+    }
 }

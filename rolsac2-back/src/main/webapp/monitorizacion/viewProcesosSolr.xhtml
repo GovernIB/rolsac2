@@ -165,6 +165,10 @@ Pàgina amb el llistat de processos automàtics
                                          actionListener="#{viewProcesosSolr.indexarProcedimientos()}" styleClass="mr10"
                                          process="@this" update="messages">
                         </p:commandButton>
+                    <p:commandButton value="#{labels['viewProcesosSolr.indexarProcedimientos']} (NO DOCS)" icon="pi pi-file-o" iconPos="top"
+                                     actionListener="#{viewProcesosSolr.indexarProcedimientosSinDocs()}" styleClass="mr10"
+                                     process="@this" update="messages">
+                    </p:commandButton>
                         <p:commandButton value="#{labels['viewProcesosSolr.indexarServicios']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosSolr.indexarServicios()}" styleClass="mr10"
                                          process="@this" update="messages">

@@ -135,4 +135,17 @@ public interface IPluginIndexacion extends IPlugin {
      */
     String isElasticActivo();
 
+    /**
+     * Indica la propiedad url interna del proceso.
+     *
+     * @return url del proc
+     */
+    String getPropiedadInternaProc();
+
+    /**
+     * Indica la propiedad url interna del servicio.
+     *
+     * @return Url del serv
+     */
+    String getPropiedadInternaServ();
 }

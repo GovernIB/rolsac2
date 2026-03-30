@@ -1,5 +1,6 @@
 package es.caib.rolsac2.ejb.facade.procesos.solr;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.*;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacionId;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumCategoria;
@@ -17,7 +18,7 @@ public class CastUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(CastUtil.class);
 
-    public static DataIndexacion getDataIndexacion(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimiento, PathUA pathUO) {
+    public static DataIndexacion getDataIndexacion(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimiento, PathUA pathUO, IPluginIndexacion pluginIndexacion) {
 
         DataIndexacion indexData = new DataIndexacion();
 
@@ -139,7 +140,7 @@ public class CastUtil {
         return indexData;
     }
 
-    public static DataIndexacion getDataIndexacion(ServicioDTO servicio, PathUA pathUA) {
+    public static DataIndexacion getDataIndexacion(ServicioDTO servicio, PathUA pathUA, IPluginIndexacion plg) {
 
         DataIndexacion indexData = new DataIndexacion();
 
@@ -238,7 +239,7 @@ public class CastUtil {
                 if (esProcSerInterno) {
                     // Si es interno usamos la url especifica para los Servicios internos
 
-                    final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPubObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idServicio}", servicio.getCodigo().toString());
+                    final String url = getPropiedadPOInternoUrlProc(plg, false).replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPubObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idServicio}", servicio.getCodigo().toString());
                     urls.addIdioma(enumIdioma, url);
 
                 } else {
@@ -424,7 +425,7 @@ public class CastUtil {
         return indexData;
     }
 
-    public static IndexFile getDataIndexacion(ProcedimientoDTO proc, ProcedimientoDocumentoDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, PathUA pathUA) {
+    public static IndexFile getDataIndexacion(ProcedimientoDTO proc, ProcedimientoDocumentoDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, PathUA pathUA, IPluginIndexacion plg) {
         IndexFile indexData = new IndexFile();
         indexData.setCategoria(EnumCategoria.ROLSAC_PROCEDIMIENTO_DOCUMENTO);
         indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
@@ -506,7 +507,7 @@ public class CastUtil {
             if (esProcSerInterno) {
                 // Si es interno usamos la url especifica para los procedimientos internos
 
-                final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", idioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
+                final String url = getPropiedadPOInternoUrlProc(plg, true).replace("{idioma}", idioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
                 urls.addIdioma(enumIdioma, url);
 
             } else {
@@ -534,7 +535,7 @@ public class CastUtil {
     }
 
 
-    public static IndexFile getDataIndexacion(ProcedimientoDTO proc, ProcedimientoTramiteDTO tramite, ProcedimientoDocumentoDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, PathUA pathUA) {
+    public static IndexFile getDataIndexacion(ProcedimientoDTO proc, ProcedimientoTramiteDTO tramite, ProcedimientoDocumentoDTO doc, DocumentoTraduccion docIdioma, FicheroDTO ficheroDTO, String idioma, PathUA pathUA, IPluginIndexacion plg) {
 
         IndexFile indexData = new IndexFile();
         indexData.setCategoria(EnumCategoria.ROLSAC_PROCEDIMIENTO_DOCUMENTO);
@@ -613,7 +614,7 @@ public class CastUtil {
             if (esProcSerInterno) {
                 // Si es interno usamos la url especifica para los procedimientos internos
 
-                final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", idioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
+                final String url = getPropiedadPOInternoUrlProc(plg, true).replace("{idioma}", idioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
                 urls.addIdioma(enumIdioma, url);
 
             } else {
@@ -717,7 +718,7 @@ public class CastUtil {
         return pathUOs;
     }
 
-    public static DataIndexacion getDataIndexacion(ProcedimientoDTO proc, PathUA pathUA) {
+    public static DataIndexacion getDataIndexacion(ProcedimientoDTO proc, PathUA pathUA, IPluginIndexacion plg) {
         DataIndexacion indexData = new DataIndexacion();
         indexData.setCategoria(EnumCategoria.ROLSAC_PROCEDIMIENTO);
         indexData.setAplicacionId(EnumAplicacionId.ROLSAC);
@@ -820,7 +821,7 @@ public class CastUtil {
                 if (esProcSerInterno) {
                     // Si es interno usamos la url especifica para los procedimientos internos
 
-                    final String url = getPropiedadPOInternoUrlProc().replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
+                    final String url = getPropiedadPOInternoUrlProc(plg, true).replace("{idioma}", keyIdioma).replace("{idPublicoObjetivo}", idPublicoObjetivo).replace("{nombrePubObjetivo}", nombrePubObjetivo).replace("{idProcedimiento}", proc.getCodigo().toString());
                     urls.addIdioma(enumIdioma, url);
 
                 } else {
@@ -904,8 +905,12 @@ public class CastUtil {
         return contiene;
     }
 
-    private static String getPropiedadPOInternoUrlProc() {
-        return "";
+    private static String getPropiedadPOInternoUrlProc(IPluginIndexacion plg, boolean proc) {
+        if (proc) {
+            return plg.getPropiedadInternaProc();
+        } else {
+            return plg.getPropiedadInternaServ();
+        }
     }
 
     private static LiteralMultilang getLiteral(Literal lit) {

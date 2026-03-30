@@ -215,6 +215,11 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
         generarIndexacion(Constantes.INDEXAR_SOLR_PROCEDIMIENTOS);
     }
 
+    public void indexarProcedimientosSinDocs() {
+        generarIndexacion(Constantes.INDEXAR_SOLR_PROCEDIMIENTOS_SIN_DOCS);
+    }
+
+
     public void indexarNormativas() {
         generarIndexacion(Constantes.INDEXAR_SOLR_NORMATIVAS);
     }

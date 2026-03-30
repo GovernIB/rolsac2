@@ -109,6 +109,34 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
         return resultadoAccion;
     }
 
+    public String getPropiedadInternaProc() {
+        try {
+            String propiedad = getPropiedad("urlInternaProc");
+            if (propiedad == null || propiedad.isEmpty()) {
+                return "http://ejemploSOLR.url.procedimiento/interno/{idioma}/{idPublicoObjetivo}/{nombrePubObjetivo}/{idProcedimiento}";
+            } else {
+                return propiedad;
+            }
+        } catch (Exception e) {
+            LOG.error("Error obteniendo propiedad", e);
+            return "http://ejemploSOLR.url.procedimiento/interno/{idioma}/{idPublicoObjetivo}/{nombrePubObjetivo}/{idProcedimiento}";
+        }
+    }
+
+    public String getPropiedadInternaServ() {
+        try {
+            String propiedad = getPropiedad("urlInternaServ");
+            if (propiedad == null || propiedad.isEmpty()) {
+                return "http://ejemploSOLR.url.servicio/interno/{idioma}/{idPublicoObjetivo}/{nombrePubObjetivo}/{idProcedimiento}";
+            } else {
+                return propiedad;
+            }
+        } catch (Exception e) {
+            LOG.error("Error obteniendo propiedad", e);
+            return "http://ejemploSOLR.url.servicio/interno/{idioma}/{idPublicoObjetivo}/{nombrePubObjetivo}/{idProcedimiento}";
+        }
+    }
+
     private String getPropiedadSolrUrl() {
         return getPropiedad("urlSolr");
     }
@@ -148,6 +176,7 @@ public class PluginIndexacionSolr extends AbstractPluginProperties implements IP
     private String getPropiedad(String propiedad) {
         return getProperty(propiedad);
     }
+
 
     @Override
     public ResultadoAccion indexarFichero(IndexFile ficheroIndexacion) throws IPluginIndexacionExcepcion {

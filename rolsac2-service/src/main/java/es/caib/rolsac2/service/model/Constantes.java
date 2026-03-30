@@ -61,6 +61,7 @@ public class Constantes {
      **/
     public static final String INDEXAR_SOLR_NORMATIVAS = "normativas";
     public static final String INDEXAR_SOLR_PROCEDIMIENTOS = "procedimientos";
+    public static final String INDEXAR_SOLR_PROCEDIMIENTOS_SIN_DOCS = "procedimientosNoDocs";
     public static final String INDEXAR_SOLR_SERVICIOS = "servicios";
     public static final String INDEXAR_SOLR_PROCEDIMIENTOS_SERVICIOS = "procedimientosServicios";
     public static final String INDEXAR_SOLR_PENDIENTES = "pendientes";

@@ -1,5 +1,6 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.DataIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.IndexFile;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.PathUA;
@@ -884,10 +885,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF) {
+    public ProcedimientoSolrDTO findDataIndexacionProcById(Long codigoWF, IPluginIndexacion pluginIndexacion) {
         ProcedimientoDTO procedimiento = (ProcedimientoDTO) getProcedimientoDTOByCodigoWF(codigoWF);
         PathUA pathUA = uaRepository.getPath(procedimiento.getUaInstructor().getUAGrid());
-        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(procedimiento, pathUA);
+        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(procedimiento, pathUA, pluginIndexacion);
         ProcedimientoSolrDTO proc = new ProcedimientoSolrDTO();
         proc.setDataIndexacion(dataIndexacion);
         proc.setProcedimientoDTO(procedimiento);
@@ -903,10 +904,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF) {
+    public ProcedimientoSolrDTO findDataIndexacionServById(Long codigoWF, IPluginIndexacion pluginIndexacion) {
         ServicioDTO serv = (ServicioDTO) getProcedimientoDTOByCodigoWF(codigoWF);
         PathUA pathUA = uaRepository.getPath(serv.getUaInstructor().getUAGrid());
-        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(serv, pathUA);
+        DataIndexacion dataIndexacion = CastUtil.getDataIndexacion(serv, pathUA, pluginIndexacion);
         ProcedimientoSolrDTO proc = new ProcedimientoSolrDTO();
         proc.setDataIndexacion(dataIndexacion);
         proc.setServicioDTO(serv);
@@ -1276,8 +1277,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public DataIndexacion findDataIndexacionTram(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, PathUA pathUA) {
-        return CastUtil.getDataIndexacion(tramite, procedimientoDTO, pathUA);
+    public DataIndexacion findDataIndexacionTram(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, PathUA pathUA, IPluginIndexacion pluginIndexacion) {
+        return CastUtil.getDataIndexacion(tramite, procedimientoDTO, pathUA, pluginIndexacion);
 
     }
 
@@ -1308,9 +1309,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA, String ruta) {
+    public IndexFile findDataIndexacionProcDoc(ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion documentoTraduccion, PathUA pathUA, String ruta, IPluginIndexacion pluginIndexacion) {
         FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(documentoTraduccion.getFicheroDTO().getCodigo(), ruta);
-        return CastUtil.getDataIndexacion(procedimientoDTO, doc, documentoTraduccion, ficheroDTO, documentoTraduccion.getIdioma(), pathUA);
+        return CastUtil.getDataIndexacion(procedimientoDTO, doc, documentoTraduccion, ficheroDTO, documentoTraduccion.getIdioma(), pathUA, pluginIndexacion);
     }
 
     @Override
@@ -1329,9 +1330,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
-    public IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA, String ruta) {
+    public IndexFile findDataIndexacionTramDoc(ProcedimientoTramiteDTO tramite, ProcedimientoDTO procedimientoDTO, ProcedimientoDocumentoDTO doc, DocumentoTraduccion fichero, PathUA pathUA, String ruta, IPluginIndexacion pluginIndexacion) {
         FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(fichero.getFicheroDTO().getCodigo(), ruta);
-        return CastUtil.getDataIndexacion(procedimientoDTO, tramite, doc, fichero, ficheroDTO, fichero.getIdioma(), pathUA);
+        return CastUtil.getDataIndexacion(procedimientoDTO, tramite, doc, fichero, ficheroDTO, fichero.getIdioma(), pathUA, pluginIndexacion);
     }
 
     @Override

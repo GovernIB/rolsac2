@@ -26,6 +26,12 @@ public class MultilangLiteral {
      * @param valor  literal
      */
     public void addIdioma(final EnumIdiomas idioma, final String valor) {
+        if (idioma == null) {
+            return;
+        }
+        if (valores == null) {
+            valores = new HashMap<String, String>();
+        }
         valores.put(idioma.toString(), valor);
     }
 
