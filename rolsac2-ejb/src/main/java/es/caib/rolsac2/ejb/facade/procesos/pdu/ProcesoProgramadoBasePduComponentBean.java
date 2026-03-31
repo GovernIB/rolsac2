@@ -148,8 +148,8 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
                     if (dato.getAccion().compareTo(UtilPDU.ACCION_PDU_ALTA) == 0 || dato.getAccion().compareTo(UtilPDU.ACCION_PDU_BAJA) == 0) {
                         if (procedimientoService.getCodigoPublicado(dato.getCodElemento()) == null) {
                             totalProcedimientosOK++;
-                            mensajeTraza.append("El procediment ").append(dato.getCodElemento()).append(" no s'ha indexat, ja que solo està en modificat. \n");
-                            String mensajeErrorDefinitivo = "El procediment " + dato.getCodElemento() + " no s'ha indexat, ja que solo està en modificat.";
+                            mensajeTraza.append("El procediment ").append(dato.getCodElemento()).append(" no s'ha indexat, ja que només està en modificat. \n");
+                            String mensajeErrorDefinitivo = "El procediment " + dato.getCodElemento() + " no s'ha indexat, ja que només està en modificat.";
                             pduServiceFacade.quitarPDUnoDef(dato);
                             continue;
                         }
