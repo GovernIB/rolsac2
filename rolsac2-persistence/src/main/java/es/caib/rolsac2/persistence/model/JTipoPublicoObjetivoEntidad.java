@@ -200,7 +200,7 @@ public class JTipoPublicoObjetivoEntidad extends BaseEntity {
      */
     public TipoPublicoObjetivoEntidadGridDTO toModel() {
         TipoPublicoObjetivoEntidadGridDTO tipo = new TipoPublicoObjetivoEntidadGridDTO();
-        tipo.setCodigo(this.getCodigo());
+        tipo.setCodigo(this.getTipo().getCodigo());
         tipo.setIdentificador(this.getIdentificador());
         Literal literal = new Literal();
         if (this.getTraducciones() != null) {

@@ -82,7 +82,7 @@ public class TipoPublicoObjetivoEntidadRepositoryBean extends AbstractCrudReposi
         } else if (isRest) {
             sql = new StringBuilder("SELECT j FROM JTipoPublicoObjetivoEntidad j  " + " LEFT OUTER JOIN j.tipo te " + " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma " + " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma " + " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         } else {
-            sql = new StringBuilder("SELECT j.codigo, j.identificador, tt.descripcion, tp.descripcion, te.empleadoPublico FROM JTipoPublicoObjetivoEntidad j" + " LEFT OUTER JOIN j.tipo te" + " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma" + " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma" + " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
+            sql = new StringBuilder("SELECT te.codigo, j.identificador, tt.descripcion, tp.descripcion, te.empleadoPublico FROM JTipoPublicoObjetivoEntidad j" + " LEFT OUTER JOIN j.tipo te" + " LEFT OUTER JOIN te.descripcion tt ON tt.idioma=:idioma" + " LEFT OUTER JOIN j.traducciones tp ON tp.idioma=:idioma" + " WHERE tp.idioma=:idioma and tt.idioma=:idioma ");
         }
 
         if (filtro.isRellenoTexto()) {
