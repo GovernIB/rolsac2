@@ -2235,9 +2235,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         if (filtro.isRellenoPublicoObjetivo() && ambosWf) {
-            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.tipoPublicoObjetivo.tipo.codigo = :tipoPublicoObjetivo ) ");
+            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo = :tipoPublicoObjetivo ) ");
         } else if (filtro.isRellenoPublicoObjetivo()){
-            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.tipoPublicoObjetivo.tipo.codigo = :tipoPublicoObjetivo ) ");
+            sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.codigo.tipoPublicoObjetivo = :tipoPublicoObjetivo ) ");
         }
 
         if (filtro.isRellenoTipo()) {
@@ -2330,9 +2330,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoPublicoObjetivos()) {
             if (ambosWf) {
-                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.tipoPublicoObjetivo.tipo.codigo IN (:publicoObjetivos) ) ");
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
             } else {
-                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.tipoPublicoObjetivo.tipo.codigo IN (:publicoObjetivos) ) ");
+                sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.codigo.tipoPublicoObjetivo IN (:publicoObjetivos) ) ");
             }
         }
         if (filtro.isRellenoMaterias()) {
