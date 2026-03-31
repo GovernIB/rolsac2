@@ -225,6 +225,13 @@ public class PduServiceFacadeBean implements PduServiceFacade {
         }
     }
 
+
+    @Override
+    public void quitarPDUnoDef(IndexacionPDUDto pduDto) {
+        indexacionPDURepository.deleteByCodElemento(pduDto.getCodElemento());
+    }
+
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void actualizarPDU(IndexacionPDUDto pduDto, ResultadoPdu resultadoPDU) {
@@ -303,6 +310,5 @@ public class PduServiceFacadeBean implements PduServiceFacade {
         }
         return enlaces;
     }
-
 
 }

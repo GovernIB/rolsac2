@@ -53,4 +53,10 @@ public interface PduServiceFacade {
      */
     List<String> obtenerEnlaces(IndexacionPDUDto indexacionDTO);
 
+    /**
+     * Quita el elemento PDU porque no es definitivo.
+     *
+     * @param dato Dato
+     */
+    void quitarPDUnoDef(IndexacionPDUDto dato);
 }
