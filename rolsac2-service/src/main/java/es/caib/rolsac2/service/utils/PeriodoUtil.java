@@ -2,11 +2,7 @@ package es.caib.rolsac2.service.utils;
 
 import es.caib.rolsac2.service.model.auditoria.Periodo;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public class PeriodoUtil {
 
@@ -19,21 +15,25 @@ public class PeriodoUtil {
         calendario.set(Calendar.DAY_OF_MONTH, 1);
         Periodo periodo = new Periodo();
         periodo.setFechaInicio(calendario.getTime());
-        calendario.roll(Calendar.DAY_OF_MONTH, -1);
+        calendario.add(Calendar.MONTH, 1);
+        calendario.add(Calendar.DAY_OF_MONTH, -1);
         periodo.setFechaFin(calendario.getTime());
         return periodo;
     }
 
     public static List crearListaMeses(Date fechaInicio, Date fechaFin) {
-        Calendar calendario = obtenerCalendario(fechaInicio);
+        Calendar calInicio = obtenerCalendario(fechaInicio);
+        Calendar calFin = obtenerCalendario(fechaFin);
+
         List listaPeriodos = new ArrayList();
-        Periodo periodoMes = crearPeriodoMes(calendario.getTime());
-        listaPeriodos.add(periodoMes.clone());
-        while (!periodoMes.contains(fechaFin)) {
-            calendario.add(Calendar.MONTH, 1);
-            periodoMes = crearPeriodoMes(calendario.getTime());
-            listaPeriodos.add(periodoMes.clone());
+        Calendar cal = (Calendar) calInicio.clone();
+
+        while (cal.before(calFin) || cal.equals(calFin)) {
+            Periodo periodoMes = crearPeriodoMes(cal.getTime());
+            listaPeriodos.add(periodoMes);
+            cal.add(Calendar.MONTH, 1);
         }
+
         return listaPeriodos;
     }
 
