@@ -146,7 +146,7 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
         }
 
         if (filtro.isRellenoEntidad()) {
-            sql.append(" AND (p.uaInstructor.codigo in (SELECT u FROM JUnidadAdministrativa e WHERE u.entidad.codigo = :idEntidad)) ");
+            sql.append(" AND p.uaInstructor.entidad.codigo = :idEntidad ");
         }
 
         if (filtro.isRellenoTipoTramitacion()) {
