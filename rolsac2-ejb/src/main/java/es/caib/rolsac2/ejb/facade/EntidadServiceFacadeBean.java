@@ -284,6 +284,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public String getIdiomaPorDefecto(Long idEntidad) {
         return entidadRepository.getIdiomaPorDefecto(idEntidad);
     }
