@@ -29,7 +29,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     public static final String CAMPO_ORD_PROCEDIMIENTO_FECHA_ACTUALIZACION = "fechaActualizacion";
     public static final String CAMPO_ORD_PROCEDIMIENTO_CODIGO = "codigo";
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPublicoObjetivo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigos\":[0]," + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"codigoFormaInicio\":\"codigo\"," + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigoTipoProcedimiento\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoSilencioAdministrativo\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoFinVia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigo\":\"0\"," + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":\"0/1\", (1= procedimientos comunes)" + Constantes.SALTO_LINEA + "\"codigoSia\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoTram\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":\"0\"," + Constantes.SALTO_LINEA + "\"tramiteVigente\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"canalPresentacion\":\"string\"," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"esPDU\":\"true,false\"" + Constantes.SALTO_LINEA + "\"estados\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"activo\":\"0/1(corresponde a visible en SEDE)\"," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":\"0/1\"," + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"codigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"codigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"codigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"telematico\":\"0/1\", (1=telematico)" + Constantes.SALTO_LINEA + "\"disponibleFuncionarioHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"disponibleApoderadoHabilitado\":\"0/1\", (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"codigoUA\":0," + Constantes.SALTO_LINEA + "\"codigoUADir3\":\"0\"," + Constantes.SALTO_LINEA + "\"codigoPublicoObjetivo\":0," + Constantes.SALTO_LINEA + "\"codigos\":[0]," + Constantes.SALTO_LINEA + "\"textos\":\"string\", (Compara con codigo, nombre, estado, tipo, codigoSia, estadoSia y codigoDir3Sia)" + Constantes.SALTO_LINEA + "\"codigoFormaInicio\":0," + Constantes.SALTO_LINEA + "\"titulo\":\"string\"," + Constantes.SALTO_LINEA + "\"codigoTipoProcedimiento\":0," + Constantes.SALTO_LINEA + "\"codigoSilencioAdministrativo\":0," + Constantes.SALTO_LINEA + "\"codigoFinVia\":0," + Constantes.SALTO_LINEA + "\"codigo\":0," + Constantes.SALTO_LINEA + "\"estadoWF\":\"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o modificado, solo se muestra uno), A=Ambos (publicado y modificado))" + Constantes.SALTO_LINEA + "\"comun\":0, (1=Procedimientos comunes, 0=Todos)" + Constantes.SALTO_LINEA + "\"codigoSia\":0," + Constantes.SALTO_LINEA + "\"codigoTram\":0," + Constantes.SALTO_LINEA + "\"codigoPlantilla\":0," + Constantes.SALTO_LINEA + "\"codigoPlataforma\":0," + Constantes.SALTO_LINEA + "\"tramiteVigente\":\"S/N\", (S=Si, N=No)" + Constantes.SALTO_LINEA + "\"canalPresentacion\":\"string\"," + Constantes.SALTO_LINEA + "\"estado\":\"PV/M/P/PT/T\", (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"esPDU\":0," + Constantes.SALTO_LINEA + "\"estados\":[\"PV\",\"M\",\"P\",\"PT\",\"T\"], (PV=Pendent validació, M=En modificació, P=Publicat, PT=Pendent tancar, T=Tancat)" + Constantes.SALTO_LINEA + "\"estadoSia\":\"A/B/N\", (A=Alta, B=Baja, N=No integrado)" + Constantes.SALTO_LINEA + "\"activo\":0, (1=Visible en sede, 0=No visible en sede)," + Constantes.SALTO_LINEA + "\"buscarEnDescendientesUA\":0, (1=Si, 0=No)" + Constantes.SALTO_LINEA + "\"fechaActualizacionSia\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"codigosNormativas\":[0]," + Constantes.SALTO_LINEA + "\"codigosPublicosObjetivos\":[0]," + Constantes.SALTO_LINEA + "\"codigosMaterias\":[0]," + Constantes.SALTO_LINEA + "\"fechaPublicacionDesde\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"fechaPublicacionHasta\":\"DD/MM/YYYY\"," + Constantes.SALTO_LINEA + "\"telematico\":0, (1=Telematico, 0=No telematico)" + Constantes.SALTO_LINEA + "\"disponibleFuncionarioHabilitado\":0, (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"disponibleApoderadoHabilitado\":0, (0=No habilitado, 1=Sí habilitado, null no filtra por campo)" + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + Constantes.SALTO_LINEA + "\"orden\":{\"campo\":\"" + CAMPO_ORD_PROCEDIMIENTO_FECHA_PUBLICACION + "\",\"tipoOrden\":\"ASC/DESC\"}" + "}";
 
     public static final String SAMPLE_JSON = "{" + "\"codigoUA\":null," + "\"codigoUADir3\":null," + "\"buscarEnDescendientesUA\":null," + "\"codigoPublicoObjetivo\":null," + "\"codigos\":null," + "\"textos\":null," + "\"codigoFormaInicio\":null," + "\"activo\":null," + "\"titulo\":null," + "\"codigoTipoProcedimiento\":null," + "\"codigoSilencioAdministrativo\":null," + "\"codigoFinVia\":null," + "\"codigo\":null," + "\"estadoWF\":null," + "\"comun\":null," + "\"codigoSia\":null," + "\"codigoTram\":null," + "\"codigoPlantilla\":null," + "\"codigoPlataforma\":null," + "\"tramiteVigente\":null," + "\"canalPresentacion\":null," + "\"estado\":null," + "\"estados\":null," + "\"estadoSia\":null," + "\"fechaActualizacionSia\":null," + "\"codigosNormativas\":null," + "\"codigosPublicosObjetivos\":null," + "\"codigosMaterias\":null," + "\"fechaPublicacionDesde\":null," + "\"fechaPublicacionHasta\":null," + "\"telematico\":null," + "\"disponibleFuncionarioHabilitado\":null," + "\"disponibleApoderadoHabilitado\":null," + "\"idEntidad\":null," + "\"esPdu\":null," + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}," + "\"orden\":null" + "}";
 
@@ -115,7 +115,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     /**
      * estadoWF.
      **/
-    @Schema(name = "estadoWF", description = "D – Definitivo, M = Modificado, T = Publicado o modificado, A = Publicado y modificado.", type = SchemaType.STRING, required = false)
+    @Schema(name = "estadoWF", description = "Estado del workflow del procedimiento. D = Definitivo, M = Modificado, T = Publicado o modificado (Muestra un workflow teniendo preferencia el publicado si existen ambos), A = Publicado y modificado.", type = SchemaType.STRING, required = false)
     private String estadoWF;
 
     /**
@@ -124,7 +124,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(name = "canalPresentacion", description = "Canal de presentacion", type = SchemaType.STRING, required = false)
     private String canalPresentacion;
 
-    @Schema(name = "telematico", description = "1 - Telematico, 2 - No telematico.", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "telematico", description = "1 - Telematico, 0 - No telematico.", type = SchemaType.INTEGER, required = false)
     private Integer telematico;
 
     /**
@@ -136,7 +136,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     /**
      * estado.
      **/
-    @Schema(name = "estado", description = "PV – Pendiente de validación, M – En modificación, P – Publicado, PT – Pendiente de cerrar, T – Cerrado.", type = SchemaType.STRING, required = false)
+    @Schema(name = "estado", description = "Estado del procedimiento. PV – Pendiente de validación, M – En modificación, P – Publicado, PT – Pendiente de cerrar, T – Cerrado.", type = SchemaType.STRING, required = false)
     private String estado;
 
     /**
@@ -224,7 +224,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(name = "fechaActualizacionSia", description = "Fecha de actualización de SIA (DD/MM/YYYY)", type = SchemaType.STRING, required = false)
     private String fechaActualizacionSia;
 
-    @Schema(name = "esPdu", description = "Indica si el procedimiento esta integrado con PDU.", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "esPdu", description = "Indica si el procedimiento esta integrado con PDU. (1 - True, 0 - False)", type = SchemaType.INTEGER, required = false)
     private Integer esPdu;
 
     /**
@@ -239,10 +239,10 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     @Schema(name = "activo", description = "Corresponde a visible en SEDE. 1- Visible, 0 - No visible.", type = SchemaType.INTEGER, required = false)
     private Integer activo;
 
-    @Schema(name = "disponibleFuncionarioHabilitado", description = "1 - Habilitado, 2 - No habilitado.", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "disponibleFuncionarioHabilitado", description = "1 - Habilitado, 0 - No habilitado.", type = SchemaType.INTEGER, required = false)
     private Integer disponibleFuncionarioHabilitado;
 
-    @Schema(name = "disponibleApoderadoHabilitado", description = "1 - Habilitado, 2 - No habilitado.", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "disponibleApoderadoHabilitado", description = "1 - Habilitado, 0 - No habilitado.", type = SchemaType.INTEGER, required = false)
     private Integer disponibleApoderadoHabilitado;
 
     @Schema(name = "codigoMateria", description = "Codigo de materia. Este valor se puede sacar del metodo /services/v1/tipos_materia", type = SchemaType.STRING, required = false)

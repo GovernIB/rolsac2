@@ -53,55 +53,55 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
     /**
      * CodigoNormativa.
      **/
-    @Schema(description = "Código de Normativa", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoNormativa", description = "Código de normativa. Se puede consultar en el método /services/v1/tipos_normativa", type = SchemaType.INTEGER, required = false)
     private Integer codigoNormativa;
 
     /**
      * texto.
      **/
-    @Schema(description = "Texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Compara con identificador del tipo de unidad administrativa, codDIR3, nombre, orden, nombre UA padre, código entidad", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * nombre.
      **/
-    @Schema(description = "nombre", type = SchemaType.STRING, required = false)
+    @Schema(name = "nombre", description = "Nombre de la unidad administrativa", type = SchemaType.STRING, required = false)
     private String nombre;
 
     /**
      * identificador.
      **/
-    @Schema(description = "identificador", type = SchemaType.STRING, required = false)
+    @Schema(name = "identificador", description = "Identificador de la unidad administrativa", type = SchemaType.STRING, required = false)
     private String identificador;
 
     /**
      * estado.
      **/
-    @Schema(description = "estado", type = SchemaType.STRING, required = false)
+    @Schema(name = "estado", description = "Valores posibles: V – Vigente, X – Baja", type = SchemaType.STRING, required = false)
     private String estado;
 
     /**
      * codEnti.
      **/
-    @Schema(description = "codEnti", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codEnti", description = "Código de la entidad. Se puede consultar en el método /services/v1/entidades", type = SchemaType.INTEGER, required = false)
     private Long codEnti;
 
     /**
      * idUA.
      **/
-    @Schema(description = "idUA", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idUA", description = "Identificador de la unidad administrativa. Devuelve además sus hijas directas. Si -1 recupera las UA que no tienen padre", type = SchemaType.INTEGER, required = false)
     private Long idUA;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Filtro de paginación", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**
      * Campo por el que ordenar.
      **/
-    @Schema(name = "orden", description = "Campo por el que ordenar", required = false)
+    @Schema(name = "orden", description = "Filtro de orden", required = false)
     private CampoOrden orden;
 
     public FiltroPaginacion getFiltroPaginacion() {

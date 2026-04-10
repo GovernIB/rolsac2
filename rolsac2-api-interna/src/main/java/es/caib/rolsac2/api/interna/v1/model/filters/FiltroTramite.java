@@ -24,59 +24,59 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTramite.class);
 
-    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"orden\":0," + Constantes.SALTO_LINEA + "\"fase\":0," + Constantes.SALTO_LINEA + "\"codigoUnidadAdministrativa\":0," + Constantes.SALTO_LINEA + "\"codigoProcedimientoWF\":0," + Constantes.SALTO_LINEA + "\"codigoTipoTramitacion\":0," + Constantes.SALTO_LINEA + "\"idTramite\":0," + Constantes.SALTO_LINEA + "\"idPlataforma\":0," + Constantes.SALTO_LINEA + "\"version\":0," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"texto\":\"string\"," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "}";
+    public static final String SAMPLE = Constantes.SALTO_LINEA + "{" + "\"orden\":0," + Constantes.SALTO_LINEA + "\"fase\":0," + Constantes.SALTO_LINEA + "\"codigoUnidadAdministrativa\":0," + Constantes.SALTO_LINEA + "\"codigoProcedimientoWF\":0," + Constantes.SALTO_LINEA + "\"codigoTipoTramitacion\":0," + Constantes.SALTO_LINEA + "\"idTramite\":\"string\"," + Constantes.SALTO_LINEA + "\"idPlataforma\":\"string\"," + Constantes.SALTO_LINEA + "\"version\":0," + Constantes.SALTO_LINEA + "\"idEntidad\":0," + Constantes.SALTO_LINEA + "\"texto\":\"string\"," + Constantes.SALTO_LINEA + "\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "}";
 
     public static final String SAMPLE_JSON = "{" + "\n	\"orden\":null," + "\n	\"fase\":null," + "\n	\"codigoUnidadAdministrativa\":null," + "\n	\"codigoProcedimientoWF\":null," + "\n	\"codigoTipoTramitacion\":null," + "\n	\"idEntidad\":null," + "\n	\"idTramite\":null," + "\n	\"idPlataforma\":null," + "\n	\"version\":null," + "\n	\"texto\":null," + "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "\n}";
 
-    @Schema(name = "orden", description = "orden", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "orden", description = "Filtro de orden", type = SchemaType.INTEGER, required = false)
     private Integer orden;
 
     /**
      * Entidad
      */
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad. Se puede consultar en el método /services/v1/entidades", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
-    @Schema(name = "fase", description = "fase", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "fase", description = "Fase del trámite. Siendo 1 – Iniciación, 2 – Instrucción, 3 – Finalización", type = SchemaType.INTEGER, required = false)
     private Integer fase;
 
-    @Schema(name = "codigoUnidadAdministrativa", description = "codigoUnidadAdministrativa", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoUnidadAdministrativa", description = "Código de la unidad administrativa. Este valor puede sacarse del método /services/v1/unidades_administrativas", type = SchemaType.INTEGER, required = false)
     private Long codigoUnidadAdministrativa;
 
     @Schema(name = "codigoProcedimiento", description = "codigoProcedimiento", type = SchemaType.INTEGER, required = false)
     private Long codigoProcedimiento;
 
-    @Schema(name = "codigoProcedimientoWF", description = "codigoProcedimientoWF", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoProcedimientoWF", description = "Código workflow del procedimiento. Se puede consultar en el método /services/v1/procedimientos", type = SchemaType.INTEGER, required = false)
     private Long codigoProcedimientoWF;
 
-    @Schema(name = "codigoTipoTramitacion", description = "codigoTipoTramitacion", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoTipoTramitacion", description = "Código del tipo de tramitación. Se puede consultar en el método /services/v1/tipos_tramitacion", type = SchemaType.INTEGER, required = false)
     private Long codigoTipoTramitacion;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Filtro de paginación", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Compara con requisitos, nombre, documentación, observación y término máximo", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * estadoWF.
      **/
-    @Schema(name = "estadoWF", description = "estadoWF", type = SchemaType.STRING, required = false)
+    @Schema(name = "estadoWF", description = "Estado workflow del procedimiento. D – Definitivo, M – Modificado, T – Publicado o modificado, A – Publicado y modificado", type = SchemaType.STRING, required = false)
     private String estadoWF;
 
-    @Schema(description = "idTramite", type = SchemaType.STRING, required = false)
+    @Schema(name = "idTramite", description = "Identificador del tipo de tramitación. Se puede consultar en el método /services/v1/tipos_tramitacion", type = SchemaType.STRING, required = false)
     private String idTramite;
 
-    @Schema(description = "idPlataforma", type = SchemaType.STRING, required = false)
+    @Schema(name = "idPlataforma", description = "Código de plataforma. Este valor puede sacarse del método /services/v1/plataformas", type = SchemaType.STRING, required = false)
     private String idPlataforma;
 
-    @Schema(description = "version", type = SchemaType.STRING, required = false)
+    @Schema(name = "version", description = "Versión del tipo de tramitación. Se puede consultar en el método /services/v1/tipos_tramitacion", type = SchemaType.INTEGER, required = false)
     private Integer version;
 
     public String getEstadoWF() {
