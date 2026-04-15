@@ -3524,7 +3524,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (jprocWF.getUaInstructor() != null) {
             if (simplificado) {
-                proc.setUaResponsable(jprocWF.getUaInstructor().toDTOSimple());
+                proc.setUaInstructor(jprocWF.getUaInstructor().toDTOSimple());
             } else {
                 proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
             }
