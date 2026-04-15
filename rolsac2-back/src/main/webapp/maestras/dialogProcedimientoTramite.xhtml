@@ -84,7 +84,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3" style="margin-top:-5px">
                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
-                        <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
+                        <p:inputText id="txtCodigoTramite" value="#{dialogProcedimientoTramite.data.codigoTramite}"
                                      styleClass="w95" disabled="true"/>
                     </div>
                     <div class="form-group col-md-4">
@@ -130,8 +130,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3" style="margin-top:-5px">
-                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigoTramite']}:" for="txtCodigoTramite"/>
-                        <p:inputText id="txtCodigoTramite" value="#{dialogProcedimientoTramite.data.codigoTramite}"
+                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigoWF']}:" for="txtCodigoTramite"/>
+                        <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
                                      styleClass="w95" disabled="true"/>
                     </div>
                     <div class="form-group col-md-4">
@@ -597,6 +597,7 @@
             </div>
         </div>
         </div>
+        <h:outputScript library="js" name="datePickerR2.js"/>
         <h:outputScript>
             function triggerDblClickModelo() {
                 document.getElementById("formDialog:btnEditarModelo").click();
