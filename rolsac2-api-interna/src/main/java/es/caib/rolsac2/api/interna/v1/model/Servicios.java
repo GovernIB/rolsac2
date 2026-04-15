@@ -115,8 +115,6 @@ public class Servicios extends EntidadBase {
     @Schema(description = "fechaCaducidad", required = false)
     private Calendar fechaCaducidad;
 
-    @Schema(description = "linkUnidadAdministrativaResponsable", required = false)
-    private Link linkUnidadAdministrativaResponsable;
     @Schema(description = "uaResponsable", type = SchemaType.INTEGER, required = false)
     private Long uaResponsable;
 
@@ -238,9 +236,6 @@ public class Servicios extends EntidadBase {
             }
             if (elem.getUaInstructor() != null) {
                 linkUnidadAdministrativaInstructora = this.generaLink(elem.getUaInstructor().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(elem.getUaInstructor(), idioma, idiomaPorDefecto));
-            }
-            if (elem.getUaResponsable() != null) {
-                linkUnidadAdministrativaResponsable = this.generaLink(elem.getUaResponsable().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(elem.getUaResponsable(), idioma, idiomaPorDefecto));
             }
 
             this.datosContacto = new DatosContacto();
@@ -750,7 +745,6 @@ public class Servicios extends EntidadBase {
     }
 
 
-
     public String getResponsableTelefono() {
         return responsableTelefono;
     }
@@ -847,13 +841,6 @@ public class Servicios extends EntidadBase {
         this.plantillaSel = plantillaSel;
     }
 
-    public Link getLinkUnidadAdministrativaResponsable() {
-        return linkUnidadAdministrativaResponsable;
-    }
-
-    public void setLinkUnidadAdministrativaResponsable(Link linkUnidadAdministrativaResponsable) {
-        this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
-    }
 
     public Link getLinkUnidadAdministrativaInstructora() {
         return linkUnidadAdministrativaInstructora;

@@ -88,24 +88,6 @@ public class Procedimientos extends EntidadBase {
     private Calendar fechaSIA;
 
 
-    /*
-     * private java.lang.String resultat; private boolean ventanillaUnica;
-     */
-
-    // -- LINKS--//
-    // -- se duplican las entidades para poder generar la clase link en funcion de
-    // la propiedad principal (sin "link_")
-    /**
-     * servicioResponsable
-     **/
-    @Schema(description = "linkUnidadAdministrativaResponsable", required = false)
-    private Link linkUnidadAdministrativaResponsable;
-
-    @Schema(hidden = true)
-    @JsonIgnore
-    @XmlTransient
-    private Long uaResponsable;
-
     /**
      * unidadAdministrativa
      **/
@@ -204,7 +186,6 @@ public class Procedimientos extends EntidadBase {
     private String responsableEmail;
 
 
-
     @Schema(description = "responsableTelefono", type = SchemaType.STRING, required = false)
     private String responsableTelefono;
 
@@ -294,9 +275,6 @@ public class Procedimientos extends EntidadBase {
             }
             if (nodo.getUaCompetente() != null) {
                 linkUnidadAdministrativaCompetente = this.generaLink(nodo.getUaCompetente().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(nodo.getUaCompetente(), idioma, idiomaPorDefecto));
-            }
-            if (nodo.getUaResponsable() != null) {
-                linkUnidadAdministrativaResponsable = this.generaLink(nodo.getUaResponsable().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(nodo.getUaResponsable(), idioma, idiomaPorDefecto));
             }
 
             this.datosContacto = new DatosContacto();
@@ -651,15 +629,6 @@ public class Procedimientos extends EntidadBase {
 
 
     @XmlTransient
-    public Long getUaResponsable() {
-        return uaResponsable;
-    }
-
-    public void setUaResponsable(Long uaResponsable) {
-        this.uaResponsable = uaResponsable;
-    }
-
-    @XmlTransient
     public Long getUaInstructor() {
         return uaInstructor;
     }
@@ -729,7 +698,6 @@ public class Procedimientos extends EntidadBase {
     }
 
 
-
     public String getResponsableTelefono() {
         return responsableTelefono;
     }
@@ -774,60 +742,16 @@ public class Procedimientos extends EntidadBase {
         this.terminoResolucion = terminoResolucion;
     }
 
-    //	public String getMensajes() {
-    //		return mensajes;
-    //	}
-    //
-    //	public void setMensajes(String mensajes) {
-    //		this.mensajes = mensajes;
-    //	}
-    //
-    //	public String getUsuarioAuditoria() {
-    //		return usuarioAuditoria;
-    //	}
-    //
-    //	public void setUsuarioAuditoria(String usuarioAuditoria) {
-    //		this.usuarioAuditoria = usuarioAuditoria;
-    //	}
-    //
-    //	public boolean isPendienteIndexar() {
-    //		return pendienteIndexar;
-    //	}
-    //
-    //	public void setPendienteIndexar(boolean pendienteIndexar) {
-    //		this.pendienteIndexar = pendienteIndexar;
-    //	}
-    //
-    //	public boolean isPendienteMensajesGestor() {
-    //		return pendienteMensajesGestor;
-    //	}
-    //
-    //	public void setPendienteMensajesGestor(boolean pendienteMensajesGestor) {
-    //		this.pendienteMensajesGestor = pendienteMensajesGestor;
-    //	}
-    //
-    //	public boolean isPendienteMensajesSupervisor() {
-    //		return pendienteMensajesSupervisor;
-    //	}
-    //
-    //	public void setPendienteMensajesSupervisor(boolean pendienteMensajesSupervisor) {
-    //		this.pendienteMensajesSupervisor = pendienteMensajesSupervisor;
-    //	}
-
-    public Link getlinkUnidadAdministrativaResponsable() {
-        return linkUnidadAdministrativaResponsable;
+    public Link getLinkUnidadAdministrativaCompetente() {
+        return linkUnidadAdministrativaCompetente;
     }
 
-    public void setlinkUnidadAdministrativaResponsable(Link linkUnidadAdministrativaResponsable) {
-        this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
+    public void setLinkUnidadAdministrativaCompetente(Link linkUnidadAdministrativaCompetente) {
+        this.linkUnidadAdministrativaCompetente = linkUnidadAdministrativaCompetente;
     }
 
-    public void setlinkUnidadAdministrativaCompetente(Link linkUnidadAdministrativaResponsable) {
-        this.linkUnidadAdministrativaResponsable = linkUnidadAdministrativaResponsable;
-    }
-
-    public Link getlinkUnidadAdministrativaCompetente() {
-        return linkUnidadAdministrativaResponsable;
+    public Link getLinkUnidadAdministrativaInstructora() {
+        return linkUnidadAdministrativaInstructora;
     }
 
     public Link getlinkUnidadAdministrativaInstructora() {
@@ -862,7 +786,6 @@ public class Procedimientos extends EntidadBase {
     public void setUaCompetente(Long uaCompetente) {
         this.uaCompetente = uaCompetente;
     }
-
 
 
     public void setLinkUnidadAdministrativaInstructora(Link linkUnidadAdministrativaInstructora) {

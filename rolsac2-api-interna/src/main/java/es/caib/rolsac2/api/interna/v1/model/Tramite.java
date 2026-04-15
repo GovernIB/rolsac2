@@ -24,6 +24,12 @@ public class Tramite extends EntidadBase<Tramite> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Tramite.class);
 
+    @Schema(description = "codigoWF", name = "codigoWF", type = SchemaType.INTEGER, required = false)
+    private Long codigoWF;
+
+    @Schema(description = "procedimientoWF", name = "procedimientoWF", type = SchemaType.INTEGER, required = false)
+    private Long procedimientoWF;
+
     @Schema(description = "fase", name = "fase", type = SchemaType.INTEGER, required = false)
     private Integer fase;
 
@@ -116,6 +122,10 @@ public class Tramite extends EntidadBase<Tramite> {
         }
         generaLinks(urlBase);
         this.setCodigo(elem.getCodigoTramite());
+        this.setCodigoWF(elem.getCodigo());
+        if (elem.getProcedimiento() != null) {
+            this.setProcedimientoWF(elem.getProcedimiento().getCodigo());
+        }
     }
 
     public Tramite() {
@@ -142,6 +152,22 @@ public class Tramite extends EntidadBase<Tramite> {
 
     public Long getCodigo() {
         return codigo;
+    }
+
+    public Long getCodigoWF() {
+        return codigoWF;
+    }
+
+    public void setCodigoWF(Long codigoWF) {
+        this.codigoWF = codigoWF;
+    }
+
+    public Long getProcedimientoWF() {
+        return procedimientoWF;
+    }
+
+    public void setProcedimientoWF(Long procedimientoWF) {
+        this.procedimientoWF = procedimientoWF;
     }
 
     public Integer getFase() {
