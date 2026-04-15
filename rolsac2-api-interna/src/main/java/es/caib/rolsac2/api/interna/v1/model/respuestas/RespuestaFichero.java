@@ -25,6 +25,7 @@ public class RespuestaFichero extends RespuestaBase {
 
     public RespuestaFichero(String status, String mensaje, long l, List<Fichero> resultado, Long tiempo) {
         super(status, mensaje, tiempo);
+        this.resultado = resultado;
     }
 
 

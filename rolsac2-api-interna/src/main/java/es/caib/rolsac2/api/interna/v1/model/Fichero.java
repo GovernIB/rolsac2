@@ -51,14 +51,14 @@ public class Fichero extends EntidadBase<Fichero> {
     @Schema(description = "contenido", name = "contenido", type = SchemaType.STRING, required = false)
     private String contenido;
 
-    public Fichero(FicheroDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
+    public Fichero(FicheroDTO nodo, String urlBase, String idioma, boolean hateoasEnabled, boolean conDatos) {
         super(nodo, urlBase, idioma, hateoasEnabled);
 
         if (nodo.getTipo() != null) {
             tipo = nodo.getTipo().getTipo();
         }
 
-        if (nodo.getContenido() != null) {
+        if (conDatos && nodo.getContenido() != null) {
             contenido = Base64.getEncoder().encodeToString(nodo.getContenido());
         }
 

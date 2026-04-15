@@ -82,7 +82,7 @@ public class FicheroResource {
         List<Fichero> lista = new ArrayList<>();
 
         if (resultadoBusqueda != null) {
-            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, true);
+            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, true, true);
             lista.add(elemento);
         }
 
@@ -99,7 +99,7 @@ public class FicheroResource {
         List<Fichero> lista = new ArrayList<>();
 
         if (resultadoBusqueda != null) {
-            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, true);
+            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, true, false);
             lista.add(elemento);
         }
 
