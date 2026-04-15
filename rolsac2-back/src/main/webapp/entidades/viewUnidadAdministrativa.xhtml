@@ -46,7 +46,7 @@
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
                                          update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" />
 
-                        <c:if test="#{ TypePerfiles.ADMINISTRADOR_CONTENIDOS != sessionBean.getPerfil() }">
+                        <c:if test="#{ sessionBean.obtenerUasEntidad().size() > 1 }">
                             <button type="button"
                                     class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

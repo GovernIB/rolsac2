@@ -229,12 +229,13 @@ public class SessionBean implements Serializable {
                 }
 
                 //if (!TypePerfiles.SUPER_ADMINISTRADOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) && !TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
-                if (TypePerfiles.ADMINISTRADOR_ENTIDAD.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                if (TypePerfiles.ADMINISTRADOR_ENTIDAD.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     unidadActiva = uaService.findUASimpleByID(sesion.getIdUa(), this.lang, null);
                     //unidadActivaAux = unidadActiva.convertDTOtoGridDTO();
                     unidadActivaAux = uaService.findUaRaizByEntidad(sesion.getIdEntidad()).convertDTOtoGridDTO();
-                } else if (TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
+                } else if (TypePerfiles.GESTOR.equals(TypePerfiles.fromString(sesion.getPerfil())) || TypePerfiles.INFORMADOR.equals(TypePerfiles.fromString(sesion.getPerfil()))
+                        || TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(TypePerfiles.fromString(sesion.getPerfil()))) {
                     entidad = administracionSupServiceFacade.findEntidadById(sesion.getIdEntidad());
                     try {
                         UnidadAdministrativaDTO unidad = uaService.findUASimpleByID(sesion.getIdUa(), this.lang, null); //uaService.findById(sesion.getIdUa());
@@ -267,12 +268,17 @@ public class SessionBean implements Serializable {
                     actualizarPerfiles();
                     actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
                     actualizarEntidades();
-                    if (perfil.equals(TypePerfiles.GESTOR)) {
+                    if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR) 
+                            || perfil.equals(TypePerfiles.ADMINISTRADOR_CONTENIDOS)) {
+                        if (this.unidadActiva == null) {
+                            UtilJSF.redirectJsfPage("/error/uaRelacionadaException.xhtml");
+                            return;
+                        }
                         try {
                             checkUaGestor(unidadActiva);
                         } catch (GestorSinUAExcepcion e) {
-                            String rolsac2back = context.getExternalContext().getRequestContextPath();
-                            context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/uaRelacionadaException.xhtml')");
+                            UtilJSF.redirectJsfPage("/error/uaRelacionadaException.xhtml");
+                            return;
                         }
                     }
                     sesionDTO.setIdEntidad(this.entidad.getCodigo());
@@ -588,7 +594,8 @@ public class SessionBean implements Serializable {
      * @param usuario
      */
     public void actualizarUnidadAdministrativa(UsuarioDTO usuario, TypePerfiles perfil, SesionDTO sesionDTO) {
-        if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
+        if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR) 
+                || perfil.equals(TypePerfiles.ADMINISTRADOR_CONTENIDOS)) {
             if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty() ) {
                 UnidadAdministrativaGridDTO unidadSesion = null;
                 if(sesionDTO.getIdUa() != null) {
@@ -601,23 +608,20 @@ public class SessionBean implements Serializable {
                 }
                 // this.unidadActiva = unidadSesion == null ? uaService.findById(usuario.getUnidadesAdministrativas().get(0).getCodigo()) : uaService.findById(unidadSesion.getCodigo());
                 this.unidadActiva = unidadSesion == null ? uaService.findUASimpleByID(usuario.getUnidadesAdministrativas().get(0).getCodigo(), this.lang, null) : uaService.findUASimpleByID(unidadSesion.getCodigo(), this.lang, null);
-
-
-            } else if (this.entidad != null) {
-                unidadActiva = uaService.getUnidadesAdministrativaByEntidadId(this.entidad.getCodigo(), lang).get(0);
-            }
-        } else {
-
-            if(TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil)){
-                UnidadAdministrativaGridDTO uaRoot = uaService.getUaRaizEntidad(this.entidad.getCodigo());
-                this.unidadActiva = uaService.findUASimpleByID(uaRoot.getCodigo(), this.lang, null);
-                this.unidadActivaAux = uaRoot;
-            }else {
-                if (sesionDTO.getIdUa() == null) {
-                    this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
-                } else {
-                    this.unidadActiva = uaService.findUASimpleByID(sesionDTO.getIdUa(), this.lang, null); // uaService.findById(sesionDTO.getIdUa());
+                
+                // Para ADMINISTRADOR_CONTENIDOS también ponemos solo las UAs correspondientes
+                if (TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil) && this.unidadActiva != null) {
+                    this.unidadActivaAux = unidadSesion != null ? unidadSesion : usuario.getUnidadesAdministrativas().get(0);
                 }
+            } else {
+                // Para gestor/informador/admin contenidos es obligatorio tener una UA asignada explícitamente.
+                this.unidadActiva = null;
+            }
+        }else {
+            if (sesionDTO.getIdUa() == null) {
+                this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
+            } else {
+                this.unidadActiva = uaService.findUASimpleByID(sesionDTO.getIdUa(), this.lang, null);
             }
         }
 
@@ -647,6 +651,11 @@ public class SessionBean implements Serializable {
         if (ent != null && entidades.contains(ent)) {
             entidad = administracionSupServiceFacade.findEntidadById(ent.getCodigo());
             actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
+            if ((perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)
+                    || perfil.equals(TypePerfiles.ADMINISTRADOR_CONTENIDOS)) && unidadActiva == null) {
+                UtilJSF.redirectJsfPage("/error/uaRelacionadaException.xhtml");
+                return;
+            }
             sesionDTO.setIdEntidad(entidad.getCodigo());
             sesionDTO.setIdUa(unidadActiva.getCodigo());
             sesionDTO.setFechaUltimaSesion(new Date());
@@ -897,6 +906,12 @@ public class SessionBean implements Serializable {
      * Redirige a la URL por defecto para el rol activo.
      */
     public void redirectDefaultUrl() {
+        if ((TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil) || TypePerfiles.GESTOR.equals(perfil)
+                || TypePerfiles.INFORMADOR.equals(perfil)) && unidadActiva == null) {
+            UtilJSF.redirectJsfPage("/error/uaRelacionadaException.xhtml");
+            return;
+        }
+
         UtilJSF.redirectJsfDefaultPagePerfil(perfil);
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
@@ -951,6 +966,11 @@ public class SessionBean implements Serializable {
      */
     public void reloadPerfil() {
         String rolsac2back = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        if ((TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(this.perfil) || TypePerfiles.GESTOR.equals(this.perfil)
+                || TypePerfiles.INFORMADOR.equals(this.perfil)) && unidadActiva == null) {
+            context.getPartialViewContext().getEvalScripts().add("location.replace('" + rolsac2back + "/error/uaRelacionadaException.xhtml')");
+            return;
+        }
         switch (this.perfil) {
             case ADMINISTRADOR_CONTENIDOS:
                 opcion = "viewProcedimientos.titulo";

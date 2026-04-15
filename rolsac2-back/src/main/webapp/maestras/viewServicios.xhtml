@@ -53,7 +53,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();">
                         </p:commandButton>
 
-                        <c:if test="#{ TypePerfiles.ADMINISTRADOR_CONTENIDOS != sessionBean.getPerfil() }">
+                        <c:if test="#{ sessionBean.obtenerUasEntidad().size() > 1 }">
                             <button type="button"
                                     class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

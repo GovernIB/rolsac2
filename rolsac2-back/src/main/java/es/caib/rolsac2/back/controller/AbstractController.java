@@ -2,6 +2,7 @@ package es.caib.rolsac2.back.controller;
 
 import es.caib.rolsac2.back.controller.maestras.*;
 import es.caib.rolsac2.back.controller.maestras.tipo.*;
+import es.caib.rolsac2.back.exception.GestorSinUAExcepcion;
 import es.caib.rolsac2.back.exception.NoAutorizadoException;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.commons.utils.Constants;
@@ -81,6 +82,17 @@ public abstract class AbstractController {
         )))) {
             throw new NoAutorizadoException();
         }
+
+        // Validar que los perfiles GESTOR, INFORMADOR y ADMINISTRADOR_CONTENIDOS tienen una Unidad Administrativa asociada
+        // al acceder a Procedimientos, Servicios o Unidades Administrativas
+        if ((isGestor() || isInformador() || isAdministradorContenidos()) 
+                && (clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class) 
+                        || clase.equals(ViewUnidadAdministrativa.class))) {
+            if (sessionBean.getUnidadActiva() == null) {
+                throw new GestorSinUAExcepcion();
+            }
+        }
+
         if (isInformador()) {
             setModoAcceso(TypeModoAcceso.CONSULTA.toString());
         }
