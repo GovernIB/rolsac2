@@ -30,12 +30,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class UtilExport {
 
@@ -592,62 +588,6 @@ public class UtilExport {
     }
 
     /**
-     * Obtiene los trámites combinados de ambos workflows (publicado y modificado).
-     * Combina los trámites de ambos workflows evitando duplicados basándose en el código del trámite.
-     *
-     * @param p el procedimiento completo con ambos workflows
-     * @return lista de trámites combinados sin duplicados
-     */
-    private static List<ProcedimientoTramiteDTO> obtenerTramitesCombinados(ProcedimientoCompletoDTO p) {
-        // Conjunto que rastrea códigos vistos para evitar duplicados
-        Set<Long> vistos = new HashSet<>();
-
-        // Combinar trámites de ambos workflows filtrando duplicados
-        // Stream.ofNullable() maneja null automáticamente (Java 11+)
-        // Set.add() retorna false si el elemento ya existe, perfecto para filtrar duplicados
-        return Stream.concat(
-                // Obtener trámites del workflow publicado (casting inline)
-                Stream.ofNullable(
-                    (p.getProcedimientoBaseDTOPub() instanceof ProcedimientoDTO)
-                        ? ((ProcedimientoDTO) p.getProcedimientoBaseDTOPub()).getTramites()
-                        : null
-                ).flatMap(l -> l == null ? Stream.empty() : l.stream()),
-                // Obtener trámites del workflow modificado (casting inline)
-                Stream.ofNullable(
-                    (p.getProcedimientoBaseDTOMod() instanceof ProcedimientoDTO)
-                        ? ((ProcedimientoDTO) p.getProcedimientoBaseDTOMod()).getTramites()
-                        : null
-                ).flatMap(l -> l == null ? Stream.empty() : l.stream())
-            )
-            // Incluir si no tiene código (nuevos sin guardar) O si es primera vez que vemos ese código
-            .filter(t -> t.getCodigo() == null || vistos.add(t.getCodigo()))
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Calcula el número total de filas necesarias para la exportación, considerando los trámites de cada procedimiento.
-     * Solo los ProcedimientoDTO tienen trámites; los ServicioDTO siempre generan una sola fila.
-     *
-     * @param procs lista de procedimientos
-     * @return número total de filas (procedimientos + suma de trámites)
-     */
-    private static int calcularTotalFilas(List<ProcedimientoCompletoDTO> procs) {
-        return procs.stream()
-            .mapToInt(procedimiento -> {
-                // Verificar si es un ProcedimientoDTO (que tiene trámites) o ServicioDTO (que no tiene)
-                if (procedimiento.getProcedimientoBaseDTOPub() instanceof ProcedimientoDTO
-                    || procedimiento.getProcedimientoBaseDTOMod() instanceof ProcedimientoDTO) {
-                    // Obtener trámites combinados de ambos workflows
-                    List<ProcedimientoTramiteDTO> tramitesCombinados = obtenerTramitesCombinados(procedimiento);
-                    return (tramitesCombinados == null || tramitesCombinados.isEmpty()) ? 1 : tramitesCombinados.size();
-                }
-                // Es un ServicioDTO, solo cuenta 1 fila
-                return 1;
-            })
-            .sum();
-    }
-
-    /**
      * Convierte los valores de una lista de procs en un array de String
      *
      * @param procs
@@ -657,246 +597,208 @@ public class UtilExport {
      */
     public static String[][] getValoresCompletos(List<ProcedimientoCompletoDTO> procs, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA) {
 
-        int totalFilas = calcularTotalFilas(procs);
-        String[][] retorno = new String[totalFilas][exportarDatos.getCampos().size()];
+        String[][] retorno = new String[procs.size()][exportarDatos.getCampos().size()];
         int fila = 0;
-
         for (ProcedimientoCompletoDTO procedimientoDTO : procs) {
             boolean tieneDosWF = tieneDosWF(procedimientoDTO);
             boolean prioridadPublicado = true;
             if (!tieneDosWF) {
                 prioridadPublicado = procedimientoDTO.getProcedimientoBaseDTOPub().getCodigo() != null;
             }
+            int columna = 0;
+            for (ExportarCampos exp : exportarDatos.getCampos()) {
+                switch (exp.getCampo()) {
+                    case "codigo":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getCodigo(), idioma);
+                        break;
+                    case "codigoWF":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getCodigoWF(), procedimientoDTO.getProcedimientoBaseDTOMod().getCodigoWF(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "codigoSIA":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getCodigoSIA(), procedimientoDTO.getProcedimientoBaseDTOMod().getCodigoSIA(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "fechaDespub":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaCaducidad(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaCaducidad(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "estadoSIA":
+                        String estadoSIA1 = null, estadoSIA2 = null;
 
-            // Obtener trámites combinados de ambos workflows (publicado y modificado)
-            List<ProcedimientoTramiteDTO> tramitesCombinados = obtenerTramitesCombinados(procedimientoDTO);
+                        if (procedimientoDTO.getProcedimientoBaseDTOPub().getEstadoSIA() != null) {
+                            estadoSIA1 = literalesEstadoSIA.get(procedimientoDTO.getProcedimientoBaseDTOPub().getEstadoSIA());
+                        }
+                        if (procedimientoDTO.getProcedimientoBaseDTOMod().getEstadoSIA() != null) {
+                            estadoSIA2 = literalesEstadoSIA.get(procedimientoDTO.getProcedimientoBaseDTOMod().getEstadoSIA());
+                        }
+                        retorno[fila][columna] = UtilExport.getValor(estadoSIA1, estadoSIA2, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "fechaSIA":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaSIA(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaSIA(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "fechaPub":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaPublicacion(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaPublicacion(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "fechaCad":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaCaducidad(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaCaducidad(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "estado":
+                        String estado1 = null, estado2 = null;
+                        if (procedimientoDTO.getProcedimientoBaseDTOPub().getEstado() != null) {
+                            estado1 = literalesEstado.get(procedimientoDTO.getProcedimientoBaseDTOPub().getEstado().toString());
+                        }
+                        if (procedimientoDTO.getProcedimientoBaseDTOMod().getEstado() != null) {
+                            estado2 = literalesEstado.get(procedimientoDTO.getProcedimientoBaseDTOMod().getEstado().toString());
+                        }
+                        retorno[fila][columna] = UtilExport.getValor(estado1, estado2, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "wf":
+                        String wf = null, wf2 = null;
+                        if (procedimientoDTO.getProcedimientoBaseDTOPub().getWorkflow() != null) {
+                            wf = procedimientoDTO.getProcedimientoBaseDTOPub().getWorkflow().getValor() ? literalesWF.get("1") : literalesWF.get("0");
+                        }
+                        if (procedimientoDTO.getProcedimientoBaseDTOMod().getWorkflow() != null) {
+                            wf2 = procedimientoDTO.getProcedimientoBaseDTOMod().getWorkflow().getValor() ? literalesWF.get("1") : literalesWF.get("0");
+                        }
+                        retorno[fila][columna] = UtilExport.getValor(wf, wf2, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "visibilidad":
+                        //retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().esVisible(), procedimientoDTO.getProcedimientoBaseDTOMod().esVisible(), idioma, tieneDosWF, prioridadPublicado);
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.esVisiblePub(), procedimientoDTO.esVisibleMod(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    /*case "pendienteValidar":
+                        sb.append(UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isPendienteIndexar(),idioma));
+                        break;*/
+                    case "nombreCat":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getNombreProcedimientoWorkFlow(), procedimientoDTO.getProcedimientoBaseDTOMod().getNombreProcedimientoWorkFlow(), Constantes.IDIOMA_CATALAN, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "nombreEsp":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getNombreProcedimientoWorkFlow(), procedimientoDTO.getProcedimientoBaseDTOMod().getNombreProcedimientoWorkFlow(), Constantes.IDIOMA_ESPANYOL, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "objetoCat":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getObjeto(), procedimientoDTO.getProcedimientoBaseDTOMod().getObjeto(), Constantes.IDIOMA_CATALAN, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "objetoEsp":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getObjeto(), procedimientoDTO.getProcedimientoBaseDTOMod().getObjeto(), Constantes.IDIOMA_ESPANYOL, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "publicoObjetivo":
+                        if ((procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo().isEmpty()) && (procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo().isEmpty())) {
+                            retorno[fila][columna] = "";
+                        }
 
-            if (tramitesCombinados == null || tramitesCombinados.isEmpty()) {
-                // Si no hay trámites (o es un ServicioDTO), crear una fila con el procedimiento sin trámite asociado
-                rellenarFilaCompleta(retorno, fila, procedimientoDTO, null, exportarDatos, idioma, literalesWF, literalesEstado, literalesEstadoSIA, tieneDosWF, prioridadPublicado);
-                fila++;
-            } else {
-                // Si hay trámites (solo para ProcedimientoDTO), crear una fila por cada trámite
-                for (ProcedimientoTramiteDTO tramiteDTO : tramitesCombinados) {
-                    rellenarFilaCompleta(retorno, fila, procedimientoDTO, tramiteDTO, exportarDatos, idioma, literalesWF, literalesEstado, literalesEstadoSIA, tieneDosWF, prioridadPublicado);
-                    fila++;
+                        String texto = "";
+                        String texto2 = "";
+                        if (procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo().isEmpty()) {
+                            texto = "";
+                        } else {
+                            String publicoObjetivo = "";
+                            for (TipoPublicoObjetivoEntidadGridDTO tipoPublicoObjetivoDTO : procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo()) {
+                                if (tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) == null) {
+                                    publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion() + ", ";
+                                } else {
+                                    publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) + ", ";
+                                }
+                            }
+                            texto = UtilExport.getValor(publicoObjetivo, idioma);
+                        }
+                        if (procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo().isEmpty()) {
+                            texto2 = "";
+                        } else {
+                            String publicoObjetivo = "";
+                            for (TipoPublicoObjetivoEntidadGridDTO tipoPublicoObjetivoDTO : procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo()) {
+                                if (tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) == null) {
+                                    publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion() + ", ";
+                                } else {
+                                    publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) + ", ";
+                                }
+                            }
+                            texto2 = UtilExport.getValor(publicoObjetivo, idioma);
+                        }
+                        if (texto != null && texto.endsWith(", ")) {
+                            texto = texto.substring(0, texto.length() - 2);
+                        }
+                        if (texto2 != null && texto2.endsWith(", ")) {
+                            texto2 = texto2.substring(0, texto2.length() - 2);
+                        }
+                        retorno[fila][columna] = UtilExport.getValor(texto, texto2, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "unidadAdministrativaInstructora":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaInstructor(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "unidadAdministrativaResponsable":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaResponsable(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaResponsable(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "unidadAdministrativaCompetente":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaCompetente(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "responsable":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getResponsable(), procedimientoDTO.getProcedimientoBaseDTOMod().getResponsable(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "unidadAdministrativaResolutoria":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaCompetente(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "numeroTramites":
+                        int valorPub = procedimientoDTO.getProcedimientoPub().getTramites() == null ? 0 : procedimientoDTO.getProcedimientoPub().getTramites().size();
+                        int valorMod = procedimientoDTO.getProcedimientoMod().getTramites() == null ? 0 : procedimientoDTO.getProcedimientoMod().getTramites().size();
+                        retorno[fila][columna] = UtilExport.getValor(valorPub, valorMod, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "numeroTramitesTelematicos":
+                        int valorTelmPub = 0;
+                        int valorTelmMod = 0;
+
+                        if (procedimientoDTO.getProcedimientoPub().getTramites() == null) {
+                            valorTelmPub = 0;
+                        } else {
+                            int total = 0;
+                            for (ProcedimientoTramiteDTO tramiteDTO : procedimientoDTO.getProcedimientoPub().getTramites()) {
+                                if (tramiteDTO.isTramitElectronica()) {
+                                    total++;
+                                }
+                            }
+                            valorTelmPub = total;
+                        }
+                        if (procedimientoDTO.getProcedimientoMod().getTramites() == null) {
+                            valorTelmMod = 0;
+                        } else {
+                            int total = 0;
+                            for (ProcedimientoTramiteDTO tramiteDTO : procedimientoDTO.getProcedimientoMod().getTramites()) {
+                                if (tramiteDTO.isTramitElectronica()) {
+                                    total++;
+                                }
+                            }
+                            valorTelmMod = total;
+                        }
+                        retorno[fila][columna] = UtilExport.getValor(valorTelmPub, valorTelmMod, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "numeroNormas":
+                        int valorNormPub = procedimientoDTO.getProcedimientoBaseDTOPub().getNormativas() == null ? 0 : procedimientoDTO.getProcedimientoBaseDTOPub().getNormativas().size();
+                        int valorNormMod = procedimientoDTO.getProcedimientoBaseDTOMod().getNormativas() == null ? 0 : procedimientoDTO.getProcedimientoBaseDTOMod().getNormativas().size();
+                        retorno[fila][columna] = UtilExport.getValor(valorNormPub, valorNormMod, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "fechaActualizacion":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaActualizacion(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaActualizacion(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "usuarioUltimaActualizacion":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUsuarioAuditoria(), procedimientoDTO.getProcedimientoBaseDTOMod().getUsuarioAuditoria(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "comun":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().esComun(), procedimientoDTO.getProcedimientoBaseDTOMod().esComun(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "presencial":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitPresencial(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitPresencial(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "telematico":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitElectronica(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitElectronica(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "telefonico":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitTelefonica(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitTelefonica(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    default:
+                        break;
                 }
+                columna++;
             }
+            fila++;
         }
         return retorno;
-    }
-
-    /**
-     * Rellena una fila completa de la matriz con datos del procedimiento y opcionalmente con datos del trámite.
-     */
-    private static void rellenarFilaCompleta(String[][] retorno, int fila, ProcedimientoCompletoDTO procedimientoDTO, ProcedimientoTramiteDTO tramiteDTO, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA, boolean tieneDosWF, boolean prioridadPublicado) {
-        int columna = 0;
-        for (ExportarCampos exp : exportarDatos.getCampos()) {
-            switch (exp.getCampo()) {
-                case "codigo":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getCodigo(), idioma);
-                    break;
-                case "codigoWF":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getCodigoWF(), procedimientoDTO.getProcedimientoBaseDTOMod().getCodigoWF(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "codigoSIA":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getCodigoSIA(), procedimientoDTO.getProcedimientoBaseDTOMod().getCodigoSIA(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "fechaDespub":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaCaducidad(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaCaducidad(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "estadoSIA":
-                    String estadoSIA1 = null, estadoSIA2 = null;
-
-                    if (procedimientoDTO.getProcedimientoBaseDTOPub().getEstadoSIA() != null) {
-                        estadoSIA1 = literalesEstadoSIA.get(procedimientoDTO.getProcedimientoBaseDTOPub().getEstadoSIA());
-                    }
-                    if (procedimientoDTO.getProcedimientoBaseDTOMod().getEstadoSIA() != null) {
-                        estadoSIA2 = literalesEstadoSIA.get(procedimientoDTO.getProcedimientoBaseDTOMod().getEstadoSIA());
-                    }
-                    retorno[fila][columna] = UtilExport.getValor(estadoSIA1, estadoSIA2, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "fechaSIA":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaSIA(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaSIA(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "fechaPub":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaPublicacion(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaPublicacion(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "fechaCad":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaCaducidad(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaCaducidad(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "estado":
-                    String estado1 = null, estado2 = null;
-                    if (procedimientoDTO.getProcedimientoBaseDTOPub().getEstado() != null) {
-                        estado1 = literalesEstado.get(procedimientoDTO.getProcedimientoBaseDTOPub().getEstado().toString());
-                    }
-                    if (procedimientoDTO.getProcedimientoBaseDTOMod().getEstado() != null) {
-                        estado2 = literalesEstado.get(procedimientoDTO.getProcedimientoBaseDTOMod().getEstado().toString());
-                    }
-                    retorno[fila][columna] = UtilExport.getValor(estado1, estado2, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "wf":
-                    String wf = null, wf2 = null;
-                    if (procedimientoDTO.getProcedimientoBaseDTOPub().getWorkflow() != null) {
-                        wf = procedimientoDTO.getProcedimientoBaseDTOPub().getWorkflow().getValor() ? literalesWF.get("1") : literalesWF.get("0");
-                    }
-                    if (procedimientoDTO.getProcedimientoBaseDTOMod().getWorkflow() != null) {
-                        wf2 = procedimientoDTO.getProcedimientoBaseDTOMod().getWorkflow().getValor() ? literalesWF.get("1") : literalesWF.get("0");
-                    }
-                    retorno[fila][columna] = UtilExport.getValor(wf, wf2, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "visibilidad":
-                    //retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().esVisible(), procedimientoDTO.getProcedimientoBaseDTOMod().esVisible(), idioma, tieneDosWF, prioridadPublicado);
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.esVisiblePub(), procedimientoDTO.esVisibleMod(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                /*case "pendienteValidar":
-                    sb.append(UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isPendienteIndexar(),idioma));
-                    break;*/
-                case "nombreCat":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getNombreProcedimientoWorkFlow(), procedimientoDTO.getProcedimientoBaseDTOMod().getNombreProcedimientoWorkFlow(), Constantes.IDIOMA_CATALAN, tieneDosWF, prioridadPublicado);
-                    break;
-                case "nombreEsp":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getNombreProcedimientoWorkFlow(), procedimientoDTO.getProcedimientoBaseDTOMod().getNombreProcedimientoWorkFlow(), Constantes.IDIOMA_ESPANYOL, tieneDosWF, prioridadPublicado);
-                    break;
-                case "objetoCat":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getObjeto(), procedimientoDTO.getProcedimientoBaseDTOMod().getObjeto(), Constantes.IDIOMA_CATALAN, tieneDosWF, prioridadPublicado);
-                    break;
-                case "objetoEsp":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getObjeto(), procedimientoDTO.getProcedimientoBaseDTOMod().getObjeto(), Constantes.IDIOMA_ESPANYOL, tieneDosWF, prioridadPublicado);
-                    break;
-                case "publicoObjetivo":
-                    if ((procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo().isEmpty()) && (procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo().isEmpty())) {
-                        retorno[fila][columna] = "";
-                    }
-
-                    String texto = "";
-                    String texto2 = "";
-                    if (procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo().isEmpty()) {
-                        texto = "";
-                    } else {
-                        String publicoObjetivo = "";
-                        for (TipoPublicoObjetivoEntidadGridDTO tipoPublicoObjetivoDTO : procedimientoDTO.getProcedimientoBaseDTOPub().getPublicosObjetivo()) {
-                            if (tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) == null) {
-                                publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion() + ", ";
-                            } else {
-                                publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) + ", ";
-                            }
-                        }
-                        texto = UtilExport.getValor(publicoObjetivo, idioma);
-                    }
-                    if (procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo() == null || procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo().isEmpty()) {
-                        texto2 = "";
-                    } else {
-                        String publicoObjetivo = "";
-                        for (TipoPublicoObjetivoEntidadGridDTO tipoPublicoObjetivoDTO : procedimientoDTO.getProcedimientoBaseDTOMod().getPublicosObjetivo()) {
-                            if (tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) == null) {
-                                publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion() + ", ";
-                            } else {
-                                publicoObjetivo += tipoPublicoObjetivoDTO.getDescripcion().getTraduccion(idioma) + ", ";
-                            }
-                        }
-                        texto2 = UtilExport.getValor(publicoObjetivo, idioma);
-                    }
-                    if (texto != null && texto.endsWith(", ")) {
-                        texto = texto.substring(0, texto.length() - 2);
-                    }
-                    if (texto2 != null && texto2.endsWith(", ")) {
-                        texto2 = texto2.substring(0, texto2.length() - 2);
-                    }
-                    retorno[fila][columna] = UtilExport.getValor(texto, texto2, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "unidadAdministrativaInstructora":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaInstructor(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "unidadAdministrativaResponsable":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaResponsable(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaResponsable(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "unidadAdministrativaCompetente":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaCompetente(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "responsable":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getResponsable(), procedimientoDTO.getProcedimientoBaseDTOMod().getResponsable(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "unidadAdministrativaResolutoria":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaCompetente(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "numeroTramites":
-                    int valorPub = procedimientoDTO.getProcedimientoPub().getTramites() == null ? 0 : procedimientoDTO.getProcedimientoPub().getTramites().size();
-                    int valorMod = procedimientoDTO.getProcedimientoMod().getTramites() == null ? 0 : procedimientoDTO.getProcedimientoMod().getTramites().size();
-                    retorno[fila][columna] = UtilExport.getValor(valorPub, valorMod, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "numeroTramitesTelematicos":
-                    int valorTelmPub = 0;
-                    int valorTelmMod = 0;
-
-                    if (procedimientoDTO.getProcedimientoPub().getTramites() == null) {
-                        valorTelmPub = 0;
-                    } else {
-                        int total = 0;
-                        for (ProcedimientoTramiteDTO tramiteIterDTO : procedimientoDTO.getProcedimientoPub().getTramites()) {
-                            if (tramiteIterDTO.isTramitElectronica()) {
-                                total++;
-                            }
-                        }
-                        valorTelmPub = total;
-                    }
-                    if (procedimientoDTO.getProcedimientoMod().getTramites() == null) {
-                        valorTelmMod = 0;
-                    } else {
-                        int total = 0;
-                        for (ProcedimientoTramiteDTO tramiteIterDTO : procedimientoDTO.getProcedimientoMod().getTramites()) {
-                            if (tramiteIterDTO.isTramitElectronica()) {
-                                total++;
-                            }
-                        }
-                        valorTelmMod = total;
-                    }
-                    retorno[fila][columna] = UtilExport.getValor(valorTelmPub, valorTelmMod, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "numeroNormas":
-                    int valorNormPub = procedimientoDTO.getProcedimientoBaseDTOPub().getNormativas() == null ? 0 : procedimientoDTO.getProcedimientoBaseDTOPub().getNormativas().size();
-                    int valorNormMod = procedimientoDTO.getProcedimientoBaseDTOMod().getNormativas() == null ? 0 : procedimientoDTO.getProcedimientoBaseDTOMod().getNormativas().size();
-                    retorno[fila][columna] = UtilExport.getValor(valorNormPub, valorNormMod, idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "fechaActualizacion":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getFechaActualizacion(), procedimientoDTO.getProcedimientoBaseDTOMod().getFechaActualizacion(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "usuarioUltimaActualizacion":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUsuarioAuditoria(), procedimientoDTO.getProcedimientoBaseDTOMod().getUsuarioAuditoria(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "comun":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().esComun(), procedimientoDTO.getProcedimientoBaseDTOMod().esComun(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "presencial":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitPresencial(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitPresencial(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "telematico":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitElectronica(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitElectronica(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                case "telefonico":
-                    retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitTelefonica(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitTelefonica(), idioma, tieneDosWF, prioridadPublicado);
-                    break;
-                // Nuevos campos de trámite
-                case "codigoProcTramite":
-                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getProcedimiento().getCodigo(), idioma) : "";
-                    break;
-                case "codigoTramite":
-                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getCodigo(), idioma) : "";
-                    break;
-                case "nombreTramite":
-                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getNombre(), idioma) : "";
-                    break;
-                case "fechaPublicacionTramite":
-                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaPublicacion(), idioma) : "";
-                    break;
-                case "fechaInicioTramite":
-                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaInicio(), idioma) : "";
-                    break;
-                default:
-                    break;
-            }
-            columna++;
-        }
     }
 
     /**
