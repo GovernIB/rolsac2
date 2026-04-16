@@ -754,14 +754,6 @@ public class Procedimientos extends EntidadBase {
         return linkUnidadAdministrativaInstructora;
     }
 
-    public Link getlinkUnidadAdministrativaInstructora() {
-        return linkUnidadAdministrativaInstructora;
-    }
-
-    public void setlinkUnidadAdministrativaInstructora(Link linkUnidadAdministrativaInstructora) {
-        this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
-    }
-
     public Link getLinkLopdInfoAdicional() {
         return linkLopdInfoAdicional;
     }
