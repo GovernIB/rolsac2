@@ -2236,7 +2236,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         if (filtro.isRellenoPublicoObjetivo() && ambosWf) {
             sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo OR procPub.codigo.procedimiento = WF2.codigo) AND procPub.codigo.tipoPublicoObjetivo = :tipoPublicoObjetivo ) ");
-        } else if (filtro.isRellenoPublicoObjetivo()){
+        } else if (filtro.isRellenoPublicoObjetivo()) {
             sql.append(" AND EXISTS ( SELECT 1 FROM JProcedimientoPublicoObjectivo procPub WHERE (procPub.codigo.procedimiento = WF.codigo) AND procPub.codigo.tipoPublicoObjetivo = :tipoPublicoObjetivo ) ");
         }
 
@@ -3722,28 +3722,31 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public String obtenerIdiomaEntidad(Long codigoProc) {
-        Query query = entityManager.createQuery("select j.uaCompetente.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.codigo = :codigoProc ");
+        Query query = entityManager.createQuery("select j.uaInstructor.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.procedimiento.codigo = :codigoProc ");
         query.setParameter("codigoProc", codigoProc);
         List<String> idiomas = query.getResultList();
         if (idiomas != null && !idiomas.isEmpty()) {
             return idiomas.get(0);
         }
 
-        query = entityManager.createQuery("select j.uaInstructor.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.codigo = :codigoProc ");
+
+        query = entityManager.createQuery("select j.uaCompetente.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.procedimiento.codigo = :codigoProc ");
         query.setParameter("codigoProc", codigoProc);
         idiomas = query.getResultList();
         if (idiomas != null && !idiomas.isEmpty()) {
             return idiomas.get(0);
         }
 
-        query = entityManager.createQuery("select j.uaResponsable.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.codigo = :codigoProc ");
+
+        query = entityManager.createQuery("select j.uaResponsable.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.procedimiento.codigo = :codigoProc ");
         query.setParameter("codigoProc", codigoProc);
         idiomas = query.getResultList();
         if (idiomas != null && !idiomas.isEmpty()) {
             return idiomas.get(0);
         }
 
-        return null;
+        //Hay que pasar un idioma a la fuerza
+        return "ca";
 
     }
 

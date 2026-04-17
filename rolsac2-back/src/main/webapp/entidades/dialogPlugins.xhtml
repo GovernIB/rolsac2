@@ -100,7 +100,7 @@
                                  disabled="#{dialogPlugins.isModoConsulta()}" maxlength="100"/>
                 </div>
 
-                <h:panelGroup id="seleccionNormativa" style="display: inline-block; width: 100%">
+                <h:panelGroup id="seleccionNormativa" styleClass="ui-g" style="width: 100%;">
                     <c:if test="#{dialogPlugins.data.tipo.equals('BOL')}">
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <p:outputLabel value="#{labels['dialogNormativa.tipoBoletin']}:"

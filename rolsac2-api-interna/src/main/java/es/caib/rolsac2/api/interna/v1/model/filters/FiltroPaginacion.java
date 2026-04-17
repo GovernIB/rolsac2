@@ -38,31 +38,6 @@ public class FiltroPaginacion extends EntidadJson<FiltroPaginacion> {
     @Schema(required = false, type = SchemaType.INTEGER, name = "size", description = "Resultados por pagina", defaultValue = "10")
     private Integer size;
 
-//	public static FiltroPaginacion valueOf(final String json) {
-//		final ObjectMapper objectMapper = new ObjectMapper();
-//		final TypeReference<FiltroPaginacion> typeRef = new TypeReference<FiltroPaginacion>() {
-//		};
-//		FiltroPaginacion obj;
-//		try {
-//			obj = (FiltroPaginacion) objectMapper.readValue(json, typeRef);
-//		} catch (final IOException e) {
-//			LOG.error(e.getMessage(), e);
-//			throw new RuntimeException(e);
-//		}
-//		return obj;
-//	}
-//
-//	public String toJson() {
-//		try {
-//			final ObjectMapper objectMapper = new ObjectMapper();
-//			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-//			return objectMapper.writeValueAsString(this);
-//		} catch (final JsonProcessingException e) {
-//			LOG.error(e.getMessage(), e);
-//			throw new RuntimeException(e);
-//		}
-//	}
-
     /**
      * @return the page
      */
@@ -93,6 +68,7 @@ public class FiltroPaginacion extends EntidadJson<FiltroPaginacion> {
 
     /**
      * Calcula el primer valor de la paginación a partir de la página y el tamaño.
+     *
      * @return the offset
      */
     public Integer getOffset() {

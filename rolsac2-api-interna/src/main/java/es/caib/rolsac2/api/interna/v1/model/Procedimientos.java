@@ -108,23 +108,11 @@ public class Procedimientos extends EntidadBase {
     @XmlTransient
     private Long uaInstructor;
 
-    // CASOS ESPECIALES, SE RELLENA LA SUBENTIDAD.
-    /** silencio **/
-    //@Schema(description ="silencio", required = false)
-    //private Silencio silencio;
-
-    /** iniciacion **/
-    //@Schema(description ="iniciacion", required = false)
-    //private Iniciacion iniciacion;
-
     /**
      * es comun
      **/
     @Schema(description = "comun", type = SchemaType.INTEGER, required = false)
     private int comun;
-
-    //	@Schema
-    //	private LopdLegitimacion lopdLegitimacion;
 
     /**
      * Info Adicional
@@ -206,16 +194,6 @@ public class Procedimientos extends EntidadBase {
 
     @Schema(description = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
     private Integer tramitTelefonica;
-    //	@Schema(description = "mensajes", type = SchemaType.STRING, required = false)
-    //    private String mensajes;
-    //	@Schema(description = "usuarioAuditoria", type = SchemaType.STRING, required = false)
-    //    private String usuarioAuditoria;
-    //	@Schema(description = "pendienteIndexar", type = SchemaType.BOOLEAN, required = false)
-    //    private boolean pendienteIndexar = false;
-    //	@Schema(description = "pendienteMensajesGestor", type = SchemaType.BOOLEAN, required = false)
-    //    private boolean pendienteMensajesGestor = false;
-    //	@Schema(description = "pendienteMensajesSupervisor", type = SchemaType.BOOLEAN, required = false)
-    //    private boolean pendienteMensajesSupervisor = false;
 
     @Schema(description = "activoLOPD", type = SchemaType.INTEGER, required = false)
     private Integer activoLOPD = 0;
@@ -754,9 +732,6 @@ public class Procedimientos extends EntidadBase {
         return linkUnidadAdministrativaInstructora;
     }
 
-    public void setlinkUnidadAdministrativaInstructora(Link linkUnidadAdministrativaInstructora) {
-        this.linkUnidadAdministrativaInstructora = linkUnidadAdministrativaInstructora;
-    }
 
     public Link getLinkLopdInfoAdicional() {
         return linkLopdInfoAdicional;

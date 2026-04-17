@@ -1,6 +1,7 @@
 package es.caib.rolsac2.api.interna.v1.model.filters;
 
 import es.caib.rolsac2.api.interna.v1.model.EntidadJson;
+import es.caib.rolsac2.api.interna.v1.model.order.CampoOrden;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
@@ -28,8 +29,8 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
 
     public static final String SAMPLE_JSON = "{" + "\n	\"orden\":null," + "\n	\"fase\":null," + "\n	\"codigoUnidadAdministrativa\":null," + "\n	\"codigoProcedimientoWF\":null," + "\n	\"codigoTipoTramitacion\":null," + "\n	\"idEntidad\":null," + "\n	\"idTramite\":null," + "\n	\"idPlataforma\":null," + "\n	\"version\":null," + "\n	\"texto\":null," + "\n	\"filtroPaginacion\":{\"page\":\"0\",\"size\":\"10\"}" + "\n}";
 
-    @Schema(name = "orden", description = "Filtro de orden", type = SchemaType.INTEGER, required = false)
-    private Integer orden;
+    @Schema(name = "orden", description = "Filtro de orden", required = false)
+    private CampoOrden orden;
 
     /**
      * Entidad
@@ -154,7 +155,8 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
         }
 
         if (this.orden != null) {
-            resultado.setOrden(orden);
+            resultado.setOrderBy(orden.getCampo());
+            resultado.setAscendente(orden.getTipoOrden() != null && orden.getTipoOrden().equalsIgnoreCase("asc"));
         }
 
         if (this.fase != null) {
@@ -203,11 +205,11 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
         this.filtroPaginacion = filtroPaginacion;
     }
 
-    public Integer getOrden() {
+    public CampoOrden getOrden() {
         return orden;
     }
 
-    public void setOrden(Integer orden) {
+    public void setOrden(CampoOrden orden) {
         this.orden = orden;
     }
 
