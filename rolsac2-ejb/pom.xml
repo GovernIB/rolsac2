@@ -79,6 +79,11 @@
             <artifactId>quartz</artifactId>
             <version>2.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!--Dependencia de Jakarta para incluir modelos utilizados para el cálculor de CronTriggers-->
         <dependency>

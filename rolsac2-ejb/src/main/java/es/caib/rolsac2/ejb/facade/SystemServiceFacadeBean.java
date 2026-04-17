@@ -1,5 +1,6 @@
 package es.caib.rolsac2.ejb.facade;
 
+import es.caib.rolsac2.ejb.util.PropiedadUtil;
 import es.caib.rolsac2.persistence.converter.SesionConverter;
 import es.caib.rolsac2.persistence.model.JSesion;
 import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
@@ -15,6 +16,7 @@ import es.caib.rolsac2.service.model.SesionDTO;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import org.eclipse.microprofile.config.Config;
 import org.fundaciobit.pluginsib.core.IPlugin;
 import org.fundaciobit.pluginsib.core.utils.PluginsManager;
 import org.slf4j.Logger;
@@ -57,6 +59,9 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     @Inject
     ConfiguracionGlobalRepository configGlobal;
+
+    @Inject
+    private Config config;
 
     /**
      * Executat a l'inici de l'aplicació.
@@ -210,7 +215,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
                     //Se carga la propiedad en el sistema
                     final String valorProp = propiedad.getValor();
 
-                    prop.put(prefijoGlobal + rplg.getPrefijoPropiedades() + propiedad.getCodigo(), valorProp);
+                    prop.put(prefijoGlobal + rplg.getPrefijoPropiedades() + propiedad.getCodigo(), PropiedadUtil.replacePlaceholders(config, valorProp));
                 }
             }
 
