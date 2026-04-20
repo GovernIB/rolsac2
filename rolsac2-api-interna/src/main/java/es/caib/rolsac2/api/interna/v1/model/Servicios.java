@@ -220,8 +220,8 @@ public class Servicios extends EntidadBase {
             if (elem.getLopdFinalidad() != null) {
                 this.lopdFinalidad = elem.getLopdFinalidad().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
-            if (elem.getLopdInfoAdicional() != null) {
-                this.lopdDestinatario = elem.getLopdInfoAdicional().getTraduccionConValor(idioma, idiomaPorDefecto);
+            if (elem.getLopdDestinatario() != null) {
+                this.lopdDestinatario = elem.getLopdDestinatario().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (elem.getLopdCabecera() != null) {
                 this.lopdCabecera = elem.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
