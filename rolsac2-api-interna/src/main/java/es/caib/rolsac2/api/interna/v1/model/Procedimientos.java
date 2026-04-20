@@ -2,6 +2,7 @@ package es.caib.rolsac2.api.interna.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
+import es.caib.rolsac2.service.model.DocumentoMultiIdioma;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
@@ -245,8 +246,29 @@ public class Procedimientos extends EntidadBase {
             }
             if (nodo.getDocumentosLOPD() != null && !nodo.getDocumentosLOPD().isEmpty()) {
                 String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
-                Long codigoDoc = nodo.getDocumentosLOPD().get(0).getCodigo();
-                linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
+                Long codigoDoc = null;
+                DocumentoMultiIdioma docsLOPD = nodo.getDocumentosLOPD().get(0).getDocumentos();
+                if (docsLOPD != null && docsLOPD.getTraducciones() != null && !docsLOPD.getTraducciones().isEmpty()) {
+                    es.caib.rolsac2.service.model.DocumentoTraduccion tradLOPD = docsLOPD.getTraducciones().stream()
+                            .filter(t -> idioma.equals(t.getIdioma()))
+                            .findFirst()
+                            .orElse(null);
+                    if (tradLOPD == null && tradLOPD.getFicheroDTO() == null || tradLOPD.getFicheroDTO().getCodigo() == null) {
+                        tradLOPD = docsLOPD.getTraducciones().stream()
+                                .filter(t -> idiomaPorDefecto.equals(t.getIdioma()))
+                                .findFirst()
+                                .orElse(null);
+                    }
+                    if (tradLOPD == null) {
+                        tradLOPD = docsLOPD.getTraducciones().get(0);
+                    }
+                    if (tradLOPD != null) {
+                        codigoDoc = tradLOPD.getFicheroDTO().getCodigo();
+                    }
+                }
+                if (codigoDoc != null) {
+                    linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
+                }
             }
             if (nodo.getUaInstructor() != null) {
                 linkUnidadAdministrativaInstructora = this.generaLink(nodo.getUaInstructor().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(nodo.getUaInstructor(), idioma, idiomaPorDefecto));

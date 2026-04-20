@@ -3,10 +3,7 @@ package es.caib.rolsac2.api.interna.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.api.interna.v1.utils.Utiles;
-import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
-import es.caib.rolsac2.service.model.ServicioDTO;
-import es.caib.rolsac2.service.model.ServicioGridDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -229,10 +226,31 @@ public class Servicios extends EntidadBase {
             if (elem.getLopdCabecera() != null) {
                 this.lopdCabecera = elem.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
-            if (elem.getDocumentosLOPD() != null && !elem.getDocumentosLOPD().isEmpty()) {
-                String descripcion = getDescripcion(elem.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
-                Long codigoDoc = elem.getDocumentosLOPD().get(0).getCodigo();
-                linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
+            if (nodo.getDocumentosLOPD() != null && !nodo.getDocumentosLOPD().isEmpty()) {
+                String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
+                Long codigoDoc = null;
+                DocumentoMultiIdioma docsLOPD = nodo.getDocumentosLOPD().get(0).getDocumentos();
+                if (docsLOPD != null && docsLOPD.getTraducciones() != null && !docsLOPD.getTraducciones().isEmpty()) {
+                    es.caib.rolsac2.service.model.DocumentoTraduccion tradLOPD = docsLOPD.getTraducciones().stream()
+                            .filter(t -> idioma.equals(t.getIdioma()))
+                            .findFirst()
+                            .orElse(null);
+                    if (tradLOPD == null && tradLOPD.getFicheroDTO() == null || tradLOPD.getFicheroDTO().getCodigo() == null) {
+                        tradLOPD = docsLOPD.getTraducciones().stream()
+                                .filter(t -> idiomaPorDefecto.equals(t.getIdioma()))
+                                .findFirst()
+                                .orElse(null);
+                    }
+                    if (tradLOPD == null) {
+                        tradLOPD = docsLOPD.getTraducciones().get(0);
+                    }
+                    if (tradLOPD != null) {
+                        codigoDoc = tradLOPD.getFicheroDTO().getCodigo();
+                    }
+                }
+                if (codigoDoc != null) {
+                    linkLopdInfoAdicional = this.generaLinkArchivo(codigoDoc, urlBase, descripcion);
+                }
             }
             if (elem.getUaInstructor() != null) {
                 linkUnidadAdministrativaInstructora = this.generaLink(elem.getUaInstructor().getCodigo(), Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, getDescripcionUA(elem.getUaInstructor(), idioma, idiomaPorDefecto));
