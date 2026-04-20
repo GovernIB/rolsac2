@@ -226,10 +226,10 @@ public class Servicios extends EntidadBase {
             if (elem.getLopdCabecera() != null) {
                 this.lopdCabecera = elem.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
-            if (nodo.getDocumentosLOPD() != null && !nodo.getDocumentosLOPD().isEmpty()) {
-                String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
+            if (elem.getDocumentosLOPD() != null && !elem.getDocumentosLOPD().isEmpty()) {
+                String descripcion = getDescripcion(elem.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
                 Long codigoDoc = null;
-                DocumentoMultiIdioma docsLOPD = nodo.getDocumentosLOPD().get(0).getDocumentos();
+                DocumentoMultiIdioma docsLOPD = elem.getDocumentosLOPD().get(0).getDocumentos();
                 if (docsLOPD != null && docsLOPD.getTraducciones() != null && !docsLOPD.getTraducciones().isEmpty()) {
                     es.caib.rolsac2.service.model.DocumentoTraduccion tradLOPD = docsLOPD.getTraducciones().stream()
                             .filter(t -> idioma.equals(t.getIdioma()))
