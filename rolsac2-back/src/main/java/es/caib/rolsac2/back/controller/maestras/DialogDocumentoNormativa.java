@@ -13,6 +13,7 @@ import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
@@ -27,7 +28,9 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Named
@@ -125,7 +128,20 @@ public class DialogDocumentoNormativa extends AbstractController implements Seri
     }
 
     public void traducir() {
-        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, "No está implementado la traduccion", true);
+        final Map<String, String> params = new HashMap<>();
+        UtilJSF.anyadirMochila("dataTraduccion", data);
+        UtilJSF.openDialog("/entidades/dialogTraduccion", TypeModoAcceso.ALTA, params, true, 800, 500);
+    }
+
+    public void returnDialogTraducir(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        DocumentoNormativaDTO datoDTO = (DocumentoNormativaDTO) respuesta.getResult();
+
+        if (datoDTO != null) {
+            data.setTitulo(datoDTO.getTitulo());
+            data.setDescripcion(datoDTO.getDescripcion());
+            data.setUrl(datoDTO.getUrl());
+        }
     }
 
 

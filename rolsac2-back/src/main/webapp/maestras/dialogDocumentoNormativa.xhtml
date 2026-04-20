@@ -41,7 +41,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          style="margin-left:10px; height: 35px;"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogDocumentoNormativa.isModoConsulta() and dialogDocumentoNormativa.tradExiste()}"/>
+                         rendered="#{!dialogDocumentoNormativa.isModoConsulta() and dialogDocumentoNormativa.tradExiste()}">
+            <p:ajax event="dialogReturn" listener="#{dialogDocumentoNormativa.returnDialogTraducir}" process="@this"
+                    update="formDialog:txtTitulo formDialog:inputDescripcion formDialog:txtUrl"/>
+        </p:commandButton>
     </ui:define>
 
     <ui:define name="contentDialog">
@@ -94,7 +97,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <my:literalComponent id="txtUrl" styleClass="w95"
                                              value="#{dialogDocumentoNormativa.data.url}"
                                              soloLecture="#{dialogDocumentoNormativa.isModoConsulta()}"
-                                             required="#{empty param['formDialog:closeButton']}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                              idioma="#{dialogDocumentoNormativa.idioma}"
