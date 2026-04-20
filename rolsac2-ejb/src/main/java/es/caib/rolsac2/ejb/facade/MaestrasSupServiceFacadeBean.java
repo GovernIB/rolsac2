@@ -85,12 +85,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
     TipoNormativaConverter tipoNormativaConverter;
 
     @Inject
-    TipoMediaFichaRepository tipoMediaFichaRepository;
-
-    @Inject
-    TipoMediaUARepository tipoMediaUARepository;
-
-    @Inject
     TipoMediaEdificioRepository tipoMediaEdificioRepository;
 
     @Inject
@@ -1300,20 +1294,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-    public Pagina<TipoMediaFichaDTO> findByFiltroRest(TipoMediaFichaFiltro filtro) {
-        try {
-            List<TipoMediaFichaDTO> items = tipoMediaFichaRepository.findPagedByFiltroRest(filtro);
-            long total = tipoMediaFichaRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error(ERROR_LITERAL, e);
-            List<TipoMediaFichaDTO> items = new ArrayList<>();
-            return new Pagina<>(items, 0L);
-        }
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     public Pagina<TipoProcedimientoDTO> findByFiltroRest(TipoProcedimientoFiltro filtro) {
         try {
             List<TipoProcedimientoDTO> items = tipoProcedimientoRepository.findPagedByFiltroRest(filtro);
@@ -1322,20 +1302,6 @@ public class MaestrasSupServiceFacadeBean implements MaestrasSupServiceFacade {
         } catch (Exception e) {
             LOG.error(ERROR_LITERAL, e);
             List<TipoProcedimientoDTO> items = new ArrayList<>();
-            return new Pagina<>(items, 0L);
-        }
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
-    public Pagina<TipoMediaUADTO> findByFiltroRest(TipoMediaUAFiltro filtro) {
-        try {
-            List<TipoMediaUADTO> items = tipoMediaUARepository.findPagedByFiltroRest(filtro);
-            long total = tipoMediaUARepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error(ERROR_LITERAL, e);
-            List<TipoMediaUADTO> items = new ArrayList<>();
             return new Pagina<>(items, 0L);
         }
     }

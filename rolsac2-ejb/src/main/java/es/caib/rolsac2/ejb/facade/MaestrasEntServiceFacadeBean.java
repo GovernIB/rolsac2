@@ -4,8 +4,6 @@ import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
 import es.caib.rolsac2.ejb.interceptor.Logged;
 import es.caib.rolsac2.persistence.converter.CategoriaPduConverter;
 import es.caib.rolsac2.persistence.converter.TipoMediaEdificioConverter;
-import es.caib.rolsac2.persistence.converter.TipoMediaFichaConverter;
-import es.caib.rolsac2.persistence.converter.TipoMediaUAConverter;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
@@ -14,8 +12,6 @@ import es.caib.rolsac2.service.facade.MaestrasEntServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.CategoriaPDUFiltro;
 import es.caib.rolsac2.service.model.filtro.TipoMediaEdificioFiltro;
-import es.caib.rolsac2.service.model.filtro.TipoMediaFichaFiltro;
-import es.caib.rolsac2.service.model.filtro.TipoMediaUAFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,24 +39,13 @@ public class MaestrasEntServiceFacadeBean implements MaestrasEntServiceFacade {
     TipoMediaEdificioRepository tipoMediaEdificioRepository;
 
     @Inject
-    TipoMediaFichaRepository tipoMediaFichaRepository;
-
-    @Inject
-    TipoMediaUARepository tipoMediaUARepository;
-
-    @Inject
     CategoriaPDURepository categoriaPDURepository;
 
     @Inject
     TipoMediaEdificioConverter tipoMediaEdificioConverter;
 
     @Inject
-    TipoMediaFichaConverter tipoMediaFichaConverter;
-
-    @Inject
     CategoriaPduConverter categoriaPDUConverter;
-    @Inject
-    TipoMediaUAConverter tipoMediaUAConverter;
 
     @Inject
     EntidadRepository entidadRepository;
@@ -135,74 +120,6 @@ public class MaestrasEntServiceFacadeBean implements MaestrasEntServiceFacade {
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoMediaUADTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
-
-        if (dto.getCodigo() != null) {
-            throw new DatoDuplicadoException(dto.getCodigo());
-        }
-
-        JTipoMediaUA jTipoMediaUA = tipoMediaUAConverter.createEntity(dto);
-        tipoMediaUARepository.create(jTipoMediaUA);
-        return jTipoMediaUA.getCodigo();
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void update(TipoMediaUADTO dto) throws RecursoNoEncontradoException {
-        JTipoMediaUA jTipoMediaUA = tipoMediaUARepository.findById(dto.getCodigo());
-        JEntidad jEntidad = entidadRepository.getReference(dto.getEntidad().getCodigo());
-        jTipoMediaUA.setEntidad(jEntidad);
-        jTipoMediaUA.setIdentificador(dto.getIdentificador());
-        tipoMediaUAConverter.convierteLiteralToTraduccion(jTipoMediaUA, dto.getDescripcion());
-        tipoMediaUARepository.update(jTipoMediaUA);
-
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void deleteTipoMediaUA(Long id) throws RecursoNoEncontradoException {
-        JTipoMediaUA jTipoMediaUA = tipoMediaUARepository.getReference(id);
-        tipoMediaUARepository.delete(jTipoMediaUA);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public TipoMediaUADTO findTipoMediaUAById(Long id) {
-        JTipoMediaUA jTipoMediaUA = tipoMediaUARepository.getReference(id);
-        return tipoMediaUAConverter.createDTO(jTipoMediaUA);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoMediaUADTO> findTipoMediaUAByEntidad(Long idEntidad) {
-        List<JTipoMediaUA> jTipoMediaUAS = tipoMediaUARepository.findByEntidad(idEntidad);
-        List<TipoMediaUADTO> medias = new ArrayList<>();
-        jTipoMediaUAS.forEach(te -> medias.add(tipoMediaUAConverter.createDTO(te)));
-        return medias;
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Pagina<TipoMediaUAGridDTO> findByFiltro(TipoMediaUAFiltro filtro) {
-        try {
-            List<TipoMediaUAGridDTO> items = tipoMediaUARepository.findPagedByFiltro(filtro);
-            long total = tipoMediaUARepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error(ERROR_LITERAL, e);
-            List<TipoMediaUAGridDTO> items = new ArrayList<>();
-            return new Pagina<>(items, 0L);
-        }
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public boolean existeIdentificadorTipoMediaUA(String identificador, Long idEntidad) {
-        return tipoMediaUARepository.existeIdentificador(identificador, idEntidad);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Long create(CategoriaPDUDTO dto) throws RecursoNoEncontradoException {
         if (dto.getCodigo() != null) {
             throw new DatoDuplicadoException(dto.getCodigo());
@@ -262,71 +179,6 @@ public class MaestrasEntServiceFacadeBean implements MaestrasEntServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public boolean existeIdentificadorCategoriaPdu(String identificador, Long idEntidad) {
         return categoriaPDURepository.existeIdentificador(identificador, idEntidad);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Long create(TipoMediaFichaDTO dto) throws RecursoNoEncontradoException, DatoDuplicadoException {
-
-        if (dto.getCodigo() != null) {
-            throw new DatoDuplicadoException(dto.getCodigo());
-        }
-
-        JTipoMediaFicha jTipoMediaFicha = tipoMediaFichaConverter.createEntity(dto);
-        tipoMediaFichaRepository.create(jTipoMediaFicha);
-        return jTipoMediaFicha.getCodigo();
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void update(TipoMediaFichaDTO dto) throws RecursoNoEncontradoException {
-        JTipoMediaFicha jTipoMediaFicha = tipoMediaFichaRepository.findById(dto.getCodigo());
-        tipoMediaFichaConverter.mergeEntity(jTipoMediaFicha, dto);
-        tipoMediaFichaRepository.update(jTipoMediaFicha);
-
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public void deleteTipoMediaFicha(Long id) throws RecursoNoEncontradoException {
-        JTipoMediaFicha jTipoMediaFicha = tipoMediaFichaRepository.getReference(id);
-        tipoMediaFichaRepository.delete(jTipoMediaFicha);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public TipoMediaFichaDTO findTipoMediaFichaById(Long id) {
-        JTipoMediaFicha jTipoMediaFicha = tipoMediaFichaRepository.getReference(id);
-        return tipoMediaFichaConverter.createDTO(jTipoMediaFicha);
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public List<TipoMediaFichaDTO> findTipoMediaFichaByEntidad(Long idEntidad) {
-        List<JTipoMediaFicha> jTipoMediaFichas = tipoMediaFichaRepository.findByEntidad(idEntidad);
-        List<TipoMediaFichaDTO> fichas = new ArrayList<>();
-        jTipoMediaFichas.forEach(te -> fichas.add(tipoMediaFichaConverter.createDTO(te)));
-        return fichas;
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public Pagina<TipoMediaFichaGridDTO> findByFiltro(TipoMediaFichaFiltro filtro) {
-        try {
-            List<TipoMediaFichaGridDTO> items = tipoMediaFichaRepository.findPagedByFiltro(filtro);
-            long total = tipoMediaFichaRepository.countByFiltro(filtro);
-            return new Pagina<>(items, total);
-        } catch (Exception e) {
-            LOG.error(ERROR_LITERAL, e);
-            List<TipoMediaFichaGridDTO> items = new ArrayList<>();
-            return new Pagina<>(items, 0L);
-        }
-    }
-
-    @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
-    public boolean existeIdentificadorTipoMediaFicha(String identificador) {
-        return tipoMediaFichaRepository.existeIdentificador(identificador);
     }
 
     @Override

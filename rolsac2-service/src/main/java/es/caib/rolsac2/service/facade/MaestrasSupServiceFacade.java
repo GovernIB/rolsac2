@@ -929,8 +929,6 @@ public interface MaestrasSupServiceFacade {
      */
     Pagina<TipoLegitimacionDTO> findByFiltroRest(TipoLegitimacionFiltro fg);
 
-    Pagina<TipoMediaFichaDTO> findByFiltroRest(TipoMediaFichaFiltro fg);
-
     /**
      * Devuelve una página con el tipoProcedimiento relacionado con los parámetros del filtro
      *
@@ -938,14 +936,6 @@ public interface MaestrasSupServiceFacade {
      * @return una pàgina amb el nombre total de tipoProcedimiento i la llista de tipoProcedimiento pel rang indicat.
      */
     Pagina<TipoProcedimientoDTO> findByFiltroRest(TipoProcedimientoFiltro fg);
-
-    /**
-     * Devuelve una página con el TipoMediaUA relacionado con los parámetros del filtro
-     *
-     * @param filtro filtro de la búsqueda
-     * @return una página con el número total de TipoMediaUA y la lista TipoMediaUA con el rango indicado
-     */
-    Pagina<TipoMediaUADTO> findByFiltroRest(TipoMediaUAFiltro fg);
 
     /**
      * Devuelve una página con el TipoMediaEdificio relacionado con los parámetros del filtro

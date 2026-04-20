@@ -67,9 +67,6 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     TipoUnidadAdministrativaRepository tipoUnidadAdministrativaRepository;
 
     @Inject
-    TipoMediaUARepository tipoMediaUARepository;
-
-    @Inject
     TipoMediaEdificioRepository tipoMediaEdificioRepository;
 
     @Inject
@@ -171,9 +168,6 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
         if (!listaNormativa.isEmpty()) {
             listaNormativa.forEach(nor -> normativaRepository.delete(nor));
         }
-
-        //Borramos los tipo media UA
-        tipoMediaUARepository.deleteByEntidad(id);
 
         //Borramos los tipo media edificio
         tipoMediaEdificioRepository.deleteByEntidad(id);

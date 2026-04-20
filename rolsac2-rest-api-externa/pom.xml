@@ -171,7 +171,7 @@
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoViaResource</endpointClass>
                                 <!--<endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.TipoMediaEdificioResource</endpointClass>-->
 <!--                                 <endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.TipoMediaFichaResource</endpointClass> -->
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoMediaUAResource</endpointClass>
+                                <!--endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoMediaUAResource</endpointClass-->
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoProcedimientoResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoTramitacionResource</endpointClass>
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.EntidadesResource</endpointClass>

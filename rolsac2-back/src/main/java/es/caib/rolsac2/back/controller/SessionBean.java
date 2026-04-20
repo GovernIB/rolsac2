@@ -1050,13 +1050,11 @@ public class SessionBean implements Serializable {
         if (this.getPerfil() == TypePerfiles.ADMINISTRADOR_ENTIDAD) {
             List<String> tiposViewIds = new ArrayList<>();
             tiposViewIds.add("/maestras/tipo/viewTipoUnidadAdministrativa.xhtml");
-            tiposViewIds.add("/entidades/viewTipoMediaUA.xhtml");
             tiposViewIds.add("/entidades/viewPlatTramitElectronica.xhtml");
             tiposViewIds.add("/maestras/tipo/viewTipoTramitacion.xhtml");
             tiposViewIds.add("/maestras/tipo/viewTipoProcedimiento.xhtml");
             tiposViewIds.add("/entidades/viewTema.xhtml");
             tiposViewIds.add("/maestras/viewPublicoObjetivoEntidad.xhtml");
-            tiposViewIds.add("/entidades/viewTipoMediaFicha.xhtml");
             tiposViewIds.add("/entidades/viewLOPD.xhtml");
             String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
             return tiposViewIds.contains(viewId);
