@@ -235,7 +235,7 @@ public class Servicios extends EntidadBase {
                             .filter(t -> idioma.equals(t.getIdioma()))
                             .findFirst()
                             .orElse(null);
-                    if (tradLOPD == null && tradLOPD.getFicheroDTO() == null || tradLOPD.getFicheroDTO().getCodigo() == null) {
+                    if (tradLOPD == null  ||  tradLOPD.getFicheroDTO() == null || tradLOPD.getFicheroDTO().getCodigo() == null) {
                         tradLOPD = docsLOPD.getTraducciones().stream()
                                 .filter(t -> idiomaPorDefecto.equals(t.getIdioma()))
                                 .findFirst()
