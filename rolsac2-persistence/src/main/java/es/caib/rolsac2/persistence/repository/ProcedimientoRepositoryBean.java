@@ -764,7 +764,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public Pagina<IndexacionDTO> getProcedimientosParaIndexacion(boolean isTipoProcedimiento, Long idEntidad) {
         StringBuilder sql = new StringBuilder("SELECT j.codigo ");
 
-        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " WHERE WF.uaInstructor.entidad.codigo = :entidad ");
+        sql.append("  FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = ").append(TypeProcedimientoWorkflow.DEFINITIVO.getValor()).append(" WHERE WF.estado = '").append(TypeProcedimientoEstado.PUBLICADO.toString()).append("' AND WF.uaInstructor.entidad.codigo = :entidad ");
         if (isTipoProcedimiento) {
             sql.append(" AND j.tipo = '" + Constantes.PROCEDIMIENTO + "'");
         } else {
