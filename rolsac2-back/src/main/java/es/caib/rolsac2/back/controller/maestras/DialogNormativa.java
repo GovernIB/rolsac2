@@ -440,7 +440,7 @@ public class DialogNormativa extends AbstractController implements Serializable 
     public void borrarAfectacion() {
         if (afectacionSeleccionada == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else if (this.isModoAlta()) {
+        } else if (this.isModoAlta() || afectacionSeleccionada.getCodigo() == null) {
             this.data.getAfectaciones().remove(afectacionSeleccionada);
             afectacionSeleccionada = null;
             addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
