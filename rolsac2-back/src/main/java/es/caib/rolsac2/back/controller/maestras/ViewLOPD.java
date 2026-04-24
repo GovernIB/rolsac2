@@ -58,7 +58,7 @@ public class ViewLOPD extends AbstractController implements Serializable {
 
             // addGlobalMessage(getLiteral("msg.creaciocorrecta"));
 
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("viewConfiguracionEntidad.actualizado"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.actualizado"));
         } catch (Exception e) {
             LOG.error("Error guardando la LOPD", e);
             UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("msg.errorGuardar"), true);

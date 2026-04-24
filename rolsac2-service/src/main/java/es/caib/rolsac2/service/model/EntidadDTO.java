@@ -51,6 +51,7 @@ public class EntidadDTO extends ModelApi {
     private Literal lopdFinalidad;
     private Literal lopdCabecera;
     private Literal lopdPlantilla;
+    private Literal lopdComun;
 
     private Literal uaComun;
 
@@ -449,6 +450,14 @@ public class EntidadDTO extends ModelApi {
 
     public void setLopdPlantilla(Literal lopdPlantilla) {
         this.lopdPlantilla = lopdPlantilla;
+    }
+
+    public Literal getLopdComun() {
+        return lopdComun;
+    }
+
+    public void setLopdComun(Literal lopdComun) {
+        this.lopdComun = lopdComun;
     }
 
     public String getAdmContenidoIdiomaPrioritario() {

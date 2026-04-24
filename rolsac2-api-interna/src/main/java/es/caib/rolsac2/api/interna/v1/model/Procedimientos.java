@@ -132,6 +132,8 @@ public class Procedimientos extends EntidadBase {
     private String lopdCabecera;
     @Schema(description = "lopdLegitimacion", required = false)
     private Legitimacion lopdLegitimacion;
+    @Schema(description = "lopdComun", type = SchemaType.STRING, required = false)
+    private String lopdComun;
 
     @Schema(description = "objeto", type = SchemaType.STRING, required = false)
     private String objeto;
@@ -243,6 +245,9 @@ public class Procedimientos extends EntidadBase {
             }
             if (nodo.getLopdCabecera() != null) {
                 this.lopdCabecera = nodo.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (nodo.getLopdComun() != null) {
+                this.lopdComun = nodo.getLopdComun().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (nodo.getDocumentosLOPD() != null && !nodo.getDocumentosLOPD().isEmpty()) {
                 String descripcion = getDescripcion(nodo.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
@@ -485,6 +490,14 @@ public class Procedimientos extends EntidadBase {
 
     public void setLopdCabecera(String lopdCabecera) {
         this.lopdCabecera = lopdCabecera;
+    }
+
+    public String getLopdComun() {
+        return lopdComun;
+    }
+
+    public void setLopdComun(String lopdComun) {
+        this.lopdComun = lopdComun;
     }
 
     public Legitimacion getLopdLegitimacion() {

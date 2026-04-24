@@ -33,6 +33,7 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     @Mapping(target = "lopdDerechos", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdDerechos\" ))")
     @Mapping(target = "lopdCabecera", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdCabecera\" ))")
     @Mapping(target = "lopdPlantilla", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdPlantilla\" ))")
+    @Mapping(target = "lopdComun", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdComun\" ))")
     @Mapping(target = "uaComun", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"uaComun\" ))")
     @Mapping(target = "logo", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo()))")
     @Mapping(target = "logo2", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo2()))")
@@ -106,6 +107,9 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
             if (dto.getLopdPlantilla() != null) {
                 traduccion.setLopdPlantilla(dto.getLopdPlantilla().getTraduccion(traduccion.getIdioma()));
             }
+            if (dto.getLopdComun() != null) {
+                traduccion.setLopdComun(dto.getLopdComun().getTraduccion(traduccion.getIdioma()));
+            }
             if (dto.getUaComun() != null) {
                 traduccion.setUaComun(dto.getUaComun().getTraduccion(traduccion.getIdioma()));
             }
@@ -134,6 +138,8 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
                     trad.setLiteral(traduccion.getLopdCabecera());
                 } else if (nombreLiteral == "lopdPlantilla") {
                     trad.setLiteral(traduccion.getLopdPlantilla());
+                } else if (nombreLiteral == "lopdComun") {
+                    trad.setLiteral(traduccion.getLopdComun());
                 } else if (nombreLiteral == "uaComun") {
                     trad.setLiteral(traduccion.getUaComun());
                 }

@@ -245,7 +245,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 lopdResponsable = data.getUaInstructor().getNombre();
             }
         } else {
-            lopdResponsable = comunUA;
+            lopdResponsable = sessionBean.getEntidad().getLopdComun();
         }
     }
 

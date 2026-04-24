@@ -56,6 +56,12 @@ public class JEntidadTraduccion extends BaseEntity {
     private String lopdPlantilla;
 
     /**
+     * LOPD Comun
+     **/
+    @Column(name = "TREN_LOPDCO", length = 4000)
+    private String lopdComun;
+
+    /**
      * LOPD Derechos
      **/
     @Column(name = "TREN_UACOMU", length = 4000)
@@ -141,6 +147,14 @@ public class JEntidadTraduccion extends BaseEntity {
 
     public void setLopdPlantilla(String lopdPlantilla) {
         this.lopdPlantilla = lopdPlantilla;
+    }
+
+    public String getLopdComun() {
+        return lopdComun;
+    }
+
+    public void setLopdComun(String lopdComun) {
+        this.lopdComun = lopdComun;
     }
 
     public String getUaComun() {

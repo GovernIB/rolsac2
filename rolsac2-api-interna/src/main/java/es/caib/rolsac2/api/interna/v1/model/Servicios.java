@@ -95,6 +95,8 @@ public class Servicios extends EntidadBase {
     private String lopdCabecera;
     @Schema(description = "lopdLegitimacion", required = false)
     private Legitimacion lopdLegitimacion;
+    @Schema(description = "lopdComun", type = SchemaType.STRING, required = false)
+    private String lopdComun;
 
     @Schema(description = "codigoWF", type = SchemaType.STRING, required = false)
     private Long codigoWF;
@@ -225,6 +227,9 @@ public class Servicios extends EntidadBase {
             }
             if (elem.getLopdCabecera() != null) {
                 this.lopdCabecera = elem.getLopdCabecera().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (elem.getLopdComun() != null) {
+                this.lopdComun = elem.getLopdComun().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
             if (elem.getDocumentosLOPD() != null && !elem.getDocumentosLOPD().isEmpty()) {
                 String descripcion = getDescripcion(elem.getDocumentosLOPD().get(0), idioma, idiomaPorDefecto);
@@ -593,6 +598,20 @@ public class Servicios extends EntidadBase {
      */
     public void setLopdCabecera(String lopdCabecera) {
         this.lopdCabecera = lopdCabecera;
+    }
+
+    /**
+     * @return the lopdComun
+     */
+    public String getLopdComun() {
+        return lopdComun;
+    }
+
+    /**
+     * @param lopdComun the lopdComun to set
+     */
+    public void setLopdComun(String lopdComun) {
+        this.lopdComun = lopdComun;
     }
 
     /**

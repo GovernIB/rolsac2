@@ -3534,16 +3534,19 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 Literal lopdInfoAdicional = new Literal();
                 Literal lopdDerechos = new Literal();
                 Literal lopdCabecera = new Literal();
+                Literal lopdComun = new Literal();
 
                 for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
                     lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
                     lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
                     lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
+                    lopdComun.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdComun()));
                 }
 
                 proc.setLopdInfoAdicional(lopdInfoAdicional);
                 proc.setLopdDerechos(lopdDerechos);
                 proc.setLopdCabecera(lopdCabecera);
+                proc.setLopdComun(lopdComun);
             }
         }
         if (jprocWF.getUaCompetente() != null) {

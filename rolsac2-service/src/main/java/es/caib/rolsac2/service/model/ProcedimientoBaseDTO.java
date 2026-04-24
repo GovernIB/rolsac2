@@ -85,6 +85,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     Literal lopdDerechos = new Literal();
     Literal lopdDestinatario = new Literal();
     Literal lopdCabecera = new Literal();
+    Literal lopdComun = new Literal();
 
     /**
      * LITERALES
@@ -328,6 +329,14 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setLopdCabecera(Literal lopdCabecera) {
         this.lopdCabecera = lopdCabecera;
+    }
+
+    public Literal getLopdComun() {
+        return lopdComun;
+    }
+
+    public void setLopdComun(Literal lopdComun) {
+        this.lopdComun = lopdComun;
     }
 
     public boolean isPublicado() {
