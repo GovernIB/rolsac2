@@ -628,9 +628,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void returnDialogMensajes(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
+        RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
         if (!respuesta.isCanceled()) {
-            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
             procedimientoServiceFacade.actualizarMensajes(data.getCodigo(), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
+        }
+        // Sincronizar mensajes para que se actualicen en el padre
+        if (respuestaFlujo != null) {
             data.setMensajes(respuestaFlujo.getMensajes());
             data.setPendienteMensajesSupervisor(respuestaFlujo.isPendienteMensajesSupervisor());
             data.setPendienteMensajesGestor(respuestaFlujo.isPendienteMensajesGestor());

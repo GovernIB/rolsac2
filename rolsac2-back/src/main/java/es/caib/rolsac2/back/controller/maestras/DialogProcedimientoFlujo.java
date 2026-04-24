@@ -508,6 +508,17 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
         }
         result.setCanceled(true);
+
+        // Guardamos los mensajes para que se actualicen en el padre aunque se cierre el diálogo sin guardar (marcar como leído)
+        ValidacionTipoUtils.sanitizarMensajes(mensajes);
+        data.setMensajes(UtilJSON.toJSON(mensajes));
+        data.setPendienteMensajesSupervisor(getLeidoSupervisor());
+        data.setPendienteMensajesGestor(getLeidoGestor());
+        if (this.idProcedimiento != null) {
+            data.setCodigoProcedimiento(this.idProcedimiento.toString());
+        }
+        result.setResult(data);
+
         UtilJSF.closeDialog(result);
     }
 

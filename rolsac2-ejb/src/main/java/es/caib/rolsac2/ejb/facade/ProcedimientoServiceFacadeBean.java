@@ -1403,7 +1403,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     public List<ProcedimientoDocumentoDTO> getModelosByTram(Long codigo) {
         JProcedimientoTramite jtramite = procedimientoTramiteRepository.findById(codigo);
 
-        if (jtramite != null && jtramite.getListaDocumentos() != null) {
+        if (jtramite != null && jtramite.getListaModelos() != null) {
             return procedimientoRepository.getDocumentosByListaDocumentos(jtramite.getListaModelos());
         }
 
