@@ -69,12 +69,10 @@ public class DialogSeleccionNormativaAfectacion extends AbstractController imple
         this.setearIdioma();
         modoAccesoNormativa = (String) UtilJSF.getDialogParam("modoAccesoNormativa");
         normativaAfectada = ((NormativaDTO) UtilJSF.getValorMochilaByKey("normativa")).convertDTOtoGridDTO();
-        List<AfectacionDTO> afectacionesOriginales = (List<AfectacionDTO>) UtilJSF.getValorMochilaByKey("afectacionesNormativa");
+        afectacionesRelacionadas = (List<AfectacionDTO>) UtilJSF.getValorMochilaByKey("afectacionesNormativa");
 
-        if (afectacionesOriginales == null) {
+        if (afectacionesRelacionadas == null) {
             afectacionesRelacionadas = new ArrayList<>();
-        } else {
-            afectacionesRelacionadas = new ArrayList<>(afectacionesOriginales);
         }
 
         tiposAfectacion = maestrasSupServiceFacade.findTipoAfectaciones();
