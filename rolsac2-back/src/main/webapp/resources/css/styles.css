@@ -950,12 +950,21 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
     object-fit: contain;
 }
 
+.imatgeAplicacio {
+    max-width: 200px;
+    max-height: 90px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
 .logoRolsacContainer {
     display: inline-block;
     flex-direction: column;
     align-items: center; /* Centers content horizontally */
     text-align: center; /* Centers text below the image */
 }
+
 .iconoCapsalera {
     /*font-size: 0;*/
     list-style: none;

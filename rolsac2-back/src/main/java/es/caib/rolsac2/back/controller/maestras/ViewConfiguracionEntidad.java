@@ -276,6 +276,49 @@ public class ViewConfiguracionEntidad extends AbstractController implements Seri
         this.data.setLogo(null);
     }
 
+    public void handleLogo2Upload(FileUploadEvent event) {
+        try {
+            InputStream is = event.getFile().getInputStream();
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            Long idFichero = ficheroServiceFacade.createFicheroExterno(is.readAllBytes(), event.getFile().getFileName(), TypeFicheroExterno.ENTIDAD, this.data.getCodigo(), path);
+
+            FicheroDTO logo2 = new FicheroDTO();
+            logo2.setFilename(event.getFile().getFileName());
+            //Quitamos el contenido para que ocupe menos
+            
+            logo2.setTipo(TypeFicheroExterno.ENTIDAD);
+            logo2.setCodigo(idFichero);
+            this.data.setLogo2(logo2);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewConfiguracionEntidad.logo2Anyadido"), false);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public StreamedContent obtenerLogo2() {
+
+        if (this.data.getLogo2() == null || (this.data.getLogo2().getCodigo() == null && this.data.getLogo2().getContenido() == null)) {
+            //No debería entrar por aqui.
+            return null;
+        }
+        if (this.data.getLogo2().getContenido() == null) {
+            //Nos bajamos el fichero si está vacío
+            String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            FicheroDTO fichero = ficheroServiceFacade.getContentById(this.data.getLogo2().getCodigo(), path);
+            this.data.setLogo2(fichero);
+        }
+        String mimeType = URLConnection.guessContentTypeFromName(this.data.getLogo2().getFilename());
+        InputStream fis = new ByteArrayInputStream(this.data.getLogo2().getContenido());
+        StreamedContent file = DefaultStreamedContent.builder().name(this.data.getLogo2().getFilename()).contentType(mimeType).stream(() -> fis).build();
+        return file;
+    }
+
+    public void eliminarLogo2() {
+        this.file = null;
+        this.data.setLogo2(null);
+    }
+
     public void handleCssUpload(FileUploadEvent event) {
         try {
             InputStream is = event.getFile().getInputStream();

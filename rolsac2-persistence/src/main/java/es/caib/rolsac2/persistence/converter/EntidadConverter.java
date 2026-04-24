@@ -35,6 +35,7 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     @Mapping(target = "lopdPlantilla", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"lopdPlantilla\" ))")
     @Mapping(target = "uaComun", expression = "java(convierteTraduccionToLiteral(entity.getDescripcion(),\"uaComun\" ))")
     @Mapping(target = "logo", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo()))")
+    @Mapping(target = "logo2", expression = "java(jFicheroExternoToFicheroDTO(entity.getLogo2()))")
     @Mapping(target = "cssPersonalizado", expression = "java(jFicheroExternoToFicheroDTO(entity.getCssPersonalizado()))")
     EntidadDTO createDTO(JEntidad entity);
 
@@ -50,6 +51,7 @@ public interface EntidadConverter extends Converter<JEntidad, EntidadDTO> {
     @Override
     @Mapping(target = "descripcion", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "logo", ignore = true)
+    @Mapping(target = "logo2", ignore = true)
     @Mapping(target = "cssPersonalizado", ignore = true)
     void mergeEntity(@MappingTarget JEntidad entity, EntidadDTO dto);
 

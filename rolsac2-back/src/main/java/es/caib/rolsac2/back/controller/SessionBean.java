@@ -1011,6 +1011,18 @@ public class SessionBean implements Serializable {
             imgDefecto.getAttributes().put("style", "");
         }
 
+        UIComponent imgLogo2 = UtilJSF.findComponent("imgLogo2");
+        UIComponent imgDefecto2 = UtilJSF.findComponent("imgDefecto2");
+        if (imgLogo2 != null && imgDefecto2 != null) {
+            if (checkLogo2()) {
+                imgDefecto2.getAttributes().put("style", "display: none");
+                imgLogo2.getAttributes().put("style", "");
+            } else {
+                imgLogo2.getAttributes().put("style", "display: none");
+                imgDefecto2.getAttributes().put("style", "");
+            }
+        }
+
     }
 
     /**
@@ -1099,6 +1111,16 @@ public class SessionBean implements Serializable {
         if (this.perfil == TypePerfiles.SUPER_ADMINISTRADOR) {
             return false;
         } else if (this.entidad == null || this.entidad.getLogo() == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean checkLogo2() {
+        if (this.perfil == TypePerfiles.SUPER_ADMINISTRADOR) {
+            return false;
+        } else if (this.entidad == null || this.entidad.getLogo2() == null) {
             return false;
         } else {
             return true;
@@ -1215,7 +1237,25 @@ public class SessionBean implements Serializable {
             StreamedContent file = DefaultStreamedContent.builder().name(logo.getFilename()).contentType(mimeType).stream(() -> fis).build();
             return file;
         } catch (Exception e) {
-            LOG.error("Error obtiendo el logo ", e);
+            LOG.error("Error obtiendo el logo de entidad", e);
+            return null;
+        }
+    }
+
+    /**
+     * Función utilizada para obtener el logo de la aplicación (logo2)
+     *
+     * @return
+     */
+    public StreamedContent getLogo2Entidad() {
+        try {
+            FicheroDTO logo2 = entidadservice.getLogoEntidad(this.entidad.getLogo2().getCodigo());
+            String mimeType = URLConnection.guessContentTypeFromName(logo2.getFilename());
+            InputStream fis = new ByteArrayInputStream(logo2.getContenido());
+            StreamedContent file = DefaultStreamedContent.builder().name(logo2.getFilename()).contentType(mimeType).stream(() -> fis).build();
+            return file;
+        } catch (Exception e) {
+            LOG.error("Error obtiendo el logo de aplicacion (logo2) ", e);
             return null;
         }
     }

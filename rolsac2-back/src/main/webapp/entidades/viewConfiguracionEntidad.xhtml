@@ -291,6 +291,47 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
+                            <p:outputLabel value="#{labels['dialogEntidad.logo2']}:" for=""/>
+                        </div>
+                        <div class="ui-g-12 ui-md-9 ui-lg-5" >
+                            <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
+                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                            </c:if>
+                            <c:if test="#{!dialogEntidad.isModoAlta()}">
+                                <p:panel id="logo2" styleClass="logo-form w95">
+                                    <c:choose>
+                                        <c:when test="#{viewConfiguracionEntidad.data.logo2 == null}">
+                                            <p:fileUpload listener="#{viewConfiguracionEntidad.handleLogo2Upload}"
+                                                          mode="advanced"
+                                                          dragDropSupport="true"
+                                                          update="form:logo2 messages"
+                                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                          validateContentType="true" accept=".gif,.jpg,.jpeg,.png"
+                                                          onupload=""
+                                                          label="#{labels['dict.anyadir']}"
+                                                          cancelLabel="#{labels['dict.cancelar']}"
+                                                          styleClass=""
+                                                          auto="true"
+                                            />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p:commandButton id="logo2Descarga" value="#{viewConfiguracionEntidad.data.logo2.filename}"
+                                                             ajax="false" process="@this"
+                                                             icon="pi pi-arrow-down">
+                                                <p:fileDownload value="#{viewConfiguracionEntidad.obtenerLogo2()}" ></p:fileDownload>
+                                            </p:commandButton>
+                                            <p:commandButton actionListener="#{viewConfiguracionEntidad.eliminarLogo2()}" icon="pi pi-times"
+                                                             update="form:logo2"></p:commandButton>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p:panel>
+
+                            </c:if>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <p:outputLabel value="#{labels['viewConfiguracionEntidad.css']}:" for=""/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
@@ -336,7 +377,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <p:commandButton action="#{viewConfiguracionEntidad.guardar}"
                                          value="#{labels['dict.guardar']}"
                                          process="@all" update="messages">
-                            <f:ajax event="click" listener="#{sessionBean.updateLogo()}" render=":imgLogo :imgDefecto"></f:ajax>
+                            <f:ajax event="click" listener="#{sessionBean.updateLogo()}" render=":imgLogo :imgDefecto :imgLogo2 :imgDefecto2"></f:ajax>
                         </p:commandButton>
                          </div>
                     </div>

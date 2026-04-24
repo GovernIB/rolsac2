@@ -80,6 +80,13 @@ public class JEntidad extends BaseEntity {
     private JFicheroExterno logo;
 
     /**
+     * Logo secundario (logo de la entidad junto al Govern)
+     **/
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ENTI_LOGO2", nullable = true)
+    private JFicheroExterno logo2;
+
+    /**
      * Fichero externo para personalizar CSS en los views
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -253,6 +260,24 @@ public class JEntidad extends BaseEntity {
      */
     public void setLogo(JFicheroExterno logo) {
         this.logo = logo;
+    }
+
+    /**
+     * Obtiene logo2 (logo secundario).
+     *
+     * @return logo2
+     */
+    public JFicheroExterno getLogo2() {
+        return logo2;
+    }
+
+    /**
+     * Establece logo2 (logo secundario).
+     *
+     * @param logo2 logo2
+     */
+    public void setLogo2(JFicheroExterno logo2) {
+        this.logo2 = logo2;
     }
 
     /**

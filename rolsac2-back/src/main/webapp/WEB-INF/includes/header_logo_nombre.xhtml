@@ -19,9 +19,15 @@
                 </p:link>
         </div>
         <div class="logoRolsacContainer imatgeGovern">
-            <p:graphicImage name="img/logo_rolsac2.png" alt="Logo Rolsac" styleClass="logoStyle" />
-
-
+                <p:link id="imgLogo2" styleClass="mr-auto" outcome="/index" style="" >
+                    <p:graphicImage styleClass="imatgeAplicacio" alt="Logo Aplicacion"
+                                    value="#{sessionBean.getLogo2Entidad()}"
+                                    cache="false" rendered="#{sessionBean.checkLogo2()}"></p:graphicImage>
+                </p:link>
+                <p:link id="imgDefecto2" styleClass="mr-auto" outcome="/index" style="" >
+                    <p:graphicImage name="img/logo_rolsac2.png" styleClass="imatgeAplicacio"
+                                    alt="Logo Rolsac" rendered="#{!sessionBean.checkLogo2()}"/>
+                </p:link>
         </div>
 
 
