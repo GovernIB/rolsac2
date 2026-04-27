@@ -46,7 +46,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat"/>
+            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat formDialog:txtRespTratComun  "/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -175,7 +175,7 @@
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1"/>
                                 <p:ajax event="change" listener="#{dialogProcedimiento.actualizarResponsable()}"
-                                        update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr txtRespTrat"
+                                        update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:formDatosLOPD"
                                         process="@this"/>
                             </p:selectOneMenu>
                         </div>
@@ -589,10 +589,16 @@
                             <my:literalComponent id="txtRespTrat"
                                                  literal="#{dialogProcedimiento.lopdResponsable}"
                                                  soloLecture="#{true}"
+                                                 rendered="#{!dialogProcedimiento.data.esComun()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                             />
+                            <p:inputText id="txtRespTratComun"
+                                         value="#{dialogProcedimiento.comunLOPD.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                         rendered="#{dialogProcedimiento.data.esComun()}"
+                                         styleClass="w90 mr-1"
+                                         disabled="true"/>
                         </div>
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"

@@ -56,7 +56,7 @@
                          process="@this"
                          rendered="#{!dialogServicio.isModoConsulta() and dialogServicio.tradExiste()}">
             <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTraducir}" process="@this"
-                    update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtKeywords formDialog:txtServResp formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtRespTrat"/>
+                    update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtKeywords formDialog:txtServResp formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtRespTrat formDialog:txtRespTratComun"/>
         </p:commandButton>
     </ui:define>
     <ui:define name="contentDialog">
@@ -176,7 +176,7 @@
                             <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                             <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1"/>
                             <p:ajax event="change"
-                                    update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun txtRespTrat"
+                                    update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:formDatosLOPD"
                                     listener="#{dialogServicio.actualizarResponsable()}"
                                     process="@this"/>
                         </p:selectOneMenu>
@@ -560,10 +560,16 @@
                         <my:literalComponent id="txtRespTrat"
                                              literal="#{dialogServicio.lopdResponsable}"
                                              soloLecture="#{true}"
+                                             rendered="#{!dialogServicio.data.esComun()}"
                                              idioma="#{dialogServicio.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                         />
+                        <p:inputText id="txtRespTratComun"
+                                     value="#{dialogServicio.comunLOPD.getTraduccionConValor(dialogServicio.idioma)}"
+                                     rendered="#{dialogServicio.data.esComun()}"
+                                     styleClass="w90 mr-1"
+                                     disabled="true"/>
                     </div>
                 </div>
                 <div id="filaLOPDFinalidad" class="form-row">

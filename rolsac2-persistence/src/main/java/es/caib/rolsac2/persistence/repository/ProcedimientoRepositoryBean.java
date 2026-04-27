@@ -3148,7 +3148,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     jprocTramite.setListaDocumentos(jListaDocumentos);
                 }
                 if (elemento.getListaModelos() != null && elemento.getListaModelos().getCodigo() != null) {
-                    JListaDocumentos jListaDocumentos = clonarListaDocumentos(elemento.getListaDocumentos().getCodigo(), ruta, idProcWFDestino);
+                    JListaDocumentos jListaDocumentos = clonarListaDocumentos(elemento.getListaModelos().getCodigo(), ruta, idProcWFDestino);
                     jprocTramite.setListaModelos(jListaDocumentos);
                 }
                 if (jprocTramite.getTipoTramitacion() != null) {
@@ -3551,7 +3551,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (jprocWF.getUaCompetente() != null) {
             if (simplificado) {
-                proc.setUaResponsable(jprocWF.getUaCompetente().toDTOSimple());
+                proc.setUaCompetente(jprocWF.getUaCompetente().toDTOSimple());
             } else {
                 proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
             }

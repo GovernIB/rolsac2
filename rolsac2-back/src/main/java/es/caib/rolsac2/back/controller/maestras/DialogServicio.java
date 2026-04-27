@@ -97,6 +97,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     private String id = "";
 
     private String textoValor;
+    private Literal comunLOPD;
     private Literal comunUA;
     private Literal responsableUA;
     private Literal lopdResponsable;
@@ -189,6 +190,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         comunUA = sessionBean.getEntidad().getUaComun();
+        comunLOPD = sessionBean.getEntidad().getLopdComun();
         cargarListas();
 
         temasPadreAnyadidos = new ArrayList<>();
@@ -388,7 +390,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
 
     public void abrirVentanaUAInstr() {
-        if( !this.isAdministradorContenidos()) {
+        if (!this.isAdministradorContenidos()) {
             UtilJSF.anyadirMochila("uAsRaiz", sessionBean.obtenerUasEntidad());
         }
         abrirVentanaUA(this.data.getUaInstructor());
@@ -1465,6 +1467,14 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public boolean isMostrarBtnMensajes() {
         return isTotalHabilitadoComunes();
+    }
+
+    public Literal getComunLOPD() {
+        return comunLOPD;
+    }
+
+    public void setComunLOPD(Literal comunLOPD) {
+        this.comunLOPD = comunLOPD;
     }
 }
 

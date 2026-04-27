@@ -100,6 +100,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     private String textoValor;
     private Literal comunUA;
+    private Literal comunLOPD;
     private Literal responsableUA;
     private Literal lopdResponsable;
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
@@ -162,6 +163,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
         data.setUsuarioAuditoria(usuario);
         comunUA = sessionBean.getEntidad().getUaComun();
+        comunLOPD = sessionBean.getEntidad().getLopdComun();
 
         cargarListas();
         temasPadreAnyadidos = new ArrayList<>();
@@ -1810,6 +1812,14 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public boolean isMostrarBtnMensajes() {
         return isMostrarBtnFlujo();
+    }
+
+    public Literal getComunLOPD() {
+        return comunLOPD;
+    }
+
+    public void setComunLOPD(Literal comunLOPD) {
+        this.comunLOPD = comunLOPD;
     }
 }
 

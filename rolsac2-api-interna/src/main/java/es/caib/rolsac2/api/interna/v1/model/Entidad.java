@@ -81,6 +81,9 @@ public class Entidad extends EntidadBase<Entidad> {
     @Schema(description = "lopdFinalidad", name = "lopdFinalidad", type = SchemaType.STRING, required = false)
     private String lopdFinalidad;
 
+    @Schema(description = "lopdComun", name = "lopdComun", type = SchemaType.STRING, required = false)
+    private String lopdComun;
+
     @Schema(description = "uaComun", name = "uaComun", type = SchemaType.STRING, required = false)
     private String uaComun;
 
@@ -267,5 +270,13 @@ public class Entidad extends EntidadBase<Entidad> {
 
     public void setUaComun(String uaComun) {
         this.uaComun = uaComun;
+    }
+
+    public String getLopdComun() {
+        return lopdComun;
+    }
+
+    public void setLopdComun(String lopdComun) {
+        this.lopdComun = lopdComun;
     }
 }
