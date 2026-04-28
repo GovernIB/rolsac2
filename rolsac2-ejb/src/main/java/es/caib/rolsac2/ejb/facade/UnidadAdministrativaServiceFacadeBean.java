@@ -61,6 +61,8 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     private static final Logger LOG = LoggerFactory.getLogger(UnidadAdministrativaServiceFacadeBean.class);
 
+    private static final int EXPORT_BATCH_SIZE = 100;
+
     @Inject
     UnidadAdministrativaRepository unidadAdministrativaRepository;
 
@@ -1068,11 +1070,22 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
         try {
             UnidadAdministrativaFiltro filtroClonado = filtro.clone();
             if (exportarDatos.getTodosLosDatos()) {
-                filtroClonado.setPaginaFirst(0);
-                filtroClonado.setPaginaTamanyo(10000);
+                List<UnidadAdministrativaDTO> resultado = new ArrayList<>();
+                int offset = 0;
+                int batchSize = EXPORT_BATCH_SIZE;
+                while (batchSize == EXPORT_BATCH_SIZE) {
+                    filtroClonado.setPaginaFirst(offset);
+                    filtroClonado.setPaginaTamanyo(EXPORT_BATCH_SIZE);
+                    List<UnidadAdministrativaDTO> batch = unidadAdministrativaRepository.findPagedByFiltroRest(filtroClonado);
+                    batchSize = batch.size();
+                    resultado.addAll(batch);
+                    LOG.debug("Exportar UAs: lote procesado offset={}, obtenidos={}, total acumulado={}", offset, batchSize, resultado.size());
+                    offset += EXPORT_BATCH_SIZE;
+                }
+                return resultado;
+            } else {
+                return unidadAdministrativaRepository.findPagedByFiltroRest(filtroClonado);
             }
-            return unidadAdministrativaRepository.findPagedByFiltroRest(filtroClonado);
-
         } catch (Exception e) {
             LOG.error("Error", e);
             return new ArrayList<>();

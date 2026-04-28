@@ -65,6 +65,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoServiceFacade.class);
 
+    private static final int EXPORT_BATCH_SIZE = 100;
+
     @Inject
     ProcedimientoRepository procedimientoRepository;
 
@@ -1481,18 +1483,43 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (filtroClonado.getEstadoWF() == null) {
             filtroClonado.setEstadoWF("T");
         }
-        if (exportarDatos.getTodosLosDatos()) {
-            filtroClonado.setPaginaFirst(0);
-            filtroClonado.setPaginaTamanyo(10000);
-        }
 
         List<ProcedimientoCompletoDTO> procedimientos = new ArrayList<>();
         if (exportarDatos.isEstados()) {
             if (filtroClonado.getEstadoWF().equals("T")) {
-                return procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+                if (exportarDatos.getTodosLosDatos()) {
+                    int offset = 0;
+                    int batchSize = EXPORT_BATCH_SIZE;
+                    while (batchSize == EXPORT_BATCH_SIZE) {
+                        filtroClonado.setPaginaFirst(offset);
+                        filtroClonado.setPaginaTamanyo(EXPORT_BATCH_SIZE);
+                        List<ProcedimientoCompletoDTO> batch = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+                        batchSize = batch.size();
+                        procedimientos.addAll(batch);
+                        offset += EXPORT_BATCH_SIZE;
+                        LOG.debug("Exportar procedimientos (completo): lote procesado offset={}, obtenidos={}, total acumulado={}", offset, batchSize, procedimientos.size());
+                    }
+                } else {
+                    return procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+                }
             } else {
-                List<ProcedimientoBaseDTO> procs = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtroClonado, true);
-                for (ProcedimientoBaseDTO proc : procs) {
+                List<ProcedimientoBaseDTO> allProcs = new ArrayList<>();
+                if (exportarDatos.getTodosLosDatos()) {
+                    int offset = 0;
+                    int batchSize = EXPORT_BATCH_SIZE;
+                    while (batchSize == EXPORT_BATCH_SIZE) {
+                        filtroClonado.setPaginaFirst(offset);
+                        filtroClonado.setPaginaTamanyo(EXPORT_BATCH_SIZE);
+                        List<ProcedimientoBaseDTO> batch = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtroClonado, true);
+                        batchSize = batch.size();
+                        allProcs.addAll(batch);
+                        LOG.debug("Exportar procedimientos (REST): lote procesado offset={}, obtenidos={}, total acumulado={}", offset, batchSize, allProcs.size());
+                        offset += EXPORT_BATCH_SIZE;
+                    }
+                } else {
+                    allProcs = procedimientoRepository.findProcedimientosPagedByFiltroRest(filtroClonado, true);
+                }
+                for (ProcedimientoBaseDTO proc : allProcs) {
                     ProcedimientoCompletoDTO p = new ProcedimientoCompletoDTO();
                     p.addProcedimientoBase(proc);
                     p.setCodigo(proc.getCodigo());
@@ -1500,7 +1527,21 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 }
             }
         } else {
-            procedimientos = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+            if (exportarDatos.getTodosLosDatos()) {
+                int offset = 0;
+                int batchSize = EXPORT_BATCH_SIZE;
+                while (batchSize == EXPORT_BATCH_SIZE) {
+                    filtroClonado.setPaginaFirst(offset);
+                    filtroClonado.setPaginaTamanyo(EXPORT_BATCH_SIZE);
+                    List<ProcedimientoCompletoDTO> batch = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+                    batchSize = batch.size();
+                    procedimientos.addAll(batch);
+                    offset += EXPORT_BATCH_SIZE;
+                    LOG.info("Exportar procedimientos (sin estados): lote procesado offset={}, obtenidos={}, total acumulado={}", offset, batchSize, procedimientos.size());
+                }
+            } else {
+                procedimientos = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+            }
             if (procedimientos != null && !procedimientos.isEmpty()) {
                 for (ProcedimientoCompletoDTO proc : procedimientos) {
                     if (proc.isProcedimientoPub() && proc.isProcedimientoMod()) {

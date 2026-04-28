@@ -44,6 +44,8 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(NormativaServiceFacadeBean.class);
 
+    private static final int EXPORT_BATCH_SIZE = 100;
+
     @Inject
     NormativaRepository normativaRepository;
 
@@ -263,10 +265,22 @@ public class NormativaServiceFacadeBean implements NormativaServiceFacade {
         try {
             NormativaFiltro filtroClonado = filtro.clone();
             if (exportarDatos.getTodosLosDatos()) {
-                filtroClonado.setPaginaFirst(0);
-                filtroClonado.setPaginaTamanyo(10000);
+                List<NormativaDTO> resultado = new ArrayList<>();
+                int offset = 0;
+                int batchSize = EXPORT_BATCH_SIZE;
+                while (batchSize == EXPORT_BATCH_SIZE) {
+                    filtroClonado.setPaginaFirst(offset);
+                    filtroClonado.setPaginaTamanyo(EXPORT_BATCH_SIZE);
+                    List<NormativaDTO> batch = normativaRepository.findByFiltro(filtroClonado);
+                    batchSize = batch.size();
+                    resultado.addAll(batch);
+                    LOG.debug("Exportar normativas: lote procesado offset={}, obtenidos={}, total acumulado={}", offset, batchSize, resultado.size());
+                    offset += EXPORT_BATCH_SIZE;
+                }
+                return resultado;
+            } else {
+                return normativaRepository.findByFiltro(filtroClonado);
             }
-            return normativaRepository.findByFiltro(filtroClonado);
         } catch (Exception e) {
             LOG.error("Error", e);
             return new ArrayList<>();
