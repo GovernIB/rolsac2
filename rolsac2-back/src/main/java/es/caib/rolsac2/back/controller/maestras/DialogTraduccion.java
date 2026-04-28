@@ -149,6 +149,7 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             if (literales != null & literalesHTML != null) {
                 ((UnidadAdministrativaDTO) data).setNombre(literales.get(0));
+                ((UnidadAdministrativaDTO) data).setAbreviatura(literales.get(1));
                 //                ((UnidadAdministrativaDTO) data).setUrl(literales.get(1));
                 ((UnidadAdministrativaDTO) data).setPresentacion(literalesHTML.get(0));
                 ((UnidadAdministrativaDTO) data).setResponsable(literalesHTML.get(1));
@@ -245,14 +246,22 @@ public class DialogTraduccion extends AbstractController implements Serializable
         return data instanceof UnidadAdministrativaDTO;
     }
 
+    private Literal cloneLiteralOrEmpty(final Literal literal) {
+        return literal == null ? Literal.createInstance() : (Literal) literal.clone();
+    }
+
     private void imprimirLiteralesUA() {
-        literales.add((Literal) ((UnidadAdministrativaDTO) data).getNombre().clone());
+        final UnidadAdministrativaDTO unidadAdministrativaDTO = (UnidadAdministrativaDTO) data;
+
+        literales.add(cloneLiteralOrEmpty(unidadAdministrativaDTO.getNombre()));
+        literales.add(cloneLiteralOrEmpty(unidadAdministrativaDTO.getAbreviatura()));
         //        literales.add((Literal) ((UnidadAdministrativaDTO) data).getUrl().clone());
         listaFields.add("nombre");
+        listaFields.add("abreviatura");
         //        listaFields.add("url");
 
-        literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getPresentacion().clone());
-        literalesHTML.add((Literal) ((UnidadAdministrativaDTO) data).getResponsable().clone());
+        literalesHTML.add(cloneLiteralOrEmpty(unidadAdministrativaDTO.getPresentacion()));
+        literalesHTML.add(cloneLiteralOrEmpty(unidadAdministrativaDTO.getResponsable()));
         listaFieldsHTML.add("presentacion");
         listaFieldsHTML.add("responsable");
     }

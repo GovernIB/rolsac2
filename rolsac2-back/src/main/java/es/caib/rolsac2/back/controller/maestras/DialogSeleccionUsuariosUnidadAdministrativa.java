@@ -64,9 +64,11 @@ public class DialogSeleccionUsuariosUnidadAdministrativa extends AbstractControl
         buscar();
 
         uaActual = (UnidadAdministrativaDTO) UtilJSF.getValorMochilaByKey("unidadAdministrativa");
-        usuarioUASeleccionados = ((List<UsuarioGridDTO>) UtilJSF.getValorMochilaByKey("usuariosUnidadAdministrativa"));
-        if (usuarioUASeleccionados == null) {
+        List<UsuarioGridDTO> usuariosSeleccionados = (List<UsuarioGridDTO>) UtilJSF.getValorMochilaByKey("usuariosUnidadAdministrativa");
+        if (usuariosSeleccionados == null) {
             usuarioUASeleccionados = new ArrayList<>();
+        } else {
+            usuarioUASeleccionados = new ArrayList<>(usuariosSeleccionados);
         }
     }
 
@@ -129,7 +131,7 @@ public class DialogSeleccionUsuariosUnidadAdministrativa extends AbstractControl
         } else {
             result.setModoAcceso(TypeModoAcceso.CONSULTA);
         }
-        result.setResult(usuarioUASeleccionados);
+        result.setResult(new ArrayList<>(usuarioUASeleccionados));
         UtilJSF.closeDialog(result);
     }
 

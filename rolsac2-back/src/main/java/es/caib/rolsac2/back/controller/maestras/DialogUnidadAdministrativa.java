@@ -121,6 +121,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             data.setEntidad(sessionBean.getEntidad());
             data.setPadre(sessionBean.getUnidadActiva());
             data.setNombre(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
+            data.setAbreviatura(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setPresentacion(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
             data.setResponsable(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
@@ -257,6 +258,7 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
 
         if (datoDTO != null) {
             data.setNombre(datoDTO.getNombre());
+            data.setAbreviatura(datoDTO.getAbreviatura());
             data.setPresentacion(datoDTO.getPresentacion());
             data.setUrl(datoDTO.getUrl());
             data.setResponsable(datoDTO.getResponsable());
@@ -341,6 +343,12 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
             return false;
         }
 
+        List<String> idiomasPendientesAbreviatura = ValidacionTipoUtils.esLiteralCorrecto(this.data.getAbreviatura(), sessionBean.getIdiomasObligatoriosList());
+        if (!idiomasPendientesAbreviatura.isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteralFaltanIdiomas("dialogUnidadAdministrativa.abreviatura", "dialogLiteral.validacion.idiomas", idiomasPendientesAbreviatura), true);
+            return false;
+        }
+
         if (data.getPresentacion() != null) {
             for (String idioma : sessionBean.getIdiomasObligatoriosList()) {
                 if (data.getPresentacion().getTraduccion(idioma) != null && data.getPresentacion().getTraduccion(idioma).length() > 4000) {
@@ -388,6 +396,19 @@ public class DialogUnidadAdministrativa extends AbstractController implements Se
      */
     public void anyadirUsuarios() {
         abrirDialogUsuarios(TypeModoAcceso.ALTA);
+    }
+
+    public void returnDialogUsuarios(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+
+        if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
+            List<UsuarioGridDTO> usuariosSeleccionados = (List<UsuarioGridDTO>) respuesta.getResult();
+            if (usuariosSeleccionados == null) {
+                data.setUsuariosUnidadAdministrativa(new ArrayList<>());
+            } else {
+                data.setUsuariosUnidadAdministrativa(new ArrayList<>(usuariosSeleccionados));
+            }
+        }
     }
 
     /**
