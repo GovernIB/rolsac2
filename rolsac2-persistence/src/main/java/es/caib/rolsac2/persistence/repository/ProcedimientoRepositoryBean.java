@@ -3148,7 +3148,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     jprocTramite.setListaDocumentos(jListaDocumentos);
                 }
                 if (elemento.getListaModelos() != null && elemento.getListaModelos().getCodigo() != null) {
-                    JListaDocumentos jListaDocumentos = clonarListaDocumentos(elemento.getListaModelos().getCodigo(), ruta, idProcWFDestino);
+                	//Fix #334
+                	JListaDocumentos jListaDocumentos = clonarListaDocumentos(elemento.getListaModelos().getCodigo(), ruta, idProcWFDestino);
                     jprocTramite.setListaModelos(jListaDocumentos);
                 }
                 if (jprocTramite.getTipoTramitacion() != null) {
