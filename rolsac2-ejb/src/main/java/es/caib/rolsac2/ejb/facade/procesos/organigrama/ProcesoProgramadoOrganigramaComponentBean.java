@@ -88,7 +88,7 @@ public class ProcesoProgramadoOrganigramaComponentBean implements ProcesoProgram
             }
         } else {
             res.setFinalizadoOk(false);
-            detalles.addPropiedad("Informació del procés", "No s'ha especificat cap paràmetre en la definició del procès.");
+            detalles.addPropiedad("Informació del procés", "No s'ha especificat cap paràmetre en la definició del procés.");
             res.setDetalles(detalles);
             return res;
         }
