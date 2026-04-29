@@ -95,6 +95,12 @@
         </p:panel>
         <p:panel header="#{labels['dialogProcedimientoFlujo.historial']}" id="formDatos2">
             <div class="row">
+                <div class="ui-g-12 ui-md-12 ui-lg-12" style="padding: 4px 8px 8px 8px;">
+                    <div style="background-color:#d9edf7;border:1px solid #bce8f1;color:#31708f;padding:8px 12px;border-radius:4px;width:100%;box-sizing:border-box;">
+                        <span class="pi pi-info-circle" style="margin-right:6px;"/>
+                        <h:outputText value="#{labels['dialogProcedimientoFlujo.avisoMarcarLeido']}"/>
+                    </div>
+                </div>
                 <div class="ui-g-12 ui-md-12 ui-lg-12 d-flex w100">
                     <table style="padding:5px;width: 100%">
                     <thead>
@@ -233,7 +239,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog formDatos"
+                         value="#{labels['dialogProcedimientoFlujo.guardarMensaje']}" update="messagesDialog formDatos"
                          process="@all"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"
                          value="#{labels['dict.cerrar']}"
