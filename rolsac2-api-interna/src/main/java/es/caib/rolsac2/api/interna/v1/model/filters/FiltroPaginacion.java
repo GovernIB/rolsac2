@@ -77,4 +77,12 @@ public class FiltroPaginacion extends EntidadJson<FiltroPaginacion> {
         }
         return page * size;
     }
+
+    @Override
+    public String toString() {
+        return "FiltroPaginacion{" +
+                "page=" + page +
+                ", size=" + size +
+                '}';
+    }
 }

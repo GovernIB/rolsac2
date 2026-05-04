@@ -159,6 +159,11 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
             resultado.setEstado(estado);
         }
 
+        if (orden != null) {
+            resultado.setOrderBy(orden.getCampo());
+            resultado.setAscendente(orden.getTipoOrden() != null && orden.getTipoOrden().equalsIgnoreCase("asc"));
+        }
+
         return resultado;
     }
 
@@ -227,5 +232,20 @@ public class FiltroUA extends EntidadJson<FiltroUA> {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    @Override
+    public String toString() {
+        return "FiltroUA{" +
+                "codigoNormativa=" + codigoNormativa +
+                ", texto='" + texto + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", identificador='" + identificador + '\'' +
+                ", estado='" + estado + '\'' +
+                ", codEnti=" + codEnti +
+                ", idUA=" + idUA +
+                ", filtroPaginacion=" + filtroPaginacion +
+                ", orden=" + orden +
+                '}';
     }
 }

@@ -837,6 +837,7 @@ public class UnidadAdministrativaDTO extends ModelApi implements Cloneable {
         sb.append("UnidadAdministrativaDTO{");
         try {
             sb.append("codigo=").append(codigo);
+            sb.append("orden=").append(orden);
             if (entidad == null) {
                 sb.append(", entidad=null");
             } else {
