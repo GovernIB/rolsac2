@@ -328,7 +328,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
             ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
 
-            TypeModoAcceso modo = BooleanUtils.isTrue((datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) || (datoSeleccionado.getEstado().equals("PV") && this.isGestor())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            TypeModoAcceso modo = BooleanUtils.isTrue((datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) || ((datoSeleccionado.getEstado().equals("PV") || datoSeleccionado.getEstado().equals("PPV")) && this.isGestor())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
             String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
             abrirVentana(modo, proc, estados);
 
@@ -1197,7 +1197,11 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public boolean isEstadoEditable() {
         boolean editable;
         if (this.datoSeleccionado != null && this.datoSeleccionado.getEstado() != null && !this.datoSeleccionado.getEstado().startsWith("PT") && !this.datoSeleccionado.getEstado().startsWith("T")) {
-            editable = false;
+            if (this.isGestor() && BooleanUtils.isTrue(this.datoSeleccionado.getComun())) {
+                editable = true;
+            } else {
+                editable = false;
+            }
         } else {
             editable = true;
         }
