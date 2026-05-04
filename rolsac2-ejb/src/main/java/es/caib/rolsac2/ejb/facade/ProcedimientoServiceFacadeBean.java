@@ -36,6 +36,7 @@ import es.caib.rolsac2.service.utils.UtilPDU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -44,6 +45,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Implementación de los casos de uso de mantenimiento de personal. Es
@@ -1478,6 +1480,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
+    @TransactionTimeout(value = 30, unit = TimeUnit.MINUTES)
     public List<ProcedimientoCompletoDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos) {
         ProcedimientoFiltro filtroClonado = filtro.clone();
         if (filtroClonado.getEstadoWF() == null) {
