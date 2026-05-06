@@ -143,12 +143,20 @@ public class DocumentoTraduccion extends ModelApi implements Cloneable {
         return Objects.hash(codigo, idioma, ficheroDTO);
     }
 
-	public Long getFichero() {
-		return fichero;
-	}
+    public Long getFichero() {
+        return fichero;
+    }
 
-	public void setFichero(Long fichero) {
-		this.fichero = fichero;
-	}
+    public void setFichero(Long fichero) {
+        this.fichero = fichero;
+    }
 
+    @Override
+    public String toString() {
+        return "DocumentoTraduccion{" +
+                "codigo=" + codigo +
+                ", idioma='" + idioma + '\'' +
+                ", ficheroDTO=" + ficheroDTO +
+                '}';
+    }
 }

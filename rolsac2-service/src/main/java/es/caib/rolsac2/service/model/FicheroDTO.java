@@ -137,11 +137,11 @@ public class FicheroDTO extends ModelApi implements Cloneable {
                 obj.contenido = this.contenido.clone();
             }
 
-            if(this.filename != null){
+            if (this.filename != null) {
                 obj.filename = new String(this.filename);
             }
 
-            if(this.tipo != null){
+            if (this.tipo != null) {
                 obj.tipo = this.tipo;
             }
 
@@ -154,8 +154,10 @@ public class FicheroDTO extends ModelApi implements Cloneable {
     @Override
     public String toString() {
         return "FicheroDTO{" +
-                "id=" + codigo +
+                "codigo=" + codigo +
                 ", filename='" + filename + '\'' +
+                ", tipo=" + tipo +
+                ", referencia='" + referencia + '\'' +
                 '}';
     }
 

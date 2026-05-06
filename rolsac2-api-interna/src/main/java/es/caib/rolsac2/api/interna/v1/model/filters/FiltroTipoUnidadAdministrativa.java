@@ -1,6 +1,7 @@
 package es.caib.rolsac2.api.interna.v1.model.filters;
 
 import es.caib.rolsac2.api.interna.v1.model.EntidadJson;
+import es.caib.rolsac2.api.interna.v1.model.order.CampoOrden;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.filtro.TipoUnidadAdministrativaFiltro;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -49,6 +50,13 @@ public class FiltroTipoUnidadAdministrativa extends EntidadJson<FiltroTipoUnidad
     private Long idEntidad;
 
     /**
+     * Campo por el que ordenar.
+     **/
+    @Schema(name = "campoOrden", description = "Campo por el que ordenar", required = false)
+    private CampoOrden campoOrden;
+
+
+    /**
      * @return the texto
      */
     public String getTexto() {
@@ -73,6 +81,11 @@ public class FiltroTipoUnidadAdministrativa extends EntidadJson<FiltroTipoUnidad
             resultado.setIdEntidad(idEntidad);
         }
 
+        if (campoOrden != null) {
+            resultado.setOrderBy(campoOrden.getCampo());
+            resultado.setAscendente(campoOrden.getTipoOrden() != null && campoOrden.getTipoOrden().equalsIgnoreCase("asc"));
+        }
+
         return resultado;
     }
 
@@ -90,5 +103,13 @@ public class FiltroTipoUnidadAdministrativa extends EntidadJson<FiltroTipoUnidad
 
     public void setIdEntidad(Long idEntidad) {
         this.idEntidad = idEntidad;
+    }
+
+    public CampoOrden getCampoOrden() {
+        return campoOrden;
+    }
+
+    public void setCampoOrden(CampoOrden campoOrden) {
+        this.campoOrden = campoOrden;
     }
 }

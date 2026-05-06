@@ -97,6 +97,17 @@ public class Entidad extends EntidadBase<Entidad> {
         if (nodo != null) {
             cssPersonalizado = nodo.getCssPersonalizado() == null ? null : nodo.getCssPersonalizado().getCodigo();
         }
+
+        String idiomaPorDF = nodo.getIdiomaDefectoRest();
+        if (idiomaPorDF == null || idiomaPorDF.isEmpty()) {
+            idiomaPorDF = "ca";
+        }
+        lopdComun = nodo.getLopdComun().getTraduccionConValor(idioma, idiomaPorDF);
+        lopdDerechos = nodo.getLopdDerechos().getTraduccionConValor(idioma, idiomaPorDF);
+        lopdDestinatario = nodo.getLopdDestinatario().getTraduccionConValor(idioma, idiomaPorDF);
+        lopdFinalidad = nodo.getLopdFinalidad().getTraduccionConValor(idioma, idiomaPorDF);
+        uaComun = nodo.getUaComun().getTraduccionConValor(idioma, idiomaPorDF);
+
     }
 
     public Entidad() {
