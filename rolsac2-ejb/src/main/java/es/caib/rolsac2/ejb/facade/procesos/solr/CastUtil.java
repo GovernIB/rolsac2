@@ -168,7 +168,11 @@ public class CastUtil {
             nomUnidadAministrativa = servicio.getUaInstructor().getNombre().getTraduccion("ca");
         }
 
-        final boolean esProcSerInterno = contienePOInterno(servicio.getPublicosObjetivo());
+        boolean esProcSerInterno = contienePOInterno(servicio.getPublicosObjetivo());
+        if (servicio.getEstado() != TypeProcedimientoEstado.PUBLICADO) {
+            //Si está cerrado, se considera interno aunque no tenga público objetivo interno, para evitar que aparezca en SEUCAIB
+            esProcSerInterno = true;
+        }
 
         // Recorremos las traducciones
         for (final String keyIdioma : servicio.getNombreProcedimientoWorkFlow().getIdiomas()) {
@@ -280,11 +284,7 @@ public class CastUtil {
         indexData.setFechaActualizacion(servicio.getFechaActualizacion());
         indexData.setFechaPublicacion(servicio.getFechaPublicacion());
         indexData.setFechaCaducidad(servicio.getFechaCaducidad());
-        if (esProcSerInterno) {
-            indexData.setInterno(true);
-        } else {
-            indexData.setInterno(false);
-        }
+        indexData.setInterno(esProcSerInterno);
 
         // Telematico
         indexData.setTelematico(servicio.isTramitElectronica());
@@ -743,7 +743,7 @@ public class CastUtil {
 
         boolean esProcSerInterno = contienePOInterno(proc.getPublicosObjetivo());
 
-        if (proc.getEstado() == TypeProcedimientoEstado.CERRADO) {
+        if (proc.getEstado() != TypeProcedimientoEstado.PUBLICADO) {
             //Si está cerrado, se considera interno aunque no tenga público objetivo interno, para evitar que aparezca en SEUCAIB
             esProcSerInterno = true;
         }
@@ -874,6 +874,19 @@ public class CastUtil {
             indexData.setInterno(false);
         }
 
+        if (proc.getPublicosObjetivo() == null || proc.getPublicosObjetivo().isEmpty()) {
+            // Si no tiene público objetivo, se considera interno para evitar que aparezca en SEUCAIB
+            indexData.setInterno(true);
+        } else {
+            // Si tiene un PO de tipo empleado público indicarlo como interno
+            for (TipoPublicoObjetivoEntidadGridDTO publicoObjetivo : proc.getPublicosObjetivo()) {
+                if (publicoObjetivo.isEmpleadoPublico()) {
+                    indexData.setInterno(true);
+                    break;
+                }
+            }
+        }
+
         // UA
         if (pathUA == null) {
             //TODO, tiene que venir calculado
@@ -895,10 +908,15 @@ public class CastUtil {
 
     public static boolean contienePOInterno(List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo) {
         boolean contiene = false;
-        if (publicosObjetivo != null) {
+
+        if (publicosObjetivo == null || publicosObjetivo.isEmpty()) {
+            //Si no tiene PO, se considera interno para evitar que aparezca en SEUCAIB
+            contiene = true;
+        } else {
             for (TipoPublicoObjetivoEntidadGridDTO tipo : publicosObjetivo) {
                 if (tipo.isEmpleadoPublico()) {
                     contiene = true;
+                    break;
                 }
             }
         }
