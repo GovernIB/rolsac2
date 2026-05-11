@@ -469,6 +469,28 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return;
         }
 
+        // Validar campos obligatorios de idiomas en los trámites
+        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+        if (data.getTramites() != null && !data.getTramites().isEmpty()) {
+            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
+                List<String> camposIncompletos = new ArrayList<>();
+                if (tramite.getNombre() == null || !tramite.getNombre().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.nombreTramite"));
+                }
+                if (tramite.getRequisitos() == null || !tramite.getRequisitos().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.requisitos"));
+                }
+                if (tramite.getTerminoMaximo() == null || !tramite.getTerminoMaximo().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.terminoMaximo"));
+                }
+                if (!camposIncompletos.isEmpty()) {
+                    String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteCamposIdiomasObligatorios", new Object[]{nombreTramite}));
+                    return;
+                }
+            }
+        }
+
         if (data.getTemas() == null || data.getTemas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
             return;
