@@ -148,8 +148,8 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     /**
      * codigoPublicoObjetivo.
      **/
-    @Schema(name = "codigoPublicoObjetivo", description = "Tipo publico objetivo entidad. Estes valor se puede sacar del metodo /services/v1/publicos_objetivo", type = SchemaType.INTEGER, required = false)
-    private Long codigoPublicoObjetivo;
+    @Schema(name = "codigoPublicoObjetivoEntidad", description = "Tipo publico objetivo entidad. Estes valor se puede sacar del metodo /services/v1/publicos_objetivo", type = SchemaType.INTEGER, required = false)
+    private Long codigoPublicoObjetivoEntidad;
 
     /**
      * codigoTipoProcedimiento.
@@ -343,12 +343,12 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.estados = estados;
     }
 
-    public Long getCodigoPublicoObjetivo() {
-        return codigoPublicoObjetivo;
+    public Long getCodigoPublicoObjetivoEntidad() {
+        return codigoPublicoObjetivoEntidad;
     }
 
-    public void setCodigoPublicoObjetivo(Long codigoPublicoObjetivo) {
-        this.codigoPublicoObjetivo = codigoPublicoObjetivo;
+    public void setCodigoPublicoObjetivoEntidad(Long codigoPublicoObjetivoEntidad) {
+        this.codigoPublicoObjetivoEntidad = codigoPublicoObjetivoEntidad;
     }
 
     public Long getCodigoTipoProcedimiento() {
@@ -567,9 +567,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setFormaInicio(fi);
         }
 
-        if (this.codigoPublicoObjetivo != null) {
+        if (this.codigoPublicoObjetivoEntidad != null) {
             TipoPublicoObjetivoDTO po = new TipoPublicoObjetivoDTO();
-            po.setCodigo(codigoPublicoObjetivo);
+            po.setCodigo(codigoPublicoObjetivoEntidad);
             resultado.setPublicoObjetivo(po);
         }
 
