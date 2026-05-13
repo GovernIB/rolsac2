@@ -98,7 +98,7 @@
                 <div class="ui-g-12 ui-md-12 ui-lg-12" style="padding: 4px 8px 8px 8px;">
                     <div style="background-color:#d9edf7;border:1px solid #bce8f1;color:#31708f;padding:8px 12px;border-radius:4px;width:100%;box-sizing:border-box;">
                         <span class="pi pi-info-circle" style="margin-right:6px;"/>
-                        <h:outputText value="#{labels['dialogProcedimientoFlujo.avisoMarcarLeido']}"/>
+                        <h:outputText value="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.avisoMarcarLeido' : 'dialogProcedimientoFlujo.avisoMarcarLeidoFlujo']}"/>
                     </div>
                 </div>
                 <div class="ui-g-12 ui-md-12 ui-lg-12 d-flex w100">
@@ -239,7 +239,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
-                         value="#{labels['dialogProcedimientoFlujo.guardarMensaje']}" update="messagesDialog formDatos"
+                         value="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}" update="messagesDialog formDatos"
                          process="@all"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"
                          value="#{labels['dict.cerrar']}"
