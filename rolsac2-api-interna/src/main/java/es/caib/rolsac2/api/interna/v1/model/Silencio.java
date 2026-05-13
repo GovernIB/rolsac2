@@ -44,7 +44,14 @@ public class Silencio extends EntidadBase<Silencio> {
 	}
 
 	public Silencio(TipoSilencioAdministrativoDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled) {
+		this(elem, urlBase, idioma, hateoasEnabled, null);
+	}
+
+	public Silencio(TipoSilencioAdministrativoDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled, final String idiomaPorDefecto) {
 		super(elem, urlBase, idioma, hateoasEnabled);
+		if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
+			this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+		}
 	}
 
 	@Override

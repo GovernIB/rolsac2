@@ -54,7 +54,14 @@ public class TipoPublicoObjetivoEntidad extends EntidadBase<TipoPublicoObjetivoE
 	private Long entidad;
 
 	public TipoPublicoObjetivoEntidad(TipoPublicoObjetivoEntidadDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+		this(elem, urlBase, idioma, hateoasEnabled, null);
+	}
+
+	public TipoPublicoObjetivoEntidad(TipoPublicoObjetivoEntidadDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
 		super( elem, urlBase, idioma, hateoasEnabled);
+		if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
+			this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+		}
 	}
 
 	public TipoPublicoObjetivoEntidad() {

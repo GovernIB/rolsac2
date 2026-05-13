@@ -167,11 +167,14 @@ public class ProcedimientosResource {
 
         Instant start = Instant.now();
 
+        String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = procedimientoService.getTipoPubObjEntByCodProcWF(Long.valueOf(codigo));
 
             for (TipoPublicoObjetivoEntidadDTO nodo : result) {
-                elemento = new TipoPublicoObjetivoEntidad(nodo, null, lang, true);
+                elemento = new TipoPublicoObjetivoEntidad(nodo, null, idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -213,11 +216,12 @@ public class ProcedimientosResource {
         Normativa elemento;
 
         String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
 
         List<NormativaDTO> result = procedimientoService.getNormativasByCodProcWF(Long.valueOf(codigo));
 
         for (NormativaDTO nodo : result) {
-            elemento = new Normativa(nodo, null, lang, true, idiomaPorDefecto);
+            elemento = new Normativa(nodo, null, idioma, true, idiomaPorDefecto);
             lista.add(elemento);
         }
 
@@ -258,11 +262,14 @@ public class ProcedimientosResource {
         Tema elemento;
         Instant start = Instant.now();
 
+        String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = procedimientoService.getTemasByCodProcWF(Long.valueOf(codigo));
 
             for (TemaDTO nodo : result) {
-                elemento = new Tema(nodo, null, lang, true);
+                elemento = new Tema(nodo, null, idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -304,11 +311,14 @@ public class ProcedimientosResource {
         ProcedimientoDocumento elemento;
         Instant start = Instant.now();
 
+        String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = procedimientoService.getDocumentosByCodProcWF(Long.valueOf(codigo));
 
             for (ProcedimientoDocumentoDTO nodo : result) {
-                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), lang, true);
+                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -348,11 +358,15 @@ public class ProcedimientosResource {
         List<ProcedimientoDocumento> lista = new ArrayList<>();
         ProcedimientoDocumento elemento;
         Instant start = Instant.now();
+
+        String idiomaPorDefecto = procedimientoService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = procedimientoService.getDocumentosLOPDByCodProcWF(Long.valueOf(codigo));
 
             for (ProcedimientoDocumentoDTO nodo : result) {
-                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), lang, true);
+                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }

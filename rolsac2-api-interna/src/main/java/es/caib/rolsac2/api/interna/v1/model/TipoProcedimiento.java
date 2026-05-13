@@ -59,7 +59,14 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 	private Long entidad;
 
 	public TipoProcedimiento(TipoProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
+		this(nodo, urlBase, idioma, hateoasEnabled, null);
+	}
+
+	public TipoProcedimiento(TipoProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
 		super(nodo, urlBase, idioma, hateoasEnabled);
+		if (idiomaPorDefecto != null && nodo.getDescripcion() != null) {
+			this.descripcion = nodo.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+		}
 	}
 
 	public TipoProcedimiento() {

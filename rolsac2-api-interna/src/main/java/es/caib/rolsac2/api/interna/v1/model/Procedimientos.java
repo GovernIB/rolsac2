@@ -215,23 +215,43 @@ public class Procedimientos extends EntidadBase {
         super(nodo, urlBase, idioma, hateoasEnabled);
 
         try {
+            // Si no existe el idioma solicitado, usar idioma por defecto
+            if (nodo.getNombreProcedimientoWorkFlow() != null) {
+                this.nombreProcedimientoWorkFlow = nodo.getNombreProcedimientoWorkFlow().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (nodo.getRequisitos() != null) {
+                this.requisitos = nodo.getRequisitos().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (nodo.getObjeto() != null) {
+                this.objeto = nodo.getObjeto().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (nodo.getDestinatarios() != null) {
+                this.destinatarios = nodo.getDestinatarios().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (nodo.getTerminoResolucion() != null) {
+                this.terminoResolucion = nodo.getTerminoResolucion().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (nodo.getObservaciones() != null) {
+                this.observaciones = nodo.getObservaciones().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+
             // copiamos los datos que no tienen la misma estructura:
             if (nodo.getSilencio() != null) {
-                this.silencio = new Silencio(nodo.getSilencio(), urlBase, idioma, hateoasEnabled);
+                this.silencio = new Silencio(nodo.getSilencio(), urlBase, idioma, hateoasEnabled, idiomaPorDefecto);
             }
 
             // copiamos los datos que no tienen la misma estructura:
             if (nodo.getDatosPersonalesLegitimacion() != null) {
-                this.lopdLegitimacion = new Legitimacion(nodo.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled);
+                this.lopdLegitimacion = new Legitimacion(nodo.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled, idiomaPorDefecto);
             }
 
             // copiamos los datos que no tienen la misma estructura:
             if (nodo.getIniciacion() != null) {
-                this.iniciacion = new Inicio(nodo.getIniciacion(), urlBase, idioma, hateoasEnabled);
+                this.iniciacion = new Inicio(nodo.getIniciacion(), urlBase, idioma, hateoasEnabled, idiomaPorDefecto);
             }
 
             if (nodo.getTipoProcedimiento() != null) {
-                this.tipoProcedimiento = new TipoProcedimiento(nodo.getTipoProcedimiento(), urlBase, idioma, hateoasEnabled);
+                this.tipoProcedimiento = new TipoProcedimiento(nodo.getTipoProcedimiento(), urlBase, idioma, hateoasEnabled, idiomaPorDefecto);
             }
 
             if (nodo.getLopdDerechos() != null) {

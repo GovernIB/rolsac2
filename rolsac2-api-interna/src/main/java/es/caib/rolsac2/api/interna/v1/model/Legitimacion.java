@@ -37,7 +37,14 @@ public class Legitimacion extends EntidadBase<Legitimacion> {
     }
 
     public Legitimacion(TipoLegitimacionDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+        this(elem, urlBase, idioma, hateoasEnabled, null);
+    }
+
+    public Legitimacion(TipoLegitimacionDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
+        if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
+            this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
     }
 
     @Override

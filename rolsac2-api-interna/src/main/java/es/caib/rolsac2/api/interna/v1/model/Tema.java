@@ -59,7 +59,14 @@ public class Tema extends EntidadBase<Tema> {
 	private Long entidad;
 
 	public Tema(TemaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+		this(elem, urlBase, idioma, hateoasEnabled, null);
+	}
+
+	public Tema(TemaDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
 		super( elem, urlBase, idioma, hateoasEnabled);
+		if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
+			this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+		}
 	}
 
 	public Tema() {

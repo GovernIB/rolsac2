@@ -133,11 +133,13 @@ public class ProcedimientoDocumentoResource {
     private RespuestaBase getRespuesta(ProcedimientoDocumentoFiltro filtro, Instant start, String url) {
         Pagina<ProcedimientoDocumentoDTO> resultadoBusqueda = procedimientoService.findProcedimientoDocumentoByFiltroRest(filtro);
 
+        String idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+
         List<ProcedimientoDocumento> lista = new ArrayList<>();
         ProcedimientoDocumento elemento;
 
         for (ProcedimientoDocumentoDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), true);
+            elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
         }
 

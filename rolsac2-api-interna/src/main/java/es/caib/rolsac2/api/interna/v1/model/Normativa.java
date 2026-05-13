@@ -106,6 +106,12 @@ public class Normativa extends EntidadBase<Normativa> {
         if (elem.getTitulo() != null) {
             this.nombre = elem.getTitulo().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
+        if (elem.getUrlBoletin() != null) {
+            this.urlBoletin = elem.getUrlBoletin().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
+        if (elem.getNombreResponsable() != null) {
+            this.nombreResponsable = elem.getNombreResponsable().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
     }
 
     public Normativa() {

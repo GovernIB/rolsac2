@@ -214,7 +214,7 @@ public class Servicios extends EntidadBase {
             }
             // copiamos los datos que no tienen la misma estructura:
             if (elem.getDatosPersonalesLegitimacion() != null) {
-                this.lopdLegitimacion = new Legitimacion(elem.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled);
+                this.lopdLegitimacion = new Legitimacion(elem.getDatosPersonalesLegitimacion(), urlBase, idioma, hateoasEnabled, idiomaPorDefecto);
             }
             if (elem.getLopdDerechos() != null) {
                 this.lopdDerechos = elem.getLopdDerechos().getTraduccionConValor(idioma, idiomaPorDefecto);

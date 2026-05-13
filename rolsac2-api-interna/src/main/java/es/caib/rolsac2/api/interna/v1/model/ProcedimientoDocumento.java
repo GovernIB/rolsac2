@@ -70,7 +70,21 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 //	private Long procedimientoDTO;
 
 	public ProcedimientoDocumento(ProcedimientoDocumentoDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+		this(elem, urlBase, idioma, hateoasEnabled, null);
+	}
+
+	public ProcedimientoDocumento(ProcedimientoDocumentoDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
 		super( elem, urlBase, idioma, hateoasEnabled);
+
+		// Si no existe el idioma solicitado, usar idioma por defecto
+		if (idiomaPorDefecto != null) {
+			if (elem.getTitulo() != null) {
+				this.titulo = elem.getTitulo().getTraduccionConValor(idioma, idiomaPorDefecto);
+			}
+			if (elem.getDescripcion() != null) {
+				this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+			}
+		}
 
 		if(elem.getDocumentos() != null) {
 			Long fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFichero();
@@ -80,6 +94,19 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 
 				if(ficheroDTO != null) {
 					fichero = ficheroDTO.getCodigo();
+				}
+			}
+
+			// Idioma por defecto si no se encontró documento en el idioma solicitado
+			if(fichero == null && idiomaPorDefecto != null && !idiomaPorDefecto.equals(idioma)) {
+				fichero = elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto).getFichero();
+
+				if(fichero == null) {
+					FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto).getFicheroDTO();
+
+					if(ficheroDTO != null) {
+						fichero = ficheroDTO.getCodigo();
+					}
 				}
 			}
 

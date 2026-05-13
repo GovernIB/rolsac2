@@ -234,10 +234,11 @@ public class ServiciosResource {
         final ProcedimientoFiltro fg = new ProcedimientoFiltro();
         fg.setCodigoWF(Long.valueOf(codigo));
 
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
         if (lang != null) {
             fg.setIdioma(lang);
         } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            fg.setIdioma(idiomaPorDefecto);
         }
 
         fg.setTipo("S");
@@ -338,11 +339,14 @@ public class ServiciosResource {
         List<TipoPublicoObjetivoEntidad> lista = new ArrayList<>();
         TipoPublicoObjetivoEntidad elemento;
 
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = servicioService.getTipoPubObjEntByCodProcWF(Long.valueOf(codigo));
 
             for (TipoPublicoObjetivoEntidadDTO nodo : result) {
-                elemento = new TipoPublicoObjetivoEntidad(nodo, null, lang, true);
+                elemento = new TipoPublicoObjetivoEntidad(nodo, null, idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -385,11 +389,14 @@ public class ServiciosResource {
         List<Normativa> lista = new ArrayList<>();
         Normativa elemento;
 
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = servicioService.getNormativasByCodProcWF(Long.valueOf(codigo));
 
             for (NormativaDTO nodo : result) {
-                elemento = new Normativa(nodo, null, lang, true, null);
+                elemento = new Normativa(nodo, null, idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -430,11 +437,14 @@ public class ServiciosResource {
         List<Tema> lista = new ArrayList<>();
         Tema elemento;
 
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = servicioService.getTemasByCodProcWF(Long.valueOf(codigo));
 
             for (TemaDTO nodo : result) {
-                elemento = new Tema(nodo, null, lang, true);
+                elemento = new Tema(nodo, null, idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -477,11 +487,14 @@ public class ServiciosResource {
         List<ProcedimientoDocumento> lista = new ArrayList<>();
         ProcedimientoDocumento elemento;
 
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = servicioService.getDocumentosByCodProcWF(Long.valueOf(codigo));
 
             for (ProcedimientoDocumentoDTO nodo : result) {
-                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), lang, true);
+                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
@@ -524,11 +537,14 @@ public class ServiciosResource {
         List<ProcedimientoDocumento> lista = new ArrayList<>();
         ProcedimientoDocumento elemento;
 
+        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
         if (codigo != null) {
             result = servicioService.getDocumentosLOPDByCodProcWF(Long.valueOf(codigo));
 
             for (ProcedimientoDocumentoDTO nodo : result) {
-                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), lang, true);
+                elemento = new ProcedimientoDocumento(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true, idiomaPorDefecto);
                 lista.add(elemento);
             }
         }
