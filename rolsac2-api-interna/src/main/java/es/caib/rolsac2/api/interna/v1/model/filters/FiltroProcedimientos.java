@@ -61,7 +61,7 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
      * codigosPublicosObjetivosEntidad.
      **/
     @Schema(name = "codigosPublicosObjetivosEntidad", description = "Lista de codigos de publico objetivo . Se pueden consultar en el metodo /services/v1/publicos_objetivo", required = false)
-    private List<Long> codigosPublicosObjetivosEntidadEntidad;
+    private List<Long> codigosPublicosObjetivosEntidad;
 
     /**
      * codigosMaterias.
@@ -449,11 +449,11 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
     }
 
     public List<Long> getcodigosPublicosObjetivosEntidadEntidad() {
-        return codigosPublicosObjetivosEntidadEntidad;
+        return codigosPublicosObjetivosEntidad;
     }
 
     public void setcodigosPublicosObjetivosEntidadEntidad(List<Long> codigosPublicosObjetivosEntidadEntidad) {
-        this.codigosPublicosObjetivosEntidadEntidad = codigosPublicosObjetivosEntidadEntidad;
+        this.codigosPublicosObjetivosEntidad = codigosPublicosObjetivosEntidadEntidad;
     }
 
     public List<Long> getCodigosMaterias() {
@@ -616,9 +616,9 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
             resultado.setNormativas(lista);
         }
 
-        if (this.codigosPublicosObjetivosEntidadEntidad != null) {
+        if (this.codigosPublicosObjetivosEntidad != null) {
             List<TipoPublicoObjetivoEntidadGridDTO> lista = new ArrayList<TipoPublicoObjetivoEntidadGridDTO>();
-            for (Long cod : codigosPublicosObjetivosEntidadEntidad) {
+            for (Long cod : codigosPublicosObjetivosEntidad) {
                 TipoPublicoObjetivoEntidadGridDTO po = new TipoPublicoObjetivoEntidadGridDTO();
                 po.setCodigo(cod);
                 lista.add(po);
