@@ -448,12 +448,12 @@ public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
         this.fechaPublicacionHasta = fechaPublicacionHasta;
     }
 
-    public List<Long> getcodigosPublicosObjetivosEntidadEntidad() {
+    public List<Long> getcodigosPublicosObjetivosEntidad() {
         return codigosPublicosObjetivosEntidad;
     }
 
-    public void setcodigosPublicosObjetivosEntidadEntidad(List<Long> codigosPublicosObjetivosEntidadEntidad) {
-        this.codigosPublicosObjetivosEntidad = codigosPublicosObjetivosEntidadEntidad;
+    public void setcodigosPublicosObjetivosEntidad(List<Long> codigosPublicosObjetivosEntidad) {
+        this.codigosPublicosObjetivosEntidad = codigosPublicosObjetivosEntidad;
     }
 
     public List<Long> getCodigosMaterias() {
