@@ -118,13 +118,24 @@ public class TipoBoletinResource {
     public Response getBoletin(@Parameter(description = "Código de boletín", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
-        TipoBoletinFiltro fg = new TipoBoletinFiltro();
-        fg.setCodigo(Long.valueOf(codigo));
+        try {
+            TipoBoletinFiltro fg = new TipoBoletinFiltro();
+            fg.setCodigo(Long.valueOf(codigo));
 
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+            return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private RespuestaBase getRespuesta(TipoBoletinFiltro fg, Instant start, String url, Integer apiMaxLimit) {

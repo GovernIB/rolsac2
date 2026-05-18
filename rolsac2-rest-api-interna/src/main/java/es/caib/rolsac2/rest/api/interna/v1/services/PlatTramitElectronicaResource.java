@@ -118,19 +118,30 @@ public class PlatTramitElectronicaResource {
     public Response getPlatTramitElectronica(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de plataforma de tramitación electrónica", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
-        PlatTramitElectronicaFiltro fg = new PlatTramitElectronicaFiltro();
-        fg.setCodigo(Long.valueOf(codigo));
+        try {
+            PlatTramitElectronicaFiltro fg = new PlatTramitElectronicaFiltro();
+            fg.setCodigo(Long.valueOf(codigo));
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            }
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw new RuntimeException(e);
+            }
         }
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
     }
 
     private RespuestaBase getRespuesta(PlatTramitElectronicaFiltro fg, Instant start, String url) {

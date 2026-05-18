@@ -268,23 +268,33 @@ public class ServiciosResource {
                              @Parameter(description = "Estados WF, siendo los valores \"D/M/T/A\", (D=Definitivo, M=Modificado, T=Todos (publicado o sino modificado), A=Ambos (publicado y modificado)) ", name = "estadoWF", in = ParameterIn.QUERY) @QueryParam("estadoWF") final String estadoWF) throws Exception {
 
         Instant start = Instant.now();
-        final ProcedimientoFiltro fg = new ProcedimientoFiltro();
-        String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        try {
+            final ProcedimientoFiltro fg = new ProcedimientoFiltro();
+            String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(idiomaPorDefecto);
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(idiomaPorDefecto);
+            }
+            fg.setCodigoProc(Long.parseLong(codigo));
+            fg.setTipo("S");
+            fg.setEstadoWF(Objects.requireNonNullElse(estadoWF, "T"));
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, null), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw e;
+            }
         }
-        fg.setCodigoProc(Long.parseLong(codigo));
-        fg.setTipo("S");
-        fg.setEstadoWF(Objects.requireNonNullElse(estadoWF, "T"));
-
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
 

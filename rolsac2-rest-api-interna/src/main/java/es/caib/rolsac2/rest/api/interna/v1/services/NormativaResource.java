@@ -138,20 +138,31 @@ public class NormativaResource {
     public Response getPorId(@Parameter(description = "Código normativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
 
         Instant start = Instant.now();
-        NormativaFiltro fg = new NormativaFiltro();
-        String idiomaPorDefecto = normativaService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+        try {
+            NormativaFiltro fg = new NormativaFiltro();
+            String idiomaPorDefecto = normativaService.obtenerIdiomaEntidad(Long.valueOf(codigo));
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(idiomaPorDefecto);
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(idiomaPorDefecto);
+            }
+            fg.setCodigo(Long.valueOf(codigo));
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, null), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else{
+                throw e;
+            }
         }
-        fg.setCodigo(Long.valueOf(codigo));
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
     private RespuestaBase getRespuesta(NormativaFiltro filtro, String idiomaPorDefecto, Instant start, String url, Integer apiMaxLimit) {

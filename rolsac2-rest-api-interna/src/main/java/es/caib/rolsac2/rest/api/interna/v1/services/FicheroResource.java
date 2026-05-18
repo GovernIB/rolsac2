@@ -52,7 +52,17 @@ public class FicheroResource {
     public Response getFichero(@Parameter(description = "Código de fichero", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
-        return Response.ok(getRespuesta(Long.valueOf(codigo), start), MediaType.APPLICATION_JSON).build();
+        try {
+            return Response.ok(getRespuesta(Long.valueOf(codigo), start), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaFichero respuesta = new RespuestaFichero(Response.Status.OK.getStatusCode() + "", e.getMessage(), 0, new ArrayList<>(), tiempoMiliSegundos);
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**

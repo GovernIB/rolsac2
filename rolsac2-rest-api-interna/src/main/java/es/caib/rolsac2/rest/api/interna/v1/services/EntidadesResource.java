@@ -179,41 +179,51 @@ public class EntidadesResource {
     public Response getEntidad(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de entidad", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
-        EntidadFiltro fg = new EntidadFiltro();
-        fg.setCodigo(Long.valueOf(codigo));
+        try {
+            EntidadFiltro fg = new EntidadFiltro();
+            fg.setCodigo(Long.valueOf(codigo));
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            }
+
+            // Limitar el número total de elementos según API_MAX_LIMIT
+            Integer apiMaxLimit = null;
+            try {
+                String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
+                apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+                if (apiMaxLimit > 0) {
+                    int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+                    int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+                    if (offset >= apiMaxLimit) {
+                        fg.setPaginaFirst(0);
+                        fg.setPaginaTamanyo(0);
+                    } else if (offset + size > apiMaxLimit) {
+                        fg.setPaginaTamanyo(apiMaxLimit - offset);
+                    }
+                } else {
+                    apiMaxLimit = null;
+                }
+            } catch (NumberFormatException e){
+                apiMaxLimit = null;
+            }
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else{
+                throw e;
+            }
         }
-
-        // Limitar el número total de elementos según API_MAX_LIMIT
-        Integer apiMaxLimit = null;
-    	try {
-            String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
-	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
-	        if (apiMaxLimit > 0) {
-		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
-		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
-		        if (offset >= apiMaxLimit) {
-		            fg.setPaginaFirst(0);
-		            fg.setPaginaTamanyo(0);
-		        } else if (offset + size > apiMaxLimit) {
-		            fg.setPaginaTamanyo(apiMaxLimit - offset);
-		        }
-	        } else {
-	        	apiMaxLimit = null;
-	        }
-    	} catch (NumberFormatException e){
-    		apiMaxLimit = null;
-        }
-
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
     }
 
     private RespuestaBase getRespuesta(EntidadFiltro fg, Instant start, String url, Integer apiMaxLimit) {

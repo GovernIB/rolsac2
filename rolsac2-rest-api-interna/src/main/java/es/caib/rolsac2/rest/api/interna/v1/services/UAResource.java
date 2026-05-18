@@ -148,22 +148,31 @@ public class UAResource {
     public Response getUA(@Parameter(description = "Código Unidad Administrativa", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
         Instant start = Instant.now();
-        UnidadAdministrativaFiltro fg = new UnidadAdministrativaFiltro();
+        try {
+            UnidadAdministrativaFiltro fg = new UnidadAdministrativaFiltro();
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            }
+
+            fg.setCodigo(Long.valueOf(codigo));
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw new RuntimeException(e);
+            }
         }
-
-        fg.setCodigo(Long.valueOf(codigo));
-
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
-
     }
 
     /**

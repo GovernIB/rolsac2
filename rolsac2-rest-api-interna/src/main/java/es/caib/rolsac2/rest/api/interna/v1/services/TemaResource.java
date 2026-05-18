@@ -142,19 +142,30 @@ public class TemaResource {
     public Response getPorId(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código tema", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo) throws Exception {
 
         Instant start = Instant.now();
-        TemaFiltro fg = new TemaFiltro();
+        try {
+            TemaFiltro fg = new TemaFiltro();
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            }
+            fg.setCodigo(Long.valueOf(codigo));
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw e;
+            }
         }
-        fg.setCodigo(Long.valueOf(codigo));
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
     private RespuestaBase getRespuesta(TemaFiltro filtro, Instant start, String url, Integer apiMaxLimit) {

@@ -141,19 +141,30 @@ public class TipoMediaEdificioResource {
     public Response getTipoMediaEdificio(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de media edificio", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
-        TipoMediaEdificioFiltro fg = new TipoMediaEdificioFiltro();
-        fg.setCodigo(Long.valueOf(codigo));
+        try {
+            TipoMediaEdificioFiltro fg = new TipoMediaEdificioFiltro();
+            fg.setCodigo(Long.valueOf(codigo));
 
-        if (lang != null) {
-            fg.setIdioma(lang);
-        } else {
-            fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            if (lang != null) {
+                fg.setIdioma(lang);
+            } else {
+                fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
+            }
+
+            URI uriCompleta = uriInfo.getRequestUri();
+            String url = uriCompleta.toString();
+
+            return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
+                long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
+                RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
+                respuesta.setMensaje(e.getMessage());
+                return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+            } else {
+                throw new RuntimeException(e);
+            }
         }
-
-        URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
-
-        return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
     }
 
     private RespuestaBase getRespuesta(TipoMediaEdificioFiltro fg, Instant start, String url, Integer apiMaxLimit) {
