@@ -469,26 +469,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return;
         }
 
-        // Validar campos obligatorios de idiomas en los trámites
-        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
-        if (data.getTramites() != null && !data.getTramites().isEmpty()) {
-            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
-                List<String> camposIncompletos = new ArrayList<>();
-                if (tramite.getNombre() == null || !tramite.getNombre().estaCompleto(idiomasObligatorios)) {
-                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.nombreTramite"));
-                }
-                if (tramite.getRequisitos() == null || !tramite.getRequisitos().estaCompleto(idiomasObligatorios)) {
-                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.requisitos"));
-                }
-                if (tramite.getTerminoMaximo() == null || !tramite.getTerminoMaximo().estaCompleto(idiomasObligatorios)) {
-                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.terminoMaximo"));
-                }
-                if (!camposIncompletos.isEmpty()) {
-                    String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
-                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteCamposIdiomasObligatorios", new Object[]{nombreTramite}));
-                    return;
-                }
-            }
+        if (!comprobarTramites()) {
+            return;
         }
 
         if (data.getTemas() == null || data.getTemas().isEmpty()) {
@@ -520,6 +502,60 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
         }
         UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    private boolean comprobarTramites() {
+        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+        if (data.getTramites() != null && !data.getTramites().isEmpty()) {
+            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
+                List<String> camposIncompletos = new ArrayList<>();
+                if (tramite.getNombre() == null || !tramite.getNombre().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.nombreTramite"));
+                }
+                if (tramite.getRequisitos() == null || !tramite.getRequisitos().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.requisitos"));
+                }
+                if (tramite.getTerminoMaximo() == null || !tramite.getTerminoMaximo().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.terminoMaximo"));
+                }
+                if (!camposIncompletos.isEmpty()) {
+                    String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
+                    UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteCamposIdiomasObligatorios", new Object[]{nombreTramite}));
+                    return false;
+                }
+
+                // Validar títulos de documentos relacionados y modelos del trámite
+                String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
+                if (tramite.getListaDocumentos() != null) {
+                    for (ProcedimientoDocumentoDTO doc : tramite.getListaDocumentos()) {
+                        if (doc.getTitulo() == null || !doc.getTitulo().estaCompleto(idiomasObligatorios)) {
+                            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteDocsTituloObligatorio", new Object[]{nombreTramite}));
+                            return false;
+                        }
+                    }
+                }
+                if (tramite.getListaModelos() != null) {
+                    for (ProcedimientoDocumentoDTO mod : tramite.getListaModelos()) {
+                        if (mod.getTitulo() == null || !mod.getTitulo().estaCompleto(idiomasObligatorios)) {
+                            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteDocsTituloObligatorio", new Object[]{nombreTramite}));
+                            return false;
+                        }
+                    }
+                }
+
+                // Validar que si el trámite es telemático tenga plantilla, datos de tramitación o URL informados
+                if (tramite.isTramitElectronica()) {
+                    boolean tienePlantilla = tramite.getPlantillaSel() != null && tramite.getPlantillaSel().getCodigo() != null;
+                    boolean tieneDatosTramitacion = tramite.getTipoTramitacion() != null && tramite.getTipoTramitacion().getTramiteId() != null && !tramite.getTipoTramitacion().getTramiteId().isEmpty();
+                    boolean tieneUrl = tramite.getTipoTramitacion() != null && tramite.getTipoTramitacion().getUrl() != null && tramite.getTipoTramitacion().getUrl().estaCompleto(idiomasObligatorios);
+                    if (!tienePlantilla && !tieneDatosTramitacion && !tieneUrl) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteTelematicaSinDatos", new Object[]{nombreTramite}));
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private boolean checkPDU() {
