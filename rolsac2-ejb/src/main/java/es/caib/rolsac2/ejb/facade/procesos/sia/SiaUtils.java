@@ -13,6 +13,8 @@ import java.util.List;
 
 public class SiaUtils {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SiaUtils.class);
+
     public static final Integer SIAJOB_ESTADO_CREADO = 0;
     public static final Integer SIAJOB_ESTADO_EN_EJECUCION = 1;
     public static final Integer SIAJOB_ESTADO_ENVIADO = 2;
@@ -361,21 +363,18 @@ public class SiaUtils {
 
         // Se ha tenido que poner aqui (y se ha simplificado) pq se produce un error al
         // enviar una modificacion.
-        if (SiaUtils.ESTADO_ALTA.equals(sia.getOperacion())) {
-            sia.setTipoTramite(SiaUtils.TRAMITE_PROC);
-        } else {
-            sia.setTipoTramite(null);
+        if (!SiaUtils.ESTADO_REACTIVACION.equals(sia.getOperacion())) {
+            sia.setTipoTramite((procedimiento instanceof ProcedimientoDTO) ? SiaUtils.TRAMITE_PROC : SiaUtils.TRAMITE_SERV);
         }
 
         sia.setUsuario(siaCumpleDatos.getSiaUA().getUser());
         sia.setPassword(siaCumpleDatos.getSiaUA().getPwd());
-        sia.setTipoTramite((procedimiento instanceof ProcedimientoDTO) ? SiaUtils.TRAMITE_PROC : SiaUtils.TRAMITE_SERV);
-        //sia.setTipologia(procedimiento.esComun() ? 1 : 2);
 
         sia.setDisponibleApoderadoHabilitado(procedimiento.isHabilitadoApoderado());
         if (procedimiento.getHabilitadoFuncionario() != null) {
             sia.setDisponibleFuncionarioHabilitado(procedimiento.getHabilitadoFuncionario().equals("S"));
         }
+        //  LOG.error("SIA: " + sia.toString());
         return sia;
     }
 
@@ -438,8 +437,6 @@ public class SiaUtils {
         //De momento, siempre activo
         return true;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(SiaUtils.class);
 
     /**
      * Comprueba si le falta algún dato. Condiciones: - Tiene materias (se comprueba

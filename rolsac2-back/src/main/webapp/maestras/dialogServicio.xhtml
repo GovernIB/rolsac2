@@ -123,7 +123,7 @@
                         <p:commandButton id="btnIndexacionSIA" action="#{dialogServicio.enviarSIA}"
                                          value="#{labels['dict.enviarSIA']}"
                                          update="messagesDialog formDatosSIA btnRefrescarSIA btnIndexacionSIA"
-                                         rendered="#{empty dialogServicio.data.codigoSIA and !empty dialogServicio.data.codigo and !dialogServicio.mostrarRefreshSIA and !dialogProcedimiento.isInformador()}"
+                                         rendered="#{dialogServicio.mostrarBtnSIA()}"
                                          style="margin-top:19px"
                                          process="@all"/>
                         <p:commandButton id="btnRefrescarSIA" action="#{dialogServicio.refrescarSIA}"

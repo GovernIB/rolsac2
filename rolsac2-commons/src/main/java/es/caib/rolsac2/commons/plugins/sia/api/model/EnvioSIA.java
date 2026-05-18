@@ -414,4 +414,29 @@ public class EnvioSIA implements Serializable {
         this.password = password;
     }
 
+
+    @Override
+    public String toString() {
+        return "EnvioSIA{" +
+                "idDepartamento='" + idDepartamento + '\'' +
+                ", idSia='" + idSia + '\'' +
+                ", operacion='" + operacion + '\'' +
+                ", cdExpediente='" + cdExpediente + '\'' +
+                ", tipoTramite='" + tipoTramite + '\'' +
+                ", tipologia=" + tipologia +
+                ", dsProcedimiento='" + dsProcedimiento + '\'' +
+                ", dsObjeto='" + dsObjeto + '\'' +
+                ", idCentroDirectivo='" + idCentroDirectivo + '\'' +
+                ", unidadGestora='" + unidadGestora + '\'' +
+                ", idDestinatario=" + idDestinatario +
+                ", nivelAdminElectronica='" + nivelAdminElectronica + '\'' +
+                ", finVia='" + finVia + '\'' +
+                ", enlaceWeb='" + enlaceWeb + '\'' +
+                ", normativas=" + normativas +
+                ", materias=" + materias +
+                ", disponibleFuncionarioHabilitado=" + disponibleFuncionarioHabilitado +
+                ", disponibleApoderadoHabilitado=" + disponibleApoderadoHabilitado +
+                ", tipoTramite='" + tipoTramite + '\'' +
+                '}';
+    }
 }

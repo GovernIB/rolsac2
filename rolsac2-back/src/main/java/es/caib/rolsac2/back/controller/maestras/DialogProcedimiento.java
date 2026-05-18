@@ -1879,5 +1879,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public void setComunLOPD(Literal comunLOPD) {
         this.comunLOPD = comunLOPD;
     }
+
+    public boolean mostrarBtnSIA() {
+        return data.getCodigoSIA() == null && data.getCodigo() != null && !mostrarRefreshSIA && !isInformador() && (data.getEstado().compareTo(TypeProcedimientoEstado.MODIFICACION) == 0
+                || data.getEstado().compareTo(TypeProcedimientoEstado.PENDIENTE_PUBLICAR) == 0
+        );
+    }
 }
 
