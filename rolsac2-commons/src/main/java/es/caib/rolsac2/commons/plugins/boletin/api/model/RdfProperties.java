@@ -45,11 +45,11 @@ public class RdfProperties {
     public static final Property ANNEXES = ResourceFactory.createProperty(ENVNAMESPACE + "annexes");
     public static final Property HTML = ResourceFactory.createProperty(ENVNAMESPACE + "html");
 
-    public static final String RENVNAMESPACE = HOST + "rdf/schema/relEnviament/1.0/";
+    public static final String RENVNAMESPACE = HOST + "/rdf/schema/relEnviament/1.0/";
 
     public static final Property ACCES_RDF = ResourceFactory.createProperty(RENVNAMESPACE + "accesRdf");
 
-    public static final String BUTNAMESPACE = HOST + "rdf/schema/butlleti/1.0/";
+    public static final String BUTNAMESPACE = HOST + "/rdf/schema/butlleti/1.0/";
 
     public static final Property ID_BOIB = ResourceFactory.createProperty(BUTNAMESPACE + "idBoib");
     public static final Property ORDINARI = ResourceFactory.createProperty(BUTNAMESPACE + "ordinari");
@@ -58,11 +58,11 @@ public class RdfProperties {
     public static final Property NUMERO = ResourceFactory.createProperty(BUTNAMESPACE + "numero");
 
 
-    public static final String SECNAMESPACE = HOST + "rdf/schema/seccio/1.0/";
+    public static final String SECNAMESPACE = HOST + "/rdf/schema/seccio/1.0/";
     public static final Property SECCIO_ID_PARE = ResourceFactory.createProperty(SECNAMESPACE + "idSeccioPare");
     public static final Property SECCIO_NOM = ResourceFactory.createProperty(SECNAMESPACE + "nom");
 
-    public static final String TIPUS_PUBLICACIO_NAMESPACE = HOST + "rdf/schema/tipus-publicacio/1.0/";
+    public static final String TIPUS_PUBLICACIO_NAMESPACE = HOST + "/rdf/schema/tipus-publicacio/1.0/";
     public static final Property TIPUS_PUBLICACIO_ID_PARE = ResourceFactory.createProperty(TIPUS_PUBLICACIO_NAMESPACE + "idSeccioPare");
     public static final Property TIPUS_PUBLICACIO_NOM = ResourceFactory.createProperty(TIPUS_PUBLICACIO_NAMESPACE + "nom");
 
