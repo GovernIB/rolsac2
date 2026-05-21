@@ -8,6 +8,7 @@ import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
 import es.caib.rolsac2.ejb.facade.procesos.sia.SiaCumpleDatos;
 import es.caib.rolsac2.ejb.facade.procesos.sia.SiaEnviableResultado;
+import es.caib.rolsac2.ejb.facade.procesos.sia.SiaMessages;
 import es.caib.rolsac2.ejb.facade.procesos.sia.SiaUtils;
 import es.caib.rolsac2.ejb.facade.procesos.solr.CastUtil;
 import es.caib.rolsac2.ejb.interceptor.ExceptionTranslate;
@@ -1649,11 +1650,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         SiaCumpleDatos siaCumpleDatos = null;
         EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaInstructor().getCodigo());
         if (siaUA == null) {
-            siaCumpleDatos = new SiaCumpleDatos(false, "El procediment/servei no té associat a una entitat arrel");
+            final String keyEntidad = (data instanceof ServicioDTO) ? "sia.error.servicio.sin.entidad.arrel" : "sia.error.procedimiento.sin.entidad.arrel";
+            siaCumpleDatos = new SiaCumpleDatos(false, SiaMessages.getMessage(keyEntidad, idioma));
         } else {
             //final String codigoDir3IdCentro = uaRepository.obtenerCodigoDIR3(data.getUaResponsable().getCodigo());
             final String codigoDir3SiaUA = uaRepository.obtenerCodigoDIR3(siaUA.getUa().getCodigo());
-            siaCumpleDatos = SiaUtils.cumpleDatos(codigoIdCentro, codigoDir3SiaUA, data, siaEnviable, false, siaUA);
+            siaCumpleDatos = SiaUtils.cumpleDatos(codigoIdCentro, codigoDir3SiaUA, data, siaEnviable, false, siaUA, idioma);
         }
 
         SiaCumpleEnviable siaCumpleEnviable = new SiaCumpleEnviable(true, "");

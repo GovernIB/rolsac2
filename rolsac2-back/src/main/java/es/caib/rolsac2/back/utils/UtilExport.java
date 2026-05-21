@@ -509,7 +509,7 @@ public class UtilExport {
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaInstructor(), procedimientoDTO.getServicioMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "unidadAdministrativaResponsable":
-                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaResponsable(), procedimientoDTO.getServicioMod().getUaResponsable(), idioma, tieneDosWF, prioridadPublicado);
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaResponsableLiteral(), procedimientoDTO.getServicioMod().getUaResponsableLiteral(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "unidadAdministrativaCompetente":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaCompetente(), procedimientoDTO.getServicioMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
@@ -724,7 +724,7 @@ public class UtilExport {
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaInstructor(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "unidadAdministrativaResponsable":
-                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaResponsable(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaResponsable(), idioma, tieneDosWF, prioridadPublicado);
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaResponsableLiteral(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaResponsableLiteral(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "unidadAdministrativaCompetente":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaCompetente(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
@@ -879,7 +879,7 @@ public class UtilExport {
                         retorno[fila][columna] = UtilExport.getValor(servicioDTO.getUaInstructor(), idioma);
                         break;
                     case "unidadAdministrativaResponsable":
-                        retorno[fila][columna] = UtilExport.getValor(servicioDTO.getUaResponsable(), idioma);
+                        retorno[fila][columna] = UtilExport.getValor(servicioDTO.getUaResponsableLiteral(), idioma);
                         break;
                     case "unidadAdministrativaCompetente":
                         retorno[fila][columna] = UtilExport.getValor(servicioDTO.getUaCompetente(), idioma);
@@ -1051,7 +1051,7 @@ public class UtilExport {
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getUaInstructor(), procedimientoDTO.getProcedimientoMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "unidadAdministrativaResponsable":
-                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getUaResponsable(), procedimientoDTO.getProcedimientoMod().getUaResponsable(), idioma, tieneDosWF, prioridadPublicado);
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getUaResponsableLiteral(), procedimientoDTO.getProcedimientoMod().getUaResponsableLiteral(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "responsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getResponsable(), procedimientoDTO.getProcedimientoMod().getResponsable(), idioma, tieneDosWF, prioridadPublicado);
@@ -1201,7 +1201,7 @@ public class UtilExport {
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getUaInstructor(), idioma);
                         break;
                     case "unidadAdministrativaResponsable":
-                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getUaResponsable(), idioma);
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getUaResponsableLiteral(), idioma);
                         break;
                     case "responsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getResponsable(), idioma);

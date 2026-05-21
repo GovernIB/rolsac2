@@ -315,7 +315,7 @@ public class DialogServicio extends AbstractController implements Serializable {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
                 mostrarRefreshSIA = true;
             } else {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.error.enviarSIA") + dato.getMensaje());
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogServicio.error.enviarSIA") + dato.getMensaje());
             }
 
 

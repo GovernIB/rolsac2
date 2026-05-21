@@ -162,7 +162,7 @@ public class SiaUtils {
 
         // Si el procedimiento que se pasa es nulo, tiene que salir.
         if (servicio == null) {
-            resultado.setRespuesta(SiaMessages.getMessage("sia.error.procedimiento.nulo", idioma));
+            resultado.setRespuesta(SiaMessages.getMessage("sia.error.servicio.nulo", idioma));
             resultado.setIdCentro("");
             resultado.setNotificarSIA(false);
             return resultado;
@@ -450,20 +450,22 @@ public class SiaUtils {
      *                             para enviar a SIA sin estar visible)
      * @return
      */
-    public static SiaCumpleDatos cumpleDatos(String codigoDir3IdCentro, String codigoDir3SiaUA, final ProcedimientoBaseDTO procedimiento, final SiaEnviableResultado siaEnviableResultado, final boolean activo, final EntidadRaizDTO siaUA) {
+    public static SiaCumpleDatos cumpleDatos(String codigoDir3IdCentro, String codigoDir3SiaUA, final ProcedimientoBaseDTO procedimiento, final SiaEnviableResultado siaEnviableResultado, final boolean activo, final EntidadRaizDTO siaUA, final String idioma) {
         final SiaCumpleDatos resultado = new SiaCumpleDatos(false);
         final StringBuffer mensajeError = new StringBuffer();
 
         if (procedimiento == null) {
-            resultado.setRespuesta("El procediment està nul.");
+            resultado.setRespuesta(SiaMessages.getMessage("sia.error.procedimiento.nulo", idioma));
             resultado.setCumpleDatos(false);
             return resultado;
         }
 
+        final String prefijo = (procedimiento instanceof ServicioDTO) ? "sia.error.servicio." : "sia.error.procedimiento.";
+
         boolean tieneSiaUA;
         if (siaUA == null) {
             tieneSiaUA = false;
-            mensajeError.append("El procediment/servei no té associat a una entitat arrel.");
+            mensajeError.append(SiaMessages.getMessage(prefijo + "sin.entidad.arrel", idioma));
         } else {
             tieneSiaUA = true;
             resultado.setSiaUA(siaUA);
@@ -475,7 +477,7 @@ public class SiaUtils {
             // final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimiento.getUaResponsable().getCodigo());
             // final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(siaUA.getUa().getCodigo());
             if (codigoDir3SiaUA.equals(codigoDir3IdCentro)) {
-                mensajeError.append("El procediment està associat directament a l'entitat arrel.");
+                mensajeError.append(SiaMessages.getMessage(prefijo + "asociado.entidad.arrel", idioma));
                 noAsociadoSiaUA = false;
             }
         }
@@ -485,7 +487,7 @@ public class SiaUtils {
         final String nombre = getNombreProcedimiento(procedimiento);
 
         if (StringUtils.isBlank(nombre)) {
-            mensajeError.append("El procediment/servei no té títol.");
+            mensajeError.append(SiaMessages.getMessage(prefijo + "sin.titulo", idioma));
             tieneNombre = false;
         } else {
             tieneNombre = true;
@@ -494,7 +496,7 @@ public class SiaUtils {
 
         final String resumen = getResumenProcedimiento(procedimiento);
         if (StringUtils.isBlank(resumen)) {
-            mensajeError.append("El procediment/servei no té resum.");
+            mensajeError.append(SiaMessages.getMessage(prefijo + "sin.resumen", idioma));
             tieneResumen = false;
         } else {
             tieneResumen = true;
@@ -518,12 +520,12 @@ public class SiaUtils {
                 }
             }
             if (!tieneMaterias && activo) {
-                mensajeError.append("No té matèries.");
+                mensajeError.append(SiaMessages.getMessage(prefijo + "sin.materias", idioma));
             }
 
             tieneNormativas = !procedimiento.getNormativas().isEmpty();
             if (!tieneNormativas && activo) {
-                mensajeError.append("No té normatives.");
+                mensajeError.append(SiaMessages.getMessage(prefijo + "sin.normativas", idioma));
             }
 
             encontradoTipo = false;
@@ -538,7 +540,7 @@ public class SiaUtils {
             }
 
             if (!encontradoTipo) {
-                mensajeError.append("Cap de les normatives es visible o té associat un tipus sia.");
+                mensajeError.append(SiaMessages.getMessage(prefijo + "sin.tipo.normativa", idioma));
             }
         }
 

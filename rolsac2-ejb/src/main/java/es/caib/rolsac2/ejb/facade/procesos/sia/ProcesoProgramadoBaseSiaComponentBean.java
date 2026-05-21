@@ -302,7 +302,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                     if (esEnviable.isNotificiarSIA()) {
                         final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(servicioDTO.getUaInstructor().getCodigo());
                         final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
-                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, servicioDTO, esEnviable, true, entidadRaiz);
+                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, servicioDTO, esEnviable, true, entidadRaiz, idioma);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
@@ -397,7 +397,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                     if (esEnviable.isNotificiarSIA()) {
                         final String codigoDir3IdCentro = uaService.obtenerCodigoDIR3(procedimientoDTO.getUaInstructor().getCodigo());
                         final String codigoDir3SiaUA = uaService.obtenerCodigoDIR3(entidadRaiz.getUa().getCodigo());
-                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, procedimientoDTO, esEnviable, true, entidadRaiz);
+                        final SiaCumpleDatos siaCumpleDatos = SiaUtils.cumpleDatos(codigoDir3IdCentro, codigoDir3SiaUA, procedimientoDTO, esEnviable, true, entidadRaiz, idioma);
                         //Si es común, no se indexa
                         if (siaCumpleDatos.isCumpleDatos()) {
 
