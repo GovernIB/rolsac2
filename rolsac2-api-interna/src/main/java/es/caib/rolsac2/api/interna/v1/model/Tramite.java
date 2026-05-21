@@ -115,6 +115,25 @@ public class Tramite extends EntidadBase<Tramite> {
     public Tramite(ProcedimientoTramiteDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
 
+        // Si no existe el idioma solicitado, usar idioma por defecto
+        if (idiomaPorDefecto != null) {
+            if (elem.getNombre() != null) {
+                this.nombre = elem.getNombre().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (elem.getRequisitos() != null) {
+                this.requisitos = elem.getRequisitos().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (elem.getDocumentacion() != null) {
+                this.documentacion = elem.getDocumentacion().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (elem.getObservacion() != null) {
+                this.observacion = elem.getObservacion().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (elem.getTerminoMaximo() != null) {
+                this.terminoMaximo = elem.getTerminoMaximo().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+        }
+
         ProcedimientoDTO procedimientoDTO = null;
         if (elem.getProcedimiento() != null) {
             procedimientoDTO = elem.getProcedimiento().getProcedimiento();
