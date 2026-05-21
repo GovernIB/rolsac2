@@ -127,7 +127,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (this.isModoAlta()) {
             data = ProcedimientoDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
-            data.setUaResponsable(sessionBean.getUnidadActiva());
             data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
             data.setUaCompetente(sessionBean.getUnidadActiva());
             this.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo()));
@@ -186,7 +185,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        actualizarResponsable();
         dataOriginal = (ProcedimientoDTO) data.clone();
 
         //Eso es para cargar las uas del instructor
@@ -234,21 +232,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
 
-    }
-
-    /**
-     * Actualiza el literal de resonsable
-     **/
-    public void actualizarResponsable() {
-        if (data.getComun() == 0) {
-            if (data.getUaInstructor() == null) {
-                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
-            } else {
-                lopdResponsable = data.getUaInstructor().getNombre();
-            }
-        } else {
-            lopdResponsable = sessionBean.getEntidad().getLopdComun();
-        }
     }
 
     /**
@@ -341,18 +324,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     /**
-     * Devuelve el css para el boton de la UA Instructor.
+     * Devuelve el css para el boton de la UA competente
      * Si no está en la lista de UA del instructor, se pone en rojo y se muestra el ojo
      *
      * @return css
      */
-    public String getCssUAResponsable() {
-        if (data.getUaResponsable() == null) {
-            return "";
-        }
-        return uasInstructor.contains(data.getUaResponsable().getCodigo()) ? "" : "pi-exclamation-circle botonNaranjaRequired";
-    }
-
     public String getCssUACompetente() {
         if (data.getUaCompetente() == null) {
             return "";
@@ -378,23 +354,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 this.data.setUaCompetente(uaSeleccionada);
             }
         }
-    }
-
-    public void returnDialogoUAResp(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-
-        // Verificamos si se ha modificado
-        if (respuesta != null && !respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
-            UnidadAdministrativaDTO uaSeleccionada = (UnidadAdministrativaDTO) respuesta.getResult();
-            if (uaSeleccionada != null) {
-                this.data.setUaResponsable(uaSeleccionada);
-            }
-        }
-    }
-
-    public void abrirVentanaUAResp() {
-        UtilJSF.vaciarMochila();
-        abrirVentanaUA(this.data.getUaResponsable());
     }
 
     public void abrirVentanaUAInstr() {

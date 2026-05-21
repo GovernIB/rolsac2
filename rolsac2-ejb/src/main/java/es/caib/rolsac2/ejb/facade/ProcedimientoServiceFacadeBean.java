@@ -33,10 +33,10 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.*;
 import es.caib.rolsac2.service.model.util.SiaCumpleEnviable;
 import es.caib.rolsac2.service.utils.UtilPDU;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.jboss.ejb3.annotation.TransactionTimeout;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -232,7 +232,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         jProcWF.setResponsableNombre(dto.getResponsable());
         jProcWF.setResponsableTelefono(dto.getResponsableTelefono());
         jProcWF.setTieneTasa(dto.isTieneTasa());
-        jProcWF.setUaResponsable(uaRepository.findJUAById(dto.getUaResponsable()));
         jProcWF.setUaInstructor(uaRepository.findJUAById(dto.getUaInstructor()));
         jProcWF.setUaCompetente(uaRepository.findJUAById(dto.getUaCompetente()));
         jProcWF.setFormaInicio(tipoFormaInicioConverter.createEntity(dto.getIniciacion()));
@@ -768,10 +767,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setComun(jprocWF.getComun());
         // proc.setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
         // proc.setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
-        if (jprocWF.getUaResponsable() != null) {
-            proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
-        }
-        if (jprocWF.getUaResponsable() != null) {
+        if (jprocWF.getUaInstructor() != null) {
             proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
         }
         if (jprocWF.getFormaInicio() != null) {
@@ -1642,8 +1638,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @PermitAll
     public SiaCumpleEnviable isProcServEnviableCumpleDatos(ProcedimientoBaseDTO data, String idioma) {
-        final boolean isVisibleUA = uaRepository.isVisibleUA(data.getUaResponsable());
-        final String codigoIdCentro = uaRepository.obtenerCodigoDIR3(data.getUaResponsable().getCodigo());
+        final boolean isVisibleUA = uaRepository.isVisibleUA(data.getUaInstructor());
+        final String codigoIdCentro = uaRepository.obtenerCodigoDIR3(data.getUaInstructor().getCodigo());
         SiaEnviableResultado siaEnviable;
         if (data instanceof ProcedimientoDTO) {
             siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ProcedimientoDTO) data, true, idioma);
@@ -1651,7 +1647,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             siaEnviable = SiaUtils.isEnviable(isVisibleUA, codigoIdCentro, (ServicioDTO) data, true, idioma);
         }
         SiaCumpleDatos siaCumpleDatos = null;
-        EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaResponsable().getCodigo());
+        EntidadRaizDTO siaUA = entidadRaizRepository.getEntidadRaizByUA(data.getUaInstructor().getCodigo());
         if (siaUA == null) {
             siaCumpleDatos = new SiaCumpleDatos(false, "El procediment/servei no té associat a una entitat arrel");
         } else {

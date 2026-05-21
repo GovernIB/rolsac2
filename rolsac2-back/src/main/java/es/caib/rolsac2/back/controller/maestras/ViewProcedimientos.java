@@ -174,7 +174,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             if (datoSeleccionado.getCodigoWFPub() != null) {
                 procedimientoSeleccionado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFPub());
-                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaResponsable().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaInstructor() != null && this.procedimientoSeleccionado.getUaInstructor().esRaiz()).toString();
                 wfProcedimiento = "P";
                 wfProcedimientoPrevio = "P";
                 wfPublicado = procedimientoSeleccionado;
@@ -183,7 +183,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 }
             } else if (datoSeleccionado.getCodigoWFMod() != null) {
                 procedimientoSeleccionado = procedimientoService.findProcedimientoById(datoSeleccionado.getCodigoWFMod());
-                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaResponsable() != null && this.procedimientoSeleccionado.getUaResponsable().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.procedimientoSeleccionado.getUaInstructor() != null && this.procedimientoSeleccionado.getUaInstructor().esRaiz()).toString();
                 wfProcedimiento = "M";
                 wfProcedimientoPrevio = "M";
                 wfModificado = procedimientoSeleccionado;
@@ -200,24 +200,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 construirArbol();
             }
 
-            actualizarResponsable();
         }
     }
 
-    /**
-     * Actualiza el literal de resonsable
-     */
-    public void actualizarResponsable() {
-        if (procedimientoSeleccionado.getComun() == 0) {
-            if (procedimientoSeleccionado.getUaResponsable() == null) {
-                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
-            } else {
-                lopdResponsable = procedimientoSeleccionado.getUaResponsable().getNombre();
-            }
-        } else {
-            lopdResponsable = comunUA;
-        }
-    }
 
     private void construirArbol() {
         roots = new ArrayList<>();

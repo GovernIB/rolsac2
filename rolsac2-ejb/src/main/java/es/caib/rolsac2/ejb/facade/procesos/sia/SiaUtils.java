@@ -251,10 +251,10 @@ public class SiaUtils {
         sia.setIdDepartamento(idDepartamento); //uaService.obtenerCodigoDIR3(siaCumpleDatos.getSiaUA().getUa().getCodigo()));
         if (procedimiento.esComun()) {
             sia.setUnidadGestora(unidadGestoraComun); //uaService.getUaComunEntidad(procedimiento.getUaResponsable().getCodigo()).getTraduccionConValor("es"));
-        } else if (procedimiento.getUaResponsable() != null && procedimiento.getUaResponsable().getNombre() != null && procedimiento.getUaResponsable().getNombre().getTraduccion("es") != null) {
-            sia.setUnidadGestora(procedimiento.getUaResponsable().getNombre().getTraduccion("es"));
+        } else if (procedimiento.getUaInstructor() != null && procedimiento.getUaInstructor().getNombre() != null && procedimiento.getUaInstructor().getNombre().getTraduccion("es") != null) {
+            sia.setUnidadGestora(procedimiento.getUaInstructor().getNombre().getTraduccion("es"));
         } else {
-            sia.setUnidadGestora(procedimiento.getUaResponsable().getNombre().getTraduccion("ca"));
+            sia.setUnidadGestora(procedimiento.getUaInstructor().getNombre().getTraduccion("ca"));
         }
 
         if (esProcSerInterno) {

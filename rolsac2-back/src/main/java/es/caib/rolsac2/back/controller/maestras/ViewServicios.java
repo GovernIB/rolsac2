@@ -146,7 +146,6 @@ public class ViewServicios extends AbstractController implements Serializable {
             servicioSeleccionado = wfModificado;
         }
 
-        actualizarResponsable();
         actualizarCanalesOpciones();
     }
 
@@ -160,7 +159,6 @@ public class ViewServicios extends AbstractController implements Serializable {
         } else {
             servicioSeleccionado = ServicioDTO.createInstance(this.sessionBean.getIdiomasObligatoriosList());
         }
-        actualizarResponsable();
         actualizarCanalesOpciones();
     }
 
@@ -174,7 +172,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         } else {
             if (datoSeleccionado.getCodigoWFPub() != null) {
                 servicioSeleccionado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFPub());
-                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaResponsable().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaInstructor() != null && this.servicioSeleccionado.getUaInstructor().esRaiz()).toString();
                 wfProcedimiento = "P";
                 wfProcedimientoPrevio = "P";
                 wfPublicado = servicioSeleccionado;
@@ -183,7 +181,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 }
             } else if (datoSeleccionado.getCodigoWFMod() != null) {
                 servicioSeleccionado = procedimientoService.findServicioById(datoSeleccionado.getCodigoWFMod());
-                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaResponsable() != null && this.servicioSeleccionado.getUaResponsable().esRaiz()).toString();
+                uaRaiz = Boolean.valueOf(this.servicioSeleccionado.getUaInstructor() != null && this.servicioSeleccionado.getUaInstructor().esRaiz()).toString();
                 wfProcedimiento = "M";
                 wfProcedimientoPrevio = "M";
                 wfModificado = servicioSeleccionado;
@@ -200,7 +198,6 @@ public class ViewServicios extends AbstractController implements Serializable {
                 construirArbol();
             }
 
-            actualizarResponsable();
             actualizarCanalesOpciones();
 
         }
@@ -239,22 +236,6 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public boolean isOpcionTelematicaUrl() {
         return canalesSeleccionadosDetalle.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(3) == 0;
-    }
-
-
-    /**
-     * Actualiza el literal de resonsable
-     */
-    public void actualizarResponsable() {
-        if (servicioSeleccionado.getComun() == 0) {
-            if (servicioSeleccionado.getUaResponsable() == null) {
-                lopdResponsable = Literal.createInstance(sessionBean.getIdiomasPermitidosList());
-            } else {
-                lopdResponsable = servicioSeleccionado.getUaResponsable().getNombre();
-            }
-        } else {
-            lopdResponsable = comunUA;
-        }
     }
 
     private void construirArbol() {
@@ -715,7 +696,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                         sb.append(UtilExport.getValor(servicioDTO.getUaInstructor(), this.getIdioma()));
                         break;
                     case "unidadAdministrativaResponsable":
-                        sb.append(UtilExport.getValor(servicioDTO.getUaResponsable(), this.getIdioma()));
+                        sb.append(UtilExport.getValor(servicioDTO.getUaResponsableLiteral(), this.getIdioma()));
                         break;
                     case "unidadAdministrativaCompetente":
                         sb.append(UtilExport.getValor(servicioDTO.getUaCompetente(), this.getIdioma()));

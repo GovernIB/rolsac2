@@ -434,9 +434,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     private String getLopdReponsable(JProcedimientoWorkflow wfPublicado, String idioma) {
 
         if (wfPublicado.getComun() == 1) {
-            return (getEntidadTraduccion(wfPublicado.getUaResponsable().getEntidad(), idioma)).getUaComun();
+            return (getEntidadTraduccion(wfPublicado.getUaInstructor().getEntidad(), idioma)).getUaComun();
         } else {
-            return getUATraduccion(wfPublicado.getUaResponsable(), idioma).getNombre();
+            return getUATraduccion(wfPublicado.getUaInstructor(), idioma).getNombre();
         }
     }
 
@@ -2395,7 +2395,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND j.codigo IN (:codigosProc) ");
         }
         if (filtro.isRellenoCodigoWF() && ambosWf) {
-            sql.append(" AND WF.codigo = :codigoWF OR WF2.codigo = :codigoWF");
+            sql.append(" AND ( WF.codigo = :codigoWF OR WF2.codigo = :codigoWF) ");
         } else if (filtro.isRellenoCodigoWF()) {
             sql.append(" AND WF.codigo = :codigoWF");
         }
@@ -3323,9 +3323,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 }
 
                 //Actualizamos las unidades administrativas
-                if (jProcedimientoWorkflow.getUaResponsable() != null && jProcedimientoWorkflow.getUaResponsable().getCodigo().compareTo(codigoUAVieja) == 0) {
-                    jProcedimientoWorkflow.setUaResponsable(uaNueva);
-                }
                 if (jProcedimientoWorkflow.getUaInstructor() != null && jProcedimientoWorkflow.getUaInstructor().getCodigo().compareTo(codigoUAVieja) == 0) {
                     jProcedimientoWorkflow.setUaInstructor(uaNueva);
                 }
@@ -3506,13 +3503,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
         proc.setComun(jprocWF.getComun());
-        if (jprocWF.getUaResponsable() != null) {
+        /*if (jprocWF.getUaResponsable() != null) {
             if (simplificado) {
                 proc.setUaResponsable(jprocWF.getUaResponsable().toDTOSimple());
             } else {
                 proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
             }
-        }
+        }*/
         if (jprocWF.getTramitElectronica() != null) {
             proc.setTramitElectronica(jprocWF.getTramitElectronica());
         }

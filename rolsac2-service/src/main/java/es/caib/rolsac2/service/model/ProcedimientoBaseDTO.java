@@ -42,7 +42,7 @@ public class ProcedimientoBaseDTO extends ModelApi {
     private Date fechaPublicacion;
     private Date fechaActualizacion;
     private TipoLegitimacionDTO datosPersonalesLegitimacion;
-    private UnidadAdministrativaDTO uaResponsable;
+    /*private UnidadAdministrativaDTO uaResponsable;*/
     private UnidadAdministrativaDTO uaInstructor;
     private UnidadAdministrativaDTO uaCompetente;
     private TipoFormaInicioDTO iniciacion;
@@ -486,13 +486,13 @@ public class ProcedimientoBaseDTO extends ModelApi {
         this.codigoWF = codigoWF;
     }
 
-    public UnidadAdministrativaDTO getUaResponsable() {
+    /*public UnidadAdministrativaDTO getUaResponsable() {
         return uaResponsable;
     }
 
     public void setUaResponsable(UnidadAdministrativaDTO uaResponsable) {
         this.uaResponsable = uaResponsable;
-    }
+    }*/
 
     public UnidadAdministrativaDTO getUaInstructor() {
         return uaInstructor;

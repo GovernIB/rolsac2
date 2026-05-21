@@ -107,7 +107,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         texto.append(", silencio=").append(getSilencio());
         texto.append(", datosPersonalesLegitimacion=").append(getDatosPersonalesLegitimacion());
         texto.append(", iniciacion=").append(getIniciacion());
-        texto.append(", uaResponsable=").append(getUaResponsable());
         texto.append(", uaInstructor=").append(getUaInstructor());
         texto.append(", tipoProcedimiento=").append(getTipoProcedimiento());
         texto.append(", tipoVia=").append(getTipoVia());
@@ -228,9 +227,9 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getIniciacion() != null) {
             procClonado.setIniciacion((TipoFormaInicioDTO) this.getIniciacion().clone());
         }
-        if (this.getUaResponsable() != null) {
+        /*if (this.getUaResponsable() != null) {
             procClonado.setUaResponsable((UnidadAdministrativaDTO) this.getUaResponsable().clone());
-        }
+        }*/
         if (this.getUaInstructor() != null) {
             procClonado.setUaInstructor((UnidadAdministrativaDTO) this.getUaInstructor().clone());
         }
@@ -498,11 +497,17 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         }
 
         // Organos
-        if (UtilComparador.compareTo(this.getUaResponsable(), dataOriginal.getUaResponsable()) != 0) {
+        /*if (UtilComparador.compareTo(this.getUaResponsable(), dataOriginal.getUaResponsable()) != 0) {
             if (mostrarLog) {
                 LOG.error("ProcedimientoDTO.compareTo: this.getUaResponsable() != dataOriginal.getUaResponsable(). this.getUaResponsable()=" + this.getUaResponsable() + " dataOriginal.getUaResponsable()=" + dataOriginal.getUaResponsable());
             }
             return UtilComparador.compareTo(this.getUaResponsable(), dataOriginal.getUaResponsable());
+        }*/
+        if (UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente()) != 0) {
+            if (mostrarLog) {
+                LOG.error("ProcedimientoDTO.compareTo: this.getUaCompetente() != dataOriginal.getUaCompetente(). this.getUaCompetente()=" + this.getUaCompetente() + " dataOriginal.getUaCompetente()=" + dataOriginal.getUaCompetente());
+            }
+            return UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente());
         }
         if (UtilComparador.compareTo(this.getUaInstructor(), dataOriginal.getUaInstructor()) != 0) {
             if (mostrarLog) {
@@ -519,12 +524,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
 
         // Datos contacto
-        if (UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente()) != 0) {
-            if (mostrarLog) {
-                LOG.error("ProcedimientoDTO.compareTo: this.getUaCompetente() != dataOriginal.getUaCompetente(). this.getUaCompetente()=" + this.getUaCompetente() + " dataOriginal.getUaCompetente()=" + dataOriginal.getUaCompetente());
-            }
-            return UtilComparador.compareTo(this.getUaCompetente(), dataOriginal.getUaCompetente());
-        }
 
         if (UtilComparador.compareTo(this.getResponsable(), dataOriginal.getResponsable()) != 0) {
             if (mostrarLog) {
@@ -753,7 +752,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
 
         //Seccion datos contacto
-        AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
+        //AuditoriaUtil.auditar(data.getUaResponsable(), dataOriginal.getUaResponsable(), cambios, "auditoria.procedimiento.uaResponsable");
 
         AuditoriaUtil.auditar(data.getResponsable(), dataOriginal.getResponsable(), cambios, "auditoria.procedimiento.responsable");
         AuditoriaUtil.auditar(data.getResponsableEmail(), dataOriginal.getResponsableEmail(), cambios, "auditoria.procedimiento.responsableEmail");
