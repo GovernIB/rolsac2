@@ -2296,13 +2296,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         // Servicios
-        if (filtro.isRellenoUaResponsable()) {
+        /*if (filtro.isRellenoUaResponsable()) {
             sql.append(" AND (WF.uaResponsable.codigo = :idUAResponsable OR WF2.uaResponsable.codigo = :idUAResponsable) ");
         }
 
         if (filtro.isRellenoUasResponsable()) {
             sql.append(" AND (WF.uaResponsable.codigo IN (:idUAsResponsable) OR WF2.uaResponsable.codigo IN (:idUAsResponsable)) ");
-        }
+        }*/
 
         // Procedimientos
         if (filtro.isRellenoUasInstructor()) {
@@ -2873,12 +2873,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
 
-        if (filtro.isRellenoUaResponsable()) {
+        /*if (filtro.isRellenoUaResponsable()) {
             query.setParameter("idUAResponsable", filtro.getIdUAResponsable());
         }
         if (filtro.isRellenoUasResponsable()) {
             query.setParameter("idUAsResponsable", filtro.getIdUAsResponsable());
-        }
+        }*/
 
         if (filtro.isRellenoUasInstructor()) {
             query.setParameter("idUAsInstructor", filtro.getIdUAsInstructor());
@@ -3253,7 +3253,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public void actualizarUA(List<Long> codigoUAOriginal, Long codigoUANueva, String literal, String nombreAntiguo, String nombreNuevo, TypePerfiles perfil, String usuario) {
 
 
-        Query queryProcsAfectados = entityManager.createQuery("select distinct j.procedimiento.codigo from JProcedimientoWorkflow j where j.estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND j.uaResponsable.codigo in (:uas) OR j.uaInstructor.codigo in (:uas)");
+        Query queryProcsAfectados = entityManager.createQuery("select distinct j.procedimiento.codigo from JProcedimientoWorkflow j where j.estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND j.uaCompetente.codigo in (:uas) OR j.uaInstructor.codigo in (:uas)");
         queryProcsAfectados.setParameter("uas", codigoUAOriginal);
         List<Long> procsAfectados = queryProcsAfectados.getResultList();
         if (procsAfectados != null && !procsAfectados.isEmpty()) {
@@ -3279,10 +3279,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
             }
         }
-
-        Query queryUAResponsable = entityManager.createQuery("update JProcedimientoWorkflow  set uaResponsable = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND uaResponsable.codigo in (:uas)");
-        queryUAResponsable.setParameter("uas", codigoUAOriginal);
-        queryUAResponsable.executeUpdate();
 
         Query queryUAInstructor = entityManager.createQuery("update JProcedimientoWorkflow  set uaInstructor = " + codigoUANueva + " WHERE estado NOT LIKE '" + TypeProcedimientoEstado.CERRADO.toString() + "' AND uaInstructor.codigo  in (:uas)");
         queryUAInstructor.setParameter("uas", codigoUAOriginal);
@@ -3737,13 +3733,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             return idiomas.get(0);
         }
 
-
-        query = entityManager.createQuery("select j.uaResponsable.entidad.idiomaDefectoRest from JProcedimientoWorkflow j where j.procedimiento.codigo = :codigoProc ");
-        query.setParameter("codigoProc", codigoProc);
-        idiomas = query.getResultList();
-        if (idiomas != null && !idiomas.isEmpty()) {
-            return idiomas.get(0);
-        }
 
         //Hay que pasar un idioma a la fuerza
         return "ca";
