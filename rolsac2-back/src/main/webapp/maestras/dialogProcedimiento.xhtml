@@ -174,7 +174,7 @@
                                              converter="javax.faces.Integer">
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1"/>
-                                <p:ajax event="change" listener="#{dialogProcedimiento.actualizarResponsable()}"
+                                <p:ajax event="change"
                                         update="formDialog:btnAbrirUA formDialog:txtOrgComp formDialog:panelComun labelComun formDialog:panelComunInstr labelComunInstr formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:formDatosLOPD"
                                         process="@this"/>
                             </p:selectOneMenu>
