@@ -21,3 +21,10 @@ Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO,PLUG_CODENTI,PLUG_DESC,PLUG_CLASSNAM
 Insert into ROLSAC2.RS2_PLUGIN (PLUG_CODIGO,PLUG_CODENTI,PLUG_DESC,PLUG_CLASSNAME,PLUG_PROPS,PLUG_TIPO,PLUG_PREPRO) values (RS2_PLUGIN_SEQ.NEXTVAL,'1','Plugin de PDU','es.caib.rolsac2.commons.plugins.pdu.PDUPlugin','[{"codigo":"url","valor":"${config.plg.pdu.url}","orden":null},{"codigo":"usr","valor":"${config.plg.pdu.usr}","orden":null},{"codigo":"pwd","valor":"${config.plg.pdu.pwd}","orden":null}]','PDU','pluginsib.pdu.');
 COMMIT;
 
+ALTER TABLE RS2_PROC
+	ADD CONSTRAINT RS2_PROC_CHECK_SIA
+		CHECK (
+			("PROC_SIAEST" IS NULL AND "PROC_SIACOD"  IS NULL)
+				OR
+			("PROC_SIAEST" IS NOT NULL AND "PROC_SIACOD"  IS NOT NULL)
+			);
