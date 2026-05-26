@@ -45,7 +45,7 @@
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones
+            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones formDialog:txtKeywords
             formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:panelComun formDialog:panelComunInstr formDialog:txtOrgResp"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
