@@ -690,21 +690,27 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (jproc == null) {
             return;
         }
+        LOG.error("Resultado : " + resultadoAccion);
+
         if (resultadoAccion.isCorrecto() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {
+            LOG.error("Entra por IF");
             jproc.setSiaFecha(new Date());
-            if (resultadoAccion.getCodSIA() != null) {
+            if (resultadoAccion.getCodSIA() != null && resultadoAccion.getEstadoSIA() != null) {
+                LOG.error("Entra IF2");
                 //Si es una baja, ya no se pasa
                 jproc.setCodigoSIA(Integer.parseInt(resultadoAccion.getCodSIA()));
+                jproc.setEstadoSIA(resultadoAccion.getEstadoSIA());
             }
-            jproc.setEstadoSIA(resultadoAccion.getEstadoSIA());
             jproc.setMensajeIndexacionSIA("");
             entityManager.merge(jproc);
         } else {
+            LOG.error("Entra por ELSE");
             jproc.setMensajeIndexacionSIA(resultadoAccion.getMensaje());
             entityManager.merge(jproc);
         }
 
     }
+
 
     @Override
     public void actualizarPDU(IndexacionPDUDto dato, ResultadoSIA resultadoAccion) {

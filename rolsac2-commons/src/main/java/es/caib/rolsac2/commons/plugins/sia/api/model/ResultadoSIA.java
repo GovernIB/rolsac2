@@ -23,6 +23,10 @@ public class ResultadoSIA {
      **/
     public static int RESULTADO_ERROR = -1;
     /**
+     * No se tiene que hacer nada, pasa cuando el procedimiento está en modificación.
+     */
+    public static int RESULTADO_NO_HACER_NADA = -2;
+    /**
      * resultado.
      **/
     public int resultado = RESULTADO_ERROR;
