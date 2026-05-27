@@ -116,7 +116,7 @@ public class CastUtil {
         // Fechas
         indexData.setFechaActualizacion(procedimiento.getFechaActualizacion());
         indexData.setFechaPublicacion(tramite.getFechaPublicacion());
-        indexData.setFechaCaducidad(tramite.getFechaCierre());
+        indexData.setFechaCaducidad(procedimiento.getFechaCaducidad());
 
 
         final ProcedimientoTramiteDTO tramiteInicio = IndexacionUtil.getTramiteInicio(procedimiento.getTramites());
