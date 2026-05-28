@@ -125,7 +125,8 @@ public class CastUtil {
             indexData.setFechaPlazoFin(tramite.getFechaCierre());
         }
 
-        indexData.setInterno(false);
+        final boolean esProcSerInterno = contienePOInterno(procedimiento.getPublicosObjetivo());
+        indexData.setInterno(esProcSerInterno);
 
         // FamiliaID
         if (tramite.getProcedimiento() != null && tramite.getProcedimiento().getProcedimiento() != null && tramite.getProcedimiento().getProcedimiento().getTipoProcedimiento() != null) {
