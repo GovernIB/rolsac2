@@ -19,7 +19,6 @@ AS
           PRO_FECPUB  ---> FECHA PUBLICICACION [PRWF_FECPUB]
           PRO_FECACT  ---> FECHA ACTUALIZACION [PROC_FECACT]
           PRO_VALIDA  ---> VALIDA [PRWF_WF - PRWF_WFESTADO - PRWF_INTERNO]
-          PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAR]
           PRO_CODFAM  ---> FAMILIA
           PRO_TRAMIT  ---> TRAMITE
           PRO_VERSIO  ---> VERSION
@@ -131,7 +130,6 @@ AS
           PRWF_WF      ---> WF : DEFINITIVO O EN MODIFICACION
           PRWF_WFESTADO --> ESTADO : PUB/ MOD/RES/BOR
           PRWF_WFUSUA  ---> USUARIO
-          PRWF_CODUAR  ---> UA RESPONSABLE
           PRWF_CODUAI  ---> UA INSTRUCTOR
           PRWF_INTERNO ---> INTERNO
           PRWF_RSNOM   ---> RESPONSABLE NOMBRE
@@ -263,7 +261,6 @@ maximoid             NUMBER;
   v_SER_INSTRU NUMBER(10, 0);
   v_ser_serrsp NUMBER(10, 0);
   V_PRWF_CODUAI  NUMBER(10, 0);
-  V_PRWF_CODUAR  NUMBER(10, 0);
     -- Excepción específica para el -20001
     ex_ua_no_migrada EXCEPTION;
     PRAGMA EXCEPTION_INIT(ex_ua_no_migrada, -20001);
@@ -529,7 +526,6 @@ FROM   r1_servicios
 WHERE  ser_codi = codigo;
 
 V_PRWF_CODUAI := obtenerUAconDIR3( v_SER_INSTRU);
-            V_PRWF_CODUAR := obtenerUAconDIR3( V_ser_serrsp );
 
 INSERT INTO rs2_prcwf
 (prwf_codigo,
@@ -537,7 +533,6 @@ INSERT INTO rs2_prcwf
  prwf_wf,
  prwf_wfestado,
  prwf_coduai,
- PRWF_CODUAR,
  prwf_interno,
  prwf_rsnom,
  prwf_rsema,
@@ -559,7 +554,6 @@ SELECT codigo_procwf,
        wf,
        wfestado,
        V_PRWF_CODUAI,
-       V_PRWF_CODUAR,
        interno,
        Coalesce (ser_nomrsp, 'Desconegut'),
        ser_correo,

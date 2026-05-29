@@ -25,7 +25,6 @@ AS
 			PRO_FECPUB  ---> FECHA PUBLICICACION [PRWF_FECPUB]
 			PRO_FECACT  ---> FECHA ACTUALIZACION [PROC_FECACT]
 			PRO_VALIDA  ---> VALIDA [PRWF_WF - PRWF_WFESTADO - PRWF_INTERNO]
-			PRO_CODUNA  ---> CODIGO UNIDAD ADMINISTRATIVA [PRWF_CODUAR]
 			PRO_CODFAM  ---> FAMILIA
 			PRO_TRAMIT  ---> TRAMITE
 			PRO_VERSIO  ---> VERSION
@@ -137,7 +136,6 @@ AS
 			PRWF_WF      ---> WF : DEFINITIVO O EN MODIFICACION
 			PRWF_WFESTADO --> ESTADO : PUB/ MOD/RES/BOR
 			PRWF_WFUSUA  ---> USUARIO
-			PRWF_CODUAR  ---> UA RESPONSABLE
 			PRWF_CODUAI  ---> UA INSTRUCTOR
 			PRWF_INTERNO ---> INTERNO
 			PRWF_RSNOM   ---> RESPONSABLE NOMBRE
@@ -279,7 +277,6 @@ AS
 	mensajeAuditoria           VARCHAR2(255 CHAR);
 	V_PRWF_CODUAI              NUMBER(10, 0);
 	V_PRWF_PRCODUAC            NUMBER(10, 0);
-	V_PRWF_CODUAR              NUMBER(10, 0);
 	V_pro_coduna               NUMBER(10, 0);
 	V_pro_coduna_resol         NUMBER(10, 0);
 	V_PRO_CODUNA_SERV          NUMBER(10, 0);
@@ -485,25 +482,15 @@ BEGIN
 
 			V_PRWF_CODUAI := obtenerUAconDIR3( v_pro_coduna);
 			V_PRWF_PRCODUAC := obtenerUAconDIR3(v_pro_coduna_resol);
-			V_PRWF_CODUAR := obtenerUAconDIR3( NVL (v_PRO_CODUNA_SERV, v_pro_coduna) );
-
-			IF V_PRWF_CODUAI IS NULL or
-			   V_PRWF_CODUAR IS NULL
+			
+			IF V_PRWF_CODUAI IS NULL
 			THEN
 				RAISE_APPLICATION_ERROR(
 						-20010,
-						'La Unitat Administrativa Responsable és nul, comprovi el procediment perquè té assignat una Unitat Administrativa que no penja de l''arrel GOIB.'
+						'La Unitat Administrativa Instructora és nul, comprovi el procediment perquè té assignat una Unitat Administrativa que no penja de l''arrel GOIB.'
 				);
 			END IF;
-
-			IF CHECK_CUELGA_UA_PROC(V_PRWF_CODUAR, 1) = 0
-			THEN
-				RAISE_APPLICATION_ERROR(
-						-20010,
-						'La Unitat Administrativa té assignat una Unitat Administrativa Responsable que no penja de l''arrel GOIB.'
-				);
-			END IF;
-
+ 
 			IF CHECK_CUELGA_UA_PROC(V_PRWF_CODUAI, 1) = 0
 			THEN
 				RAISE_APPLICATION_ERROR(
@@ -528,7 +515,6 @@ BEGIN
 				/*PRWF_WFUSUA,*/
              PRWF_CODUAI,
              PRWF_PRCODUAC,
-             PRWF_CODUAR,
              prwf_interno,
              prwf_rsnom,
              prwf_rsema,
@@ -562,7 +548,6 @@ BEGIN
 				/*PRWF_WFUSUA,*/
 				   V_PRWF_CODUAI,
 				   V_PRWF_PRCODUAC ,
-				   V_PRWF_CODUAR,
 				   interno,
 				   SUBSTR(NVL(pro_respon, 'Desconegut'), 1, 255) AS prwf_rsnom,
 				   SUBSTR(NVL(pro_info, ''), 1, 100) AS prwf_rsema,
