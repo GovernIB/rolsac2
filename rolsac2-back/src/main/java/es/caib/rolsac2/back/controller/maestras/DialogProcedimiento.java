@@ -152,8 +152,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
             // Indra se entra a editar pero se deshabilitan los botones de edición si es un procedimiento de una ua común que sólo puede consultar el gestor
             if (this.isGestor()) {
-                List<Long> listaUasUsuario = uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo());
-                listaUasUsuario.add(sessionBean.getUnidadActiva().getCodigo());
+                // El gestor puede editar si el procedimiento pertenece a cualquiera de sus UAs asignadas o cuelga de ellas.
+                List<Long> listaUasUsuario = new ArrayList<>();
+                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
+                    listaUasUsuario.add(ua.getCodigo());
+                    listaUasUsuario.addAll(uaService.listarDescendientes(ua.getCodigo()));
+                }
                 noEditable = !listaUasUsuario.contains(data.getUaInstructor().getCodigo());
             }
         }
@@ -471,11 +475,17 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 if (tramite.getNombre() == null || !tramite.getNombre().estaCompleto(idiomasObligatorios)) {
                     camposIncompletos.add(getLiteral("dialogProcedimientoTramite.nombreTramite"));
                 }
-                if (tramite.getRequisitos() == null || !tramite.getRequisitos().estaCompleto(idiomasObligatorios)) {
+                if (tramite.getRequisitos() != null && !tramite.getRequisitos().estaCompleto(idiomasObligatorios)) {
                     camposIncompletos.add(getLiteral("dialogProcedimientoTramite.requisitos"));
                 }
-                if (tramite.getTerminoMaximo() == null || !tramite.getTerminoMaximo().estaCompleto(idiomasObligatorios)) {
+                if (tramite.getTerminoMaximo() != null && !tramite.getTerminoMaximo().estaCompleto(idiomasObligatorios)) {
                     camposIncompletos.add(getLiteral("dialogProcedimientoTramite.terminoMaximo"));
+                }
+                if (tramite.getDocumentacion() != null && !tramite.getDocumentacion().estaVacio() && !tramite.getDocumentacion().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.documentacion"));
+                }
+                if (tramite.getObservacion() != null && !tramite.getObservacion().estaVacio() && !tramite.getObservacion().estaCompleto(idiomasObligatorios)) {
+                    camposIncompletos.add(getLiteral("dialogProcedimientoTramite.observaciones"));
                 }
                 if (!camposIncompletos.isEmpty()) {
                     String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
