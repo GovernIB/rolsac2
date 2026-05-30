@@ -406,16 +406,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectCheckboxMenu>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewProcedimientos.plantillaTramite']}:" for="txtPlantilla"/>
-                            <p:selectOneMenu id="txtPlantilla" value="#{viewServicios.filtro.plantilla}"
-                                             styleClass="w95" autoWidth="false" converter="#{tipoTramitacionConverter}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewServicios.listPlantillas}" var="estado"
-                                               itemValue="#{estado}"
-                                               itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
                             <h:outputText value="#{labels['viewProcedimientos.plataformaTramitacion']}:"
                                           for="txtPlataforma"/>
                             <p:selectOneMenu id="txtPlataforma" value="#{viewServicios.filtro.plataforma}"
