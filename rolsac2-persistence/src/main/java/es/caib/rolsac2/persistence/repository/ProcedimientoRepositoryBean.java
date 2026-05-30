@@ -690,13 +690,10 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (jproc == null) {
             return;
         }
-        LOG.error("Resultado : " + resultadoAccion);
 
         if (resultadoAccion.isCorrecto() || (resultadoAccion.getMensaje() != null && resultadoAccion.getMensaje().startsWith("0167"))) {
-            LOG.error("Entra por IF");
             jproc.setSiaFecha(new Date());
             if (resultadoAccion.getCodSIA() != null && resultadoAccion.getEstadoSIA() != null) {
-                LOG.error("Entra IF2");
                 //Si es una baja, ya no se pasa
                 jproc.setCodigoSIA(Integer.parseInt(resultadoAccion.getCodSIA()));
                 jproc.setEstadoSIA(resultadoAccion.getEstadoSIA());
@@ -704,13 +701,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             jproc.setMensajeIndexacionSIA("");
             entityManager.merge(jproc);
         } else {
-            LOG.error("Entra por ELSE");
             jproc.setMensajeIndexacionSIA(resultadoAccion.getMensaje());
             entityManager.merge(jproc);
         }
 
     }
-
 
     @Override
     public void actualizarPDU(IndexacionPDUDto dato, ResultadoSIA resultadoAccion) {
@@ -1794,6 +1789,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
 
                             jelemento.merge(elemento, jTipoTramitacionPlantilla, jTipoTramitacion);
+                            if (elemento.getUnidadAdministrativa() != null && elemento.getUnidadAdministrativa().getCodigo() != null) {
+                                JUnidadAdministrativa jua = entityManager.find(JUnidadAdministrativa.class, elemento.getUnidadAdministrativa().getCodigo());
+                                if (jua != null) {
+                                    jelemento.setUnidadAdministrativa(jua);
+                                }
+                            }
                             if (elemento.getListaDocumentos() != null && jelemento.getListaDocumentos() == null) {
                                 JListaDocumentos jlistaDoc = new JListaDocumentos();
                                 entityManager.persist(jlistaDoc);

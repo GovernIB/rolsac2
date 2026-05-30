@@ -332,7 +332,7 @@ public class ProcedimientoAuditoriaRepositoryBean extends AbstractCrudRepository
             sql.append(" order by ").append(filtro.getOrderBy());
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         } else {
-            sql.append(" order by j.codigo desc ");
+            sql.append(" order by j.fechaModificacion desc ");
         }
         return sql.toString();
     }
