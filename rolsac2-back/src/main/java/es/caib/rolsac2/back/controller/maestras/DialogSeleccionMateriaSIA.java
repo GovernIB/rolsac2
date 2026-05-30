@@ -94,6 +94,8 @@ public class DialogSeleccionMateriaSIA extends AbstractController implements Ser
             @Override
             public List<TipoMateriaSIAGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setPaginaFirst(first);
+                    filtro.setPaginaTamanyo(pageSize);
                     filtro.setIdioma(sessionBean.getLang());
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();

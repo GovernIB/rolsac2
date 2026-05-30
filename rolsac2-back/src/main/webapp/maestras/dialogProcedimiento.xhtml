@@ -45,8 +45,8 @@
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
-            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones formDialog:txtKeywords
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:panelComun formDialog:panelComunInstr formDialog:txtOrgResp"/>
+            <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones form:txtKeywords
+            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:panelComun formDialog:panelComunInstr formDialog:txtOrgResp formDialog:txtLegitimacion"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -690,7 +690,7 @@
                             <p:ajax event="rowUnselect"/>
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                                <h:outputText value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
+                                <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                             </p:column>
 
                         </p:dataTable>
@@ -748,7 +748,7 @@
                             <div class="left-container-header ml-0 col-12 row">
                                 <div class="col-10 text-center">
                                     <p:outputLabel styleClass="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                        #{tema.data.descripcion.getTraduccionConValor(sessionBean.lang)}</p:outputLabel>
+                                        #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}</p:outputLabel>
                                 </div>
                                 <div class="col-2">
                                     <p:commandButton id="btnTema#{tema.data.codigo}Col"
@@ -780,7 +780,7 @@
                                         </div>
                                         <p:graphicImage value="../images/SIA.svg" rendered="#{td.getTipoMateriaSIA() != null}"/>
                                         <h:outputText id="texto"
-                                                      value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
+                                                      value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                                         <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                    value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
                                     </p:column>
@@ -836,7 +836,7 @@
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                       styleClass="text-center w75 ">
-                                <h:outputText value="#{td.titulo.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" />
+                                <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" />
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -902,7 +902,7 @@
 
                                 <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                           styleClass="text-center w75">
-                                    <h:outputText value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
+                                    <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                                 </p:column>
                             </p:dataTable>
                         </div>
@@ -963,7 +963,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <h:outputText value="#{td.titulo.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
+                                <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -1101,7 +1101,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                                <h:outputText value="#{td.nombre.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
+                                <h:outputText value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                             </p:column>
                         </p:dataTable>
                     </div>
