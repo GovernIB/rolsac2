@@ -68,8 +68,7 @@
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtClassname" value="#{dialogProceso.data.cron}"
                                  requiredMessage="#{labels['dict.obligatorio.expresionActivacion']}"
-                                 styleClass="w95" required="#{empty param['formDialog:closeButton']}"
-                                     disabled="#{dialogProceso.isModoConsulta()}" maxlength="100"/>
+                                 styleClass="w95" disabled="#{dialogProceso.isModoConsulta()}" maxlength="100"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['dict.activo']}:" for="txtActivo"/>
