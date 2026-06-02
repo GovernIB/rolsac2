@@ -315,27 +315,30 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public void enviarSIAsincomprobar() {
+        try {
+            if (!checkObligatorio()) {
+                return;
+            }
+            guardarSinCheck(false);
 
-        if (!checkObligatorio()) {
-            return;
-        }
-        guardarSinCheck(false);
+            //Volvemos a clonarlo
+            dataOriginal = (ServicioDTO) data.clone();
 
-        //Volvemos a clonarlo
-        dataOriginal = (ServicioDTO) data.clone();
-
-        SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data, this.getIdioma());
-        if (dato.isCorrecto()) {
-            ListaPropiedades listaPropiedades = new ListaPropiedades();
-            Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
-            listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
-            listaPropiedades.addPropiedad("id", data.getCodigo().toString());
-            listaPropiedades.addPropiedad("tipo", "P");
-            procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
-            mostrarRefreshSIA = true;
-        } else {
-            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.error.enviarSIA") + dato.getMensaje());
+            SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data, this.getIdioma());
+            if (dato.isCorrecto()) {
+                ListaPropiedades listaPropiedades = new ListaPropiedades();
+                Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+                listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
+                listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+                listaPropiedades.addPropiedad("tipo", "P");
+                procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
+                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
+                mostrarRefreshSIA = true;
+            } else {
+                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.error.enviarSIA") + dato.getMensaje());
+            }
+        } finally {
+            PrimeFaces.current().ajax().update("formDialog:messagesDialog", "formDialog:formDatosSIA", "formDialog:panelBotonesSIA");
         }
     }
 

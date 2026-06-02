@@ -117,19 +117,21 @@
                             </p>
                         </div>
                         <div class="form-group col-md-2">
-                            <p>
-                                <p:commandButton id="btnIndexacionSIA" action="#{dialogProcedimiento.enviarSIA}"
-                                                 value="#{labels['dict.enviarSIA']}"
-                                                 update="messagesDialog formDatosSIA btnRefrescarSIA btnIndexacionSIA"
-                                                 rendered="#{dialogProcedimiento.mostrarBtnSIA()}"
-                                                 style="margin-top:24px"
-                                                 process="@all"/>
-                                <p:commandButton id="btnRefrescarSIA" action="#{dialogProcedimiento.refrescarSIA}"
-                                                 value="#{labels['dict.refrescarSIA']}" update="messagesDialog formDatosSIA"
-                                                 rendered="#{dialogProcedimiento.mostrarRefreshSIA}"
-                                                 style="margin-top:19px"
-                                                 process="@all"/>
-                            </p>
+                            <p:outputPanel id="panelBotonesSIA" layout="block">
+                                <p>
+                                    <p:commandButton id="btnIndexacionSIA" action="#{dialogProcedimiento.enviarSIA}"
+                                                     value="#{labels['dict.enviarSIA']}"
+                                                     update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA"
+                                                     rendered="#{dialogProcedimiento.mostrarBtnSIA()}"
+                                                     style="margin-top:24px"
+                                                     process="@all"/>
+                                    <p:commandButton id="btnRefrescarSIA" action="#{dialogProcedimiento.refrescarSIA}"
+                                                     value="#{labels['dict.refrescarSIA']}" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA"
+                                                     rendered="#{dialogProcedimiento.mostrarRefreshSIA}"
+                                                     style="margin-top:19px"
+                                                     process="@all"/>
+                                </p>
+                            </p:outputPanel>
                         </div>
                     </div>
                 </p:panel>
@@ -1216,7 +1218,7 @@
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.cerrarSinCheck()}"
-                             process="@this" update="messagesDialog btnRefrescarSIA btnIndexacionSIA" oncomplete="PF('cdSalirSinGuardar').hide();"/>
+                             process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardar').hide();"/>
             <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();"/>
         </p:confirmDialog>
 
@@ -1224,7 +1226,7 @@
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardarSIA.mensaje']}"
                          widgetVar="cdSalirSinGuardarSIA">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.enviarSIAsincomprobar()}"
-                             process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardarSIA').hide();"/>
+                             process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardarSIA').hide();"/>
             <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();"/>
         </p:confirmDialog>
 
