@@ -299,26 +299,43 @@ public class DialogServicio extends AbstractController implements Serializable {
         return canalesSeleccionados.contains("TEL") && this.opcionTelematica != null && this.opcionTelematica.compareTo(2) == 0;
     }
 
+
     /**
      * Enviado a SIA para que se indexe.
      */
     public void enviarSIA() {
         if (data.getCodigo() != null && data.getCodigoSIA() == null) {
-            SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data, this.getIdioma());
-            if (dato.isCorrecto()) {
-                ListaPropiedades listaPropiedades = new ListaPropiedades();
-                Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
-                listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
-                listaPropiedades.addPropiedad("id", data.getCodigo().toString());
-                listaPropiedades.addPropiedad("tipo", "S");
-                procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
-                mostrarRefreshSIA = true;
-            } else {
-                UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogServicio.error.enviarSIA") + dato.getMensaje());
+            if (this.data.compareTo(this.dataOriginal) != 0) {
+                PrimeFaces.current().executeScript("PF('cdSalirSinGuardarSIA').show();");
+                return;
             }
 
+            enviarSIAsincomprobar();
+        }
+    }
 
+    public void enviarSIAsincomprobar() {
+
+        if (!checkObligatorio()) {
+            return;
+        }
+        guardarSinCheck(false);
+
+        //Volvemos a clonarlo
+        dataOriginal = (ServicioDTO) data.clone();
+
+        SiaCumpleEnviable dato = procedimientoServiceFacade.isProcServEnviableCumpleDatos(data, this.getIdioma());
+        if (dato.isCorrecto()) {
+            ListaPropiedades listaPropiedades = new ListaPropiedades();
+            Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+            listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PROCEDIMIENTO_PUNTUAL);
+            listaPropiedades.addPropiedad("id", data.getCodigo().toString());
+            listaPropiedades.addPropiedad("tipo", "P");
+            procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcedimiento.procesoLanzado"));
+            mostrarRefreshSIA = true;
+        } else {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.error.enviarSIA") + dato.getMensaje());
         }
     }
 
@@ -553,12 +570,12 @@ public class DialogServicio extends AbstractController implements Serializable {
         if (!checkObligatorio()) {
             return;
         }
-        guardarSinCheck();
+        guardarSinCheck(true);
     }
 
     public void accionSin() {
         if (esSoloGuardar) {
-            guardarSinCheck();
+            guardarSinCheck(true);
         } else {
             guardarFlujoSinCheck();
         }
@@ -578,7 +595,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
     }
 
-    public void guardarSinCheck() {
+    public void guardarSinCheck(boolean cerrar) {
 
         resetearOrdenListas();
         String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
@@ -588,14 +605,16 @@ public class DialogServicio extends AbstractController implements Serializable {
             procedimientoServiceFacade.update(this.data, this.dataOriginal, UtilJSF.getSessionBean().getPerfil(), UtilJSF.getSessionBean().getEntidad().getCodigo(), ruta);
         }
 
-        final DialogResult result = new DialogResult();
-        if (this.getModoAcceso() != null) {
-            result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
-        } else {
-            result.setModoAcceso(TypeModoAcceso.CONSULTA);
+        if (cerrar) {
+            final DialogResult result = new DialogResult();
+            if (this.getModoAcceso() != null) {
+                result.setModoAcceso(TypeModoAcceso.valueOf(this.getModoAcceso()));
+            } else {
+                result.setModoAcceso(TypeModoAcceso.CONSULTA);
+            }
+            result.setResult(data);
+            UtilJSF.closeDialog(result);
         }
-        result.setResult(data);
-        UtilJSF.closeDialog(result);
     }
 
 
@@ -632,7 +651,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaInstructor"));
             retorno = false;
         }
- 
+
         if (this.data.getFechaPublicacion() != null && this.data.getFechaCaducidad() != null && data.getFechaCaducidad().before(this.data.getFechaPublicacion())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCaducidad"));
             retorno = false;

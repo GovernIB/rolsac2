@@ -1092,8 +1092,16 @@
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogServicio.cerrarSinCheck()}" process="@this"
-                             update="messagesDialog" oncomplete="PF('cdSalirSinGuardar').hide();"/>
+                             update="messagesDialog btnRefrescarSIA btnIndexacionSIA" oncomplete="PF('cdSalirSinGuardar').hide();"/>
             <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();"/>
+        </p:confirmDialog>
+
+        <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
+                         responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardarSIA.mensaje']}"
+                         widgetVar="cdSalirSinGuardarSIA">
+            <p:commandButton value="#{labels['dict.si']}" action="#{dialogServicio.enviarSIAsincomprobar()}"
+                             process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardarSIA').hide();"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();"/>
         </p:confirmDialog>
 
     </ui:define>

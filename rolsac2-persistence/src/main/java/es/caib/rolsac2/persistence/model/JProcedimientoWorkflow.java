@@ -43,11 +43,6 @@ public class JProcedimientoWorkflow {
     @Column(name = "PRWF_WFUSUA", length = 100)
     private String usuario;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "PRWF_CODUAR", nullable = false)
-    private JUnidadAdministrativa uaResponsable;*/
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PRWF_CODUAI", nullable = false)
     private JUnidadAdministrativa uaInstructor;
