@@ -1261,7 +1261,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (siadto.getCodigo() != null) {
             indexacionSIARepository.actualizarDato(siadto, resultadoAccion);
         }
+        //if (resultadoAccion.getResultado() != ResultadoSIA.RESULTADO_NO_HACER_NADA) {
         procedimientoRepository.actualizarSIA(siadto, resultadoAccion);
+        //}
     }
 
     @Override

@@ -116,6 +116,14 @@ public class SiaWSPlugin extends AbstractPluginProperties implements IPluginSIA 
                 }
             }
         }
+
+       /* if (resultadoSIA.getEstadoSIA() == null || resultadoSIA.getEstadoSIA().isEmpty()) {
+            if (envioSIA.getOperacion().equals(SiaConstantes.ESTADO_BAJA)) {
+                resultadoSIA.setEstadoSIA("B");
+            } else {
+                resultadoSIA.setEstadoSIA("A");
+            }
+        } */
         return resultadoSIA;
     }
 
