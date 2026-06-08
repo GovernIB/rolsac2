@@ -31,6 +31,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
     private TipoTramitacionDTO plantillaSel;
     private List<ProcedimientoDocumentoDTO> listaDocumentos;
     private List<ProcedimientoDocumentoDTO> listaModelos;
+    private List<TasaProcedimientoDTO> listaTasas;
 
     private Boolean tasaAsociada = false;
     private Literal requisitos;
@@ -170,6 +171,33 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
     }
 
     /**
+     * Agregar tasa.
+     *
+     * @param tasa tasa
+     */
+    public void agregarTasa(TasaProcedimientoDTO tasa) {
+        if (getListaTasas() == null) {
+            this.setListaTasas(new ArrayList<>());
+        }
+        boolean encontrado = false;
+        for (int i = 0; i < this.getListaTasas().size(); i++) {
+            TasaProcedimientoDTO existente = this.getListaTasas().get(i);
+            if (tasa.getCodigo() == null && existente.getCodigo() == null && tasa.getCodigo() != null && tasa.getCodigo().toString().equalsIgnoreCase(existente.getCodigo().toString())) {
+                encontrado = true;
+                this.getListaTasas().set(i, tasa);
+                break;
+            } else if (tasa.getCodigo() != null && existente.getCodigo() != null && tasa.getCodigo().compareTo(existente.getCodigo()) == 0) {
+                encontrado = true;
+                this.getListaTasas().set(i, tasa);
+                break;
+            }
+        }
+        if (!encontrado) {
+            this.getListaTasas().add(tasa);
+        }
+    }
+
+    /**
      * Instantiates a new Procedimiento tramite dto.
      *
      * @param id id
@@ -302,6 +330,24 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
      */
     public void setListaModelos(List<ProcedimientoDocumentoDTO> listaModelos) {
         this.listaModelos = listaModelos;
+    }
+
+    /**
+     * Obtiene lista tasas.
+     *
+     * @return lista tasas
+     */
+    public List<TasaProcedimientoDTO> getListaTasas() {
+        return listaTasas;
+    }
+
+    /**
+     * Establece lista tasas.
+     *
+     * @param listaTasas lista tasas
+     */
+    public void setListaTasas(List<TasaProcedimientoDTO> listaTasas) {
+        this.listaTasas = listaTasas;
     }
 
     /**

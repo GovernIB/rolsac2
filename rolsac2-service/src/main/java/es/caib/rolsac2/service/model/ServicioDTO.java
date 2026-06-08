@@ -19,6 +19,7 @@ import java.util.Objects;
 public class ServicioDTO extends ProcedimientoBaseDTO {
 
     private String tasa;
+    private TasaServicioDTO tasaServicio;
     private TipoTramitacionDTO tipoTramitacion;
 
     private TipoTramitacionDTO plantillaSel;
@@ -55,6 +56,14 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
 
     public void setTasa(String tasa) {
         this.tasa = tasa;
+    }
+
+    public TasaServicioDTO getTasaServicio() {
+        return tasaServicio;
+    }
+
+    public void setTasaServicio(TasaServicioDTO tasaServicio) {
+        this.tasaServicio = tasaServicio;
     }
 
     public TipoTramitacionDTO getTipoTramitacion() {
@@ -267,6 +276,10 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
 
         srvClonado.setActivoLOPD(this.isActivoLOPD());
         srvClonado.setIntegrarPdu(this.isIntegrarPdu());
+
+        if (this.tasaServicio != null) {
+            srvClonado.setTasaServicio(this.tasaServicio.clone());
+        }
 
         return srvClonado;
     }

@@ -18,6 +18,7 @@ import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTasaTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
@@ -187,6 +188,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         procedimientoRepository.mergePublicoObjetivoProcWF(jProcWF.getCodigo(), dto.getPublicosObjetivo());
         procedimientoRepository.mergeNormativaProcWF(jProcWF.getCodigo(), dto.getNormativas());
         procedimientoRepository.mergeCategoriasPDUProcWF(jProcWF.getCodigo(), dto.getCategoriasPDU());
+        if (dto instanceof ServicioDTO) {
+            procedimientoRepository.mergeTasaServicio(jProcWF.getCodigo(), ((ServicioDTO) dto).getTasaServicio());
+        }
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentos() == null ? null : jProcWF.getListaDocumentos().getCodigo(), false, dto.getDocumentos(), ruta);
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
         if (dto instanceof ProcedimientoDTO) {
@@ -355,6 +359,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                 tramites.forEach(t -> t.setUnidadAdministrativa(dto.getUaInstructor()));
             }
             procedimientoRepository.mergeTramitesProcWF(jProcWF.getCodigo(), tramites, ruta);
+        }
+        if (dto instanceof ServicioDTO) {
+            procedimientoRepository.mergeTasaServicio(jProcWF.getCodigo(), ((ServicioDTO) dto).getTasaServicio());
         }
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentos() == null ? null : jProcWF.getListaDocumentos().getCodigo(), false, dto.getDocumentos(), ruta);
         procedimientoRepository.mergeDocumentos(jProcWF.getCodigo(), jProcWF.getListaDocumentosLOPD() == null ? null : jProcWF.getListaDocumentosLOPD().getCodigo(), true, dto.getDocumentosLOPD(), ruta);
@@ -554,6 +561,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         if (proc instanceof ServicioDTO) {
             if (((ServicioDTO) proc).getTipoTramitacion() != null) {
                 ((ServicioDTO) proc).getTipoTramitacion().setCodigo(null);
+            }
+            if (((ServicioDTO) proc).getTasaServicio() != null) {
+                ((ServicioDTO) proc).getTasaServicio().setCodigo(null);
+                ((ServicioDTO) proc).getTasaServicio().setCodigoString(null);
             }
         }
         return proc;
@@ -898,7 +909,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public ServicioDTO findServicioById(Long codigoWF) {
         return (ServicioDTO) getProcedimientoDTOByCodigoWF(codigoWF);
     }
@@ -1472,6 +1483,41 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    public List<TasaProcedimientoDTO> getTasasTramite(Long codigoTramite) {
+        return procedimientoRepository.getTasasByListaTasas(codigoTramite);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    public TasaServicioDTO getTasaServicioByCodProcWF(Long codigoWF) {
+        JProcedimientoWorkflow jprocWF = procedimientoRepository.getWFByCodigoWF(codigoWF);
+
+        if (jprocWF != null && jprocWF.getListaTasas() != null && !jprocWF.getListaTasas().isEmpty()) {
+            JProcedimientoTasa jtasa = jprocWF.getListaTasas().get(0);
+            TasaServicioDTO tasaDTO = new TasaServicioDTO();
+            tasaDTO.setCodigo(jtasa.getCodigo());
+            tasaDTO.setCodigoString(String.valueOf(jtasa.getCodigo()));
+            tasaDTO.setIdentificador(Literal.createInstance());
+            tasaDTO.setDescripcion(Literal.createInstance());
+            tasaDTO.setFormaPago(Literal.createInstance());
+            tasaDTO.setUrl(Literal.createInstance());
+
+            if (jtasa.getTraducciones() != null) {
+                for (JProcedimientoTasaTraduccion jtrad : jtasa.getTraducciones()) {
+                    tasaDTO.getIdentificador().add(new Traduccion(jtrad.getIdioma(), jtrad.getIdentificador()));
+                    tasaDTO.getDescripcion().add(new Traduccion(jtrad.getIdioma(), jtrad.getDescripcion()));
+                    tasaDTO.getFormaPago().add(new Traduccion(jtrad.getIdioma(), jtrad.getFormaPago()));
+                    tasaDTO.getUrl().add(new Traduccion(jtrad.getIdioma(), jtrad.getUrl()));
+                }
+            }
+            return tasaDTO;
+        }
+
+        return null;
+    }
+
+    @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public String obtenerIdiomaEntidad(Long codigoProc) {
         return procedimientoRepository.obtenerIdiomaEntidad(codigoProc);
@@ -1589,6 +1635,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         //Tramites
         procedimientoRepository.clonarTramites(idProcedimientoWF, idProcWFClonado, ruta);
+
+        //Tasa servicio (Tasas Procedimiento en tramites)
+        procedimientoRepository.clonarTasaServicio(idProcedimientoWF, idProcWFClonado);
 
         //Auditoria
         try {

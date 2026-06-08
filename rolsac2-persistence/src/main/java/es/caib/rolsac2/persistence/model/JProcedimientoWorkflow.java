@@ -119,6 +119,12 @@ public class JProcedimientoWorkflow {
     private Boolean tieneTasa = false;
 
     /**
+     * PARA SERVICIO: TASAS ASOCIADAS 
+     **/
+    @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JProcedimientoTasa> listaTasas;
+
+    /**
      * PARA SERVICIO: TRAMITE ELECTRONICO ASOCIADO
      **/
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -401,6 +407,14 @@ public class JProcedimientoWorkflow {
 
     public List<JProcedimientoWorkflowTraduccion> getTraducciones() {
         return traducciones;
+    }
+
+    public List<JProcedimientoTasa> getListaTasas() {
+        return listaTasas;
+    }
+
+    public void setListaTasas(List<JProcedimientoTasa> listaTasas) {
+        this.listaTasas = listaTasas;
     }
 
     public JTipoProcedimiento getTipoProcedimiento() {

@@ -64,6 +64,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     private ProcedimientoTramiteDTO tramiteSeleccionado;
     private TipoPublicoObjetivoEntidadGridDTO tipoPubObjEntGridSeleccionado;
+    private TasaServicioDTO tasaServicioSeleccionada;
 
     private List<TemaGridDTO> temasPadre;
 
@@ -949,6 +950,59 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
     }
 
+    // TASA DEL SERVICIO
+    public void returnDialogTasaServicio(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            TasaServicioDTO tasa = (TasaServicioDTO) respuesta.getResult();
+            if (tasa != null) {
+                data.setTasaServicio(tasa);
+                data.setTieneTasa(true);
+                tasaServicioSeleccionada = null;
+            }
+        }
+    }
+
+    public void abrirDialogTasaServicio(TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
+            UtilJSF.anyadirMochila("tasaServicio", this.tasaServicioSeleccionada);
+        }
+        UtilJSF.openDialog("dialogTasaServicio", modoAcceso, params, true, 800, 500);
+    }
+
+    public void nuevaTasaServicio() {
+        if (data.getTasaServicio() != null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.tasa.soloUna"));
+            return;
+        }
+        abrirDialogTasaServicio(TypeModoAcceso.ALTA);
+    }
+
+    public void editarTasaServicio() {
+        if (tasaServicioSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogTasaServicio(TypeModoAcceso.EDICION);
+        }
+    }
+
+    public void consultarTasaServicio() {
+        if (tasaServicioSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogTasaServicio(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarTasaServicio() {
+        data.setTasaServicio(null);
+        data.setTieneTasa(false);
+        tasaServicioSeleccionada = null;
+        addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+    }
+
     //DOCUMENTO LOPD
     public void returnDialogDocumentoLOPD(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -1449,6 +1503,14 @@ public class DialogServicio extends AbstractController implements Serializable {
         return data.getCodigoSIA() == null && data.getCodigo() != null && !mostrarRefreshSIA && !isInformador() && (data.getEstado().compareTo(TypeProcedimientoEstado.MODIFICACION) == 0
                 || data.getEstado().compareTo(TypeProcedimientoEstado.PENDIENTE_PUBLICAR) == 0
         );
+    }
+
+    public TasaServicioDTO getTasaServicioSeleccionada() {
+        return tasaServicioSeleccionada;
+    }
+
+    public void setTasaServicioSeleccionada(TasaServicioDTO tasaServicioSeleccionada) {
+        this.tasaServicioSeleccionada = tasaServicioSeleccionada;
     }
 }
 

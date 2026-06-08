@@ -335,6 +335,55 @@ public class ServiciosResource {
      * @param lang   Código de idioma
      * @return Listado de Publico Objetivo Entidad de servicios
      */
+    /**
+     * Listado de tasas de servicios.
+     *
+     * @param codigo Código del servicio workflow
+     * @param lang   Código de idioma
+     * @return Tasa asociada al servicio
+     */
+    @Produces({MediaType.APPLICATION_JSON})
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+    @Path("/tasas/{codigo}")
+    @Operation(operationId = "listarTasasServicio", summary = "Obtiene la tasa del servicio", description = "Obtiene la tasa asociada al servicio dado por código workflow")
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
+    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+    public Response listarTasaServicio(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+        Instant start = Instant.now();
+        List<Tasa> lista = new ArrayList<>();
+        try {
+            String idiomaPorDefecto = servicioService.obtenerIdiomaEntidad(Long.valueOf(codigo));
+            String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
+            if (codigo != null) {
+                TasaServicioDTO tasa = servicioService.getTasaServicioByCodProcWF(Long.valueOf(codigo));
+                if (tasa != null) {
+                    lista.add(new Tasa(tasa, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true, idiomaPorDefecto));
+                }
+            }
+
+        } catch (NumberFormatException e) {
+            RespuestaError err = new RespuestaError(Response.Status.BAD_REQUEST.getStatusCode() + "", Constantes.MSJ_400_GENERICO, 0L);
+            return Response.status(Response.Status.BAD_REQUEST).entity(err).type(MediaType.APPLICATION_JSON).build();
+        }
+
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        return Response.ok(new RespuestaBase(
+                lista.size(),
+                lista.size(),
+                "0",
+                0,
+                0,
+                url,
+                lista,
+                tiempoMiliSegundos), MediaType.APPLICATION_JSON).build();
+    }
     @Produces({MediaType.APPLICATION_JSON})
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})

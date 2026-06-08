@@ -30,6 +30,12 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
 
     void mergeTramitesProcWF(Long codigoWF, List<ProcedimientoTramiteDTO> lista, String ruta);
 
+    void mergeTasasTramite(Long codigoWF, Long codigoTramite, List<TasaProcedimientoDTO> tasas);
+    
+    void mergeTasaServicio(Long codigoWF, TasaServicioDTO tasa);
+
+    List<TasaProcedimientoDTO> getTasasByListaTasas(Long codigoTramite);
+
     void updateWF(JProcedimientoWorkflow jProcWF);
 
     Optional<JProcedimiento> findById(String id);
@@ -79,6 +85,8 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     void deleteWF(Long codigoWF);
 
     void clonarCategoriasPDU(Long codigoWF, Long codigoWFNuevo);
+
+    void clonarTasaServicio(Long codigoWF, Long codigoWFNuevo);
 
     boolean existeProcedimientoConFormaInicio(Long codigoForIni);
 

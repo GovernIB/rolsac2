@@ -260,6 +260,7 @@ maximoid             NUMBER;
   mensajeAuditoria           VARCHAR2(255 CHAR);
   v_SER_INSTRU NUMBER(10, 0);
   v_ser_serrsp NUMBER(10, 0);
+  v_prtx_codigo NUMBER(10,0);
   V_PRWF_CODUAI  NUMBER(10, 0);
     -- Excepción específica para el -20001
     ex_ua_no_migrada EXCEPTION;
@@ -538,6 +539,7 @@ INSERT INTO rs2_prcwf
  prwf_rsema,
  prwf_rstfno,
  prwf_dptiplegi,
+ prwf_svtasa,
  prwf_svtpre,
  prwf_fecpub,
  prwf_feccad,
@@ -559,6 +561,7 @@ SELECT codigo_procwf,
        ser_correo,
        SUBSTR(ser_telefo, 1, 25) AS ser_telefo,
        ser_codleg,
+       CASE WHEN ser_tasurl IS NOT NULL THEN 1 ELSE 0 END,
        tipotram_plantilla,
        ser_fecpub,
        ser_fecdes,
@@ -572,6 +575,35 @@ SELECT codigo_procwf,
        lslopd
 FROM   r1_servicios
 WHERE  ser_codi = codigo;
+
+    -- Migrar la tasa del servicio si existe URL de tasa
+    SELECT Count(*)
+    INTO   existe
+    FROM   r1_servicios
+    WHERE  ser_codi = codigo
+      AND  ser_tasurl IS NOT NULL;
+
+    IF existe > 0 THEN
+        SELECT RS2_PRCTAX_SEQ.NEXTVAL INTO v_prtx_codigo FROM dual;
+        INSERT INTO rs2_prctax
+        (prtx_codigo,
+         prtx_codprwf)
+        VALUES
+        (v_prtx_codigo,
+         codigo_procwf);
+
+        INSERT INTO rs2_traprtx
+        (trtx_codigo, trtx_codprtx, trtx_idioma, trtx_identi, trtx_descri, trtx_forpag, trtx_url)
+        SELECT RS2_TRAPRTX_SEQ.NEXTVAL, v_prtx_codigo, 'ca', 'TAXA SERVEI 1', NULL, NULL, ser_tasurl
+        FROM   r1_servicios
+        WHERE  ser_codi = codigo;
+
+        INSERT INTO rs2_traprtx
+        (trtx_codigo, trtx_codprtx, trtx_idioma, trtx_identi, trtx_descri, trtx_forpag, trtx_url)
+        SELECT RS2_TRAPRTX_SEQ.NEXTVAL, v_prtx_codigo, 'es', 'TASA SERVICIO 1', NULL, NULL, ser_tasurl
+        FROM   r1_servicios
+        WHERE  ser_codi = codigo;
+    END IF;
 
 /** SI HAY LOPD, CREAMOS LOS FICHEROS. **/
 IF lslopd IS NOT NULL THEN

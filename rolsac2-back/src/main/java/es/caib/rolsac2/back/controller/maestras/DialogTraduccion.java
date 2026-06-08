@@ -106,6 +106,14 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             imprimirProcedimientoTramite();
 
+        } else if (data instanceof TasaProcedimientoDTO) {
+
+            imprimirTasaProcedimiento();
+
+        } else if (data instanceof TasaServicioDTO) {
+            
+            imprimirTasaServicio();
+
         } else if (data instanceof NormativaDTO) {
 
             imprimirNormativa();
@@ -182,6 +190,20 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((ProcedimientoTramiteDTO) data).setDocumentacion(literales.get(2));
                 ((ProcedimientoTramiteDTO) data).setTerminoMaximo(literales.get(3));
                 ((ProcedimientoTramiteDTO) data).setObservacion(literales.get(4));
+            }
+        } else if (data instanceof TasaProcedimientoDTO) {
+            if (literales != null) {
+                ((TasaProcedimientoDTO) data).setIdentificador(literales.get(0));
+                ((TasaProcedimientoDTO) data).setDescripcion(literales.get(1));
+                ((TasaProcedimientoDTO) data).setFormaPago(literales.get(2));
+                ((TasaProcedimientoDTO) data).setUrl(literales.get(3));
+            }
+        } else if (data instanceof TasaServicioDTO) {
+            if (literales != null) {
+                ((TasaServicioDTO) data).setIdentificador(literales.get(0));
+                ((TasaServicioDTO) data).setDescripcion(literales.get(1));
+                ((TasaServicioDTO) data).setFormaPago(literales.get(2));
+                ((TasaServicioDTO) data).setUrl(literales.get(3));
             }
         } else if (data instanceof NormativaDTO) {
             if (literales != null) {
@@ -298,6 +320,30 @@ public class DialogTraduccion extends AbstractController implements Serializable
         listaFields.add("documentacion");
         listaFields.add("terminoMaximo");
         listaFields.add("observacion");
+    }
+
+    private void imprimirTasaProcedimiento() {
+        literales.add((Literal) ((TasaProcedimientoDTO) data).getIdentificador().clone());
+        literales.add((Literal) ((TasaProcedimientoDTO) data).getDescripcion().clone());
+        literales.add((Literal) ((TasaProcedimientoDTO) data).getFormaPago().clone());
+        literales.add((Literal) ((TasaProcedimientoDTO) data).getUrl().clone());
+
+        listaFields.add("codigo");
+        listaFields.add("descripcion");
+        listaFields.add("formaPago");
+        listaFields.add("url");
+    }
+
+    public void imprimirTasaServicio() {
+        literales.add((Literal) ((TasaServicioDTO) data).getIdentificador().clone());
+        literales.add((Literal) ((TasaServicioDTO) data).getDescripcion().clone());
+        literales.add((Literal) ((TasaServicioDTO) data).getFormaPago().clone());
+        literales.add((Literal) ((TasaServicioDTO) data).getUrl().clone());
+
+        listaFields.add("codigo");
+        listaFields.add("descripcion");
+        listaFields.add("formaPago");
+        listaFields.add("url");
     }
 
     public void imprimirLiteralesServicio() {

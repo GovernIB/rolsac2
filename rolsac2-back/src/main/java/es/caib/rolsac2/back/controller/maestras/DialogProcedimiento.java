@@ -508,13 +508,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                     camposIncompletos.add(getLiteral("dialogProcedimientoTramite.observaciones"));
                 }
                 if (!camposIncompletos.isEmpty()) {
-                    String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
+                    String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion(sessionBean.getLang()) : "";
                     UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteCamposIdiomasObligatorios", new Object[]{nombreTramite}));
                     return false;
                 }
 
                 // Validar títulos de documentos relacionados y modelos del trámite
-                String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion("ca") : "";
+                String nombreTramite = tramite.getNombre() != null ? tramite.getNombre().getTraduccion(sessionBean.getLang()) : "";
                 if (tramite.getListaDocumentos() != null) {
                     for (ProcedimientoDocumentoDTO doc : tramite.getListaDocumentos()) {
                         if (doc.getTitulo() == null || !doc.getTitulo().estaCompleto(idiomasObligatorios)) {
@@ -590,7 +590,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                                 nombreCamposTram += getLiteral(campo);
                             }
                         }
-                        String identificador = tram.getNombre().getTraduccion("ca");
+                        String identificador = tram.getNombre().getTraduccion(sessionBean.getLang());
                         msgError += "  - " + getLiteral("dialogProcedimientoFlujo.errorFaltanInglesTramites", new Object[]{identificador, nombreCamposTram}) + "<br /><br />";
                     }
                 }

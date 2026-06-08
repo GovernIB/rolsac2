@@ -595,6 +595,62 @@
                                      process="@this" update="dataDocumentosRelacionados messagesDialog"/>
                 </div>
             </div>
+            <div class="row left-container mx-0 mb-2">
+                <div class="col-12 left-container-header text-center">
+                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.tasas']}</p>
+                </div>
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataTasas" var="td"
+                                 value="#{dialogProcedimientoTramite.data.listaTasas}"
+                                 emptyMessage="#{labels['dialogProcedimiento.noTasas']}" scrollable="true"
+                                 scrollHeight="120"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogProcedimientoTramite.tasaSeleccionada}"
+                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowDblselect"
+                                oncomplete="triggerDblClickTasa();"
+                        />
+
+                        <p:column headerText="#{labels['dialogProcedimientoTramite.descripcion']}"
+                                  styleClass="text-center w75">
+                            <h:outputText value="#{td.identificador.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
+                                     actionListener="#{dialogProcedimientoTramite.nuevaTasa()}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTasa}"
+                                process="@this"
+                                update="dataTasas"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
+                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                     action="#{dialogProcedimientoTramite.borrarTasa}"
+                                     process="@this" update="dataTasas messagesDialog"/>
+                    <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
+                                     id="btnEditarTasa"
+                                     action="#{dialogProcedimientoTramite.editarTasa}"
+                                     rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
+                                     process="@this" update="dataTasas messagesDialog">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTasa}"
+                                process="@this"
+                                update="dataTasas"/>
+                    </p:commandButton>
+                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
+                                     id="btnConsultarTasa"
+                                     action="#{dialogProcedimientoTramite.consultarTasa}"
+                                     rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                     process="@this" update="dataTasas messagesDialog">
+                    </p:commandButton>
+                </div>
+            </div>
         </div>
         </div>
         <h:outputScript library="js" name="datePickerR2.js"/>
@@ -607,6 +663,9 @@
                 document.getElementById("formDialog:btnEditarDocumento").click();
             }
 
+            function triggerDblClickTasa() {
+                document.getElementById("formDialog:btnEditarTasa").click();
+            }
         </h:outputScript>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"

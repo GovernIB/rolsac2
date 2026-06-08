@@ -32,6 +32,7 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     @Mapping(target = "terminoMaximo", expression = "java(convierteTraduccionToLiteral(entity.getTraducciones(), \"terminoMaximo\"))")
     @Mapping(target = "listaDocumentos", ignore = true)
     @Mapping(target = "listaModelos", ignore = true)
+    @Mapping(target = "listaTasas", ignore = true)
     @Mapping(target = "unidadAdministrativa", expression = "java(convertSencillo(entity.getUnidadAdministrativa(), true))")
     @Mapping(target = "procedimiento", expression = "java(convierteProcedimientoSimple(entity.getProcedimiento()))")
     ProcedimientoTramiteDTO createDTO(JProcedimientoTramite entity);
@@ -40,6 +41,7 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(jProcedimientoTramite, dto))")
     @Mapping(target = "listaDocumentos", ignore = true)
     @Mapping(target = "listaModelos", ignore = true)
+    @Mapping(target = "listaTasas", ignore = true)
     JProcedimientoTramite createEntity(ProcedimientoTramiteDTO dto);
 
     default List<ProcedimientoTramiteDTO> createDTOs(List<JProcedimientoTramite> entities) {
@@ -54,6 +56,7 @@ public interface ProcedimientoTramiteConverter extends Converter<JProcedimientoT
     @Mapping(target = "traducciones", expression = "java(convierteLiteralToTraduccion(entity,dto))")
     @Mapping(target = "listaDocumentos", ignore = true)
     @Mapping(target = "listaModelos", ignore = true)
+    @Mapping(target = "listaTasas", ignore = true)
     void mergeEntity(@MappingTarget JProcedimientoTramite entity, ProcedimientoTramiteDTO dto);
 
     /**

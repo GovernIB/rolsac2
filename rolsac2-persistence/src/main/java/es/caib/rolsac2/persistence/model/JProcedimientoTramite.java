@@ -102,6 +102,12 @@ public class JProcedimientoTramite {
     private Boolean tasaAsociada = false;
 
     /**
+     * Lista de tasas asociadas al tramite
+     */
+    @OneToMany(mappedBy = "tramite", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JProcedimientoTasa> listaTasas;
+
+    /**
      * Fecha de publicacion
      */
     @Column(name = "PRTA_FECPUB")
@@ -308,6 +314,24 @@ public class JProcedimientoTramite {
      */
     public void setListaModelos(JListaDocumentos lsdoCodigo) {
         this.listaModelos = lsdoCodigo;
+    }
+
+    /**
+     * Obtiene lista tasas.
+     *
+     * @return lista tasas
+     */
+    public List<JProcedimientoTasa> getListaTasas() {
+        return listaTasas;
+    }
+
+    /**
+     * Establece lista tasas.
+     *
+     * @param listaTasas lista tasas
+     */
+    public void setListaTasas(List<JProcedimientoTasa> listaTasas) {
+        this.listaTasas = listaTasas;
     }
 
     /**

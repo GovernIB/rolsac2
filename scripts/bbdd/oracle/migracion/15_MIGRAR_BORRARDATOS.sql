@@ -56,6 +56,10 @@ BEGIN
                 /** Recorremos los tramites **/
                 FOR TRAMITE IN cTramitesWF ( PROCEDIMIENTO_WF.PRWF_CODIGO)
                 LOOP
+                    /** Borramos tasas del tramite **/
+                    DELETE FROM RS2_TRAPRTX WHERE TRTX_CODPRTX IN (SELECT PRTX_CODIGO FROM RS2_PRCTAX WHERE PRTX_CODPRWF = TRAMITE.PRTA_CODIGO);
+                    DELETE FROM RS2_PRCTAX WHERE PRTX_CODPRWF = TRAMITE.PRTA_CODIGO;
+
                     /** Borramos traducciones **/
                     DELETE FROM RS2_TRAPRTA WHERE TRTA_CODPRTA = TRAMITE.PRTA_CODIGO;
 
@@ -97,6 +101,10 @@ BEGIN
 
                 /** Borramos traducciones **/
                 DELETE FROM RS2_TRAPRWF WHERE TRPW_CODPRWF = PROCEDIMIENTO_WF.PRWF_CODIGO;
+
+                /** Borramos traducciones y tasas (servicio/procedimiento) **/
+                DELETE FROM RS2_TRAPRTX WHERE TRTX_CODPRTX IN (SELECT PRTX_CODIGO FROM RS2_PRCTAX WHERE PRTX_CODPRWF = PROCEDIMIENTO_WF.PRWF_CODIGO);
+                DELETE FROM RS2_PRCTAX WHERE PRTX_CODPRWF = PROCEDIMIENTO_WF.PRWF_CODIGO;
 
                 /** Borramos las relaciones con normativas **/
                 DELETE FROM RS2_PRCNOR WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;

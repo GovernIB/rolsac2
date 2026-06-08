@@ -258,6 +258,10 @@ public interface ProcedimientoServiceFacade {
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
     List<CategoriaPDUDTO> getCategoriasPDUByCodProcWF(Long codigoWF);
 
+    List<TasaProcedimientoDTO> getTasasTramite(Long codigoTramite);
+
+    TasaServicioDTO getTasaServicioByCodProcWF(Long codigo);
+
     String obtenerIdiomaEntidad(Long codigo);
 
     List<ProcedimientoCompletoDTO> findExportByFiltro(ProcedimientoFiltro filtro, ExportarDatos exportarDatos);

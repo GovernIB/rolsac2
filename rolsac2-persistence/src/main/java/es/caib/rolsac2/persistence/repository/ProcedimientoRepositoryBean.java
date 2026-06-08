@@ -1017,6 +1017,42 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     @Override
+    public void clonarTasaServicio(Long codigoWF, Long codigoWFNuevo) {
+        List<JProcedimientoTasa> tasasOriginales;
+        try {
+            Query query = entityManager.createQuery("SELECT j FROM JProcedimientoTasa j WHERE j.servicio.codigo = :codigoWF");
+            query.setParameter("codigoWF", codigoWF);
+            tasasOriginales = query.getResultList();
+        } catch (RuntimeException ex) {
+            LOG.debug("No se pudieron clonar tasas para servicio {}: {}", codigoWF, ex.getMessage());
+            return;
+        }
+        if (tasasOriginales == null || tasasOriginales.isEmpty()) {
+            return;
+        }
+        for (JProcedimientoTasa tasaOrigen : tasasOriginales) {
+            JProcedimientoTasa tasaNueva = new JProcedimientoTasa();
+            tasaNueva.setIdPadre(codigoWFNuevo);
+            entityManager.persist(tasaNueva);
+            List<JProcedimientoTasaTraduccion> traducs = new ArrayList<>();
+            if (tasaOrigen.getTraducciones() != null) {
+                for (JProcedimientoTasaTraduccion tradOrigen : tasaOrigen.getTraducciones()) {
+                    JProcedimientoTasaTraduccion tradNueva = new JProcedimientoTasaTraduccion();
+                    tradNueva.setTasa(tasaNueva);
+                    tradNueva.setIdioma(tradOrigen.getIdioma());
+                    tradNueva.setIdentificador(tradOrigen.getIdentificador());
+                    tradNueva.setDescripcion(tradOrigen.getDescripcion());
+                    tradNueva.setFormaPago(tradOrigen.getFormaPago());
+                    tradNueva.setUrl(tradOrigen.getUrl());
+                    entityManager.persist(tradNueva);
+                    traducs.add(tradNueva);
+                }
+            }
+            tasaNueva.setTraducciones(traducs);
+        }
+    }
+
+    @Override
     public boolean existeProcedimientoConFormaInicio(Long codigoForIni) {
         StringBuilder sql = new StringBuilder("SELECT count(j) FROM JProcedimientoWorkflow j where j.formaInicio.codigo = :codigoForIni ");
         Query query = entityManager.createQuery(sql.toString());
@@ -1205,6 +1241,11 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 if (jtramite.getListaModelos() != null) {
                     tramite.setListaModelos(this.getDocumentosByListaDocumentos(jtramite.getListaModelos()));
                 }
+
+                if (jtramite.getListaTasas() != null) {
+                    tramite.setListaTasas(this.getTasasByListaTasas(jtramite.getCodigo()));
+                }
+
                 tramites.add(tramite);
             }
         }
@@ -1544,6 +1585,201 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return query.getResultList();
     }
 
+    private List<JProcedimientoTasa> getTasas(Long codigoTramite) {
+        StringBuilder sql = new StringBuilder("SELECT j FROM JProcedimientoTasa j where j.tramite.codigo = :codigoTramite ");
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("codigoTramite", codigoTramite);
+        return query.getResultList();
+    }
+
+    public List<TasaProcedimientoDTO> getTasasByListaTasas(Long codigoTramite) {
+        List<TasaProcedimientoDTO> tasas = new ArrayList<>();
+        List<JProcedimientoTasa> jlista = getTasas(codigoTramite);
+        if (jlista != null) {
+            for (JProcedimientoTasa jtasa : jlista) {
+                TasaProcedimientoDTO dto = new TasaProcedimientoDTO();
+                dto.setCodigo(jtasa.getCodigo());
+                dto.setCodigoString(String.valueOf(jtasa.getCodigo()));
+                dto.setIdentificador(Literal.createInstance());
+                dto.setDescripcion(Literal.createInstance());
+                dto.setFormaPago(Literal.createInstance());
+                dto.setUrl(Literal.createInstance());
+                if (jtasa.getTraducciones() != null) {
+                    for (JProcedimientoTasaTraduccion trad : jtasa.getTraducciones()) {
+                        dto.getIdentificador().add(new Traduccion(trad.getIdioma(), trad.getIdentificador()));
+                        dto.getDescripcion().add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+                        dto.getFormaPago().add(new Traduccion(trad.getIdioma(), trad.getFormaPago()));
+                        dto.getUrl().add(new Traduccion(trad.getIdioma(), trad.getUrl()));
+                    }
+                }
+                tasas.add(dto);
+            }
+        }
+        return tasas;
+    }
+
+    @Override
+    public void mergeTasasTramite(Long codigoWF, Long codigoTramite, List<TasaProcedimientoDTO> tasas) {
+        entityManager.flush();
+        List<JProcedimientoTasa> jlista = getTasas(codigoTramite);
+        JProcedimientoTramite jtramite = entityManager.find(JProcedimientoTramite.class, codigoTramite);
+
+        // Borrar las que ya no están
+        List<JProcedimientoTasa> borrar = new ArrayList<>();
+        if (jlista != null && !jlista.isEmpty()) {
+            for (JProcedimientoTasa jelemento : jlista) {
+                boolean encontrado = false;
+                if (tasas != null) {
+                    for (TasaProcedimientoDTO elemento : tasas) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getCodigo()) == 0) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                }
+                if (!encontrado) {
+                    borrar.add(jelemento);
+                }
+            }
+        }
+
+        if (!borrar.isEmpty()) {
+            for (JProcedimientoTasa jelemento : borrar) {
+                entityManager.remove(jelemento);
+            }
+            jlista.removeAll(borrar);
+        }
+
+        // Crear o actualizar
+        if (tasas != null && !tasas.isEmpty()) {
+            for (TasaProcedimientoDTO elemento : tasas) {
+                boolean encontrado = false;
+                if (jlista != null && !jlista.isEmpty()) {
+                    for (JProcedimientoTasa jelemento : jlista) {
+                        if (elemento.getCodigo() != null && elemento.getCodigo().compareTo(jelemento.getCodigo()) == 0) {
+                            encontrado = true;
+                            // Actualizar traducciones existentes y crear nuevas
+                            actualizarTraduccionesTasa(jelemento, elemento, codigoWF);
+                            entityManager.merge(jelemento);
+                            break;
+                        }
+                    }
+                }
+
+                if (!encontrado) {
+                    JProcedimientoTasa nuevo = new JProcedimientoTasa();
+                    nuevo.setTramite(jtramite);
+                    nuevo.setTraducciones(new ArrayList<>());
+                    entityManager.persist(nuevo);
+                    elemento.setCodigo(nuevo.getCodigo());
+                    actualizarTraduccionesTasa(nuevo, elemento, codigoWF);
+                }
+            }
+        }
+        entityManager.flush();
+    }
+
+    private void actualizarTraduccionesTasa(JProcedimientoTasa jtasa, TasaProcedimientoDTO dto, Long codigoWF) {
+        // Primero actualizamos los que estén
+        List<String> idiomas = new ArrayList<>();
+        if (jtasa.getTraducciones() != null) {
+            for (JProcedimientoTasaTraduccion trad : jtasa.getTraducciones()) {
+                idiomas.add(trad.getIdioma());
+                String identi = dto.getIdentificador() != null ? dto.getIdentificador().getTraduccion(trad.getIdioma()) : null;
+                trad.setIdentificador(identi != null ? identi : null);
+                trad.setDescripcion(dto.getDescripcion() != null ? dto.getDescripcion().getTraduccion(trad.getIdioma()) : null);
+                String formaPago = dto.getFormaPago() != null ? dto.getFormaPago().getTraduccion(trad.getIdioma()) : null;
+                trad.setFormaPago(formaPago != null ? formaPago : null);
+                trad.setUrl(dto.getUrl() != null ? dto.getUrl().getTraduccion(trad.getIdioma()) : null);
+            }
+        }
+
+        // Ahora creamos los que falten
+        List<String> idiomasNuevos = dto.getTraduccionesSobrantes(idiomas);
+        for (String idioma : idiomasNuevos) {
+            JProcedimientoTasaTraduccion trad = new JProcedimientoTasaTraduccion();
+            trad.setIdioma(idioma);
+            trad.setTasa(jtasa);
+            String identi = dto.getIdentificador() != null ? dto.getIdentificador().getTraduccion(idioma) : null;
+            trad.setIdentificador(identi != null ? identi : null);
+            trad.setDescripcion(dto.getDescripcion() != null ? dto.getDescripcion().getTraduccion(idioma) : null);
+            String formaPago = dto.getFormaPago() != null ? dto.getFormaPago().getTraduccion(idioma) : null;
+            trad.setFormaPago(formaPago != null ? formaPago : null);
+            trad.setUrl(dto.getUrl() != null ? dto.getUrl().getTraduccion(idioma) : null);
+            if ((identi == null || identi.isEmpty()) && (trad.getDescripcion() == null || trad.getDescripcion().isEmpty()) && (trad.getFormaPago() == null || trad.getFormaPago().isEmpty()) && (trad.getUrl() == null || trad.getUrl().isEmpty())) {
+                continue; // Si no hay datos para esta traducción, no la añadimos
+            }
+            jtasa.getTraducciones().add(trad);
+        }
+
+        if (!idiomasNuevos.isEmpty()) {
+            entityManager.merge(jtasa);
+        }
+    }
+
+    @Override
+    public void mergeTasaServicio(Long codigoWF, TasaServicioDTO tasa) {
+        JProcedimientoWorkflow jprocWF = entityManager.find(JProcedimientoWorkflow.class, codigoWF);
+        if (jprocWF == null) {
+            return;
+        }
+
+        List<JProcedimientoTasa> jlista = jprocWF.getListaTasas();
+        if (jlista == null) {
+            jlista = new ArrayList<>();
+            jprocWF.setListaTasas(jlista);
+        }
+
+        if (tasa == null) {
+            if (!jlista.isEmpty()) {
+                for (JProcedimientoTasa jelemento : jlista) {
+                    entityManager.remove(jelemento);
+                }
+                jlista.clear();
+            }
+            return;
+        }
+
+        JProcedimientoTasa jtasa = null;
+        if (!jlista.isEmpty()) {
+            jtasa = jlista.get(0);
+            if (jlista.size() > 1) {
+                // Si hay más de una por algún error previo, borramos el resto
+                for (int i = 1; i < jlista.size(); i++) {
+                    entityManager.remove(jlista.get(i));
+                }
+                jlista.subList(1, jlista.size()).clear();
+            }
+        }
+
+        if (jtasa == null) {
+            jtasa = new JProcedimientoTasa();
+            jtasa.setServicio(jprocWF);
+            jtasa.setTraducciones(new ArrayList<>());
+            entityManager.persist(jtasa);
+            jlista.add(jtasa);
+        }
+
+        // Convert TasaServicioDTO to TasaProcedimientoDTO wrapper to reuse the translation logic
+        TasaProcedimientoDTO dto = new TasaProcedimientoDTO();
+        dto.setIdentificador(tasa.getIdentificador());
+        dto.setDescripcion(tasa.getDescripcion());
+        dto.setFormaPago(tasa.getFormaPago());
+        dto.setUrl(tasa.getUrl());
+        
+        actualizarTraduccionesTasa(jtasa, dto, codigoWF);
+        entityManager.merge(jtasa);
+    }
+
+    private void borrarTasasTramite(Long codigoTramite) {
+        List<JProcedimientoTasa> jlista = getTasas(codigoTramite);
+        if (jlista != null) {
+            for (JProcedimientoTasa jtasa : jlista) {
+                entityManager.remove(jtasa);
+            }
+        }
+    }
+
     private List<JProcedimientoDocumento> getDocumentosLopd(List<Long> idProcedimientos) {
         if (idProcedimientos == null || idProcedimientos.isEmpty()) {
             return null;
@@ -1813,6 +2049,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             if (elemento.getListaModelos() != null) {
                                 mergearDocumentos(codigoWF, jelemento.getCodigo(), jelemento.getListaModelos().getCodigo(), elemento.getListaModelos(), ruta);
                             }
+                            if (elemento.getListaTasas() != null) {
+                                mergeTasasTramite(codigoWF, jelemento.getCodigo(), elemento.getListaTasas());
+                            }
                             break;
                         }
                     }
@@ -1866,6 +2105,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     if (elemento.getListaModelos() != null) {
                         mergearDocumentos(codigoWF, nuevo.getCodigo(), nuevo.getListaModelos().getCodigo(), elemento.getListaModelos(), ruta);
                     }
+                    if (elemento.getListaTasas() != null) {
+                        mergeTasasTramite(codigoWF, nuevo.getCodigo(), elemento.getListaTasas());
+                    }
                 }
             }
         }
@@ -1890,7 +2132,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     private void borrarTramite(JProcedimientoTramite jelemento) {
 
-
         if (jelemento.getListaDocumentos() != null && jelemento.getListaDocumentos().getCodigo() != null) {
             List<JProcedimientoDocumento> jlistaDocs = getDocumentos(jelemento.getListaDocumentos().getCodigo());
             if (jlistaDocs != null) {
@@ -1900,7 +2141,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
-
         if (jelemento.getListaModelos() != null && jelemento.getListaModelos().getCodigo() != null) {
             List<JProcedimientoDocumento> jlistaDocs = getDocumentos(jelemento.getListaModelos().getCodigo());
             if (jlistaDocs != null) {
@@ -1909,6 +2149,16 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 }
             }
         }
+
+        if (jelemento.getListaTasas() != null && !jelemento.getListaTasas().isEmpty()) {
+            List<JProcedimientoTasa> jlistaTasas = getTasas(jelemento.getCodigo());
+            if (jlistaTasas != null) {
+                for (JProcedimientoTasa jtasa : jlistaTasas) {
+                    entityManager.remove(jtasa);
+                }
+            }
+        }
+
         entityManager.remove(jelemento);
 
     }
@@ -3167,6 +3417,28 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     jprocTramite.setCodigoTramite(nextVal.longValue());
                 }
                 entityManager.persist(jprocTramite);
+                // Clonar tasas
+                List<JProcedimientoTasa> tasasOrigen = getTasas(elemento.getCodigo());
+                if (tasasOrigen != null) {
+                    for (JProcedimientoTasa tasaOrigen : tasasOrigen) {
+                        JProcedimientoTasa tasaClonada = new JProcedimientoTasa();
+                        tasaClonada.setTramite(jprocTramite);
+                        tasaClonada.setTraducciones(new ArrayList<>());
+                        entityManager.persist(tasaClonada);
+                        if (tasaOrigen.getTraducciones() != null) {
+                            for (JProcedimientoTasaTraduccion tradOrigen : tasaOrigen.getTraducciones()) {
+                                JProcedimientoTasaTraduccion tradClonada = new JProcedimientoTasaTraduccion();
+                                tradClonada.setTasa(tasaClonada);
+                                tradClonada.setIdioma(tradOrigen.getIdioma());
+                                tradClonada.setIdentificador(tradOrigen.getIdentificador());
+                                tradClonada.setDescripcion(tradOrigen.getDescripcion());
+                                tradClonada.setFormaPago(tradOrigen.getFormaPago());
+                                tradClonada.setUrl(tradOrigen.getUrl());
+                                tasaClonada.getTraducciones().add(tradClonada);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -3717,6 +3989,28 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
                 ((ServicioDTO) proc).setPlantillaSel(tipo);
             }
+            
+            if (jprocWF.getListaTasas() != null && !jprocWF.getListaTasas().isEmpty()) {
+                JProcedimientoTasa jtasa = jprocWF.getListaTasas().get(0);
+                TasaServicioDTO tasaDTO = new TasaServicioDTO();
+                tasaDTO.setCodigo(jtasa.getCodigo());
+                tasaDTO.setCodigoString(String.valueOf(jtasa.getCodigo()));
+                tasaDTO.setIdentificador(Literal.createInstance());
+                tasaDTO.setDescripcion(Literal.createInstance());
+                tasaDTO.setFormaPago(Literal.createInstance());
+                tasaDTO.setUrl(Literal.createInstance());
+
+                if (jtasa.getTraducciones() != null) {
+                    for (JProcedimientoTasaTraduccion jtrad : jtasa.getTraducciones()) {
+                        tasaDTO.getIdentificador().add(new Traduccion(jtrad.getIdioma(), jtrad.getIdentificador()));
+                        tasaDTO.getDescripcion().add(new Traduccion(jtrad.getIdioma(), jtrad.getDescripcion()));
+                        tasaDTO.getFormaPago().add(new Traduccion(jtrad.getIdioma(), jtrad.getFormaPago()));
+                        tasaDTO.getUrl().add(new Traduccion(jtrad.getIdioma(), jtrad.getUrl()));
+                    }
+                }
+                ((ServicioDTO) proc).setTasaServicio(tasaDTO);
+            }
+
         }
 
         proc.setIntegrarPdu(jprocWF.isIntegrarPdu());

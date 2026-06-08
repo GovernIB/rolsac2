@@ -272,6 +272,7 @@ AS
 	existe_trad_ca             NUMBER;
 	existe_trad_tram_es        NUMBER;
 	existe_trad_tram_ca        NUMBER;
+    v_prtx_codigo              NUMBER(10,0);
 	vUsuario                   NUMBER(10,0);
 	vExisteUsuario             NUMBER;
 	mensajeAuditoria           VARCHAR2(255 CHAR);
@@ -734,7 +735,74 @@ BEGIN
 					              rolsac1_tramites.tra_orden,
 					              tipotram);
 
-					/** INSERTAMOS LAS TRADUCCIONES **/
+										/* Migrar tasas del trámite sólo si el procedimiento tiene PRWF_SVTASA = 1 */
+										BEGIN
+											BEGIN
+												SELECT prwf_svtasa
+												INTO   valor
+												FROM   rs2_prcwf
+												WHERE  prwf_codigo = codigo_procwf;
+											EXCEPTION
+												WHEN NO_DATA_FOUND THEN
+													valor := 0;
+											END;
+
+											IF valor = 1 THEN
+												FOR tax_rec IN (
+													SELECT tax_codi
+													FROM ROLSAC.RSC_TAXA
+													WHERE tax_codtra = rolsac1_tramites.tra_codi
+												)
+												LOOP
+													-- Comprobar si hay traducciones con identificador
+													SELECT COUNT(*)
+													INTO   valor
+													FROM   ROLSAC.RSC_TRATAX
+													WHERE  ttax_codi = tax_rec.tax_codi
+													  AND  tax_id IS NOT NULL;
+
+													IF valor > 0 THEN
+														SELECT rs2_prctax_seq.NEXTVAL
+														INTO v_prtx_codigo
+														FROM dual;
+
+														INSERT INTO rs2_prctax
+														(
+															prtx_codigo,
+															prtx_codprwf
+														)
+														VALUES
+														(
+															v_prtx_codigo,
+															rolsac1_tramites.tra_codi
+														);
+
+														INSERT INTO rs2_traprtx
+														(
+															trtx_codigo,
+															trtx_codprtx,
+															trtx_idioma,
+															trtx_identi,
+															trtx_descri,
+															trtx_forpag,
+															trtx_url
+														)
+														SELECT rs2_traprtx_seq.NEXTVAL,
+															   v_prtx_codigo,
+															   cod_idi,
+															   tax_id,
+															   descri,
+															   formpag,
+															   NULL
+														FROM ROLSAC.RSC_TRATAX
+														WHERE ttax_codi = tax_rec.tax_codi
+														  AND tax_id IS NOT NULL;
+													END IF;
+
+												END LOOP;
+											END IF;
+										END;
+
 					INSERT INTO rs2_traprta
 					(trta_codigo,
 					 trta_codprta,

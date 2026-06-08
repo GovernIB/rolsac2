@@ -58,6 +58,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     private ProcedimientoDocumentoDTO documentoSeleccionado;
     private ProcedimientoDocumentoDTO modeloSeleccionado;
+    private TasaProcedimientoDTO tasaSeleccionada;
 
     private boolean mostrarIniciacion = true;
     private String ocultarIniciacion;
@@ -538,6 +539,76 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
                 this.data.getListaModelos().add(posicion - 1, modeloSeleccionado);
             }
         }
+    }
+
+    //TASA
+    public void returnDialogTasa(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            if (respuesta.isAlta()) {
+                TasaProcedimientoDTO tasa = (TasaProcedimientoDTO) respuesta.getResult();
+                if (tasa != null) {
+                    if (data.getListaTasas() == null) {
+                        data.setListaTasas(new ArrayList<>());
+                    }
+                    data.agregarTasa(tasa);
+                }
+            } else if (respuesta.isEdicion()) {
+                TasaProcedimientoDTO tasa = (TasaProcedimientoDTO) respuesta.getResult();
+                if (tasa != null) {
+                    data.getListaTasas().remove(tasaSeleccionada);
+                    data.agregarTasa(tasa);
+                    tasaSeleccionada = null;
+                }
+            }
+        }
+    }
+
+    public void abrirDialogTasa(TypeModoAcceso modoAcceso) {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
+        if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
+            UtilJSF.anyadirMochila("tasa", this.tasaSeleccionada);
+        }
+        UtilJSF.openDialog("dialogTasasProcedimiento", modoAcceso, params, true, 800, 500);
+    }
+
+    public void nuevaTasa() {
+        abrirDialogTasa(TypeModoAcceso.ALTA);
+    }
+
+    public void editarTasa() {
+        if (tasaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogTasa(TypeModoAcceso.EDICION);
+        }
+    }
+
+    public void consultarTasa() {
+        if (tasaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            abrirDialogTasa(TypeModoAcceso.CONSULTA);
+        }
+    }
+
+    public void borrarTasa() {
+        if (tasaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            data.getListaTasas().remove(tasaSeleccionada);
+            tasaSeleccionada = null;
+            addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
+        }
+    }
+
+    public TasaProcedimientoDTO getTasaSeleccionada() {
+        return tasaSeleccionada;
+    }
+
+    public void setTasaSeleccionada(TasaProcedimientoDTO tasaSeleccionada) {
+        this.tasaSeleccionada = tasaSeleccionada;
     }
 
     public String getId() {

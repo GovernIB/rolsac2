@@ -1,6 +1,7 @@
 package es.caib.rolsac2.rest.api.interna.v1.services;
 
 import es.caib.rolsac2.api.interna.v1.model.ProcedimientoDocumento;
+import es.caib.rolsac2.api.interna.v1.model.Tasa;
 import es.caib.rolsac2.api.interna.v1.model.Tramite;
 import es.caib.rolsac2.api.interna.v1.model.filters.FiltroTramite;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
@@ -12,6 +13,7 @@ import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.ProcedimientoDocumentoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import es.caib.rolsac2.service.model.TasaProcedimientoDTO;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoTramiteFiltro;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -236,6 +238,45 @@ public class TramiteResource {
         Instant finish = Instant.now();
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
         respuesta.setTiempo(tiempoMiliSegundos);
+        return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
+    }
+
+    /**
+     * Listado de tasas de tramites.
+     *
+     * @param codigo Código trámite
+     * @param lang   Código de idioma
+     * @return Lista de tasas
+     */
+    @Produces({MediaType.APPLICATION_JSON})
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+    @Path("/tasas/{codigo}")
+    @Operation(operationId = "listarTasas", summary = "Lista las tasas del trámite", description = "Lista las tasas del trámite dado por código")
+    @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
+    @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
+    public Response listarTasas(@Parameter(description = "Código trámite", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+        Instant start = Instant.now();
+        List<Tasa> lista = new ArrayList<>();
+        String idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        String idioma = (lang != null) ? lang : idiomaPorDefecto;
+
+        if (codigo != null) {
+            List<TasaProcedimientoDTO> result = procedimientoService.getTasasTramite(Long.valueOf(codigo));
+            if (result != null) {
+                for (TasaProcedimientoDTO nodo : result) {
+                    lista.add(new Tasa(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), idioma, true, idiomaPorDefecto));
+                }
+            }
+        }
+
+        Instant finish = Instant.now();
+        long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
+
+        URI uriCompleta = uriInfo.getRequestUri();
+        String url = uriCompleta.toString();
+
+        RespuestaBase respuesta = new RespuestaBase(lista.size(), lista.size(), "0", 0, 0, url, lista, tiempoMiliSegundos);
         return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
     }
 
