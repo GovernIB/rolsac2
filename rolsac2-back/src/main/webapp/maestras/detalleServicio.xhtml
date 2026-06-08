@@ -45,16 +45,6 @@
                     <p:outputLabel styleClass="w99"
                                    value="#{viewServicios.servicioSeleccionado.keywords.getTraduccion(viewServicios.idioma)}"/>
                 </div>
-                <div class="form-group col-md-6 col-xs-12">
-                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.tasa']}:"/>
-                    <c:if test="#{viewServicios.servicioSeleccionado.tieneTasa == true}">
-                        <p:outputLabel value=" #{labels['dict.si']}"/>
-                    </c:if>
-                    <c:if test="#{viewServicios.servicioSeleccionado.tieneTasa == false}">
-                        <p:outputLabel value=" #{labels['dict.no']}"/>
-                    </c:if>
-
-                </div>
             </div>
         </p:panel>
         <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel mt-3">

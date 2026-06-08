@@ -111,11 +111,6 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     private TipoViaDTO finVia;
 
     /**
-     * Tiene tasa
-     */
-    private Boolean tieneTasa = false;
-
-    /**
      * Tramite electronico
      */
     private TipoTramitacionDTO tramiteElectronico;
@@ -555,24 +550,6 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
     }
 
     /**
-     * Obtiene tiene tasa.
-     *
-     * @return tiene tasa
-     */
-    public Boolean getTieneTasa() {
-        return tieneTasa;
-    }
-
-    /**
-     * Establece tiene tasa.
-     *
-     * @param tieneTasa tiene tasa
-     */
-    public void setTieneTasa(Boolean tieneTasa) {
-        this.tieneTasa = tieneTasa;
-    }
-
-    /**
      * Obtiene tramite electronico.
      *
      * @return tramite electronico
@@ -793,6 +770,6 @@ public class ProcedimientoWorkflowDTO extends ModelApi {
 
     @Override
     public String toString() {
-        return "ProcedimientoWorkflowDTO{" + "codigo=" + codigo + ", procedimiento=" + procedimiento + ", workflow=" + workflow + ", estado='" + estado + '\'' + ", usuario='" + usuario + '\'' + ", uaResponsable=" + uaResponsable + ", uaInstructor=" + uaInstructor + ", interno=" + interno + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableTelefono='" + responsableTelefono + '\'' + ", datosPersonalesActivo=" + datosPersonalesActivo + ", datosPersonalesLegitimacion=" + datosPersonalesLegitimacion + ", listaDocumentos=" + listaDocumentos + ", uaCompetente=" + uaCompetente + ", formaInicio=" + formaInicio + ", silencioAdministrativo=" + silencioAdministrativo + ", finVia=" + finVia + ", tieneTasa=" + tieneTasa + ", tramiteElectronico=" + tramiteElectronico + ", nombre=" + nombre + ", objeto=" + objeto + ", destinatarios=" + destinatarios + ", observaciones=" + observaciones + ", datosPersonalesFinalidad=" + datosPersonalesFinalidad + ", datosPersonalesDestinatario=" + datosPersonalesDestinatario + ", documentoLOPD=" + documentoLOPD + ", requisitos=" + requisitos + ", terminoResolucion=" + terminoResolucion + ", uaResponsableLiteral=" + uaResponsableLiteral + '}';
+        return "ProcedimientoWorkflowDTO{" + "codigo=" + codigo + ", procedimiento=" + procedimiento + ", workflow=" + workflow + ", estado='" + estado + '\'' + ", usuario='" + usuario + '\'' + ", uaResponsable=" + uaResponsable + ", uaInstructor=" + uaInstructor + ", interno=" + interno + ", responsableNombre='" + responsableNombre + '\'' + ", responsableEmail='" + responsableEmail + '\'' + ", responsableTelefono='" + responsableTelefono + '\'' + ", datosPersonalesActivo=" + datosPersonalesActivo + ", datosPersonalesLegitimacion=" + datosPersonalesLegitimacion + ", listaDocumentos=" + listaDocumentos + ", uaCompetente=" + uaCompetente + ", formaInicio=" + formaInicio + ", silencioAdministrativo=" + silencioAdministrativo + ", finVia=" + finVia + ", tramiteElectronico=" + tramiteElectronico + ", nombre=" + nombre + ", objeto=" + objeto + ", destinatarios=" + destinatarios + ", observaciones=" + observaciones + ", datosPersonalesFinalidad=" + datosPersonalesFinalidad + ", datosPersonalesDestinatario=" + datosPersonalesDestinatario + ", documentoLOPD=" + documentoLOPD + ", requisitos=" + requisitos + ", terminoResolucion=" + terminoResolucion + ", uaResponsableLiteral=" + uaResponsableLiteral + '}';
     }
 }

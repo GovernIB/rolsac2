@@ -147,7 +147,7 @@ AS
 			PRWF_PRCODUAC --> UA COMPETENTE
 			PRWF_PRTIPINIC --> FORMA DE INICIO
 			PRWF_PRTIPSIAD --> SILENCIO ADMINISTRATIVO
-			PRWF_SVTASA  ----> PARA SERVICIOS: TIENE TASA
+			*PRWF_SVTASA  ----> PARA SERVICIOS: TIENE TASA
 			PRWF_SVTPRE  ----> PARA SERVICIOS: TIPO TRAMITACION PLANTILLA
 			PRWF_FECPUB  ----> FECHA PUBLICACION
 			PRWF_FECCAD  ----> FECHA CADUCIDAD
@@ -527,7 +527,7 @@ BEGIN
              prwf_prtipinic,
              prwf_prtipsiad,
 				/*PRWF_PRTIPFVIA, */
-             prwf_svtasa,
+				/*PRWF_SVTASA */
 				/*PRWF_SVTPRE,*/
              prwf_fecpub,
              prwf_feccad,
@@ -560,12 +560,6 @@ BEGIN
 				   pro_codini,
 				   pro_codsil,
 				/*PRWF_PRTIPFVIA,*/
-				   CASE
-					   WHEN pro_taxa IN ('0', '1') THEN pro_taxa
-					   WHEN pro_taxa IS NULL THEN NULL
-					   ELSE '0'
-				       END AS pro_taxa,
-				/*PRWF_SVTPRE,*/
 				   pro_fecpub,
 				   pro_feccad,
 				   pro_codfam,
@@ -735,13 +729,14 @@ BEGIN
 					              rolsac1_tramites.tra_orden,
 					              tipotram);
 
-										/* Migrar tasas del trámite sólo si el procedimiento tiene PRWF_SVTASA = 1 */
+										/* Migrar tasas del trámite sólo si el procedimiento tenía pro_taxa = '1' (campo origen de PRWF_SVTASA) */
 										BEGIN
 											BEGIN
-												SELECT prwf_svtasa
+												-- Use original Rolsac1 field (pro_taxa) as source
+												SELECT CASE WHEN pro_taxa = '1' THEN 1 ELSE 0 END
 												INTO   valor
-												FROM   rs2_prcwf
-												WHERE  prwf_codigo = codigo_procwf;
+												FROM   r1_procedimientos
+												WHERE  pro_codi = codigo;
 											EXCEPTION
 												WHEN NO_DATA_FOUND THEN
 													valor := 0;

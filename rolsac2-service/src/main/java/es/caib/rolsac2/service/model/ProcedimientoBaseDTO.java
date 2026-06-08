@@ -55,7 +55,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     private String habilitadoFuncionario;
 
-    private boolean tieneTasa = false;
     private boolean tramitElectronica = false;
     private boolean tramitPresencial = false;
     private boolean tramitTelefonica = false;
@@ -625,14 +624,6 @@ public class ProcedimientoBaseDTO extends ModelApi {
 
     public void setUsuarioAuditoria(String usuarioAuditoria) {
         this.usuarioAuditoria = usuarioAuditoria;
-    }
-
-    public boolean isTieneTasa() {
-        return tieneTasa;
-    }
-
-    public void setTieneTasa(boolean tieneTasa) {
-        this.tieneTasa = tieneTasa;
     }
 
     public String getResponsableEmail() {

@@ -236,7 +236,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         jProcWF.setIncidenciasEmail(dto.getIncidenciasEmail());
         jProcWF.setResponsableNombre(dto.getResponsable());
         jProcWF.setResponsableTelefono(dto.getResponsableTelefono());
-        jProcWF.setTieneTasa(dto.isTieneTasa());
         jProcWF.setUaInstructor(uaRepository.findJUAById(dto.getUaInstructor()));
         jProcWF.setUaCompetente(uaRepository.findJUAById(dto.getUaCompetente()));
         jProcWF.setFormaInicio(tipoFormaInicioConverter.createEntity(dto.getIniciacion()));
@@ -773,7 +772,6 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
         proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
         proc.setMensajes(jproc.getMensajes());
-        proc.setTieneTasa(jprocWF.getTieneTasa());
         proc.setResponsable(jprocWF.getResponsableNombre());
         proc.setLopdResponsable(jprocWF.getLopdResponsable());
         proc.setComun(jprocWF.getComun());

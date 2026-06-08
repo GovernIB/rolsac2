@@ -141,7 +141,7 @@ AS
           PRWF_PRCODUAC --> UA COMPETENTE
           PRWF_PRTIPINIC --> FORMA DE INICIO
           PRWF_PRTIPSIAD --> SILENCIO ADMINISTRATIVO
-          PRWF_SVTASA  ----> PARA SERVICIOS: TIENE TASA
+          *PRWF_SVTASA  ----> PARA SERVICIOS: TIENE TASA
           PRWF_SVTPRE  ----> PARA SERVICIOS: TIPO TRAMITACION PLANTILLA
           PRWF_FECPUB  ----> FECHA PUBLICACION
           PRWF_FECCAD  ----> FECHA CADUCIDAD
@@ -539,7 +539,7 @@ INSERT INTO rs2_prcwf
  prwf_rsema,
  prwf_rstfno,
  prwf_dptiplegi,
- prwf_svtasa,
+ /* prwf_svtasa, */
  prwf_svtpre,
  prwf_fecpub,
  prwf_feccad,
@@ -561,7 +561,6 @@ SELECT codigo_procwf,
        ser_correo,
        SUBSTR(ser_telefo, 1, 25) AS ser_telefo,
        ser_codleg,
-       CASE WHEN ser_tasurl IS NOT NULL THEN 1 ELSE 0 END,
        tipotram_plantilla,
        ser_fecpub,
        ser_fecdes,

@@ -167,7 +167,7 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         srvClonado.setIncidenciasEmail(this.getIncidenciasEmail());
         srvClonado.setResponsableEmail(this.getResponsableEmail());
         srvClonado.setResponsableTelefono(this.getResponsableTelefono());
-        srvClonado.setTieneTasa(this.isTieneTasa());
+        
         //Tipos
         if (this.getSilencio() != null) {
             srvClonado.setSilencio((TipoSilencioAdministrativoDTO) this.getSilencio().clone());

@@ -82,7 +82,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         texto.append(", codigoWF=").append(getCodigoWF());
         texto.append(", workflow=").append(getWorkflow());
         texto.append(", estado=").append(getEstado());
-        texto.append(", tieneTasa=").append(isTieneTasa());
         texto.append(", codigoSIA=").append(getCodigoSIA());
         texto.append(", estadoSIA=").append(getEstadoSIA());
         texto.append(", tipo=").append(getTipo());
@@ -188,7 +187,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         procClonado.setCodigoWF(this.getCodigoWF());
         procClonado.setWorkflow(this.getWorkflow());
         procClonado.setEstado(this.getEstado());
-        procClonado.setTieneTasa(this.isTieneTasa());
         procClonado.setCodigoSIA(this.getCodigoSIA());
         procClonado.setEstadoSIA(this.getEstadoSIA());
         procClonado.setTipo(this.getTipo());
@@ -629,14 +627,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
             return UtilComparador.compareTo(this.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional());
         }
 
-
-        if (UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa()) != 0) {
-            if (mostrarLog) {
-                LOG.error("ProcedimientoDTO.compareTo: this.isTieneTasa() != dataOriginal.isTieneTasa(). this.isTieneTasa()=" + this.isTieneTasa() + " dataOriginal.isTieneTasa()=" + dataOriginal.isTieneTasa());
-            }
-            return UtilComparador.compareTo(this.isTieneTasa(), dataOriginal.isTieneTasa());
-        }
-
         if (UtilComparador.compareTo(this.getObservaciones(), dataOriginal.getObservaciones()) != 0) {
             if (mostrarLog) {
                 LOG.error("ProcedimientoDTO.compareTo: this.getObservaciones() != dataOriginal.getObservaciones(). this.getObservaciones()=" + this.getObservaciones() + " dataOriginal.getObservaciones()=" + dataOriginal.getObservaciones());
@@ -738,7 +728,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditar(data.isHabilitadoApoderado(), dataOriginal.isHabilitadoApoderado(), cambios, "auditoria.procedimiento.habilitadoApoderado");
 
         AuditoriaUtil.auditar("S".equals(data.getHabilitadoFuncionario()), "S".equals(dataOriginal.getHabilitadoFuncionario()), cambios, "auditoria.procedimiento.habilitadoFuncionario");
-        AuditoriaUtil.auditar(data.isTieneTasa(), dataOriginal.isTieneTasa(), cambios, "auditoria.procedimiento.tieneTasa");
 
         AuditoriaUtil.auditar(data.getObservaciones(), dataOriginal.getObservaciones(), cambios, "auditoria.procedimiento.observaciones");
         AuditoriaUtil.auditar(data.getKeywords(), dataOriginal.getKeywords(), cambios, "auditoria.procedimiento.keywords");

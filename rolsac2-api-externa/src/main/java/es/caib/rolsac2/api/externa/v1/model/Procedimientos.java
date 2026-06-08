@@ -196,9 +196,6 @@ public class Procedimientos extends EntidadBase {
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
     private String habilitadoFuncionario;
 
-    @Schema(description = "tieneTasa", type = SchemaType.BOOLEAN, required = false)
-    private boolean tieneTasa = false;
-
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
 
@@ -663,14 +660,6 @@ public class Procedimientos extends EntidadBase {
 
     public void setHabilitadoFuncionario(String habilitadoFuncionario) {
         this.habilitadoFuncionario = habilitadoFuncionario;
-    }
-
-    public boolean isTieneTasa() {
-        return tieneTasa;
-    }
-
-    public void setTieneTasa(boolean tieneTasa) {
-        this.tieneTasa = tieneTasa;
     }
 
     public String getResponsableEmail() {

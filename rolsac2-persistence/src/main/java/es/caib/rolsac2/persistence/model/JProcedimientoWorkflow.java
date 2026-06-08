@@ -113,12 +113,6 @@ public class JProcedimientoWorkflow {
     private JTipoSilencioAdministrativo silencioAdministrativo;
 
     /**
-     * PARA SERVICIO: SI TIENE TASA
-     **/
-    @Column(name = "PRWF_SVTASA", nullable = false)
-    private Boolean tieneTasa = false;
-
-    /**
      * PARA SERVICIO: TASAS ASOCIADAS 
      **/
     @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -205,7 +199,6 @@ public class JProcedimientoWorkflow {
             retorno.setUaCompetente(wf.getUaCompetente());
             retorno.setFormaInicio(wf.getFormaInicio());
             retorno.setSilencioAdministrativo(wf.getSilencioAdministrativo());
-            retorno.setTieneTasa(wf.getTieneTasa());
             retorno.setTramiteElectronicoPlantilla(wf.getTramiteElectronicoPlantilla());
             retorno.setTramiteElectronico(JTipoTramitacion.clonar(wf.getTramiteElectronico()));
             retorno.setTramitPresencial(wf.getTramitPresencial());
@@ -347,14 +340,6 @@ public class JProcedimientoWorkflow {
 
     public void setSilencioAdministrativo(JTipoSilencioAdministrativo prwfPrtipsiad) {
         this.silencioAdministrativo = prwfPrtipsiad;
-    }
-
-    public Boolean getTieneTasa() {
-        return tieneTasa;
-    }
-
-    public void setTieneTasa(Boolean prwfSvtasa) {
-        this.tieneTasa = prwfSvtasa;
     }
 
     public JTipoTramitacion getTramiteElectronicoPlantilla() {

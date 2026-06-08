@@ -145,7 +145,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private String nombreTipoVia;
     private Boolean habilitadoApoderado;
     private Boolean habilitadoFuncionario;
-    private Boolean tieneTasa;
     private String terminoResolucion;
     private Long codigoPublicoObjetivo;
     private String nombrePublicoObjetivo;
@@ -318,7 +317,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.nombreTipoVia = otro.nombreTipoVia;
         this.habilitadoApoderado = otro.habilitadoApoderado;
         this.habilitadoFuncionario = otro.habilitadoFuncionario;
-        this.tieneTasa = otro.tieneTasa;
         this.terminoResolucion = otro.terminoResolucion;
         this.codigoPublicoObjetivo = otro.codigoPublicoObjetivo;
         this.nombrePublicoObjetivo = otro.nombrePublicoObjetivo;
@@ -814,14 +812,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setHabilitadoFuncionario(Boolean habilitadoFuncionario) {
         this.habilitadoFuncionario = habilitadoFuncionario;
-    }
-
-    public Boolean getTieneTasa() {
-        return tieneTasa;
-    }
-
-    public void setTieneTasa(Boolean tieneTasa) {
-        this.tieneTasa = tieneTasa;
     }
 
     public String getTerminoResolucion() {
@@ -2060,10 +2050,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoHabilitadoFuncionario() {
         return habilitadoFuncionario != null;
-    }
-
-    public boolean isRellenoTieneTasa() {
-        return tieneTasa != null;
     }
 
     public boolean isRellenoTerminoResolucion() {

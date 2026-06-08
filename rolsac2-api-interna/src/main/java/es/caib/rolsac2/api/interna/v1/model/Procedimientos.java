@@ -168,10 +168,7 @@ public class Procedimientos extends EntidadBase {
     private Integer habilitadoApoderado;
 
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
-    private String habilitadoFuncionario;
-
-    @Schema(description = "tieneTasa", type = SchemaType.INTEGER, required = false)
-    private Integer tieneTasa = 0;
+    private String habilitadoFuncionario;;
 
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
@@ -712,14 +709,6 @@ public class Procedimientos extends EntidadBase {
 
     public void setHabilitadoFuncionario(String habilitadoFuncionario) {
         this.habilitadoFuncionario = habilitadoFuncionario;
-    }
-
-    public Integer getTieneTasa() {
-        return tieneTasa;
-    }
-
-    public void setTieneTasa(Integer tieneTasa) {
-        this.tieneTasa = tieneTasa;
     }
 
     public String getResponsableEmail() {

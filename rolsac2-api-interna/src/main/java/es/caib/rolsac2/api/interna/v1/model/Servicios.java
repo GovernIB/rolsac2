@@ -122,8 +122,6 @@ public class Servicios extends EntidadBase {
     private Integer habilitadoApoderado;
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
     private String habilitadoFuncionario;
-    @Schema(description = "tieneTasa", type = SchemaType.INTEGER, required = false)
-    private Integer tieneTasa = 0;
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
 
@@ -197,7 +195,6 @@ public class Servicios extends EntidadBase {
 
             this.responsableTelefono = elem.getResponsableTelefono();
             this.terminoResolucion = elem.getTerminoResolucion() == null ? null : elem.getTerminoResolucion().getTraduccionConValor(idioma, idiomaPorDefecto);
-            this.tieneTasa = elem.isTieneTasa() ? 1 : 0;
             this.tipo = elem.getTipo();
             this.tramitElectronica = elem.isTramitElectronica() ? 1 : 0;
             this.tramitTelefonica = elem.isTramitTelefonica() ? 1 : 0;
@@ -751,14 +748,6 @@ public class Servicios extends EntidadBase {
 
     public void setHabilitadoFuncionario(String habilitadoFuncionario) {
         this.habilitadoFuncionario = habilitadoFuncionario;
-    }
-
-    public Integer getTieneTasa() {
-        return tieneTasa;
-    }
-
-    public void setTieneTasa(Integer tieneTasa) {
-        this.tieneTasa = tieneTasa;
     }
 
     public String getResponsableEmail() {

@@ -375,13 +375,6 @@
                                 <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="form-group col-md-2 d-flex flex-column" style=" margin-bottom: 20px;">
-                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.tasa']}:"
-                                           for="txtTasa"/>
-                            <p:selectBooleanCheckbox id="txtTasa" styleClass="mt-1"
-                                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                                     value="#{dialogProcedimiento.data.tieneTasa}"/>
-                        </div>
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.observaciones']}:"
