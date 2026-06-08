@@ -382,9 +382,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void abrirVentanaUAInstr() {
 
-        if (!this.isAdministradorContenidos()) {
-            UtilJSF.anyadirMochila("uAsRaiz", sessionBean.obtenerUasEntidad());
-        }
+        UtilJSF.anyadirMochila("uAsRaiz", sessionBean.obtenerUasEntidad());
         abrirVentanaUA(this.data.getUaInstructor());
     }
 
