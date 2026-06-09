@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.ProcedimientoTramiteDTO;
+import es.caib.rolsac2.service.model.TasaProcedimientoDTO;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -11,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ProcedimientoTramite.
@@ -33,8 +36,8 @@ public class Tramite extends EntidadBase<Tramite> {
     @Schema(description = "fase", name = "fase", type = SchemaType.INTEGER, required = false)
     private Integer fase;
 
-    @Schema(description = "tasaAsociada", name = "tasaAsociada", type = SchemaType.INTEGER, required = false)
-    private Integer tasaAsociada;
+    @Schema(description = "tasas", name = "tasas", type = SchemaType.ARRAY, required = false)
+    private List<Tasa> tasas;
 
     @Schema(description = "requisitos", name = "requisitos", type = SchemaType.STRING, required = false)
     private String requisitos;
@@ -145,6 +148,13 @@ public class Tramite extends EntidadBase<Tramite> {
         if (elem.getProcedimiento() != null) {
             this.setProcedimientoWF(elem.getProcedimiento().getCodigo());
         }
+
+        if (elem.getListaTasas() != null) {
+            this.tasas = new ArrayList<>();
+            for (TasaProcedimientoDTO tasa : elem.getListaTasas()) {
+                this.tasas.add(tasa == null ? null : new Tasa(tasa, urlBase, idioma, hateoasEnabled, idiomaPorDefecto));
+            }
+        }
     }
 
     public Tramite() {
@@ -197,12 +207,12 @@ public class Tramite extends EntidadBase<Tramite> {
         this.fase = fase;
     }
 
-    public Integer getTasaAsociada() {
-        return tasaAsociada;
+    public List<Tasa> getTasas() {
+        return tasas;
     }
 
-    public void setTasaAsociada(Integer tasaAsociada) {
-        this.tasaAsociada = tasaAsociada;
+    public void setTasas(List<Tasa> tasas) {
+        this.tasas = tasas;
     }
 
     public String getRequisitos() {

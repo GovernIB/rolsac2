@@ -42,7 +42,7 @@ GRANT SELECT ON RSC_TRATAX TO WWW_ROLSAC2;
 
 
 /** ejecutar desde el usuario ROLSAC2 **/
-	
+
 /** drop dolumn **/
 ALTER TABLE RS2_PRCWF
 DROP COLUMN PRWF_SVTASA;

@@ -552,13 +552,13 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
                         data.setListaTasas(new ArrayList<>());
                     }
                     data.agregarTasa(tasa);
+                    tasaSeleccionada = tasa;
                 }
             } else if (respuesta.isEdicion()) {
                 TasaProcedimientoDTO tasa = (TasaProcedimientoDTO) respuesta.getResult();
                 if (tasa != null) {
-                    data.getListaTasas().remove(tasaSeleccionada);
                     data.agregarTasa(tasa);
-                    tasaSeleccionada = null;
+                    tasaSeleccionada = tasa;
                 }
             }
         }

@@ -41,6 +41,9 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
     @Inject
     TipoTramitacionConverter tipoTramitacionConverter;
 
+    @Inject
+    ProcedimientoRepository procedimientoRepository;
+
     protected ProcedimientoTramiteRepositoryBean() {
         super(JProcedimientoTramite.class);
     }
@@ -78,6 +81,9 @@ public class ProcedimientoTramiteRepositoryBean extends AbstractCrudRepository<J
                 } else if (jtramite.getTipoTramitacionPlantilla() != null) {
                     tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
                     tramite.setTipoTramitacion(null);
+                }
+                if (jtramite.getListaTasas() != null) {
+                    tramite.setListaTasas(procedimientoRepository.getTasasByListaTasas(jtramite.getCodigo()));
                 }
                 procedimientoTramites.add(tramite);
             }

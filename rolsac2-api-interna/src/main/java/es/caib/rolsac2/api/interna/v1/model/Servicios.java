@@ -113,6 +113,8 @@ public class Servicios extends EntidadBase {
     private Integer publicado;
     @Schema(description = "fechaCaducidad", required = false)
     private Calendar fechaCaducidad;
+    @Schema(description = "tasa", type = SchemaType.OBJECT, required = false)
+    private Tasa tasa;
 
     @Schema(description = "linkUnidadAdministrativaInstructora", required = false)
     private Link linkUnidadAdministrativaInstructora;
@@ -201,6 +203,7 @@ public class Servicios extends EntidadBase {
             this.tramitPresencial = elem.isTramitPresencial() ? 1 : 0;
             this.uaInstructor = elem.getUaInstructor() == null ? null : elem.getUaInstructor().getCodigo();
             this.workflow = elem.getWorkflow() == null ? null : elem.getWorkflow();
+            this.tasa = elem.getTasaServicio() == null ? null : new Tasa(elem.getTasaServicio(), urlBase, idioma, hateoasEnabled, idiomaPorDefecto);
             if (this.tramitElectronica != null && this.tramitElectronica == 1) {
                 this.tipoTramitacion = elem.getTipoTramitacion() == null ? null : elem.getTipoTramitacion().getCodigo();
                 this.plantillaSel = elem.getPlantillaSel() == null ? null : elem.getPlantillaSel().getCodigo();
@@ -703,6 +706,20 @@ public class Servicios extends EntidadBase {
      */
     public void setFechaCaducidad(Calendar fechaCaducidad) {
         this.fechaCaducidad = fechaCaducidad;
+    }
+
+    /** 
+    * @return get the tasa
+     */
+    public Tasa getTasa() {
+        return tasa;
+    }
+
+    /**
+    * @param tasa the tasa to set
+    */
+    public void setTasa(Tasa tasa) {
+        this.tasa = tasa;
     }
 
     /**

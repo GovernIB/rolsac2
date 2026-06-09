@@ -329,13 +329,6 @@ public class ServiciosResource {
     }
 
     /**
-     * Listado de Publico Objetivo Entidad de servicios.
-     *
-     * @param codigo Código del servicio workflow
-     * @param lang   Código de idioma
-     * @return Listado de Publico Objetivo Entidad de servicios
-     */
-    /**
      * Listado de tasas de servicios.
      *
      * @param codigo Código del servicio workflow
@@ -384,6 +377,14 @@ public class ServiciosResource {
                 lista,
                 tiempoMiliSegundos), MediaType.APPLICATION_JSON).build();
     }
+
+    /**
+     * Listado de Publico Objetivo Entidad de servicios.
+     *
+     * @param codigo Código del servicio workflow
+     * @param lang   Código de idioma
+     * @return Listado de Publico Objetivo Entidad de servicios
+     */
     @Produces({MediaType.APPLICATION_JSON})
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})

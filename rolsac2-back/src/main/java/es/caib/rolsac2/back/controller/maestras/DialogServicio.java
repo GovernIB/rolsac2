@@ -957,7 +957,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             TasaServicioDTO tasa = (TasaServicioDTO) respuesta.getResult();
             if (tasa != null) {
                 data.setTasaServicio(tasa);
-                tasaServicioSeleccionada = null;
+                tasaServicioSeleccionada = tasa;
             }
         }
     }
