@@ -1,0 +1,132 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+>
+
+<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="MODO_ACCESO" name="MODO_ACCESO" value="#{dialogTasaServicio.modoAcceso}"/>
+            <f:viewAction action="#{dialogTasaServicio.load}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="pageTitleDialog">
+        <h:outputFormat value="#{labels['dialogTasaServicio.detalle']}"
+                        rendered="#{!dialogTasaServicio.isModoAlta()}"/>
+        <h:outputFormat value="#{labels['dialogTasaServicio.nuevo']}"
+                        rendered="#{dialogTasaServicio.isModoAlta()}"/>
+    </ui:define>
+
+    <ui:define name="contentIdioma">
+        <span class="pi pi-tag" style="margin-top:10px"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:selectOneButton id="opcionIdioma" value="#{dialogTasaServicio.idioma}" styleClass="botoneraRed"
+                           unselectable="false">
+            <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
+                           itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
+            <p:ajax update="formDialog:txtIdentificador formDialog:txtDescripcion formDialog:txtFormaPago formDialog:txtUrl"
+                    process="@this"/>
+        </p:selectOneButton>
+        <p:commandButton id="btnTraducir" value="#{labels['dict.traducir']}"
+                        action="#{dialogTasaServicio.traducir}"
+                        icon="pi pi-compass" iconPos="top"
+                        style="margin-left:10px; font-size:1.2em; height:35px; margin-top:1px"
+                        update="messagesDialog"
+                        process="@this"
+                        rendered="#{!dialogTasaServicio.isModoConsulta() and dialogTasaServicio.tradExiste()}">
+            <p:ajax event="dialogReturn" listener="#{dialogTasaServicio.returnDialogTraducir}" process="@this"
+                    update="formDialog:txtIdentificador formDialog:txtDescripcion formDialog:txtFormaPago formDialog:txtUrl"/>
+        </p:commandButton>
+    </ui:define>
+
+    <ui:define name="contentDialog">
+        <p:growl id="messagesDialog"
+                 globalOnly="false"
+                 showDetail="false"
+                 life="5000"
+                 escape="false"/>
+
+        <p:panel id="form">
+            <div class="row">
+                <div class="ui-g-12 ui-md-2 ui-lg-2">
+                    <p:outputLabel value="#{labels['dialogTasaServicio.codigo']}:" for="txtIdentificador"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-10">
+                    <my:literalComponent id="txtIdentificador"
+                                         literal="#{dialogTasaServicio.data.identificador}"
+                                         soloLecture="#{dialogTasaServicio.isModoConsulta()}"
+                                         required="#{empty param['formDialog:closeButton']}"
+                                         idioma="#{dialogTasaServicio.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         nombreLiteral="#{labels['dialogTasaServicio.codigo']}"
+                                         maxlength="256">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalComponent>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-2">
+                    <p:outputLabel value="#{labels['dialogTasaServicio.descripcion']}:" for="txtDescripcion"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-10">
+                    <my:literalAreaComponent id="txtDescripcion"
+                                         literal="#{dialogTasaServicio.data.descripcion}"
+                                         soloLecture="#{dialogTasaServicio.isModoConsulta()}"
+                                         idioma="#{dialogTasaServicio.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         maxlength="4000"
+                                         nombreLiteral="#{labels['dialogTasaServicio.descripcion']}">
+                    </my:literalAreaComponent>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-2">
+                    <p:outputLabel value="#{labels['dialogTasaServicio.formaPago']}:" for="txtFormaPago"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-10">
+                    <my:literalAreaComponent id="txtFormaPago"
+                                         literal="#{dialogTasaServicio.data.formaPago}"
+                                         soloLecture="#{dialogTasaServicio.isModoConsulta()}"
+                                         idioma="#{dialogTasaServicio.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         maxlength="4000"
+                                         nombreLiteral="#{labels['dialogTasaServicio.formaPago']}">
+                        <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
+                    </my:literalAreaComponent>
+                </div>
+
+                <div class="ui-g-12 ui-md-2 ui-lg-2">
+                    <p:outputLabel value="#{labels['dialogTasaServicio.url']}:" for="txtUrl"/>
+                </div>
+                <div class="ui-g-12 ui-md-10 ui-lg-10">
+                    <my:literalComponent id="txtUrl"
+                                         literal="#{dialogTasaServicio.data.url}"
+                                         soloLecture="#{dialogTasaServicio.isModoConsulta()}"
+                                         idioma="#{dialogTasaServicio.idioma}"
+                                         idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
+                                         idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                         maxlength="1000"
+                                         nombreLiteral="#{labels['dialogTasaServicio.url']}">
+                    </my:literalComponent>
+                </div>
+            </div>
+        </p:panel>
+    </ui:define>
+
+    <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTasaServicio.guardar}"
+                         value="#{labels['dict.aceptar']}" update="messagesDialog form"
+                         process="@all"
+                         disabled="#{dialogTasaServicio.isModoConsulta()}"/>
+        <p:commandButton action="#{dialogTasaServicio.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this"/>
+    </ui:define>
+
+</ui:composition>
+</html>
