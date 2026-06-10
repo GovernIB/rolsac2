@@ -2,6 +2,7 @@ package es.caib.rolsac2.service.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import es.caib.rolsac2.service.utils.UtilComparador;
 
 /**
  * Dades d'una Tasa de servicio.
@@ -149,4 +150,51 @@ public class TasaServicioDTO extends ModelApi implements Cloneable {
         }
         return idiomasSobrantes;
     }
+
+    public static int compareTo(TasaServicioDTO tasa, TasaServicioDTO tasa2) {
+        if (tasa == null && tasa2 == null) {
+            return 0;
+        }
+        if (tasa == null) {
+            return -1;
+        }
+        if (tasa2 == null) {
+            return 1;
+        }
+        boolean existe = false;
+        if (tasa.getCodigo() != null && tasa2.getCodigo() != null && tasa.getCodigo().compareTo(tasa2.getCodigo()) == 0) {
+            if (UtilComparador.compareTo(tasa.getIdentificador(), tasa2.getIdentificador()) != 0) {
+                return UtilComparador.compareTo(tasa.getIdentificador(), tasa2.getIdentificador());
+            }
+            if (UtilComparador.compareTo(tasa.getDescripcion(), tasa2.getDescripcion()) != 0) {
+                return UtilComparador.compareTo(tasa.getDescripcion(), tasa2.getDescripcion());
+            }
+            if (UtilComparador.compareTo(tasa.getFormaPago(), tasa2.getFormaPago()) != 0) {
+                return UtilComparador.compareTo(tasa.getFormaPago(), tasa2.getFormaPago());
+            }
+            if (UtilComparador.compareTo(tasa.getUrl(), tasa2.getUrl()) != 0) {
+                return UtilComparador.compareTo(tasa.getUrl(), tasa2.getUrl());
+            }
+            existe = true;
+        } else if (tasa.getCodigoString() != null && tasa2.getCodigoString() != null && tasa.getCodigoString().equals(tasa2.getCodigoString())) {
+            if (UtilComparador.compareTo(tasa.getIdentificador(), tasa2.getIdentificador()) != 0) {
+                return UtilComparador.compareTo(tasa.getIdentificador(), tasa2.getIdentificador());
+            }
+            if (UtilComparador.compareTo(tasa.getDescripcion(), tasa2.getDescripcion()) != 0) {
+                return UtilComparador.compareTo(tasa.getDescripcion(), tasa2.getDescripcion());
+            }
+            if (UtilComparador.compareTo(tasa.getFormaPago(), tasa2.getFormaPago()) != 0) {
+                return UtilComparador.compareTo(tasa.getFormaPago(), tasa2.getFormaPago());
+            }
+            if (UtilComparador.compareTo(tasa.getUrl(), tasa2.getUrl()) != 0) {
+                return UtilComparador.compareTo(tasa.getUrl(), tasa2.getUrl());
+            }
+            existe = true;
+        }
+        if (!existe) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

@@ -309,18 +309,6 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void cerrar() {
-        LOG.error("Cierre DialogProcedimientoTramite");
-        if (this.data != null) {
-            LOG.error("DATA");
-            LOG.error(data.toString());
-            LOG.error("*****");
-        }
-        if (this.dataOriginal != null) {
-            LOG.error("DATA ORIGINAL");
-            LOG.error(dataOriginal.toString());
-            LOG.error("*****");
-        }
-        LOG.error("FIN");
         if (this.getModoAcceso() != null && !this.getModoAcceso().equals(TypeModoAcceso.CONSULTA.toString()) && this.data.compareTo(this.dataOriginal) != 0) {
             PrimeFaces.current().executeScript("PF('cdSalirSinGuardar').show();");
             return;
@@ -568,7 +556,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         final Map<String, String> params = new HashMap<>();
         params.put(TypeParametroVentana.ID.toString(), data.getCodigo() == null ? "" : data.getCodigo().toString());
         if (modoAcceso == TypeModoAcceso.CONSULTA || modoAcceso == TypeModoAcceso.EDICION) {
-            UtilJSF.anyadirMochila("tasa", this.tasaSeleccionada);
+            UtilJSF.anyadirMochila("tasa", this.tasaSeleccionada.clone());
         }
         UtilJSF.openDialog("dialogTasasProcedimiento", modoAcceso, params, true, 800, 500);
     }

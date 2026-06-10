@@ -256,6 +256,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
             srvClonado.setNormativas(norms);
 
         }
+        if (getTasaServicio() != null) {
+            srvClonado.setTasaServicio(this.getTasaServicio().clone());
+        }
         if (getTemas() != null) {
             List<TemaGridDTO> temas = new ArrayList<>();
             for (TemaGridDTO tema : getTemas()) {
@@ -445,9 +448,9 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         if (NormativaGridDTO.compareTo(this.getNormativas(), dataOriginal.getNormativas()) != 0) {
             return NormativaGridDTO.compareTo(this.getNormativas(), dataOriginal.getNormativas());
         }
-        /*if (ProcedimientoTramiteDTO.compareTo(this.getTramites(), dataOriginal.getTramites()) != 0) {
-            return ProcedimientoTramiteDTO.compareTo(this.getTramites(), dataOriginal.getTramites());
-        }*/
+        if (TasaServicioDTO.compareTo(this.getTasaServicio(), dataOriginal.getTasaServicio()) != 0) {
+            return TasaServicioDTO.compareTo(this.getTasaServicio(), dataOriginal.getTasaServicio());
+        }
 
         if (UtilComparador.compareTo(this.isActivoLOPD(), dataOriginal.isActivoLOPD()) != 0) {
             return UtilComparador.compareTo(this.isActivoLOPD(), dataOriginal.isActivoLOPD());

@@ -14,11 +14,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Schema(name = "Tasa", description = "Datos de una Tasa")
 public class Tasa extends EntidadBase<Tasa> {
 
-    @Schema(description = "codigo", type = SchemaType.INTEGER)
-    private Long codigo;
-
-    @Schema(description = "identificador", type = SchemaType.STRING)
-    private String identificador;
+    @Schema(description = "codigo", type = SchemaType.STRING)
+    private String codigo;
 
     @Schema(description = "descripcion", type = SchemaType.STRING)
     private String descripcion;
@@ -31,9 +28,8 @@ public class Tasa extends EntidadBase<Tasa> {
 
     public Tasa(TasaProcedimientoDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
-        this.codigo = elem.getCodigo();
         if (elem.getIdentificador() != null) {
-            this.identificador = elem.getIdentificador().getTraduccionConValor(idioma, idiomaPorDefecto);
+            this.codigo = elem.getIdentificador().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
         if (elem.getDescripcion() != null) {
             this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
@@ -48,9 +44,8 @@ public class Tasa extends EntidadBase<Tasa> {
 
     public Tasa(TasaServicioDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
         super(elem, urlBase, idioma, hateoasEnabled);
-        this.codigo = elem.getCodigo();
         if (elem.getIdentificador() != null) {
-            this.identificador = elem.getIdentificador().getTraduccionConValor(idioma, idiomaPorDefecto);
+            this.codigo = elem.getIdentificador().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
         if (elem.getDescripcion() != null) {
             this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
@@ -72,28 +67,20 @@ public class Tasa extends EntidadBase<Tasa> {
     }
 
     @Override
-    protected void addSetersInvalidos() {
+    public void setId(Long codigo) {
+        this.codigo = codigo != null ? String.valueOf(codigo) : null;
     }
 
     @Override
-    public void setId(Long codigo) {
-        this.codigo = codigo;
+    protected void addSetersInvalidos() {
     }
 
-    public Long getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-
-    public String getIdentificador() {
-        return identificador;
-    }
-
-    public void setIdentificador(String identificador) {
-        this.identificador = identificador;
     }
 
     public String getDescripcion() {
@@ -119,5 +106,5 @@ public class Tasa extends EntidadBase<Tasa> {
     public void setUrl(String url) {
         this.url = url;
     }
-    
+
 }

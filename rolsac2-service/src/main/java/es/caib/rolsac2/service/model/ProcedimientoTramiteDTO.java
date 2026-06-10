@@ -682,6 +682,13 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
                 }
                 obj.setListaModelos(lista);
             }
+            if (listaTasas != null) {
+                List<TasaProcedimientoDTO> lista = new ArrayList<>();
+                for (TasaProcedimientoDTO tasa : listaTasas) {
+                    lista.add(tasa.clone());
+                }
+                obj.setListaTasas(lista);
+            }
             if (this.getFechaInicio() != null) {
                 obj.setFechaInicio(new Date(this.getFechaInicio().getTime()));
             }
@@ -814,6 +821,12 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
                 LOG.error("La lista de documentos es diferente: {} con {}", this.getListaDocumentos(), data2.getListaDocumentos());
             }
             return ProcedimientoDocumentoDTO.compareTo(this.getListaDocumentos(), data2.getListaDocumentos());
+        }
+        if (TasaProcedimientoDTO.compareTo(this.getListaTasas(), data2.getListaTasas()) != 0) {
+            if (mostrarLog) {
+                LOG.error("La lista de tasas es diferente: {} con {}", this.getListaTasas(), data2.getListaTasas());
+            }
+            return TasaProcedimientoDTO.compareTo(this.getListaTasas(), data2.getListaTasas());
         }
         if (UtilComparador.compareTo(this.isTramitElectronica(), data2.isTramitElectronica()) != 0) {
             if (mostrarLog) {
