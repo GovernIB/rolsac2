@@ -182,7 +182,7 @@ public class ProcedimientoTramiteDTO extends ModelApi implements Cloneable, Comp
         boolean encontrado = false;
         for (int i = 0; i < this.getListaTasas().size(); i++) {
             TasaProcedimientoDTO existente = this.getListaTasas().get(i);
-            if (tasa.getCodigo() == null && existente.getCodigo() == null && tasa.getCodigo() != null && tasa.getCodigo().toString().equalsIgnoreCase(existente.getCodigo().toString())) {
+            if (tasa.getCodigo() == null && existente.getCodigo() == null && tasa.getCodigoString() != null && tasa.getCodigoString().equals(existente.getCodigoString())) {
                 encontrado = true;
                 this.getListaTasas().set(i, tasa);
                 break;

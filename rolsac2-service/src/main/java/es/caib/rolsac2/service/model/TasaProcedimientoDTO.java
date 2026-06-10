@@ -1,33 +1,48 @@
 package es.caib.rolsac2.service.model;
 
+import es.caib.rolsac2.service.utils.UtilComparador;
+
 import java.util.ArrayList;
 import java.util.List;
-import es.caib.rolsac2.service.utils.UtilComparador;
 
 /**
  * Dades d'una Tasa de procedimiento/tramite.
  */
 public class TasaProcedimientoDTO extends ModelApi implements Cloneable {
 
-    /** Codigo **/
+    /**
+     * Codigo
+     **/
     private Long codigo;
 
-    /** Código temporal para poder tratar con el dato **/
+    /**
+     * Código temporal para poder tratar con el dato
+     **/
     private String codigoString;
 
-    /** Identificador / Código (obligatorio, multiidioma) */
+    /**
+     * Identificador / Código (obligatorio, multiidioma)
+     */
     private Literal identificador;
 
-    /** Descripción (opcional, multiidioma) */
+    /**
+     * Descripción (opcional, multiidioma)
+     */
     private Literal descripcion;
 
-    /** Forma de pago (obligatorio, multiidioma) */
+    /**
+     * Forma de pago (obligatorio, multiidioma)
+     */
     private Literal formaPago;
 
-    /** URL (opcional, multiidioma) */
+    /**
+     * URL (opcional, multiidioma)
+     */
     private Literal url;
 
-    /** Procedimiento tramite asociado */
+    /**
+     * Procedimiento tramite asociado
+     */
     private ProcedimientoTramiteDTO tramiteDTO;
 
     /**
@@ -49,6 +64,7 @@ public class TasaProcedimientoDTO extends ModelApi implements Cloneable {
             tasa.setFormaPago(Literal.createInstance(idiomas));
             tasa.setUrl(Literal.createInstance(idiomas));
         }
+        tasa.setCodigoString(String.valueOf(java.util.Calendar.getInstance().getTime()));
         return tasa;
     }
 
