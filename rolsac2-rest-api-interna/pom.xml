@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rolsac2</artifactId>
         <groupId>es.caib.rolsac2</groupId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>rolsac2-rest-api-interna</artifactId>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>es.caib.rolsac2</groupId>
             <artifactId>rolsac2-api-interna</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <!-- Anotacions de documentació de openapi -->
         <dependency>
