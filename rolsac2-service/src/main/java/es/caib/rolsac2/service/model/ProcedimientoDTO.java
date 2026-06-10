@@ -760,7 +760,7 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
         if (data instanceof ServicioDTO) {
             AuditoriaUtil.auditar(((ServicioDTO) data).getResponsableTelefono(), ((ServicioDTO) dataOriginal).getResponsableTelefono(), cambios, "auditoria.servicio.telefonoResponsable");
-            AuditoriaUtil.auditar(((ServicioDTO) data).getTasa(), ((ServicioDTO) dataOriginal).getTasa(), cambios, "auditoria.servicio.tasa");
+            AuditoriaUtil.auditar(((ServicioDTO) data).getTasaServicio(), ((ServicioDTO) dataOriginal).getTasaServicio(), cambios, "auditoria.servicio.tasaServicio");
             if (((ServicioDTO) dataOriginal).isTramitElectronica()) {
                 AuditoriaUtil.auditar(((ServicioDTO) data).getTipoTramitacion(), ((ServicioDTO) dataOriginal).getTipoTramitacion(), cambios, "auditoria.servicio.tipoTramitacion");
             }

@@ -490,7 +490,10 @@ public final class AuditoriaUtil {
 
             //Canales presentacion
 
-            //AuditoriaUtil.auditar(valorPublicado.getTasaAsociada(), valorModificado.getTasaAsociada(), cambios, "auditoria.tramite.tasaAsociada");
+            AuditoriaUtil.auditar(valorPublicado.getTasaAsociada(), valorModificado.getTasaAsociada(), cambios, "auditoria.tramite.tasaAsociada");
+
+            // Tasas de tramite
+            AuditoriaUtil.auditar(valorPublicado.getListaTasas(), valorModificado.getListaTasas(), cambios, "auditoria.tramite.tasas");
 
             AuditoriaUtil.auditar(valorPublicado.isTramitElectronica(), valorModificado.isTramitElectronica(), cambios, "auditoria.tramite.tramitElectronica");
 
@@ -1079,6 +1082,144 @@ public final class AuditoriaUtil {
                 }
             }
         }
+    }
+
+    // Auditar tasas procedimiento
+    public static void auditar(final List<TasaProcedimientoDTO> publicado, final List<TasaProcedimientoDTO> modificado, List<AuditoriaCambio> cambios, final String idCampo) {
+
+        if ((publicado == null || publicado.isEmpty()) && (modificado == null || modificado.isEmpty())) {
+            return;
+        } else if (((publicado != null && !publicado.isEmpty()) && (modificado == null || modificado.isEmpty())) || ((publicado == null || publicado.isEmpty()) && (modificado != null && !modificado.isEmpty()))) {
+            if (publicado != null && !publicado.isEmpty()) {
+                for (TasaProcedimientoDTO tasa : publicado) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getTexto(tasa), null, idCampo + ".remove");
+                    cambios.add(cambio);
+                }
+            }
+            if (modificado != null && !modificado.isEmpty()) {
+                for (TasaProcedimientoDTO tasa : modificado) {
+                    AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getTexto(tasa), idCampo + ".add");
+                    cambios.add(cambio);
+                }
+            }
+        } else {
+            if (modificado.size() >= publicado.size()) {
+                List<TasaProcedimientoDTO> anteriores = new ArrayList<>();
+                for (TasaProcedimientoDTO tasaMod : modificado) {
+                    boolean existe = false;
+                    for (TasaProcedimientoDTO tasaPub : publicado) {
+                        if (tasaMod.getCodigo() != null && tasaPub.getCodigo() != null && tasaMod.getCodigo().compareTo(tasaPub.getCodigo()) == 0) {
+                            anteriores.add(tasaPub);
+                            // comparar campos de la tasa
+                            AuditoriaUtil.auditar(tasaPub.getIdentificador(), tasaMod.getIdentificador(), cambios, idCampo + ".identificador");
+                            AuditoriaUtil.auditar(tasaPub.getDescripcion(), tasaMod.getDescripcion(), cambios, idCampo + ".descripcion");
+                            AuditoriaUtil.auditar(tasaPub.getFormaPago(), tasaMod.getFormaPago(), cambios, idCampo + ".formaPago");
+                            AuditoriaUtil.auditar(tasaPub.getUrl(), tasaMod.getUrl(), cambios, idCampo + ".url");
+                            existe = true;
+                            break;
+                        }
+                    }
+                    if (!existe) {
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getTexto(tasaMod), idCampo + ".add");
+                        cambios.add(cambio);
+                    }
+                }
+                if (!anteriores.containsAll(publicado)) {
+                    for (TasaProcedimientoDTO tasa : publicado) {
+                        if (!anteriores.contains(tasa)) {
+                            AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getTexto(tasa), null, idCampo + ".remove");
+                            cambios.add(cambio);
+                        }
+                    }
+                }
+            } else {
+                List<TasaProcedimientoDTO> nuevas = new ArrayList<>();
+                for (TasaProcedimientoDTO tasaPub : publicado) {
+                    boolean existe = false;
+                    for (TasaProcedimientoDTO tasaMod : modificado) {
+                        if (tasaMod.getCodigo() != null && tasaPub.getCodigo() != null && tasaMod.getCodigo().compareTo(tasaPub.getCodigo()) == 0) {
+                            nuevas.add(tasaMod);
+                            AuditoriaUtil.auditar(tasaPub.getIdentificador(), tasaMod.getIdentificador(), cambios, idCampo + ".identificador");
+                            AuditoriaUtil.auditar(tasaPub.getDescripcion(), tasaMod.getDescripcion(), cambios, idCampo + ".descripcion");
+                            AuditoriaUtil.auditar(tasaPub.getFormaPago(), tasaMod.getFormaPago(), cambios, idCampo + ".formaPago");
+                            AuditoriaUtil.auditar(tasaPub.getUrl(), tasaMod.getUrl(), cambios, idCampo + ".url");
+                            existe = true;
+                            break;
+                        }
+                    }
+                    if (!existe) {
+                        AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getTexto(tasaPub), null, idCampo + ".remove");
+                        cambios.add(cambio);
+                    }
+                }
+                if (!nuevas.containsAll(modificado)) {
+                    for (TasaProcedimientoDTO tasa : modificado) {
+                        if (!nuevas.contains(tasa)) {
+                            AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getTexto(tasa), idCampo + ".add");
+                            cambios.add(cambio);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Auditar tasas servicio
+    public static void auditar(TasaServicioDTO publicado, TasaServicioDTO modificado, List<AuditoriaCambio> cambios, String idCampo) {
+        if (publicado == null && modificado == null) {
+            return;
+        } else if (publicado == null && modificado != null) {
+            AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, null, getTexto(modificado), idCampo + ".add");
+            cambios.add(cambio);
+            return;
+        } else if (publicado != null && modificado == null) {
+            AuditoriaCambio cambio = agregarAuditoriaValorCampoSinNulo(null, getTexto(publicado), null, idCampo + ".remove");
+            cambios.add(cambio);
+            return;
+        }
+
+        AuditoriaUtil.auditar(publicado.getIdentificador(), modificado.getIdentificador(), cambios, idCampo + ".identificador");
+        AuditoriaUtil.auditar(publicado.getDescripcion(), modificado.getDescripcion(), cambios, idCampo + ".descripcion");
+        AuditoriaUtil.auditar(publicado.getFormaPago(), modificado.getFormaPago(), cambios, idCampo + ".formaPago");
+        AuditoriaUtil.auditar(publicado.getUrl(), modificado.getUrl(), cambios, idCampo + ".url");
+    }
+
+    private static String getTexto(TasaProcedimientoDTO tasa) {
+        if (tasa == null) {
+            return "";
+        }
+        if (tasa.getIdentificador() != null && !tasa.getIdentificador().estaVacio()) {
+            return tasa.getIdentificador().getTraduccion("ca");
+        }
+        if (tasa.getDescripcion() != null && !tasa.getDescripcion().estaVacio()) {
+            return tasa.getDescripcion().getTraduccion("ca");
+        }
+        if (tasa.getCodigoString() != null) {
+            return tasa.getCodigoString();
+        }
+        if (tasa.getCodigo() != null) {
+            return tasa.getCodigo().toString();
+        }
+        return "";
+    }
+
+    private static String getTexto(TasaServicioDTO tasa) {
+        if (tasa == null) {
+            return "";
+        }
+        if (tasa.getIdentificador() != null && !tasa.getIdentificador().estaVacio()) {
+            return tasa.getIdentificador().getTraduccion("ca");
+        }
+        if (tasa.getDescripcion() != null && !tasa.getDescripcion().estaVacio()) {
+            return tasa.getDescripcion().getTraduccion("ca");
+        }
+        if (tasa.getCodigoString() != null) {
+            return tasa.getCodigoString();
+        }
+        if (tasa.getCodigo() != null) {
+            return tasa.getCodigo().toString();
+        }
+        return "";
     }
 
     public static String getTexto(ProcedimientoDocumentoDTO doc) {

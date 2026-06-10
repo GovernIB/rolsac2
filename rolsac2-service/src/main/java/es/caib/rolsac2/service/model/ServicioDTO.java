@@ -138,7 +138,7 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
      *
      * @return
      */
-    public Object clone() {
+    public ServicioDTO clone() {
         ServicioDTO srvClonado = new ServicioDTO();
         srvClonado.setCodigo(this.getCodigo());
         srvClonado.setCodigoWF(this.getCodigoWF());
@@ -154,7 +154,7 @@ public class ServicioDTO extends ProcedimientoBaseDTO {
         srvClonado.setTramitElectronica(this.isTramitElectronica());
         srvClonado.setTramitPresencial(this.isTramitPresencial());
         srvClonado.setTramitTelefonica(this.isTramitTelefonica());
-
+        srvClonado.setUaResponsableLiteral(this.getUaResponsableLiteral());
         srvClonado.setResponsable(this.getResponsable());
         srvClonado.setFechaSIA(this.getFechaSIA());
         srvClonado.setComun(this.getComun());
