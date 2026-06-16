@@ -160,6 +160,30 @@ public class SessionBean implements Serializable {
         usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario());
 
         cargarDatos();
+
+        // Comprobar si tiene perfil de acceso en rosalc y si no redirigir a página de error
+
+        List<TypePerfiles> perfilesRosalc2 = new ArrayList<>(Arrays.asList(TypePerfiles.values()));
+        perfilesRosalc2.remove(TypePerfiles.RESTAPI);
+
+        if (perfiles == null || perfiles.isEmpty()) {
+            redirigirRuta("/error/noRolesException.xhtml");
+            return;
+        } else {
+
+            boolean tienePerfilValido = false;
+            for (TypePerfiles p : perfiles) {
+                if (perfilesRosalc2.contains(p)) {
+                    tienePerfilValido = true;
+                    break;
+                }
+            }
+            if (!tienePerfilValido) {
+
+                redirigirRuta("/error/noRolesException.xhtml");
+                return;
+            }
+        }
         cargarAlertas();
 
         if (forzarRefresh) {
@@ -268,7 +292,7 @@ public class SessionBean implements Serializable {
                     actualizarPerfiles();
                     actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
                     actualizarEntidades();
-                    if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR) 
+                    if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)
                             || perfil.equals(TypePerfiles.ADMINISTRADOR_CONTENIDOS)) {
                         if (this.unidadActiva == null) {
                             UtilJSF.redirectJsfPage("/error/uaRelacionadaException.xhtml");
@@ -338,7 +362,6 @@ public class SessionBean implements Serializable {
             sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
         }
-
 
 
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
@@ -594,21 +617,21 @@ public class SessionBean implements Serializable {
      * @param usuario
      */
     public void actualizarUnidadAdministrativa(UsuarioDTO usuario, TypePerfiles perfil, SesionDTO sesionDTO) {
-        if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR) 
+        if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)
                 || perfil.equals(TypePerfiles.ADMINISTRADOR_CONTENIDOS)) {
-            if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty() ) {
+            if (usuario.getUnidadesAdministrativas() != null && !usuario.getUnidadesAdministrativas().isEmpty()) {
                 UnidadAdministrativaGridDTO unidadSesion = null;
-                if(sesionDTO.getIdUa() != null) {
+                if (sesionDTO.getIdUa() != null) {
                     unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getCodigo().compareTo(sesionDTO.getIdUa()) == 0).findFirst().orElse(null);
                 }
                 // Puede venir del perfil de SUPERADMIN donde se anula la UA en la sesión y hay que volver a setearla como ua de la entidad
-                else{
+                else {
                     unidadSesion = usuario.getUnidadesAdministrativas().stream().filter(ua -> ua.getIdEntidad().compareTo(this.entidad.getCodigo()) == 0).findFirst().orElse(null);
 
                 }
                 // this.unidadActiva = unidadSesion == null ? uaService.findById(usuario.getUnidadesAdministrativas().get(0).getCodigo()) : uaService.findById(unidadSesion.getCodigo());
                 this.unidadActiva = unidadSesion == null ? uaService.findUASimpleByID(usuario.getUnidadesAdministrativas().get(0).getCodigo(), this.lang, null) : uaService.findUASimpleByID(unidadSesion.getCodigo(), this.lang, null);
-                
+
                 // Para ADMINISTRADOR_CONTENIDOS también ponemos solo las UAs correspondientes
                 if (TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil) && this.unidadActiva != null) {
                     this.unidadActivaAux = unidadSesion != null ? unidadSesion : usuario.getUnidadesAdministrativas().get(0);
@@ -617,7 +640,7 @@ public class SessionBean implements Serializable {
                 // Para gestor/informador/admin contenidos es obligatorio tener una UA asignada explícitamente.
                 this.unidadActiva = null;
             }
-        }else {
+        } else {
             if (sesionDTO.getIdUa() == null) {
                 this.unidadActiva = uaService.findRootEntidad(entidad.getCodigo());
             } else {
@@ -635,6 +658,7 @@ public class SessionBean implements Serializable {
 
     /**
      * Obtiene las UAs del usuario relacionadas con la entidad activa.
+     *
      * @return
      */
     public List<UnidadAdministrativaGridDTO> obtenerUasEntidad() {

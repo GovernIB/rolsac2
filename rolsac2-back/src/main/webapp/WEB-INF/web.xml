@@ -164,6 +164,14 @@
     </security-constraint>
 
     <security-constraint>
+        <display-name>Permetre accés públic a noRolesException</display-name>
+        <web-resource-collection>
+            <web-resource-name>Error no roles</web-resource-name>
+            <url-pattern>/error/noRolesException.xhtml</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <security-constraint>
         <display-name>Acceso restringido a usuarios y administradores</display-name>
         <web-resource-collection>
             <web-resource-name>tot</web-resource-name>
