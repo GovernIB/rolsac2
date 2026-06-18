@@ -754,7 +754,7 @@ BEGIN
 													INTO   valor
 													FROM   ROLSAC.RSC_TRATAX
 													WHERE  ttax_codi = tax_rec.tax_codi
-													  AND  tax_id IS NOT NULL;
+													  AND (tax_id IS NOT NULL OR descri IS NOT NULL OR formpag IS NOT NULL);
 
 													IF valor > 0 THEN
 														SELECT rs2_prctax_seq.NEXTVAL
@@ -785,13 +785,13 @@ BEGIN
 														SELECT rs2_traprtx_seq.NEXTVAL,
 															   v_prtx_codigo,
 															   cod_idi,
-															   tax_id,
+															   NVL(tax_id, 'TASA ID'),
 															   descri,
 															   formpag,
 															   NULL
 														FROM ROLSAC.RSC_TRATAX
 														WHERE ttax_codi = tax_rec.tax_codi
-														  AND tax_id IS NOT NULL;
+														  AND (tax_id IS NOT NULL OR descri IS NOT NULL OR formpag IS NOT NULL);
 													END IF;
 
 												END LOOP;
