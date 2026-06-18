@@ -3,6 +3,7 @@ package es.caib.rolsac2.back.controller.maestras;
 import es.caib.rolsac2.back.controller.AbstractController;
 import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.auditoria.AuditoriaCambio;
@@ -20,6 +21,9 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Named
 @ViewScoped
@@ -42,6 +46,9 @@ public class DialogAuditoria extends AbstractController implements Serializable 
     @EJB
     UnidadAdministrativaServiceFacade unidadAdministrativaServiceFacade;
 
+    @EJB
+    AdministracionEntServiceFacade administracionEntServiceFacade;
+
     public void load() {
         LOG.debug("init");
         this.setearIdioma();
@@ -50,6 +57,8 @@ public class DialogAuditoria extends AbstractController implements Serializable 
         } else {
             data = unidadAdministrativaServiceFacade.findUaAuditoriasById(Long.valueOf(id));
         }
+
+        cargarNombresUsuarios();
 
         if (data != null && !data.isEmpty()) {
             datoSeleccionado = data.get(0);
@@ -146,6 +155,30 @@ public class DialogAuditoria extends AbstractController implements Serializable 
             cambios = new ArrayList<>();
         } else {
             cambios = datoSeleccionado.getCambios();
+        }
+    }
+
+    private void cargarNombresUsuarios() {
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+
+        Set<String> identificadores = new LinkedHashSet<>();
+        for (AuditoriaGridDTO registro : data) {
+            if (registro != null && registro.getUsuario() != null && !registro.getUsuario().isEmpty()) {
+                identificadores.add(registro.getUsuario());
+            }
+        }
+
+        if (identificadores.isEmpty()) {
+            return;
+        }
+
+        Map<String, String> nombresUsuarios = administracionEntServiceFacade.getNombreUsuarios(new ArrayList<>(identificadores));
+        for (AuditoriaGridDTO registro : data) {
+            if (registro != null) {
+                registro.setUsuarioNombre(nombresUsuarios.get(registro.getUsuario()));
+            }
         }
     }
 

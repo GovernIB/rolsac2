@@ -34,6 +34,11 @@ public class AuditoriaGridDTO {
     private String usuario;
 
     /**
+     * Nombre del usuario que realiza el movimiento.
+     */
+    private String usuarioNombre;
+
+    /**
      * Usuario perfil
      */
     private String usuarioPerfil;
@@ -74,6 +79,33 @@ public class AuditoriaGridDTO {
      */
     public void setUsuario(final String usuario) {
         this.usuario = usuario;
+    }
+
+    /**
+     * @return the usuarioNombre
+     */
+    public String getUsuarioNombre() {
+        return usuarioNombre;
+    }
+
+    /**
+     * @param usuarioNombre the usuarioNombre to set
+     */
+    public void setUsuarioNombre(final String usuarioNombre) {
+        this.usuarioNombre = usuarioNombre;
+    }
+
+    /**
+     * @return the usuarioDescripcion
+     */
+    public String getUsuarioDescripcion() {
+        if (usuario == null || usuario.isEmpty()) {
+            return usuarioNombre == null ? "" : usuarioNombre;
+        }
+        if (usuarioNombre == null || usuarioNombre.isEmpty()) {
+            return usuario;
+        }
+        return usuario + " - " + usuarioNombre;
     }
 
 
