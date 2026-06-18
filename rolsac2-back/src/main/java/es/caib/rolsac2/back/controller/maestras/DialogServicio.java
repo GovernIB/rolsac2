@@ -146,7 +146,12 @@ public class DialogServicio extends AbstractController implements Serializable {
             data = ServicioDTO.createInstance(sessionBean.getIdiomasPermitidosList());
             data.setUaInstructor(sessionBean.getUnidadActiva());
             data.setUaCompetente(sessionBean.getUnidadActiva());
-            data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
+            this.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo()));
+            if (this.getLopdResponsable() != null) {
+                data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
+            } else {
+                data.setLopdResponsable(uaService.obtenerPadreDir3(UtilJSF.getSessionBean().getUnidadActiva().getCodigo(), UtilJSF.getSessionBean().getLang()));
+            }
             data.setTemas(new ArrayList<>());
             data.setHabilitadoFuncionario("N");
             data.setLopdFinalidad((Literal) sessionBean.getEntidad().getLopdFinalidad().clone());
@@ -157,6 +162,11 @@ public class DialogServicio extends AbstractController implements Serializable {
                 data = procedimientoServiceFacade.findServicioById(Long.valueOf(id));
             } else {
                 data = (ServicioDTO) UtilJSF.getValorMochilaByKey("SERV");
+            }
+
+            this.setLopdResponsable(uaService.obtenerPadreDir3(data.getUaInstructor().getCodigo()));
+            if (this.getLopdResponsable() != null) {
+                this.data.setLopdResponsable(this.getLopdResponsable().getTraduccionConValor(sessionBean.getLang()));
             }
 
             /*if (data.getTipoTramitacion() == null) {
