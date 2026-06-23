@@ -732,7 +732,6 @@ BEGIN
 										/* Migrar tasas del trámite sólo si el procedimiento tenía pro_taxa = '1' (campo origen de PRWF_SVTASA) */
 										BEGIN
 											BEGIN
-												-- Use original Rolsac1 field (pro_taxa) as source
 												SELECT CASE WHEN pro_taxa = '1' THEN 1 ELSE 0 END
 												INTO   valor
 												FROM   r1_procedimientos
@@ -745,14 +744,14 @@ BEGIN
 											IF valor = 1 THEN
 												FOR tax_rec IN (
 													SELECT tax_codi
-													FROM ROLSAC.RSC_TAXA
+													FROM R1_PROCEDIMIENTOS_TAXAS
 													WHERE tax_codtra = rolsac1_tramites.tra_codi
 												)
 												LOOP
 													-- Comprobar si hay traducciones con identificador
 													SELECT COUNT(*)
 													INTO   valor
-													FROM   ROLSAC.RSC_TRATAX
+													FROM   R1_PROCEDIMIENTOS_TAXAS_TRAD
 													WHERE  ttax_codi = tax_rec.tax_codi
 													  AND (tax_id IS NOT NULL OR descri IS NOT NULL OR formpag IS NOT NULL);
 
@@ -789,7 +788,7 @@ BEGIN
 															   descri,
 															   formpag,
 															   NULL
-														FROM ROLSAC.RSC_TRATAX
+														FROM R1_PROCEDIMIENTOS_TAXAS_TRAD
 														WHERE ttax_codi = tax_rec.tax_codi
 														  AND (tax_id IS NOT NULL OR descri IS NOT NULL OR formpag IS NOT NULL);
 													END IF;
