@@ -33,6 +33,11 @@ public class IndexFile extends StoredData {
     private MultilangLiteral searchTextOptional;
 
     /**
+     * Texto que será comparado en las búsquedas pero con un peso menor.
+     */
+    private MultilangLiteral infoAdicional;
+
+    /**
      * Obtiene idioma fichero.
      *
      * @return the idioma fichero
@@ -82,12 +87,20 @@ public class IndexFile extends StoredData {
         this.searchTextOptional = searchTextOptional;
     }
 
+    public MultilangLiteral getInfoAdicional() {
+        return infoAdicional;
+    }
+
+    public void setInfoAdicional(MultilangLiteral infoAdicional) {
+        this.infoAdicional = infoAdicional;
+    }
+
     public es.caib.solr.api.model.IndexFile cast() {
         es.caib.solr.api.model.IndexFile fichero = new es.caib.solr.api.model.IndexFile();
         fichero.setFileContent(getFileContent());
         fichero.setIdioma(es.caib.solr.api.model.types.EnumIdiomas.fromString(this.getIdioma().toString()));
         fichero.setSearchTextOptional(getLiteral(getSearchTextOptional()));
-
+        fichero.setInfoAdicional(getLiteral(getInfoAdicional()));
 
         fichero.setElementoId(getElementoId());
         fichero.setElementoIdPadre(getElementoIdPadre());

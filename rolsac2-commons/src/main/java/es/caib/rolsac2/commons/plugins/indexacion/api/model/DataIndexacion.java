@@ -108,6 +108,11 @@ public class DataIndexacion {
     private LiteralMultilang extension;
 
     /**
+     * Info adicional
+     */
+    private LiteralMultilang infoAdicional;
+
+    /**
      * Unidades orgánicas asociadas al elemento.
      */
     private List<PathUA> uos = new ArrayList<PathUA>();
@@ -542,6 +547,23 @@ public class DataIndexacion {
         this.extension = extension;
     }
 
+    /**
+     * Obtiene la info adicional
+     *
+     * @return Info adicional
+     */
+    public LiteralMultilang getInfoAdicional() {
+        return infoAdicional;
+    }
+
+    /**
+     * Establece la info adicional
+     *
+     * @param infoAdicional Info adicional
+     */
+    public void setInfoAdicional(LiteralMultilang infoAdicional) {
+        this.infoAdicional = infoAdicional;
+    }
 
     /**
      * Obtiene unidades orgánicas asociadas al elemento.
@@ -773,6 +795,7 @@ public class DataIndexacion {
         id.setFechaPlazoFin(this.getFechaPlazoFin());
         id.setUrlFoto(this.getUrlFoto());
         id.setExtension(getMultiLangLiteral(this.getExtension()));
+        id.setInfoAdicional(getMultiLangLiteral(this.getInfoAdicional()));
         id.setUos(getUos(this.getUos()));
         id.setFamiliaId(this.getFamiliaId());
         id.setMateriaId(this.getMateriaId());

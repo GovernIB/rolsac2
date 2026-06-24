@@ -1,5 +1,7 @@
 package es.caib.rolsac2.ejb.facade.procesos.solr;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import es.caib.rolsac2.commons.plugins.indexacion.api.IPluginIndexacion;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.*;
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.types.EnumAplicacionId;
@@ -10,6 +12,8 @@ import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +164,7 @@ public class CastUtil {
         final LiteralMultilang urls = new LiteralMultilang();
         final LiteralMultilang searchText = new LiteralMultilang();
         final LiteralMultilang searchTextOptional = new LiteralMultilang();
+        final LiteralMultilang infoAdicional = new LiteralMultilang();
         final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
 
         final String nomUnidadAministrativa;
@@ -252,6 +257,50 @@ public class CastUtil {
                     urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPubObjetivo + "/" + nombrePubObjetivo + "/tramites/servicio/" + servicio.getCodigo());
                 }
 
+                // Info adicional
+                StringWriter writer = new StringWriter();
+                JsonFactory jsonFactory = new JsonFactory();
+
+                try (JsonGenerator json = jsonFactory.createGenerator(writer)) {
+
+                    json.writeStartObject();
+
+                    json.writeStringField("aplicacion", "SEUCAIB");
+
+                    String uaNombre = (servicio.getUaCompetente() != null
+                            && servicio.getUaCompetente().getNombre() != null
+                            && servicio.getUaCompetente().getNombre().getTraduccion(enumIdioma.toString()) != null)
+                            ? servicio.getUaCompetente().getNombre().getTraduccionConValor(enumIdioma.toString(), "ca")
+                            : "";
+
+                    json.writeStringField("ua", uaNombre);
+
+                    String familiaId = (servicio.getTipoProcedimiento() != null
+                            && servicio.getTipoProcedimiento().getCodigo() != null
+                            && servicio.getTipoProcedimiento().getDescripcion() != null)
+                            ? servicio.getTipoProcedimiento().getDescripcion().getTraduccionConValor(servicio.toString(), "ca")
+                            : "";
+
+                    json.writeStringField("familia", familiaId);
+
+                    json.writeStringField("comun", Boolean.toString(servicio.getComun() == 1));
+
+                    if (servicio.getTipoTramitacion() == null) {
+                        json.writeStringField("telematico", Boolean.toString(false));
+                    } else {
+                        json.writeStringField("telematico", Boolean.toString(servicio.getTipoTramitacion().isTramitElectronica()));
+                    }
+                    json.writeEndObject();
+
+                    infoAdicional.addIdioma(
+                            EnumIdiomas.fromString(enumIdioma.toString()),
+                            writer.toString()
+                    );
+
+                } catch (Exception e) {
+                    LOG.error("Error generando infoAdicional para procedimiento {}", servicio.getCodigo(), e);
+                }
+
             }
         }
 
@@ -261,6 +310,7 @@ public class CastUtil {
         indexData.setUrl(urls);
         indexData.setSearchText(searchText);
         indexData.setSearchTextOptional(searchTextOptional);
+        indexData.setInfoAdicional(infoAdicional);
         indexData.setIdiomas(idiomas);
 
         // Datos IDs materias.
@@ -297,6 +347,8 @@ public class CastUtil {
         indexData.getUos().add(pathUA);
 
         indexData.setFamiliaId("none");
+
+
         return indexData;
     }
 
@@ -733,6 +785,7 @@ public class CastUtil {
         final LiteralMultilang urls = new LiteralMultilang();
         final LiteralMultilang searchText = new LiteralMultilang();
         final LiteralMultilang searchTextOptional = new LiteralMultilang();
+        final LiteralMultilang infoAdicional = new LiteralMultilang();
         final List<EnumIdiomas> idiomas = new ArrayList<EnumIdiomas>();
 
         final String nomUnidadAministrativa;
@@ -829,6 +882,100 @@ public class CastUtil {
                     // Si no es interno
                     urls.addIdioma(enumIdioma, "/seucaib/" + keyIdioma + "/" + idPublicoObjetivo + "/" + nombrePubObjetivo + "/tramites/tramite/" + proc.getCodigo());
                 }
+
+                // Info adicional
+                StringWriter writer = new StringWriter();
+                JsonFactory jsonFactory = new JsonFactory();
+
+                try (JsonGenerator json = jsonFactory.createGenerator(writer)) {
+
+                    json.writeStartObject();
+
+                    json.writeStringField("aplicacion", "SEUCAIB");
+
+                    String uaNombre = (proc.getUaCompetente() != null
+                            && proc.getUaCompetente().getNombre() != null
+                            && proc.getUaCompetente().getNombre().getTraduccion(enumIdioma.toString()) != null)
+                            ? proc.getUaCompetente().getNombre().getTraduccionConValor(enumIdioma.toString(), "ca")
+                            : "";
+
+                    json.writeStringField("ua", uaNombre);
+
+                    String familiaId = (proc.getTipoProcedimiento() != null
+                            && proc.getTipoProcedimiento().getCodigo() != null
+                            && proc.getTipoProcedimiento().getDescripcion() != null)
+                            ? proc.getTipoProcedimiento().getDescripcion().getTraduccionConValor(enumIdioma.toString(), "ca")
+                            : "";
+
+                    json.writeStringField("familia", familiaId);
+
+
+                    json.writeStringField("comun", Boolean.toString(proc.getComun() == 1));
+
+                    boolean isTelematico = false;
+
+
+                    if (proc.getTramites() != null) {
+                        SimpleDateFormat sdfInfo = new SimpleDateFormat("dd/MM/yyyy");//("dd/MM/yyyy HH:mm");
+
+                        json.writeArrayFieldStart("tramites");
+
+                        for (ProcedimientoTramiteDTO tramiteInfo : proc.getTramites()) {
+                            json.writeStartObject();
+
+                            if (tramiteInfo.isTramitElectronica()) {
+                                isTelematico = true;
+                            }
+                            String nombreTramite = (tramiteInfo.getNombre() != null
+                                    && tramiteInfo.getNombre().getTraduccion(enumIdioma.toString()) != null)
+                                    ? tramiteInfo.getNombre().getTraduccion(enumIdioma.toString())
+                                    : "";
+
+                            json.writeStringField("nombre", nombreTramite);
+
+                            json.writeStringField(
+                                    "fase",
+                                    tramiteInfo.getFase() != null ? tramiteInfo.getFase().toString() : ""
+                            );
+
+                            json.writeStringField(
+                                    "fechaInicio",
+                                    tramiteInfo.getFechaInicio() != null
+                                            ? sdfInfo.format(tramiteInfo.getFechaInicio())
+                                            : ""
+                            );
+
+                            json.writeStringField(
+                                    "fechaCierre",
+                                    tramiteInfo.getFechaCierre() != null
+                                            ? sdfInfo.format(tramiteInfo.getFechaCierre())
+                                            : ""
+                            );
+
+                            json.writeBooleanField(
+                                    "telematico",
+                                    tramiteInfo.isTramitElectronica()
+                            );
+
+                            json.writeEndObject();
+                        }
+
+                        json.writeEndArray();
+                    }
+                    json.writeStringField("telematico", Boolean.toString(isTelematico));
+
+                    json.writeEndObject();
+
+                } catch (Exception e) {
+                    LOG.error("Error generando infoAdicional para procedimiento {}", proc.getCodigo(), e);
+                }
+
+                infoAdicional.addIdioma(
+                        EnumIdiomas.fromString(enumIdioma.toString()),
+                        writer.toString()
+                );
+
+
             }
         }
 
@@ -839,6 +986,7 @@ public class CastUtil {
         indexData.setSearchText(searchText);
         indexData.setSearchTextOptional(searchTextOptional);
         indexData.setIdiomas(idiomas);
+        indexData.setInfoAdicional(infoAdicional);
 
         // Datos IDs materias.
         final List<String> materiasId = new ArrayList<String>();
@@ -888,11 +1036,6 @@ public class CastUtil {
             }
         }
 
-        // UA
-        if (pathUA == null) {
-            //TODO, tiene que venir calculado
-            //return new SolrPendienteResultado(true, "No se puede indexar: no cuelga de UA visible");
-        }
         indexData.getUos().add(pathUA);
 
         final boolean telematico = IndexacionUtil.isTelematicoProcedimiento(proc.getTramites());
@@ -903,6 +1046,7 @@ public class CastUtil {
             indexData.setFechaPlazoIni(tramite.getFechaInicio());
             indexData.setFechaPlazoFin(tramite.getFechaCierre());
         }
+
 
         return indexData;
     }
