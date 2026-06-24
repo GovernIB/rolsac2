@@ -267,10 +267,10 @@ public class CastUtil {
 
                     json.writeStringField("aplicacion", "SEUCAIB");
 
-                    String uaNombre = (servicio.getUaCompetente() != null
-                            && servicio.getUaCompetente().getNombre() != null
-                            && servicio.getUaCompetente().getNombre().getTraduccion(enumIdioma.toString()) != null)
-                            ? servicio.getUaCompetente().getNombre().getTraduccionConValor(enumIdioma.toString(), "ca")
+                    String uaNombre = (servicio.getUaInstructor() != null
+                            && servicio.getUaInstructor().getNombre() != null
+                            && servicio.getUaInstructor().getNombre().getTraduccion(enumIdioma.toString()) != null)
+                            ? servicio.getUaInstructor().getNombre().getTraduccionConValor(enumIdioma.toString(), "ca")
                             : "";
 
                     json.writeStringField("ua", uaNombre);
@@ -291,6 +291,7 @@ public class CastUtil {
                         json.writeStringField("telematico", Boolean.toString(servicio.getTipoTramitacion().isTramitElectronica()));
                     }
                     json.writeEndObject();
+                    json.flush();
 
                     infoAdicional.addIdioma(
                             EnumIdiomas.fromString(enumIdioma.toString()),
@@ -298,7 +299,7 @@ public class CastUtil {
                     );
 
                 } catch (Exception e) {
-                    LOG.error("Error generando infoAdicional para procedimiento {}", servicio.getCodigo(), e);
+                    LOG.error("Error generando infoAdicional para servicio {}", servicio.getCodigo(), e);
                 }
 
             }
@@ -965,15 +966,16 @@ public class CastUtil {
                     json.writeStringField("telematico", Boolean.toString(isTelematico));
 
                     json.writeEndObject();
+                    json.flush();
+
+                    infoAdicional.addIdioma(
+                            EnumIdiomas.fromString(enumIdioma.toString()),
+                            writer.toString()
+                    );
 
                 } catch (Exception e) {
                     LOG.error("Error generando infoAdicional para procedimiento {}", proc.getCodigo(), e);
                 }
-
-                infoAdicional.addIdioma(
-                        EnumIdiomas.fromString(enumIdioma.toString()),
-                        writer.toString()
-                );
 
 
             }
