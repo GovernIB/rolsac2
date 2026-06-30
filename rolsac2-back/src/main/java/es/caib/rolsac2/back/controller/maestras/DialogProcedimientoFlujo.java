@@ -333,10 +333,15 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
             sb.append(mensaje.getMensaje());
             sb.append("\n");
             sb.append("(");
-            sb.append(mensaje.getUsuario());
+            sb.append(getUsuario(mensaje.getUsuario()));
             sb.append(" - " + (mensaje.isAdmContenido() ? getLiteral("TypePerfiles.RS2_ADC") : getLiteral("TypePerfiles.RS2_GES")));
-            sb.append("):");
+            sb.append("): ");
             sb.append(sdf.format(mensaje.getFechaReal()));
+            if (mensaje.getFechaLeido() != null && !mensaje.getFechaLeido().isEmpty()) {
+                sb.append("\n");
+                sb.append(getLiteral("dict.correoLeidoEl") + " " + mensaje.getFechaLeido() + " ");
+                sb.append("(" + getUsuario(mensaje.getUsuarioLeido()) + " - " + (!mensaje.isAdmContenido() ? getLiteral("TypePerfiles.RS2_ADC") : getLiteral("TypePerfiles.RS2_GES")) + ")");
+            }
             sb.append("\n\n");
         }
         return sb.toString();
