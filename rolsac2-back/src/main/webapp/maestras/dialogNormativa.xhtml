@@ -98,7 +98,7 @@
                     <div class="form-group col-md-2">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         <p:inputText id="txtCodigo" value="#{dialogNormativa.data.codigo}"
-                                     styleClass="w95" disabled="true" maxlength="50"/>
+                                     styleClass="w95" readonly="true" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.tipoNormativa']}:"
@@ -125,7 +125,7 @@
                                      placeholder="NNNNN/YYYY"
                                      required="#{empty param['formDialog:closeButton']}"
                                      requiredMessage="#{labels['dict.obligatorio.numero']}"
-                                     styleClass="w95" disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"
+                                     styleClass="w95" readonly="#{dialogNormativa.isModoConsulta()}" maxlength="50"
                         />
                     </div>
                     <div class="form-group col-md-4">
@@ -134,7 +134,7 @@
                                            value="#{labels['dialogNormativa.fechaAprobacion']}:"
                                            for="txtFechaAprobacion"/>
                         </p>
-                        <p:datePicker showIcon="true"  id="txtFechaAprobacion" disabled="#{dialogNormativa.isModoConsulta()}"
+                        <p:datePicker showIcon="#{!dialogNormativa.isModoConsulta()}"  id="txtFechaAprobacion" readonly="#{dialogNormativa.isModoConsulta()}"
                                       locale="#{sessionBean.lang}" requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
                                     required="#{empty param['formDialog:closeButton']}" showOn="button"
                                     value="#{dialogNormativa.data.fechaAprobacion}" pattern="dd/MM/yyyy"/>
@@ -164,13 +164,13 @@
                         <p:outputLabel value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin" styleClass="mr-2 mb-1 pt-0"/>
                         <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
                                      styleClass="w95" placeholder="XXX/YYYY"
-                                     disabled="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
+                                     readonly="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
                             <p:outputLabel  value="#{labels['dialogNormativa.fechaBoletin']}:" styleClass="mb-1 pt-0 mt-0"
                                           for="txtFechaBoletin"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaBoletin" disabled="#{dialogNormativa.isModoConsulta()}"
+                            <p:datePicker showIcon="#{!dialogNormativa.isModoConsulta()}"  id="txtFechaBoletin" readonly="#{dialogNormativa.isModoConsulta()}"
                                           locale="#{sessionBean.lang}" value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
                         </p>
                     </div>
@@ -464,6 +464,7 @@
         </div>
         </div>
 
+        <h:outputScript library="js" name="datePickerR2.js"/>
         <h:outputScript>
             function triggerDblClickDoc() {
                 document.getElementById("formDialog:btnEditarDoc").click();
