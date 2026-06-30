@@ -796,6 +796,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     private boolean checkObligatorio() {
         boolean todoCorrecto = true;
+        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
         if (this.data.getUaInstructor() == null || this.data.getUaInstructor().getCodigo() == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaInstructor"));
             todoCorrecto = false;
@@ -826,6 +827,19 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
                     UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
                     todoCorrecto = false;
+                }
+                for (TasaProcedimientoDTO tasa : tramite.getListaTasas()) {
+                    if (tasa == null) {
+                        continue;
+                    }
+                    if (tasa.getIdentificador() == null || !tasa.getIdentificador().estaCompleto(idiomasObligatorios)) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.tasa.identificador"));
+                        todoCorrecto = false;
+                    }
+                    if (tasa.getFormaPago() == null || !tasa.getFormaPago().estaCompleto(idiomasObligatorios)) {
+                        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.tasa.formaPago"));
+                        todoCorrecto = false;
+                    }
                 }
             }
         }

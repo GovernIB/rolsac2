@@ -681,6 +681,14 @@ public class DialogServicio extends AbstractController implements Serializable {
             retorno = false;
         }
 
+        if (this.data.getTasaServicio() != null) {
+            List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+            if (this.data.getTasaServicio().getIdentificador() == null || !this.data.getTasaServicio().getIdentificador().estaCompleto(idiomasObligatorios)) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.error.tasa.identificador"));
+                retorno = false;
+            }
+        }
+
         /*
         if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
             boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
@@ -983,7 +991,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void nuevaTasaServicio() {
         if (data.getTasaServicio() != null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.tasa.soloUna"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.error.tasa.soloUna"));
             return;
         }
         abrirDialogTasaServicio(TypeModoAcceso.ALTA);
