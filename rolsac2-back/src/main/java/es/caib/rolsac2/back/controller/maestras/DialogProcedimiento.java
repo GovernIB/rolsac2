@@ -833,11 +833,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                         continue;
                     }
                     if (tasa.getIdentificador() == null || !tasa.getIdentificador().estaCompleto(idiomasObligatorios)) {
-                        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.tasa.identificador"));
+                        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.tasa.identificador", new Object[]{tramite.getNombre().getTraduccion(sessionBean.getLang())}));
                         todoCorrecto = false;
                     }
                     if (tasa.getFormaPago() == null || !tasa.getFormaPago().estaCompleto(idiomasObligatorios)) {
-                        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.tasa.formaPago"));
+                        UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.tasa.formaPago", new Object[]{tramite.getNombre().getTraduccion(sessionBean.getLang())}));
                         todoCorrecto = false;
                     }
                 }
