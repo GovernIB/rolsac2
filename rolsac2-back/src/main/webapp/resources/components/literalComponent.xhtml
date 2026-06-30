@@ -41,12 +41,22 @@
 					  shortDescription="Largo máximo de los campos"></cc:attribute>
 
     </cc:interface>
-    <cc:implementation>
-        <span id="#{cc.clientId}" style="white-space:nowrap; display:flex;">
+	<cc:implementation>
+		<style>
+			/* Permitir selección de texto en campos de solo lectura dentro de este componente */
+			.allow-select .ui-state-disabled {
+				pointer-events: auto !important;
+				-webkit-user-select: text !important;
+				-moz-user-select: text !important;
+				-ms-user-select: text !important;
+				user-select: text !important;
+			}
+		</style>
+		<span id="#{cc.clientId}" class="allow-select" style="white-space:nowrap; display:flex;">
         	<c:choose>
 				<c:when test="#{cc.tipo == null || !cc.tipo.equals('html')}">
-					<p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1  #{cc.estiloInput}"
-								 disabled="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}">
+					<p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1  #{cc.estiloInput} #{cc.isModoConsulta() ? 'ui-state-disabled' : ''}"
+								 readonly="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}">
 		                <p:ajax event="change" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
 		            </p:inputText>
 		             <p:commandButton id="btnAbrir"
@@ -121,8 +131,8 @@
 
 
 					</h:outputScript>
-					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"
-                         disabled="#{cc.isModoConsulta()}" style="white-space:nowrap;">
+					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1 #{cc.isModoConsulta() ? 'ui-state-disabled' : ''}"
+                         readonly="#{cc.isModoConsulta()}" style="white-space:nowrap;">
 		            </p:inputTextarea>
 		             <p:commandButton id="textoHTMLprocess"
 		             		 action="#{cc.actualizarLiteral()}"

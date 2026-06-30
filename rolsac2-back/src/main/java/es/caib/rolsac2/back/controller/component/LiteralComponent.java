@@ -203,7 +203,7 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         if (modoAcceso == null) {
             modoAcceso = (iModoAcceso != null && iModoAcceso) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
         }
-        if (getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
+        if (Boolean.TRUE.equals(getAttributes().get("readonly")) || getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
             modoAcceso = TypeModoAcceso.CONSULTA;
         }
 

@@ -169,10 +169,10 @@ public class LiteralAreaComponent extends UIInput implements NamingContainer {
         if (isModoConsulta()) {
             if (tipo == null || !tipo.equals("html")) {
                 if (texto instanceof InputText) {
-                    ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
+                    ((InputText) texto).setStyle("opacity: .35;");
                 }
                 if (texto instanceof InputTextarea) {
-                    ((InputTextarea) texto).setStyle("opacity: .35; pointer-events:none;");
+                    ((InputTextarea) texto).setStyle("opacity: .35;");
                 }
 
             }
@@ -204,15 +204,15 @@ public class LiteralAreaComponent extends UIInput implements NamingContainer {
         if (modoAcceso == null) {
             modoAcceso = (iModoAcceso != null && iModoAcceso) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
         }
-        if (getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
+        if (Boolean.TRUE.equals(getAttributes().get("readonly")) || getAttributes().get("soloLecture") != null && "true".equals(getAttributes().get("soloLecture"))) {
             modoAcceso = TypeModoAcceso.CONSULTA;
         }
 
         if (isModoConsulta()) {
             if ((tipo == null || !tipo.equals("html")) && texto instanceof InputText) {
-                ((InputText) texto).setStyle("opacity: .35; pointer-events:none;");
+                ((InputText) texto).setStyle("opacity: .35;");
             } else if ((tipo == null || !tipo.equals("html")) && texto instanceof InputTextarea) {
-                ((InputTextarea) texto).setStyle("opacity: .35; pointer-events:none;");
+                ((InputTextarea) texto).setStyle("opacity: .35;");
             }
         } else {
             if (texto instanceof InputText) {

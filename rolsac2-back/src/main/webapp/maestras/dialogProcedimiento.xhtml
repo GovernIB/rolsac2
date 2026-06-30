@@ -81,14 +81,14 @@
                             <br/>
                             <p:inputText id="txtEstadoSIA" value="#{dialogProcedimiento.getEstadoSIA()}"
                                          styleClass="w95"
-                                         disabled="true"/>
+                                         readonly="true"/>
                         </div>
                         <div class="form-group col-md-2">
                             <p:outputLabel value="#{labels['dialogProcedimiento.codigo.sia']}:" styleClass="mb-1 pt-0 negrita" for="txtCodigoSIA"/>
 
                             <p:inputText id="txtCodigoSIA" value="#{dialogProcedimiento.data.codigoSIA}"
                                          styleClass="w95"
-                                         disabled="true"/>
+                                         readonly="true"/>
 
                         </div>
                         <div class="form-group col-md-2">
@@ -96,7 +96,7 @@
                                 <p:outputLabel value="#{labels['dialogProcedimiento.fecha.sia']}:" for="txtFechaSIA" styleClass="mb-1 pt-0 negrita"/>
                                 <p:inputText id="txtFechaSIA" value="#{dialogProcedimiento.data.fechaSIA}"
                                              styleClass="w95"
-                                             disabled="true">
+                                             readonly="true">
                                     <f:convertDateTime pattern="dd-MM-yyyy"/>
                                 </p:inputText>
                             </p>
@@ -106,7 +106,7 @@
                                 <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA" styleClass="mb-1 pt-0 negrita"/>
                                 <p:inputText id="txtErrorSIA" value="#{dialogProcedimiento.data.errorSIA}"
                                              title="#{dialogProcedimiento.data.errorSIA}"
-                                             styleClass="w95" disabled="true"
+                                             styleClass="w95" readonly="true"
                                 />
                                 <p:tooltip for="txtErrorSIA"
                                            value="#{dialogProcedimiento.data.errorSIA}"
@@ -141,18 +141,18 @@
                         <div class="form-group col-md-2" style="margin-top: -7px;">
                             <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogProcedimiento.codigo']}:" for="txtCodigo" />
                             <p:inputText id="txtCodigo" value="#{dialogProcedimiento.data.codigo}"
-                                         styleClass="w85" disabled="true"/>
+                                         styleClass="w85" readonly="true"/>
                         </div>
                         <div class="form-group col-md-4">
                             <p:outputLabel value="#{labels['dialogProcedimiento.fecha.publicacion']}:" for="txtFechaPublicacion" styleClass="mb-1 pt-0 negrita"/>
                             <p>
-                                <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
+                                <p:datePicker showIcon="#{dialogProcedimiento.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaPublicacion" styleClass="fecha"
                                               locale="#{sessionBean.lang}"
-                                              disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                              readonly="#{dialogProcedimiento.isModoConsulta()}"
                                               value="#{dialogProcedimiento.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
                                               requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
                                               required="#{empty param['formDialog:closeButton']}"
-                                              showTime="true" showOn="button">
+                                              showTime="true" showOn="button" widgetVar="fechaWidget">
                                     <p:ajax event="change" />
                                 </p:datePicker>
                             </p>
@@ -161,10 +161,10 @@
                             <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:" for="txtFechaCaducidad"
                                            styleClass="mb-1 pt-0 negrita"/>
                             <p>
-                                <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
-                                              locale="#{sessionBean.lang}" disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                <p:datePicker showIcon="#{dialogProcedimiento.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaCaducidad" styleClass="fecha"
+                                              locale="#{sessionBean.lang}" readonly="#{dialogProcedimiento.isModoConsulta()}"
                                               value="#{dialogProcedimiento.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
-                                              showTime="true"  showOn="button"/>
+                                              showTime="true" showOn="button" widgetVar="fechaCaducidadWidget"/>
                             </p>
                         </div>
                         <div class="form-group col-md-2">
@@ -421,11 +421,11 @@
                                                          value="#{dialogProcedimiento.comunUA.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                          rendered="#{dialogProcedimiento.data.esComun()}"
                                                          styleClass="w90 mr-1"
-                                                         disabled="true"/>
+                                                         readonly="true"/>
                                             <p:inputText id="txtOrgComp"
                                                          rendered="#{!dialogProcedimiento.data.esComun()}"
                                                          value="#{dialogProcedimiento.data.uaCompetente.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
-                                                         styleClass="w90 mr-1" disabled="true"/>
+                                                         styleClass="w90 mr-1" readonly="true"/>
                                             <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                          value="#{dialogProcedimiento.uaRaiz}"
                                             />
@@ -469,12 +469,12 @@
                                                      value="#{dialogProcedimiento.comunUA.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                      rendered="#{dialogProcedimiento.data.esComun()}"
                                                      styleClass="w90 mr-1"
-                                                     disabled="true"/>
+                                                     readonly="true"/>
                                         <p:inputText id="txtOrgInstr"
                                                      rendered="#{!dialogProcedimiento.data.esComun()}"
                                                      value="#{dialogProcedimiento.data.uaInstructor.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                      styleClass="w90 mr-1"
-                                                     disabled="true"/>
+                                                     readonly="true"/>
                                      <!--                                        <p:inputText id="txtOrgCompRaizInstr"-->
                                      <!--                                                     styleClass="ocultar"-->
                                      <!--                                                     value="#{dialogProcedimiento.uaRaiz}"-->
@@ -533,7 +533,7 @@
                                            for="txtNombreResp"/>
                             <p>
                                 <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}"
-                                             disabled="#{dialogProcedimiento.isModoConsulta()}"
+                                             readonly="#{dialogProcedimiento.isModoConsulta()}"
                                              required="#{empty param['formDialog:closeButton']}"
                                              requiredMessage="#{labels['dict.obligatorio.responsable']}"
                                              maxlength="255"
@@ -547,7 +547,7 @@
                                          validatorMessage="#{labels['dict.emailNoValido']}"
                                          update="messagesDialog"
                                          maxlength="100"
-                                         disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w90">
+                                         readonly="#{dialogProcedimiento.isModoConsulta()}" styleClass="w90">
                                 <f:validateRegex
                                         pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
                                 />
@@ -563,7 +563,7 @@
                                          maxlength="100"
                                          requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
                                          required="#{empty param['formDialog:closeButton']}"
-                                         disabled="#{dialogProcedimiento.isModoConsulta()}" styleClass="w96">
+                                         readonly="#{dialogProcedimiento.isModoConsulta()}" styleClass="w96">
                                 <f:validateRegex
                                         pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
                                 />
@@ -583,7 +583,7 @@
                             </p>
                             <my:literalComponent id="txtRespTrat"
                                                  literal="#{dialogProcedimiento.lopdResponsable}"
-                                                 soloLecture="#{true}"
+                                                 soloLecture="#{dialogProcedimiento.isModoConsulta()}"
                                                  rendered="#{!dialogProcedimiento.data.esComun()}"
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
@@ -593,7 +593,7 @@
                                          value="#{dialogProcedimiento.comunLOPD.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                          rendered="#{dialogProcedimiento.data.esComun()}"
                                          styleClass="w90 mr-1"
-                                         disabled="true"/>
+                                         readonly="true"/>
                         </div>
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
@@ -1190,6 +1190,59 @@
             });
         </h:outputScript>
 
+        <h:outputScript>
+            // Detectar arrastre del raton dentro de datatable para permitir seleccion de texto
+            (function () {
+                var startX = 0, startY = 0, isDragSeleccionTexto = false;
+                var UMBRAL_DRAG = 4; // px de movimiento para considerar arrastre
+
+                function esCeldaDataTable(target) {
+                    return target.closest &amp;&amp; target.closest('.ui-datatable .ui-datatable-data tr.ui-widget-content td');
+                }
+
+                document.addEventListener('mousedown', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    startX = e.pageX;
+                    startY = e.pageY;
+                    isDragSeleccionTexto = false;
+                }, true);
+
+                document.addEventListener('mousemove', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (Math.abs(e.pageX - startX) > UMBRAL_DRAG || Math.abs(e.pageY - startY) > UMBRAL_DRAG) {
+                        isDragSeleccionTexto = true;
+                    }
+                }, true);
+
+                // Si se detecta arrastre del raton dentro de la celda,
+                // se impide que el click llegue al manejador de
+                // seleccion de fila de PrimeFaces, para no perder la seleccion de texto.
+                document.addEventListener('mouseup', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (isDragSeleccionTexto) {
+                        e.stopPropagation();
+                    }
+                }, true);
+
+                document.addEventListener('click', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (isDragSeleccionTexto) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+                    isDragSeleccionTexto = false;
+                }, true);
+            })();
+        </h:outputScript>
+
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoApoderado']}"
                          header="#{labels['dict.guardandoDato']}"
 
@@ -1232,14 +1285,14 @@
                          value="#{empty dialogProcedimiento.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogProcedimiento.estadoProcedimiento.toString()]}"
                          styleClass="wf-field"
                          style="min-width: 250px;"
-                          disabled="true" />
+                         readonly="true" />
             <p:commandButton value="#{labels['dialogProcedimiento.seguirFlujo']}"
                              icon="pi pi-arrow-right"
                              action="#{dialogProcedimiento.guardarFlujo}"
                              styleClass="btn-footer"
                              style="white-space: nowrap;text-align: center;flex:0 0 auto; "
                              process="@all"
-                             disabled="#{empty dialogProcedimiento.data.codigo}"
+                             readonly="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog"
                              rendered="#{dialogProcedimiento.isMostrarBtnFlujo()}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"/>
@@ -1250,7 +1303,7 @@
                              styleClass="btn-footer"
                              process="@this"
                              style="flex:0 0 auto; white-space:nowrap;"
-                             disabled="#{empty dialogProcedimiento.data.codigo}"
+                             readonly="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog"
                              rendered="#{dialogProcedimiento.isMostrarBtnMensajes()}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogMensajes}" process="@this"/>
@@ -1261,7 +1314,7 @@
                              styleClass="btn-footer"
                              style="flex:0 0 auto; white-space:nowrap;"
                              process="@this"
-                             disabled="#{empty dialogProcedimiento.data.codigo}"
+                             readonly="#{empty dialogProcedimiento.data.codigo}"
             />
         </div>
 

@@ -85,19 +85,19 @@
                     <div class="form-group col-md-3" style="margin-top:-5px">
                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
                         <p:inputText id="txtCodigoTramite" value="#{dialogProcedimientoTramite.data.codigoTramite}"
-                                     styleClass="w95" disabled="true"/>
+                                     styleClass="w95" readonly="true"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaPublicacion']}:"
                                        for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
-                            <p:datePicker showIcon="true" id="txtFechaPublicacion" styleClass="fecha"
-                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                            <p:datePicker showIcon="#{dialogProcedimientoTramite.isModoConsulta() ? 'false' : 'true'}" id="txtFechaPublicacion" styleClass="fecha"
+                                          locale="#{sessionBean.lang}" readonly="#{dialogProcedimientoTramite.isModoConsulta()}"
                                           value="#{dialogProcedimientoTramite.data.fechaPublicacion}"
                                           pattern="dd/MM/yyyy HH:mm"
                                           required="#{empty param['formDialog:closeButton']}" showTime="true"
-                                          requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
+                                          requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}" widgetVar="fechaWidget" showOn="button"
                                 />
                         </p>
                     </div>
@@ -132,29 +132,29 @@
                     <div class="form-group col-md-3" style="margin-top:-5px">
                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigoWF']}:" for="txtCodigoTramite"/>
                         <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
-                                     styleClass="w95" disabled="true"/>
+                                     styleClass="w95" readonly="true"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaInicio" styleClass="fecha"
-                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
+                            <p:datePicker showIcon="#{dialogProcedimientoTramite.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaInicio" styleClass="fecha"
+                                        locale="#{sessionBean.lang}" readonly="#{dialogProcedimientoTramite.isModoConsulta()}"
                                         value="#{dialogProcedimientoTramite.data.fechaInicio}"
                                         required="#{empty param['formDialog:closeButton']}"
                                         requiredMessage="#{labels['dict.obligatorio.fechaInicio']}" showTime="true"
-                                        pattern="dd/MM/yyyy HH:mm" showOn="button"/>
+                                        pattern="dd/MM/yyyy HH:mm" showOn="button" widgetVar="fechaInicioWidget"/>
                         </p>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaCierre']}:" for="txtFechaCierre"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaCierre" styleClass="fecha"
-                                          locale="#{sessionBean.lang}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                        value="#{dialogProcedimientoTramite.data.fechaCierre}"
-                                          showTime="true"
-                                        pattern="dd/MM/yyyy HH:mm" showOn="button"/>
+                            <p:datePicker showIcon="#{dialogProcedimientoTramite.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaCierre" styleClass="fecha"
+                                locale="#{sessionBean.lang}" readonly="#{dialogProcedimientoTramite.isModoConsulta()}"
+                                value="#{dialogProcedimientoTramite.data.fechaCierre}"
+                                 showTime="true"
+                                 pattern="dd/MM/yyyy HH:mm" showOn="button" widgetVar="fechaCaducidadWidget"/>
                         </p>
                     </div>
                 </div>
@@ -258,13 +258,13 @@
                                          value="#{dialogProcedimientoTramite.comunUA.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
                                          rendered="#{dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w95"
-                                         disabled="true"/>
+                                         readonly="true"/>
 
                             <p:inputText id="txtOrgInstr"
                                          value="#{dialogProcedimientoTramite.data.unidadAdministrativa.nombre.getTraduccionConValor(dialogProcedimientoTramite.idioma)}"
                                          rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                          styleClass="w85 mr-1"
-                                         disabled="true"/>
+                                         readonly="true"/>
                             <p:commandButton
                                     action="#{dialogProcedimientoTramite.abrirVentanaUA()}"
                                     icon="pi pi-sitemap"
@@ -373,8 +373,8 @@
                                                value="#{labels['dict.identificador']}:"
                                                for="txtTraId"/>
                                 <p:inputText id="txtTraId"
-                                             disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                             readonly="#{dialogProcedimientoTramite.isModoConsulta() || 
+                                                 !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteId}"
                                              styleClass="w95"
                                              onblur="this.value = this.value.toUpperCase();"
@@ -389,9 +389,9 @@
                                 <p:outputLabel id="lbltxtTraVer" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.version']}:"
                                                for="txtTraVer"/>
-                                <p:inputText id="txtTraVer" decimalPlaces="0"
-                                             disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
-                                                    !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
+                                    <p:inputText id="txtTraVer" decimalPlaces="0"
+                                             readonly="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                                 !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteVersion}"
                                              required="#{empty param['formDialog:closeButton'] and dialogProcedimientoTramite.isOpcionTelematicaDatos()}"
                                              requiredMessage="#{labels['dict.obligatorio.version']}"
@@ -428,7 +428,7 @@
                                                value="#{labels['dialogProcedimientoTramite.parametros']}:"
                                                for="txtTraParam"/>
                                 <p:inputText id="txtTraParam"
-                                             disabled="#{dialogProcedimientoTramite.isModoConsulta() ||
+                                             readonly="#{dialogProcedimientoTramite.isModoConsulta() ||
                                              !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogProcedimientoTramite.data.tipoTramitacion.tramiteParametros}"
                                              maxlength="1024"
@@ -447,7 +447,6 @@
                                                      value="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
                                                      required="#{dialogProcedimientoTramite.isOpcionTelematicaUrl()}"
                                                      soloLecture="#{dialogProcedimientoTramite.isModoConsulta() || !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
-                                                     disabled="#{dialogProcedimientoTramite.isModoConsulta() || !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogProcedimientoTramite.idioma}"
@@ -666,6 +665,59 @@
             function triggerDblClickTasa() {
                 document.getElementById("formDialog:btnEditarTasa").click();
             }
+        </h:outputScript>
+
+        <h:outputScript>
+            // Detectar arrastre del raton dentro de datatable para permitir seleccion de texto
+            (function () {
+                var startX = 0, startY = 0, isDragSeleccionTexto = false;
+                var UMBRAL_DRAG = 4; // px de movimiento para considerar arrastre
+
+                function esCeldaDataTable(target) {
+                    return target.closest &amp;&amp; target.closest('.ui-datatable .ui-datatable-data tr.ui-widget-content td');
+                }
+
+                document.addEventListener('mousedown', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    startX = e.pageX;
+                    startY = e.pageY;
+                    isDragSeleccionTexto = false;
+                }, true);
+
+                document.addEventListener('mousemove', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (Math.abs(e.pageX - startX) > UMBRAL_DRAG || Math.abs(e.pageY - startY) > UMBRAL_DRAG) {
+                        isDragSeleccionTexto = true;
+                    }
+                }, true);
+
+                // Si se detecta arrastre del raton dentro de la celda,
+                // se impide que el click llegue al manejador de
+                // seleccion de fila de PrimeFaces, para no perder la seleccion de texto.
+                document.addEventListener('mouseup', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (isDragSeleccionTexto) {
+                        e.stopPropagation();
+                    }
+                }, true);
+
+                document.addEventListener('click', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (isDragSeleccionTexto) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+                    isDragSeleccionTexto = false;
+                }, true);
+            })();
         </h:outputScript>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"

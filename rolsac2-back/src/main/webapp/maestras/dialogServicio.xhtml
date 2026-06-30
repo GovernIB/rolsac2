@@ -85,7 +85,7 @@
 
                     <p:inputText id="txtEstadoSIA" value="#{dialogServicio.getEstadoSIA()}"
                                  styleClass="w95"
-                                 disabled="true"/>
+                                 readonly="true"/>
                 </div>
                 <div class="form-group col-12 col-md-2 mb0">
                     <p:outputLabel value="#{labels['dialogServicio.codigo.sia']}:"
@@ -93,7 +93,7 @@
 
                     <p:inputText id="txtCodigoSIA" value="#{dialogServicio.data.codigoSIA}"
                                  styleClass="w95"
-                                 disabled="true"/>
+                                 readonly="true"/>
 
                 </div>
                 <div class="form-group col-12 col-md-2 mb0">
@@ -102,7 +102,7 @@
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p:inputText id="txtFechaSIA" value="#{dialogServicio.data.fechaSIA}"
                                      styleClass="w95"
-                                     disabled="true">
+                                     readonly="true">
                             <f:convertDateTime pattern="dd-MM-yyyy"/>
                         </p:inputText>
                     </p>
@@ -112,7 +112,7 @@
                         <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA"
                                        styleClass="mb-1 pt-0 negrita" />
                         <p:inputText id="txtErrorSIA" value="#{dialogServicio.data.errorSIA}"
-                                     styleClass="w95" disabled="true"
+                                     styleClass="w95" readonly="true"
                         />
                         <p:tooltip id="toolTipFade" for="txtErrorSIA" value="#{dialogServicio.data.errorSIA}"
                                    position="top"/>
@@ -146,26 +146,26 @@
                                           for="txtCodigo"/>
 
                         <p:inputText id="txtCodigo" value="#{dialogServicio.data.codigo}"
-                                     styleClass="w85" disabled="true"/>
+                                     styleClass="w85" readonly="true"/>
                     </div>
                     <div class="form-group col-md-4 col-12 mb0">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.publicacion']}:" for="txtFechaPublicacion"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaPublicacion" styleClass="fecha"
-                                          locale="#{sessionBean.lang}" disabled="#{dialogServicio.isModoConsulta()}"
+                            <p:datePicker showIcon="#{dialogServicio.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaPublicacion" styleClass="fecha"
+                                          locale="#{sessionBean.lang}" readonly="#{dialogServicio.isModoConsulta()}"
                                         value="#{dialogServicio.data.fechaPublicacion}" pattern="dd/MM/yyyy HH:mm"
-                                          showTime="true" showOn="button" required="#{empty param['formDialog:closeButton']}"/>
+                                          showTime="true" showOn="button" required="#{empty param['formDialog:closeButton']}" widgetVar="fechaWidget"/>
                         </p>
                     </div>
                     <div class="form-group col-md-4 col-12 mb0">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.despublicacion']}:" for="txtFechaCaducidad"
                                        styleClass="mb-1 pt-0 negrita"/>
                         <p>
-                            <p:datePicker showIcon="true"  id="txtFechaCaducidad" styleClass="fecha"
-                                          locale="#{sessionBean.lang}" disabled="#{dialogServicio.isModoConsulta()}"
+                            <p:datePicker showIcon="#{dialogServicio.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaCaducidad" styleClass="fecha"
+                                          locale="#{sessionBean.lang}" readonly="#{dialogServicio.isModoConsulta()}"
                                         value="#{dialogServicio.data.fechaCaducidad}" pattern="dd/MM/yyyy HH:mm"
-                                          showTime="true"  showOn="button"/>
+                                          showTime="true"  showOn="button" widgetVar="fechaCaducidadWidget"/>
                         </p>
                     </div>
                     <div class="form-group col-md-2 col-12 mb0">
@@ -192,7 +192,7 @@
                                        for="txtNombre"/>
                             <my:literalAreaComponent id="txtNombre"
                                                  value="#{dialogServicio.data.nombreProcedimientoWorkFlow}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 readonly="#{dialogServicio.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -209,7 +209,7 @@
                                        for="txtObjeto"/>
                             <my:literalAreaComponent id="txtObjeto" styleClass="w95"
                                                  value="#{dialogServicio.data.objeto}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 readonly="#{dialogServicio.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -224,7 +224,7 @@
                                        for="txtDestinatarios"/>
                             <my:literalAreaComponent id="txtDestinatarios" styleClass="w95"
                                                  value="#{dialogServicio.data.destinatarios}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 readonly="#{dialogServicio.isModoConsulta()}"
                                                  required="#{empty param['formDialog:closeButton']}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
@@ -239,7 +239,7 @@
                                        for="txtrequisitos"/>
                             <my:literalAreaComponent id="txtrequisitos" styleClass="w95"
                                                  value="#{dialogServicio.data.requisitos}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 readonly="#{dialogServicio.isModoConsulta()}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogServicio.idioma}"
@@ -267,7 +267,7 @@
                                        for="txtObservaciones"/>
                             <my:literalAreaComponent id="txtObservaciones" styleClass="w95"
                                                  value="#{dialogServicio.data.observaciones}"
-                                                 soloLecture="#{dialogServicio.isModoConsulta()}"
+                                                 readonly="#{dialogServicio.isModoConsulta()}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  idioma="#{dialogServicio.idioma}"
@@ -291,11 +291,11 @@
                                                                      value="#{dialogServicio.comunUA.getTraduccionConValor(dialogServicio.idioma)}"
                                                                      rendered="#{dialogServicio.data.esComun()}"
                                                                      styleClass="w89"
-                                                                     disabled="true"/>
+                                                                     readonly="true"/>
                                                         <p:inputText id="txtOrgComp"
                                                                      rendered="#{!dialogServicio.data.esComun()}"
                                                                      value="#{dialogServicio.data.uaInstructor.nombre.getTraduccionConValor(dialogServicio.idioma)}"
-                                                                     styleClass="w89 mr-1" disabled="true"/>
+                                                                     styleClass="w89 mr-1" readonly="true"/>
                                                         <p:inputText id="txtOrgCompRaiz" styleClass="ocultar"
                                                                      value="#{dialogServicio.uaRaiz}"
                                                         />
@@ -350,7 +350,7 @@
                                        value="#{labels['dialogServicio.nombreResponsable']}:"
                                        for="txtNombreResp"/>
                             <p:inputText id="txtNombreResp" value="#{dialogServicio.data.responsable}"
-                                         disabled="#{dialogServicio.isModoConsulta()}"
+                                         readonly="#{dialogServicio.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.responsable']}"
                                          maxlength="255"
@@ -364,7 +364,7 @@
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
                                      maxlength="100"
-                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95">
+                                     readonly="#{dialogServicio.isModoConsulta()}" styleClass="w95">
                             <f:validateRegex
                                     pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
@@ -374,7 +374,7 @@
                          <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.responsableTelefono']}:"
                                           for="textResponsableTelf"/>
                         <p:inputText id="textResponsableTelf" value="#{dialogServicio.data.responsableTelefono}"
-                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w90" maxlength="25"/>
+                                     readonly="#{dialogServicio.isModoConsulta()}" styleClass="w90" maxlength="25"/>
                     </div>
 
                     <div class="form-group col-md-12">
@@ -386,7 +386,7 @@
                                      maxlength="100"
                                      requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
                                      required="#{empty param['formDialog:closeButton']}"
-                                     disabled="#{dialogServicio.isModoConsulta()}" styleClass="w95">
+                                     readonly="#{dialogServicio.isModoConsulta()}" styleClass="w95">
                             <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
                             <p:ajax partialSubmit="@this" update="messagesDialog"/>
                         </p:inputText>
@@ -398,10 +398,11 @@
                     <div class="form-group col-md-6">
                         <!--Aquí es mapear luego con los bools que tiene tipoTramitacion para ello-->
                         <p:selectManyCheckbox id="canalesTramitacion"
-                                              value="#{dialogServicio.canalesSeleccionados}">
-                            <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL" id="telematico" itemDisabled="#{dialogServicio.isModoConsulta()}"/>
-                            <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE" itemDisabled="#{dialogServicio.isModoConsulta()}"/>
-                            <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN" itemDisabled="#{dialogServicio.isModoConsulta()}"/>
+                                              value="#{dialogServicio.canalesSeleccionados}"
+                                              disabled="#{dialogServicio.isModoConsulta()}">
+                            <f:selectItem itemLabel="#{labels['dict.telematico']}" itemValue="TEL" id="telematico"/>
+                            <f:selectItem itemLabel="#{labels['dict.presencial']}" itemValue="PRE"/>
+                            <f:selectItem itemLabel="#{labels['dict.telefonico']}" itemValue="TFN"/>
                             <p:ajax update="txtTraId txtTraVer txtTraPlat txtTraUrl txtTraParam txtTraUrl txtTraUrl:texto txtOpcionTelematica panelFormCanales"
                                     event="change" listener="#{dialogServicio.cambiaTipo}"/>
                         </p:selectManyCheckbox>
@@ -441,7 +442,7 @@
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.identificador']}:"
                                                for="txtTraId"/>
                                 <p:inputText id="txtTraId"
-                                             disabled="#{dialogServicio.isModoConsulta() ||
+                                             readonly="#{dialogServicio.isModoConsulta() ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteId}" styleClass="w95"
                                              onblur="this.value = this.value.toUpperCase();"
@@ -459,7 +460,7 @@
                                                for="txtTraVer"/>
                                 <p:inputText id="txtTraVer" decimalPlaces="0"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteVersion}"
-                                             disabled="#{dialogServicio.isModoConsulta() ||
+                                             readonly="#{dialogServicio.isModoConsulta() ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
                                              required="#{empty param['formDialog:closeButton'] and dialogServicio.isOpcionTelematicaDatos()}"
                                              requiredMessage="#{labels['dict.obligatorio.version']}"
@@ -495,7 +496,7 @@
                                                value="#{labels['dialogServicio.parametros']}:"
                                                for="txtTraParam"/>
                                 <p:inputText id="txtTraParam"
-                                             disabled="#{dialogServicio.isModoConsulta()  ||
+                                             readonly="#{dialogServicio.isModoConsulta()  ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteParametros}"
                                              maxlength="1024"
@@ -513,7 +514,6 @@
                                                      value="#{dialogServicio.data.tipoTramitacion.url}"
                                                      required="#{dialogServicio.isOpcionTelematicaUrl()}"
                                                      soloLecture="#{dialogServicio.isModoConsulta()}"
-                                                     disabled="#{dialogServicio.isModoConsulta()}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                      idioma="#{dialogServicio.idioma}"
@@ -521,7 +521,7 @@
                                                      nombreLiteral="#{labels['dialogServicio.url']}"
                                                     maxlength="512">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"
-                                                 disabled="#{dialogServicio.isModoConsulta() or  !dialogServicio.isOpcionTelematicaUrl()}"/>
+                                                 readonly="#{dialogServicio.isModoConsulta() or  !dialogServicio.isOpcionTelematicaUrl()}"/>
                                 </my:literalComponent>
 
                             </div>
@@ -538,7 +538,7 @@
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.lopd.activo']}:"
                                        for="txtActivoLOPD"/>
                         <p:selectBooleanCheckbox id="txtActivoLOPD"
-                                                 value="#{dialogServicio.data.activoLOPD}" disabled="#{dialogServicio.isModoConsulta()}">
+                                                 value="#{dialogServicio.data.activoLOPD}" readonly="#{dialogServicio.isModoConsulta()}">
                             <p:ajax event="change" oncomplete="checkActivoLOPD();"
                                     update="panelDocumentoLOPD dataDocumentosLopd paneldataDocumentosLopd"/>
                         </p:selectBooleanCheckbox>
@@ -562,7 +562,7 @@
                                      value="#{dialogServicio.comunLOPD.getTraduccionConValor(dialogServicio.idioma)}"
                                      rendered="#{dialogServicio.data.esComun()}"
                                      styleClass="w90 mr-1"
-                                     disabled="true"/>
+                                     readonly="true"/>
                     </div>
                 </div>
                 <div id="filaLOPDFinalidad" class="form-row">
@@ -852,6 +852,7 @@
                                         id="btnEditarTasaServicio"
                                         action="#{dialogServicio.editarTasaServicio}"
                                         rendered="#{!dialogServicio.isModoConsulta()}"
+                                        disabled="#{dialogServicio.isModoConsulta()}"
                                         process="@this" update="dataTasaServicio messagesDialog">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTasaServicio}"
                                 process="@this"
@@ -1003,7 +1004,7 @@
                                      action="#{dialogServicio.consultarDocumentoLOPD}" styleClass=" "
                                      process="@this" update="dataDocumentosLopd messagesDialog"
                                      rendered="#{dialogServicio.isModoConsulta()}"
-                                     disabled="#{empty dialogServicio.data.documentosLOPD}">
+                                     readonly="#{empty dialogServicio.data.documentosLOPD}">
                     </p:commandButton>
                 </div>
             </h:panelGroup>
@@ -1091,6 +1092,59 @@
             });
         </h:outputScript>
 
+         <h:outputScript>
+            // Detectar arrastre del raton dentro de datatable para permitir seleccion de texto
+            (function () {
+                var startX = 0, startY = 0, isDragSeleccionTexto = false;
+                var UMBRAL_DRAG = 4; // px de movimiento para considerar arrastre
+
+                function esCeldaDataTable(target) {
+                    return target.closest &amp;&amp; target.closest('.ui-datatable .ui-datatable-data tr.ui-widget-content td');
+                }
+
+                document.addEventListener('mousedown', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    startX = e.pageX;
+                    startY = e.pageY;
+                    isDragSeleccionTexto = false;
+                }, true);
+
+                document.addEventListener('mousemove', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (Math.abs(e.pageX - startX) > UMBRAL_DRAG || Math.abs(e.pageY - startY) > UMBRAL_DRAG) {
+                        isDragSeleccionTexto = true;
+                    }
+                }, true);
+
+                // Si se detecta arrastre del raton dentro de la celda,
+                // se impide que el click llegue al manejador de
+                // seleccion de fila de PrimeFaces, para no perder la seleccion de texto.
+                document.addEventListener('mouseup', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (isDragSeleccionTexto) {
+                        e.stopPropagation();
+                    }
+                }, true);
+
+                document.addEventListener('click', function (e) {
+                    if (!esCeldaDataTable(e.target)) {
+                        return;
+                    }
+                    if (isDragSeleccionTexto) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+                    isDragSeleccionTexto = false;
+                }, true);
+            })();
+        </h:outputScript>
+
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
@@ -1099,14 +1153,14 @@
                          value="#{empty dialogServicio.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogServicio.estadoProcedimiento.toString()]}"
                          styleClass="wf-field"
                          style="min-width: 250px;"
-                         disabled="true"/>
+                         readonly="true"/>
             <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}"
                              icon="pi pi-arrow-right"
                              action="#{dialogServicio.guardarFlujo}"
                              styleClass="btn-footer"
                              style="white-space: nowrap;text-align: center;"
                              process="@all"
-                             disabled="#{empty dialogServicio.data.codigo}"
+                             readonly="#{empty dialogServicio.data.codigo}"
                              update="messagesDialog"
                                 rendered="#{dialogServicio.mostrarBtnFlujo}">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"/>
@@ -1116,7 +1170,7 @@
                              action="#{dialogServicio.verMensajes}"
                              styleClass="btn-footer"
                              process="@this"
-                             disabled="#{empty dialogServicio.data.codigo}"
+                             readonly="#{empty dialogServicio.data.codigo}"
                              update="messagesDialog"
                                 rendered="#{dialogServicio.mostrarBtnMensajes}">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogMensajes}" process="@this"/>
@@ -1126,7 +1180,7 @@
                              action="#{dialogServicio.verAuditorias}"
                              styleClass="btn-footer"
                              process="@this"
-                             disabled="#{empty dialogServicio.data.codigo}"
+                             readonly="#{empty dialogServicio.data.codigo}"
             />
         </div>
 

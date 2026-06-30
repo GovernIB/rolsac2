@@ -48,7 +48,7 @@
         	<c:choose>
 				<c:when test="#{cc.tipo == null || !cc.tipo.equals('html')}">
 						<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1 "
-										 disabled="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}" autoResize="false">
+										 readonly="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}" autoResize="false">
 		                <p:ajax event="change" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
 		            </p:inputTextarea>
 		             <p:commandButton id="btnAbrir"
@@ -125,7 +125,7 @@
 
 					</h:outputScript>
 					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"
-                         disabled="#{cc.isModoConsulta()}" style="white-space:nowrap;">
+                         readonly="#{cc.isModoConsulta()}" style="white-space:nowrap;">
 		            </p:inputTextarea>
 		             <p:commandButton id="textoHTMLprocess"
 		             		 action="#{cc.actualizarLiteral()}"

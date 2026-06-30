@@ -161,6 +161,18 @@ a:hover{
 	outline: none !important;
 	box-shadow: none !important;
 }
+/* Estilos readonly */
+.ui-inputfield[readonly],
+.ui-inputfield[readonly="readonly"],
+.ui-inputtextarea[readonly],
+.ui-inputtextarea[readonly="readonly"],
+input[readonly],
+textarea[readonly] {
+	background-color: transparent !important;
+	opacity: 0.35 !important;
+	cursor: text !important;
+}
+
 /*
 .contenido {
 	font-size: 0.8rem ;
