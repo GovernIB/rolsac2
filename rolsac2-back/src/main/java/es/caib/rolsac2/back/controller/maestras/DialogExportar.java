@@ -118,6 +118,7 @@ public class DialogExportar extends AbstractController implements Serializable {
                     campos.add(new ExportarCampos(getLiteral("dict.fechaActualizacion"), "fechaActualizacion", "DATA_ACTUALITZACIO", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.usuarioUltimaActualizacion"), "usuarioUltimaActualizacion", "NOM_USUARI_DARRERA_ACT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.comun"), "comun", "COMU", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.exportarTramites"), "exportarTramites", null, true, 1));
 
                 } else if (tipo.equals("SERV")) {
                     tipoProcServ = true;
@@ -174,7 +175,6 @@ public class DialogExportar extends AbstractController implements Serializable {
      * Guarda.
      */
     public void guardar() {
-
         boolean alguno = false;
         for (ExportarCampos dato : datos.getCampos()) {
             if (dato.isSeleccionado()) {
