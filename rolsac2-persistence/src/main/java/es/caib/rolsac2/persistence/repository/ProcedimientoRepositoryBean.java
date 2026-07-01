@@ -19,6 +19,13 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.concurrent.atomic.AtomicLong;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -44,6 +51,8 @@ import java.util.*;
 public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedimiento, Long> implements ProcedimientoRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoRepositoryBean.class);
+    private static final AtomicLong convertDtoCalls = new AtomicLong(0);
+    private static final AtomicLong convertDtoTotalTime = new AtomicLong(0);
 
     @Inject
     FicheroExternoRepository ficheroExternoRepository;
@@ -285,6 +294,664 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         }
         return retorno;
+    }
+
+    private ExportConversionContext buildExportConversionContext(List<JProcedimientoWorkflow> workflows) {
+        ExportConversionContext contexto = new ExportConversionContext();
+        if (workflows == null || workflows.isEmpty()) {
+            return contexto;
+        }
+
+        Set<Long> workflowIds = new LinkedHashSet<>();
+        Set<Long> uaIds = new LinkedHashSet<>();
+        Set<Long> entidadIds = new LinkedHashSet<>();
+        Set<Long> listaDocumentosIds = new LinkedHashSet<>();
+
+        for (JProcedimientoWorkflow workflow : workflows) {
+            if (workflow == null || workflow.getCodigo() == null) {
+                continue;
+            }
+            workflowIds.add(workflow.getCodigo());
+        }
+
+        preloadWorkflowReferences(workflowIds);
+
+        for (JProcedimientoWorkflow workflow : workflows) {
+            if (workflow == null || workflow.getCodigo() == null) {
+                continue;
+            }
+
+            if (workflow.getUaInstructor() != null && workflow.getUaInstructor().getCodigo() != null) {
+                uaIds.add(workflow.getUaInstructor().getCodigo());
+                if (workflow.getUaInstructor().getEntidad() != null && workflow.getUaInstructor().getEntidad().getCodigo() != null) {
+                    entidadIds.add(workflow.getUaInstructor().getEntidad().getCodigo());
+                }
+            }
+            if (workflow.getUaCompetente() != null && workflow.getUaCompetente().getCodigo() != null) {
+                uaIds.add(workflow.getUaCompetente().getCodigo());
+            }
+            if (workflow.getListaDocumentos() != null && workflow.getListaDocumentos().getCodigo() != null) {
+                listaDocumentosIds.add(workflow.getListaDocumentos().getCodigo());
+            }
+            if (workflow.getListaDocumentosLOPD() != null && workflow.getListaDocumentosLOPD().getCodigo() != null) {
+                listaDocumentosIds.add(workflow.getListaDocumentosLOPD().getCodigo());
+            }
+        }
+
+        preloadUnidadesAdministrativas(uaIds);
+        preloadEntidades(entidadIds);
+
+        contexto.publicosObjetivo = getTipoPubObjEntByWFs(workflowIds);
+        contexto.normativas = getNormativasByWFs(workflowIds);
+        contexto.categoriasPDU = getCategoriasPDUByWFs(workflowIds);
+        contexto.temas = getTemasByWFs(workflowIds);
+
+        List<JProcedimientoTramite> tramites = getTramitesByWFs(workflowIds);
+        Set<Long> tramiteIds = new LinkedHashSet<>();
+        if (tramites != null) {
+            for (JProcedimientoTramite tramite : tramites) {
+                if (tramite == null) {
+                    continue;
+                }
+                if (tramite.getCodigo() != null) {
+                    tramiteIds.add(tramite.getCodigo());
+                }
+                if (tramite.getListaDocumentos() != null && tramite.getListaDocumentos().getCodigo() != null) {
+                    listaDocumentosIds.add(tramite.getListaDocumentos().getCodigo());
+                }
+                if (tramite.getListaModelos() != null && tramite.getListaModelos().getCodigo() != null) {
+                    listaDocumentosIds.add(tramite.getListaModelos().getCodigo());
+                }
+            }
+        }
+
+        contexto.documentos = getDocumentosByListaDocumentosIds(listaDocumentosIds);
+        contexto.tasasServicio = getTasasByPadres(workflowIds);
+        contexto.tasasTramite = getTasasByPadres(tramiteIds);
+        contexto.tramites = buildTramitesExport(tramites, contexto.documentos, contexto.tasasTramite);
+
+        return contexto;
+    }
+
+    private ProcedimientoBaseDTO convertDTOExport(JProcedimientoWorkflow jprocWF, ExportConversionContext contexto) {
+        long startTotal = System.currentTimeMillis();
+        String startMsg = String.format("convertDTO start: codigoWF=%s simplificado=%s", jprocWF != null ? jprocWF.getCodigo() : null, false);
+        LOG.info(startMsg);
+        writeExportLog(startMsg);
+        JProcedimiento jproc = jprocWF.getProcedimiento();
+        ProcedimientoBaseDTO proc = createDTO(jproc);
+
+        proc.setCodigoWF(jprocWF.getCodigo());
+        proc.setFechaPublicacion(jprocWF.getFechaPublicacion());
+        proc.setFechaCaducidad(jprocWF.getFechaCaducidad());
+        proc.setFechaActualizacion(jproc.getFechaActualizacion());
+        proc.setResponsableEmail(jprocWF.getResponsableEmail());
+        proc.setIncidenciasEmail(jprocWF.getIncidenciasEmail());
+        proc.setResponsableTelefono(jprocWF.getResponsableTelefono());
+        proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
+        proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
+        proc.setMensajes(jproc.getMensajes());
+        proc.setResponsable(jprocWF.getResponsableNombre());
+        proc.setLopdResponsable(jprocWF.getLopdResponsable());
+        proc.setComun(jprocWF.getComun());
+        if (jprocWF.getTramitElectronica() != null) {
+            proc.setTramitElectronica(jprocWF.getTramitElectronica());
+        }
+        if (jprocWF.getTramitPresencial() != null) {
+            proc.setTramitPresencial(jprocWF.getTramitPresencial());
+        }
+        if (jprocWF.getTramitTelefonica() != null) {
+            proc.setTramitTelefonica(jprocWF.getTramitTelefonica());
+        }
+        if (jprocWF.getUaInstructor() != null) {
+            proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
+
+            if (jprocWF.getUaInstructor().getEntidad() != null && jprocWF.getUaInstructor().getEntidad().getDescripcion() != null) {
+                Literal lopdInfoAdicional = new Literal();
+                Literal lopdDerechos = new Literal();
+                Literal lopdCabecera = new Literal();
+                Literal lopdComun = new Literal();
+
+                for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
+                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
+                    lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
+                    lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
+                    lopdComun.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdComun()));
+                }
+
+                proc.setLopdInfoAdicional(lopdInfoAdicional);
+                proc.setLopdDerechos(lopdDerechos);
+                proc.setLopdCabecera(lopdCabecera);
+                proc.setLopdComun(lopdComun);
+            }
+        }
+        if (jprocWF.getUaCompetente() != null) {
+            proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
+        }
+        if (jprocWF.getFormaInicio() != null) {
+            proc.setIniciacion(tipoFormaInicioConverter.createDTO(jprocWF.getFormaInicio()));
+        }
+        if (jprocWF.getSilencioAdministrativo() != null) {
+            proc.setSilencio(tipoSilencioAdministrativoConverter.createDTO(jprocWF.getSilencioAdministrativo()));
+        }
+        if (jprocWF.getTipoProcedimiento() != null) {
+            proc.setTipoProcedimiento(tipoProcedimientoConverter.createDTO(jprocWF.getTipoProcedimiento()));
+        }
+        if (jprocWF.getTipoVia() != null) {
+            proc.setTipoVia(tipoViaConverter.createDTO(jprocWF.getTipoVia()));
+        }
+        if (jprocWF.getDatosPersonalesLegitimacion() != null) {
+            proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
+        }
+
+        Literal nombreProcedimientoWorkFlow = new Literal();
+        Literal requisitos = new Literal();
+        Literal objeto = new Literal();
+        Literal destinatarios = new Literal();
+        Literal terminoResolucion = new Literal();
+        Literal observaciones = new Literal();
+        Literal keywords = new Literal();
+        Literal lopdFinalidad = new Literal();
+        Literal lopdDestinatario = new Literal();
+        Literal urlPdu = new Literal();
+        Literal uaResponsableLiteral = new Literal();
+
+        if (jprocWF.getTraducciones() != null) {
+            for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
+                nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
+                objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
+                destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
+                terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
+                observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
+                keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
+                lopdFinalidad.add(new Traduccion(trad.getIdioma(), trad.getLopdFinalidad()));
+                lopdDestinatario.add(new Traduccion(trad.getIdioma(), trad.getLopdDestinatario()));
+                urlPdu.add(new Traduccion(trad.getIdioma(), trad.getUrlPdu()));
+                uaResponsableLiteral.add(new Traduccion(trad.getIdioma(), trad.getUaResponsable()));
+            }
+        }
+        proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
+        proc.setRequisitos(requisitos);
+        proc.setObjeto(objeto);
+        proc.setDestinatarios(destinatarios);
+        proc.setTerminoResolucion(terminoResolucion);
+        proc.setObservaciones(observaciones);
+        proc.setKeywords(keywords);
+        proc.setLopdFinalidad(lopdFinalidad);
+        proc.setLopdDestinatario(lopdDestinatario);
+        proc.setUrlPdu(urlPdu);
+        proc.setUaResponsableLiteral(uaResponsableLiteral);
+
+        proc.setPublicosObjetivo(contexto.getPublicosObjetivo(jprocWF.getCodigo()));
+        proc.setNormativas(contexto.getNormativas(jprocWF.getCodigo()));
+        proc.setDocumentos(contexto.getDocumentos(getCodigoListaDocumentos(jprocWF.getListaDocumentos())));
+        proc.setDocumentosLOPD(contexto.getDocumentos(getCodigoListaDocumentos(jprocWF.getListaDocumentosLOPD())));
+        proc.setCategoriasPDU(contexto.getCategoriasPDU(jprocWF.getCodigo()));
+
+        Collections.sort(proc.getNormativas());
+        Collections.sort(proc.getDocumentos());
+        Collections.sort(proc.getCategoriasPDU());
+
+        if (jprocWF.getTemas() != null) {
+            proc.setTemas(contexto.getTemas(jprocWF.getCodigo()));
+        }
+
+        if (proc instanceof ProcedimientoDTO) {
+            ((ProcedimientoDTO) proc).setTramites(contexto.getTramites(jprocWF.getCodigo()));
+
+            Collections.sort(((ProcedimientoDTO) proc).getTramites());
+            if (((ProcedimientoDTO) proc).getTramites() != null && !((ProcedimientoDTO) proc).getTramites().isEmpty()) {
+                for (ProcedimientoTramiteDTO tram : ((ProcedimientoDTO) proc).getTramites()) {
+                    if (tram.getListaModelos() != null && !tram.getListaModelos().isEmpty()) {
+                        Collections.sort(tram.getListaModelos());
+                    }
+                    if (tram.getListaDocumentos() != null && !tram.getListaDocumentos().isEmpty()) {
+                        Collections.sort(tram.getListaDocumentos());
+                    }
+                }
+            }
+            ((ProcedimientoDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+            ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+        }
+
+        ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+        ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+
+        if (proc instanceof ServicioDTO) {
+            ((ServicioDTO) proc).setTramitElectronica(jprocWF.isTramitElectronica());
+            ((ServicioDTO) proc).setTramitPresencial(jprocWF.isTramitPresencial());
+            ((ServicioDTO) proc).setTramitTelefonica(jprocWF.isTramitTelefonica());
+            ((ServicioDTO) proc).setActivoLOPD(jprocWF.getActivoLOPD());
+
+            if (jprocWF.getTramiteElectronico() != null) {
+                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronico());
+                ((ServicioDTO) proc).setTipoTramitacion(tipo);
+
+            } else if (jprocWF.getTramiteElectronicoPlantilla() != null) {
+                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
+                ((ServicioDTO) proc).setPlantillaSel(tipo);
+            }
+
+            List<TasaProcedimientoDTO> tasasServicio = contexto.getTasasServicio(jprocWF.getCodigo());
+            if (tasasServicio != null && !tasasServicio.isEmpty()) {
+                TasaProcedimientoDTO tasaOrigen = tasasServicio.get(0);
+                TasaServicioDTO tasaDTO = new TasaServicioDTO();
+                tasaDTO.setCodigo(tasaOrigen.getCodigo());
+                tasaDTO.setCodigoString(tasaOrigen.getCodigoString());
+                tasaDTO.setIdentificador(tasaOrigen.getIdentificador());
+                tasaDTO.setDescripcion(tasaOrigen.getDescripcion());
+                tasaDTO.setFormaPago(tasaOrigen.getFormaPago());
+                tasaDTO.setUrl(tasaOrigen.getUrl());
+                ((ServicioDTO) proc).setTasaServicio(tasaDTO);
+            }
+
+        }
+
+        proc.setIntegrarPdu(jprocWF.isIntegrarPdu());
+        long duration = System.currentTimeMillis() - startTotal;
+        String endMsg = String.format("convertDTO total time: %d ms", duration);
+        LOG.info(endMsg);
+        writeExportLog(endMsg);
+
+        long calls = convertDtoCalls.incrementAndGet();
+        long total = convertDtoTotalTime.addAndGet(duration);
+        long avg = total / calls;
+        String avgMsg = String.format("convertDTO media: %d ms en %d llamadas", avg, calls);
+        LOG.info(avgMsg);
+        writeExportLog(avgMsg);
+        return proc;
+    }
+
+    private void preloadWorkflowReferences(Collection<Long> workflowIds) {
+        if (workflowIds == null || workflowIds.isEmpty()) {
+            return;
+        }
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT DISTINCT wf FROM JProcedimientoWorkflow wf " +
+                        "LEFT JOIN FETCH wf.procedimiento " +
+                        "LEFT JOIN FETCH wf.uaInstructor ui " +
+                        "LEFT JOIN FETCH ui.entidad " +
+                        "LEFT JOIN FETCH wf.uaCompetente uc " +
+                        "LEFT JOIN FETCH uc.entidad " +
+                        "LEFT JOIN FETCH wf.formaInicio " +
+                        "LEFT JOIN FETCH wf.silencioAdministrativo " +
+                        "LEFT JOIN FETCH wf.tipoProcedimiento " +
+                        "LEFT JOIN FETCH wf.tipoVia " +
+                        "LEFT JOIN FETCH wf.datosPersonalesLegitimacion " +
+                        "LEFT JOIN FETCH wf.listaDocumentos " +
+                        "LEFT JOIN FETCH wf.listaDocumentosLOPD " +
+                        "LEFT JOIN FETCH wf.tramiteElectronico " +
+                        "LEFT JOIN FETCH wf.tramiteElectronicoPlantilla " +
+                        "LEFT JOIN FETCH wf.traducciones " +
+                        "WHERE wf.codigo IN (:workflowIds)"
+        );
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("workflowIds", workflowIds);
+        query.getResultList();
+    }
+
+    private void preloadUnidadesAdministrativas(Collection<Long> uaIds) {
+        if (uaIds == null || uaIds.isEmpty()) {
+            return;
+        }
+
+        String sql = "SELECT DISTINCT ua FROM JUnidadAdministrativa ua LEFT JOIN FETCH ua.entidad LEFT JOIN FETCH ua.traducciones WHERE ua.codigo IN (:uaIds)";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("uaIds", uaIds);
+        query.getResultList();
+
+        Query queryPadresIds = entityManager.createQuery("SELECT DISTINCT ua.padre.codigo FROM JUnidadAdministrativa ua WHERE ua.codigo IN (:uaIds) AND ua.padre IS NOT NULL");
+        queryPadresIds.setParameter("uaIds", uaIds);
+        List<Long> parentIds = queryPadresIds.getResultList();
+
+        if (!parentIds.isEmpty()) {
+            Query queryPadres = entityManager.createQuery(sql);
+            queryPadres.setParameter("uaIds", parentIds);
+            queryPadres.getResultList();
+        }
+    }
+
+    private void preloadEntidades(Collection<Long> entidadIds) {
+        if (entidadIds == null || entidadIds.isEmpty()) {
+            return;
+        }
+
+        String sql = "SELECT DISTINCT e FROM JEntidad e LEFT JOIN FETCH e.descripcion WHERE e.codigo IN (:entidadIds)";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("entidadIds", entidadIds);
+        query.getResultList();
+    }
+
+    private Map<Long, List<TipoPublicoObjetivoEntidadGridDTO>> getTipoPubObjEntByWFs(Collection<Long> codigosWF) {
+        Map<Long, List<TipoPublicoObjetivoEntidadGridDTO>> resultado = new LinkedHashMap<>();
+        if (codigosWF == null || codigosWF.isEmpty()) {
+            return resultado;
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoPublicoObjectivo j " +
+                        "LEFT JOIN FETCH j.procedimiento " +
+                        "LEFT JOIN FETCH j.tipoPublicoObjetivo tipo " +
+                        "LEFT JOIN FETCH tipo.tipo " +
+                        "LEFT JOIN FETCH tipo.traducciones " +
+                        "WHERE j.procedimiento.codigo IN (:codigosWF)"
+        );
+        query.setParameter("codigosWF", codigosWF);
+        List<JProcedimientoPublicoObjectivo> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoPublicoObjectivo elemento : jlista) {
+                addGroupedValue(resultado, elemento.getProcedimiento().getCodigo(), elemento.toModel());
+            }
+        }
+        return resultado;
+    }
+
+    private Map<Long, List<NormativaGridDTO>> getNormativasByWFs(Collection<Long> codigosWF) {
+        Map<Long, List<NormativaGridDTO>> resultado = new LinkedHashMap<>();
+        if (codigosWF == null || codigosWF.isEmpty()) {
+            return resultado;
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoNormativa j " +
+                        "LEFT JOIN FETCH j.procedimiento " +
+                        "LEFT JOIN FETCH j.normativa normativa " +
+                        "LEFT JOIN FETCH normativa.descripcion " +
+                        "WHERE j.procedimiento.codigo IN (:codigosWF)"
+        );
+        query.setParameter("codigosWF", codigosWF);
+        List<JProcedimientoNormativa> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoNormativa elemento : jlista) {
+                addGroupedValue(resultado, elemento.getProcedimiento().getCodigo(), elemento.toModelGrid());
+            }
+        }
+        return resultado;
+    }
+
+    private Map<Long, List<CategoriaPDUGridDTO>> getCategoriasPDUByWFs(Collection<Long> codigosWF) {
+        Map<Long, List<CategoriaPDUGridDTO>> resultado = new LinkedHashMap<>();
+        if (codigosWF == null || codigosWF.isEmpty()) {
+            return resultado;
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoCategoriaPDU j " +
+                        "LEFT JOIN FETCH j.procedimiento " +
+                        "LEFT JOIN FETCH j.categoriaPDU categoriaPDU " +
+                        "LEFT JOIN FETCH categoriaPDU.descripcion " +
+                        "WHERE j.procedimiento.codigo IN (:codigosWF)"
+        );
+        query.setParameter("codigosWF", codigosWF);
+        List<JProcedimientoCategoriaPDU> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoCategoriaPDU elemento : jlista) {
+                addGroupedValue(resultado, elemento.getProcedimiento().getCodigo(), elemento.toModelGrid());
+            }
+        }
+        return resultado;
+    }
+
+    private Map<Long, List<TemaGridDTO>> getTemasByWFs(Collection<Long> codigosWF) {
+        Map<Long, List<TemaGridDTO>> resultado = new LinkedHashMap<>();
+        if (codigosWF == null || codigosWF.isEmpty()) {
+            return resultado;
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoTema j " +
+                        "LEFT JOIN FETCH j.procedimiento " +
+                        "LEFT JOIN FETCH j.tema tema " +
+                        "LEFT JOIN FETCH tema.entidad " +
+                        "LEFT JOIN FETCH tema.tipoMateriaSIA " +
+                        "LEFT JOIN FETCH tema.temaPadre " +
+                        "LEFT JOIN FETCH tema.descripcion " +
+                        "WHERE j.procedimiento.codigo IN (:codigosWF)"
+        );
+        query.setParameter("codigosWF", codigosWF);
+        List<JProcedimientoTema> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoTema elemento : jlista) {
+                JTema tema = elemento.getTema();
+                TemaGridDTO temaGridDTO = new TemaGridDTO();
+                temaGridDTO.setCodigo(tema.getCodigo());
+                temaGridDTO.setIdentificador(tema.getIdentificador());
+                temaGridDTO.setEntidad(tema.getEntidad() != null ? tema.getEntidad().getCodigo() : null);
+                temaGridDTO.setMathPath(tema.getMathPath());
+                if (tema.getTipoMateriaSIA() != null) {
+                    temaGridDTO.setTipoMateriaSIA(converterSIA.createDTO(tema.getTipoMateriaSIA()));
+                }
+                if (tema.getTemaPadre() != null) {
+                    temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
+                }
+                List<Traduccion> traducciones = new ArrayList<>();
+                if (tema.getDescripcion() != null) {
+                    for (JTemaTraduccion temaTraduccion : tema.getDescripcion()) {
+                        traducciones.add(new Traduccion(temaTraduccion.getIdioma(), temaTraduccion.getDescripcion()));
+                    }
+                }
+                Literal descripcion = new Literal();
+                descripcion.setTraducciones(traducciones);
+                temaGridDTO.setDescripcion(descripcion);
+                addGroupedValue(resultado, elemento.getProcedimiento().getCodigo(), temaGridDTO);
+            }
+        }
+        return resultado;
+    }
+
+    private Map<Long, List<ProcedimientoDocumentoDTO>> getDocumentosByListaDocumentosIds(Collection<Long> listaDocumentosIds) {
+        Map<Long, List<ProcedimientoDocumentoDTO>> resultado = new LinkedHashMap<>();
+        if (listaDocumentosIds == null || listaDocumentosIds.isEmpty()) {
+            return resultado;
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoDocumento j " +
+                        "LEFT JOIN FETCH j.traducciones " +
+                        "WHERE j.listaDocumentos IN (:listaDocumentosIds)"
+        );
+        query.setParameter("listaDocumentosIds", listaDocumentosIds);
+        List<JProcedimientoDocumento> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoDocumento elemento : jlista) {
+                addGroupedValue(resultado, elemento.getListaDocumentos(), elemento.toModel());
+            }
+        }
+        return resultado;
+    }
+
+    private Map<Long, List<TasaProcedimientoDTO>> getTasasByPadres(Collection<Long> idsPadre) {
+        Map<Long, List<TasaProcedimientoDTO>> resultado = new LinkedHashMap<>();
+        if (idsPadre == null || idsPadre.isEmpty()) {
+            return resultado;
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoTasa j " +
+                        "LEFT JOIN FETCH j.traducciones " +
+                        "WHERE j.idPadre IN (:idsPadre)"
+        );
+        query.setParameter("idsPadre", idsPadre);
+        List<JProcedimientoTasa> jlista = query.getResultList();
+        if (jlista != null) {
+            for (JProcedimientoTasa jtasa : jlista) {
+                TasaProcedimientoDTO dto = new TasaProcedimientoDTO();
+                dto.setCodigo(jtasa.getCodigo());
+                dto.setCodigoString(String.valueOf(jtasa.getCodigo()));
+                dto.setIdentificador(Literal.createInstance());
+                dto.setDescripcion(Literal.createInstance());
+                dto.setFormaPago(Literal.createInstance());
+                dto.setUrl(Literal.createInstance());
+                if (jtasa.getTraducciones() != null) {
+                    for (JProcedimientoTasaTraduccion trad : jtasa.getTraducciones()) {
+                        dto.getIdentificador().add(new Traduccion(trad.getIdioma(), trad.getIdentificador()));
+                        dto.getDescripcion().add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+                        dto.getFormaPago().add(new Traduccion(trad.getIdioma(), trad.getFormaPago()));
+                        dto.getUrl().add(new Traduccion(trad.getIdioma(), trad.getUrl()));
+                    }
+                }
+                addGroupedValue(resultado, jtasa.getIdPadre(), dto);
+            }
+        }
+        return resultado;
+    }
+
+    private List<JProcedimientoTramite> getTramitesByWFs(Collection<Long> codigosWF) {
+        if (codigosWF == null || codigosWF.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Query query = entityManager.createQuery(
+                "SELECT DISTINCT j FROM JProcedimientoTramite j " +
+                        "LEFT JOIN FETCH j.procedimiento " +
+                        "LEFT JOIN FETCH j.unidadAdministrativa " +
+                        "LEFT JOIN FETCH j.tipoTramitacion " +
+                        "LEFT JOIN FETCH j.tipoTramitacionPlantilla " +
+                        "LEFT JOIN FETCH j.listaDocumentos " +
+                        "LEFT JOIN FETCH j.listaModelos " +
+                        "WHERE j.procedimiento.codigo IN (:codigosWF)"
+        );
+        query.setParameter("codigosWF", codigosWF);
+        return query.getResultList();
+    }
+
+    private Map<Long, List<ProcedimientoTramiteDTO>> buildTramitesExport(List<JProcedimientoTramite> tramites,
+                                                                          Map<Long, List<ProcedimientoDocumentoDTO>> documentos,
+                                                                          Map<Long, List<TasaProcedimientoDTO>> tasasTramite) {
+        Map<Long, List<ProcedimientoTramiteDTO>> resultado = new LinkedHashMap<>();
+        if (tramites == null || tramites.isEmpty()) {
+            return resultado;
+        }
+
+        for (JProcedimientoTramite jtramite : tramites) {
+            if (jtramite == null || jtramite.getProcedimiento() == null || jtramite.getProcedimiento().getCodigo() == null) {
+                continue;
+            }
+
+            ProcedimientoTramiteDTO tramite = procedimientoTramiteConverter.createDTO(jtramite);
+            if (jtramite.getListaDocumentos() != null) {
+                tramite.setListaDocumentos(getListadoDocumentos(documentos, jtramite.getListaDocumentos().getCodigo()));
+            }
+            if (jtramite.getListaModelos() != null) {
+                tramite.setListaModelos(getListadoDocumentos(documentos, jtramite.getListaModelos().getCodigo()));
+            }
+            if (jtramite.getCodigo() != null) {
+                tramite.setListaTasas(getListadoTasas(tasasTramite, jtramite.getCodigo()));
+            }
+
+            addGroupedValue(resultado, jtramite.getProcedimiento().getCodigo(), tramite);
+        }
+        return resultado;
+    }
+
+    private <T> List<T> getListadoDocumentos(Map<Long, List<T>> documentos, Long codigo) {
+        if (documentos == null || codigo == null) {
+            return Collections.emptyList();
+        }
+        List<T> resultado = documentos.get(codigo);
+        return resultado != null ? resultado : Collections.emptyList();
+    }
+
+    private List<TasaProcedimientoDTO> getListadoTasas(Map<Long, List<TasaProcedimientoDTO>> tasas, Long codigo) {
+        if (tasas == null || codigo == null) {
+            return Collections.emptyList();
+        }
+        List<TasaProcedimientoDTO> resultado = tasas.get(codigo);
+        return resultado != null ? resultado : Collections.emptyList();
+    }
+
+    private Long getCodigoListaDocumentos(JListaDocumentos listaDocumentos) {
+        return listaDocumentos != null ? listaDocumentos.getCodigo() : null;
+    }
+
+    private <T> void addGroupedValue(Map<Long, List<T>> groupedValues, Long key, T value) {
+        if (groupedValues == null || key == null || value == null) {
+            return;
+        }
+        List<T> values = groupedValues.get(key);
+        if (values == null) {
+            values = new ArrayList<>();
+            groupedValues.put(key, values);
+        }
+        values.add(value);
+    }
+
+    private static class ExportConversionContext {
+        private Map<Long, List<TipoPublicoObjetivoEntidadGridDTO>> publicosObjetivo = Collections.emptyMap();
+        private Map<Long, List<NormativaGridDTO>> normativas = Collections.emptyMap();
+        private Map<Long, List<ProcedimientoDocumentoDTO>> documentos = Collections.emptyMap();
+        private Map<Long, List<CategoriaPDUGridDTO>> categoriasPDU = Collections.emptyMap();
+        private Map<Long, List<TemaGridDTO>> temas = Collections.emptyMap();
+        private Map<Long, List<ProcedimientoTramiteDTO>> tramites = Collections.emptyMap();
+        private Map<Long, List<TasaProcedimientoDTO>> tasasServicio = Collections.emptyMap();
+        private Map<Long, List<TasaProcedimientoDTO>> tasasTramite = Collections.emptyMap();
+
+        private List<TipoPublicoObjetivoEntidadGridDTO> getPublicosObjetivo(Long codigoWF) {
+            return getValues(publicosObjetivo, codigoWF);
+        }
+
+        private List<NormativaGridDTO> getNormativas(Long codigoWF) {
+            return getValues(normativas, codigoWF);
+        }
+
+        private List<ProcedimientoDocumentoDTO> getDocumentos(Long codigoListaDocumentos) {
+            return getValues(documentos, codigoListaDocumentos);
+        }
+
+        private List<CategoriaPDUGridDTO> getCategoriasPDU(Long codigoWF) {
+            return getValues(categoriasPDU, codigoWF);
+        }
+
+        private List<TemaGridDTO> getTemas(Long codigoWF) {
+            return getValues(temas, codigoWF);
+        }
+
+        private List<ProcedimientoTramiteDTO> getTramites(Long codigoWF) {
+            return getValues(tramites, codigoWF);
+        }
+
+        private List<TasaProcedimientoDTO> getTasasServicio(Long codigoWF) {
+            return getValues(tasasServicio, codigoWF);
+        }
+
+        private List<TasaProcedimientoDTO> getTasasTramite(Long codigoTramite) {
+            return getValues(tasasTramite, codigoTramite);
+        }
+
+        private <T> List<T> getValues(Map<Long, List<T>> values, Long key) {
+            if (values == null || key == null) {
+                return Collections.emptyList();
+            }
+            List<T> resultado = values.get(key);
+            return resultado != null ? resultado : Collections.emptyList();
+        }
+    }
+
+    private void writeExportLog(String message) {
+        try {
+            Path logPath = Paths.get("P:", "workspace", "Rolsac2_SVN", "EXPORT.LOG");
+            String line = message + System.lineSeparator();
+            Files.write(logPath, line.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (Exception e) {
+            LOG.error("Error writing EXPORT.LOG", e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> List<T> execQueryList(Query query, String label) {
+        try {
+            writeExportLog("CALL -> " + label + " - " + new Date());
+            writeExportLog("QUERY -> " + query.unwrap(org.hibernate.query.Query.class).getQueryString() + "\n");
+            List<T> result = query.getResultList();
+            writeExportLog("RETURN <- " + label + " - " + new Date() + " - total=" + (result == null ? 0 : result.size()) + "\n");
+            return result;
+        } catch (Exception e) {
+            writeExportLog("ERROR <- " + label + " - " + new Date() + " - " + e.getMessage() + "\n");
+            LOG.error("Error executing query {}", label, e);
+            throw e;
+        }
     }
 
     @Override
@@ -4110,6 +4777,240 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         proc.setIntegrarPdu(jprocWF.isIntegrarPdu());
+        return proc;
+    }
+
+    @Override
+    public ProcedimientoBaseDTO convertDTOExport(JProcedimientoWorkflow jprocWF) {
+        long startTotal = System.currentTimeMillis();
+        String startMsg = String.format("convertDTO start: codigoWF=%s simplificado=%s", jprocWF != null ? jprocWF.getCodigo() : null, false);
+        LOG.info(startMsg);
+        writeExportLog(startMsg);
+        JProcedimiento jproc = jprocWF.getProcedimiento();
+        ProcedimientoBaseDTO proc = createDTO(jproc);
+
+        // JProcedimientoWorkflow jprocWF = procedimientoRepository.getWF(id,
+        // Constantes.PROCEDIMIENTO_ENMODIFICACION);
+        proc.setCodigoWF(jprocWF.getCodigo());
+        proc.setFechaPublicacion(jprocWF.getFechaPublicacion());
+        proc.setFechaCaducidad(jprocWF.getFechaCaducidad());
+        proc.setFechaActualizacion(jproc.getFechaActualizacion());
+        proc.setResponsableEmail(jprocWF.getResponsableEmail());
+        proc.setIncidenciasEmail(jprocWF.getIncidenciasEmail());
+        proc.setResponsableTelefono(jprocWF.getResponsableTelefono());
+        proc.setWorkflow(TypeProcedimientoWorkflow.fromBoolean(jprocWF.getWorkflow()));
+        proc.setEstado(TypeProcedimientoEstado.fromString(jprocWF.getEstado()));
+        proc.setMensajes(jproc.getMensajes());
+        proc.setResponsable(jprocWF.getResponsableNombre());
+        proc.setLopdResponsable(jprocWF.getLopdResponsable());
+        proc.setComun(jprocWF.getComun());
+        /*if (jprocWF.getUaResponsable() != null) {
+            if (simplificado) {
+                proc.setUaResponsable(jprocWF.getUaResponsable().toDTOSimple());
+            } else {
+                proc.setUaResponsable(jprocWF.getUaResponsable().toDTO());
+            }
+        }*/
+        if (jprocWF.getTramitElectronica() != null) {
+            proc.setTramitElectronica(jprocWF.getTramitElectronica());
+        }
+        if (jprocWF.getTramitPresencial() != null) {
+            proc.setTramitPresencial(jprocWF.getTramitPresencial());
+        }
+        if (jprocWF.getTramitTelefonica() != null) {
+            proc.setTramitTelefonica(jprocWF.getTramitTelefonica());
+        }
+        if (jprocWF.getUaInstructor() != null) {
+            proc.setUaInstructor(jprocWF.getUaInstructor().toDTO());
+
+            //Obtenemos la info de lopd de la entidad asociada a la ua instructora
+            if (jprocWF.getUaInstructor().getEntidad() != null && jprocWF.getUaInstructor().getEntidad().getDescripcion() != null) {
+                Literal lopdInfoAdicional = new Literal();
+                Literal lopdDerechos = new Literal();
+                Literal lopdCabecera = new Literal();
+                Literal lopdComun = new Literal();
+
+                for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
+                    lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
+                    lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
+                    lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
+                    lopdComun.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdComun()));
+                }
+
+                proc.setLopdInfoAdicional(lopdInfoAdicional);
+                proc.setLopdDerechos(lopdDerechos);
+                proc.setLopdCabecera(lopdCabecera);
+                proc.setLopdComun(lopdComun);
+            }
+        }
+        if (jprocWF.getUaCompetente() != null) {
+            proc.setUaCompetente(jprocWF.getUaCompetente().toDTO());
+        }
+        if (jprocWF.getFormaInicio() != null) {
+            proc.setIniciacion(tipoFormaInicioConverter.createDTO(jprocWF.getFormaInicio()));
+        }
+        if (jprocWF.getSilencioAdministrativo() != null) {
+            proc.setSilencio(tipoSilencioAdministrativoConverter.createDTO(jprocWF.getSilencioAdministrativo()));
+        }
+        if (jprocWF.getTipoProcedimiento() != null) {
+            proc.setTipoProcedimiento(tipoProcedimientoConverter.createDTO(jprocWF.getTipoProcedimiento()));
+        }
+        if (jprocWF.getTipoVia() != null) {
+            proc.setTipoVia(tipoViaConverter.createDTO(jprocWF.getTipoVia()));
+        }
+        if (jprocWF.getDatosPersonalesLegitimacion() != null) {
+            proc.setDatosPersonalesLegitimacion(tipoLegitimacionConverter.createDTO(jprocWF.getDatosPersonalesLegitimacion()));
+        }
+
+        Literal nombreProcedimientoWorkFlow = new Literal();
+        Literal requisitos = new Literal();
+        Literal objeto = new Literal();
+        Literal destinatarios = new Literal();
+        Literal terminoResolucion = new Literal();
+        Literal observaciones = new Literal();
+        Literal keywords = new Literal();
+        Literal lopdFinalidad = new Literal();
+        Literal lopdDestinatario = new Literal();
+        Literal urlPdu = new Literal();
+        Literal uaResponsableLiteral = new Literal();
+
+        if (jprocWF.getTraducciones() != null) {
+            for (JProcedimientoWorkflowTraduccion trad : jprocWF.getTraducciones()) {
+                nombreProcedimientoWorkFlow.add(new Traduccion(trad.getIdioma(), trad.getNombre()));
+                requisitos.add(new Traduccion(trad.getIdioma(), trad.getRequisitos()));
+                objeto.add(new Traduccion(trad.getIdioma(), trad.getObjeto()));
+                destinatarios.add(new Traduccion(trad.getIdioma(), trad.getDestinatarios()));
+                terminoResolucion.add(new Traduccion(trad.getIdioma(), trad.getTerminoResolucion()));
+                observaciones.add(new Traduccion(trad.getIdioma(), trad.getObservaciones()));
+                keywords.add(new Traduccion(trad.getIdioma(), trad.getKeywords()));
+                lopdFinalidad.add(new Traduccion(trad.getIdioma(), trad.getLopdFinalidad()));
+                lopdDestinatario.add(new Traduccion(trad.getIdioma(), trad.getLopdDestinatario()));
+                urlPdu.add(new Traduccion(trad.getIdioma(), trad.getUrlPdu()));
+                uaResponsableLiteral.add(new Traduccion(trad.getIdioma(), trad.getUaResponsable()));
+            }
+        }
+        proc.setNombreProcedimientoWorkFlow(nombreProcedimientoWorkFlow);
+        proc.setRequisitos(requisitos);
+        proc.setObjeto(objeto);
+        proc.setDestinatarios(destinatarios);
+        proc.setTerminoResolucion(terminoResolucion);
+        proc.setObservaciones(observaciones);
+        proc.setKeywords(keywords);
+        proc.setLopdFinalidad(lopdFinalidad);
+        proc.setLopdDestinatario(lopdDestinatario);
+        proc.setUrlPdu(urlPdu);
+        proc.setUaResponsableLiteral(uaResponsableLiteral);
+
+        proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
+        proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
+        proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
+        proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
+        proc.setCategoriasPDU(getCategoriasPDUByWF(proc.getCodigoWF()));
+
+        // Reordenamos por posicion
+        Collections.sort(proc.getNormativas());
+        Collections.sort(proc.getDocumentos());
+        Collections.sort(proc.getCategoriasPDU());
+
+        if (jprocWF.getTemas() != null) {
+            List<TemaGridDTO> temasDTO = new ArrayList<>();
+            for (JTema tema : jprocWF.getTemas()) {
+                TemaGridDTO temaGridDTO = new TemaGridDTO();
+                temaGridDTO.setCodigo(tema.getCodigo());
+                temaGridDTO.setIdentificador(tema.getIdentificador());
+                temaGridDTO.setEntidad(tema.getEntidad().getCodigo());
+                temaGridDTO.setMathPath(tema.getMathPath());
+                if (tema.getTipoMateriaSIA() != null) {
+                    temaGridDTO.setTipoMateriaSIA(converterSIA.createDTO(tema.getTipoMateriaSIA()));
+                }
+                if (tema.getTemaPadre() != null) {
+                    temaGridDTO.setTemaPadre(tema.getTemaPadre().getIdentificador());
+                }
+                List<Traduccion> traducciones = new ArrayList<>();
+                for (JTemaTraduccion temaTraduccion : tema.getDescripcion()) {
+                    traducciones.add(new Traduccion(temaTraduccion.getIdioma(), temaTraduccion.getDescripcion()));
+                }
+                Literal descripcion = new Literal();
+                descripcion.setTraducciones(traducciones);
+                temaGridDTO.setDescripcion(descripcion);
+
+                temasDTO.add(temaGridDTO);
+            }
+            proc.setTemas(temasDTO);
+        }
+
+        if (proc instanceof ProcedimientoDTO) {
+            ((ProcedimientoDTO) proc).setTramites(this.getTramitesByWF(proc.getCodigoWF()));
+
+            Collections.sort(((ProcedimientoDTO) proc).getTramites());
+            if (((ProcedimientoDTO) proc).getTramites() != null && !((ProcedimientoDTO) proc).getTramites().isEmpty()) {
+                for (ProcedimientoTramiteDTO tram : ((ProcedimientoDTO) proc).getTramites()) {
+                    if (tram.getListaModelos() != null && !tram.getListaModelos().isEmpty()) {
+                        Collections.sort(tram.getListaModelos());
+                    }
+                    if (tram.getListaDocumentos() != null && !tram.getListaDocumentos().isEmpty()) {
+                        Collections.sort(tram.getListaDocumentos());
+                    }
+                }
+            }
+            ((ProcedimientoDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+            ((ProcedimientoDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+        }
+
+        ((ProcedimientoBaseDTO) proc).setHabilitadoApoderado(jprocWF.isHabilitadoApoderado());
+        ((ProcedimientoBaseDTO) proc).setHabilitadoFuncionario(jprocWF.getHabilitadoFuncionario());
+
+
+        if (proc instanceof ServicioDTO) {
+            ((ServicioDTO) proc).setTramitElectronica(jprocWF.isTramitElectronica());
+            ((ServicioDTO) proc).setTramitPresencial(jprocWF.isTramitPresencial());
+            ((ServicioDTO) proc).setTramitTelefonica(jprocWF.isTramitTelefonica());
+            ((ServicioDTO) proc).setActivoLOPD(jprocWF.getActivoLOPD());
+
+            if (jprocWF.getTramiteElectronico() != null) {
+                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronico());
+                ((ServicioDTO) proc).setTipoTramitacion(tipo);
+
+            } else if (jprocWF.getTramiteElectronicoPlantilla() != null) {
+                TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
+                ((ServicioDTO) proc).setPlantillaSel(tipo);
+            }
+            
+            if (jprocWF.getListaTasas() != null && !jprocWF.getListaTasas().isEmpty()) {
+                JProcedimientoTasa jtasa = jprocWF.getListaTasas().get(0);
+                TasaServicioDTO tasaDTO = new TasaServicioDTO();
+                tasaDTO.setCodigo(jtasa.getCodigo());
+                tasaDTO.setCodigoString(String.valueOf(jtasa.getCodigo()));
+                tasaDTO.setIdentificador(Literal.createInstance());
+                tasaDTO.setDescripcion(Literal.createInstance());
+                tasaDTO.setFormaPago(Literal.createInstance());
+                tasaDTO.setUrl(Literal.createInstance());
+
+                if (jtasa.getTraducciones() != null) {
+                    for (JProcedimientoTasaTraduccion jtrad : jtasa.getTraducciones()) {
+                        tasaDTO.getIdentificador().add(new Traduccion(jtrad.getIdioma(), jtrad.getIdentificador()));
+                        tasaDTO.getDescripcion().add(new Traduccion(jtrad.getIdioma(), jtrad.getDescripcion()));
+                        tasaDTO.getFormaPago().add(new Traduccion(jtrad.getIdioma(), jtrad.getFormaPago()));
+                        tasaDTO.getUrl().add(new Traduccion(jtrad.getIdioma(), jtrad.getUrl()));
+                    }
+                }
+                ((ServicioDTO) proc).setTasaServicio(tasaDTO);
+            }
+
+        }
+
+        proc.setIntegrarPdu(jprocWF.isIntegrarPdu());
+        long duration = System.currentTimeMillis() - startTotal;
+        String endMsg = String.format("convertDTO total time: %d ms", duration);
+        LOG.info(endMsg);
+        writeExportLog(endMsg);
+
+        long calls = convertDtoCalls.incrementAndGet();
+        long total = convertDtoTotalTime.addAndGet(duration);
+        long avg = total / calls;
+        String avgMsg = String.format("convertDTO media: %d ms en %d llamadas", avg, calls);
+        LOG.info(avgMsg);
+        writeExportLog(avgMsg);
         return proc;
     }
 
