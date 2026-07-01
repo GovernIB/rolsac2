@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.TipoLegitimacionDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
  * La clase J tipo legitimacion.
  */
 @Entity
+@BatchSize(size = 50)
 @SequenceGenerator(name = "tipo-legitimacion-sequence", sequenceName = "RS2_TIPOLEG_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOLEG", indexes = {@Index(name = "RS2_TIPOLEG_PK", columnList = "TPLE_CODIGO")})
 @NamedQueries({@NamedQuery(name = JTipoLegitimacion.FIND_BY_ID, query = "select p from JTipoLegitimacion p where p.codigo = :id"), @NamedQuery(name = JTipoLegitimacion.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JTipoLegitimacion p where p.identificador = :identificador")})

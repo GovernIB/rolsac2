@@ -1196,7 +1196,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     public List<ProcedimientoDocumentoDTO> getDocumentosByListaDocumentos(JListaDocumentos listaDocumentos) {
         List<ProcedimientoDocumentoDTO> docs = new ArrayList<>();
         if (listaDocumentos != null) {
-            List<JProcedimientoDocumento> jdocs = getDocumentos(listaDocumentos.getCodigo());
+            List<JProcedimientoDocumento> jdocs = listaDocumentos.getDocumentos();
             if (jdocs != null) {
                 for (JProcedimientoDocumento jdoc : jdocs) {
                     ProcedimientoDocumentoDTO doc = jdoc.toModel();
@@ -1243,7 +1243,51 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 }
 
                 if (jtramite.getListaTasas() != null) {
-                    tramite.setListaTasas(this.getTasasByListaTasas(jtramite.getCodigo()));
+                    tramite.setListaTasas(this.convertTasasFromEntity(jtramite.getListaTasas()));
+                }
+
+                tramites.add(tramite);
+            }
+        }
+        return tramites;
+    }
+
+    /**
+     * Convierte los trámites directamente desde la relación de la entidad JProcedimientoWorkflow,
+     * evitando una query adicional. El resultado es idéntico a getTramitesByWF.
+     */
+    private List<ProcedimientoTramiteDTO> convertTramitesFromEntity(JProcedimientoWorkflow jprocWF) {
+        List<ProcedimientoTramiteDTO> tramites = new ArrayList<>();
+        List<JProcedimientoTramite> jlista = jprocWF.getTramites();
+
+        if (jlista != null) {
+            for (JProcedimientoTramite jtramite : jlista) {
+                ProcedimientoTramiteDTO tramite = procedimientoTramiteConverter.createDTO(jtramite);
+                if (jtramite.getUnidadAdministrativa() != null) {
+                    tramite.setUnidadAdministrativa(converterSencillo(jtramite.getUnidadAdministrativa(), true));
+                }
+                tramite.setProcedimiento(converterSencillo(jtramite.getProcedimiento()));
+                tramite.setTramitElectronica(jtramite.isTramitElectronica());
+                tramite.setTramitPresencial(jtramite.isTramitPresencial());
+                tramite.setTramitTelefonica(jtramite.isTramitTelefonica());
+
+                if (jtramite.getTipoTramitacion() != null) {
+                    tramite.setPlantillaSel(null);
+                } else if (jtramite.getTipoTramitacionPlantilla() != null) {
+                    tramite.setPlantillaSel(tipoTramitacionConverter.createDTO(jtramite.getTipoTramitacionPlantilla()));
+                    tramite.setTipoTramitacion(null);
+                }
+
+                if (jtramite.getListaDocumentos() != null) {
+                    tramite.setListaDocumentos(this.getDocumentosByListaDocumentos(jtramite.getListaDocumentos()));
+                }
+
+                if (jtramite.getListaModelos() != null) {
+                    tramite.setListaModelos(this.getDocumentosByListaDocumentos(jtramite.getListaModelos()));
+                }
+
+                if (jtramite.getListaTasas() != null) {
+                    tramite.setListaTasas(this.convertTasasFromEntity(jtramite.getListaTasas()));
                 }
 
                 tramites.add(tramite);
@@ -1590,6 +1634,35 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("codigoTramite", codigoTramite);
         return query.getResultList();
+    }
+
+    /**
+     * Convierte una lista de JProcedimientoTasa directamente a DTOs sin hacer query adicional.
+     * Resultado idéntico a getTasasByListaTasas.
+     */
+    private List<TasaProcedimientoDTO> convertTasasFromEntity(List<JProcedimientoTasa> jlista) {
+        List<TasaProcedimientoDTO> tasas = new ArrayList<>();
+        if (jlista != null) {
+            for (JProcedimientoTasa jtasa : jlista) {
+                TasaProcedimientoDTO dto = new TasaProcedimientoDTO();
+                dto.setCodigo(jtasa.getCodigo());
+                dto.setCodigoString(String.valueOf(jtasa.getCodigo()));
+                dto.setIdentificador(Literal.createInstance());
+                dto.setDescripcion(Literal.createInstance());
+                dto.setFormaPago(Literal.createInstance());
+                dto.setUrl(Literal.createInstance());
+                if (jtasa.getTraducciones() != null) {
+                    for (JProcedimientoTasaTraduccion trad : jtasa.getTraducciones()) {
+                        dto.getIdentificador().add(new Traduccion(trad.getIdioma(), trad.getIdentificador()));
+                        dto.getDescripcion().add(new Traduccion(trad.getIdioma(), trad.getDescripcion()));
+                        dto.getFormaPago().add(new Traduccion(trad.getIdioma(), trad.getFormaPago()));
+                        dto.getUrl().add(new Traduccion(trad.getIdioma(), trad.getUrl()));
+                    }
+                }
+                tasas.add(dto);
+            }
+        }
+        return tasas;
     }
 
     public List<TasaProcedimientoDTO> getTasasByListaTasas(Long codigoTramite) {
@@ -3801,13 +3874,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
 
             //Obtenemos la info de lopd de la entidad asociada a la ua instructora
-            if (jprocWF.getUaInstructor().getEntidad() != null && jprocWF.getUaInstructor().getEntidad().getDescripcion() != null) {
+            JEntidad entidadInstructor = jprocWF.getUaInstructor().getEntidad();
+            List<JEntidadTraduccion> descripcionEntidad = entidadInstructor != null ? entidadInstructor.getDescripcion() : null;
+            if (descripcionEntidad != null) {
                 Literal lopdInfoAdicional = new Literal();
                 Literal lopdDerechos = new Literal();
                 Literal lopdCabecera = new Literal();
                 Literal lopdComun = new Literal();
 
-                for (JEntidadTraduccion jtrad : jprocWF.getUaInstructor().getEntidad().getDescripcion()) {
+                for (JEntidadTraduccion jtrad : descripcionEntidad) {
                     lopdInfoAdicional.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDestinatario()));
                     lopdDerechos.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdDerechos()));
                     lopdCabecera.add(new Traduccion(jtrad.getIdioma(), jtrad.getLopdCabecera()));
@@ -3903,11 +3978,33 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         proc.setUaResponsableLiteral(uaResponsableLiteral);
 
         if (!simplificado) {
-            proc.setPublicosObjetivo(getTipoPubObjEntByWF(proc.getCodigoWF()));
-            proc.setNormativas(getNormativasByWF(proc.getCodigoWF()));
+            // Usar relaciones inversas en lugar de queries separadas
+            List<TipoPublicoObjetivoEntidadGridDTO> publicosObjetivo = new ArrayList<>();
+            if (jprocWF.getPublicosObjetivo() != null) {
+                for (JProcedimientoPublicoObjectivo elemento : jprocWF.getPublicosObjetivo()) {
+                    publicosObjetivo.add(elemento.toModel());
+                }
+            }
+            proc.setPublicosObjetivo(publicosObjetivo);
+
+            List<NormativaGridDTO> normativas = new ArrayList<>();
+            if (jprocWF.getNormativas() != null) {
+                for (JProcedimientoNormativa elemento : jprocWF.getNormativas()) {
+                    normativas.add(elemento.toModelGrid());
+                }
+            }
+            proc.setNormativas(normativas);
+
             proc.setDocumentos(getDocumentosByListaDocumentos(jprocWF.getListaDocumentos()));
             proc.setDocumentosLOPD(getDocumentosByListaDocumentos(jprocWF.getListaDocumentosLOPD()));
-            proc.setCategoriasPDU(getCategoriasPDUByWF(proc.getCodigoWF()));
+
+            List<CategoriaPDUGridDTO> categoriasPDU = new ArrayList<>();
+            if (jprocWF.getCategoriasPDU() != null) {
+                for (JProcedimientoCategoriaPDU elemento : jprocWF.getCategoriasPDU()) {
+                    categoriasPDU.add(elemento.toModelGrid());
+                }
+            }
+            proc.setCategoriasPDU(categoriasPDU);
 
             // Reordenamos por posicion
             Collections.sort(proc.getNormativas());
@@ -3951,7 +4048,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             if (simplificado) {
                 ((ProcedimientoDTO) proc).setTramites(new ArrayList<>());
             } else {
-                ((ProcedimientoDTO) proc).setTramites(this.getTramitesByWF(proc.getCodigoWF()));
+                ((ProcedimientoDTO) proc).setTramites(this.convertTramitesFromEntity(jprocWF));
 
                 Collections.sort(((ProcedimientoDTO) proc).getTramites());
                 if (((ProcedimientoDTO) proc).getTramites() != null && !((ProcedimientoDTO) proc).getTramites().isEmpty()) {

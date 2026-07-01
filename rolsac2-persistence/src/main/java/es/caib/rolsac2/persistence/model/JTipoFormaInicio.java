@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.TipoFormaInicioDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
  * @author Indra
  */
 @Entity
+@BatchSize(size = 50)
 @SequenceGenerator(name = "tipo-forma-inicio-sequence", sequenceName = "RS2_TIPOFOI_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOFOI", indexes = {@Index(name = "RS2_TIPOFOI_PK", columnList = "TPFI_CODIGO")})
 @NamedQueries({@NamedQuery(name = JTipoFormaInicio.FIND_BY_ID,

@@ -6,12 +6,14 @@ import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 
 import javax.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@BatchSize(size = 50)
 @SequenceGenerator(name = "ua-sequence", sequenceName = "RS2_UNIADM_SEQ", allocationSize = 1)
 @Table(name = "RS2_UNIADM", indexes = {@Index(name = "RS2_UNIADM_PK_I", columnList = "UNAD_CODIGO")})
 

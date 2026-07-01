@@ -109,7 +109,7 @@ public class JProcedimiento extends BaseEntity {
     /**
      * Workflow del procedimiento
      */
-    @OneToMany(mappedBy = "procedimiento", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @OneToMany(mappedBy = "procedimiento", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private List<JProcedimientoWorkflow> procedimientoWF;
 
     public static JProcedimiento clonar(JProcedimiento otro) {

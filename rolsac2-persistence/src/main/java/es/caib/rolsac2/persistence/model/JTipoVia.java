@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.TipoViaDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
  * La clase J tipo via.
  */
 @Entity
+@BatchSize(size = 50)
 @SequenceGenerator(name = "tipo-via-sequence", sequenceName = "RS2_TIPOVIA_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOVIA",
         indexes = {

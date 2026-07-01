@@ -6,6 +6,7 @@ import es.caib.rolsac2.service.model.TipoSilencioAdministrativoDTO;
 import es.caib.rolsac2.service.model.Traduccion;
 
 import javax.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
  * @author Indra
  */
 @Entity
+@BatchSize(size = 50)
 @SequenceGenerator(name = "tipo-silencionadmvo-sequence", sequenceName = "RS2_TIPOSAD_SEQ", allocationSize = 1)
 @Table(name = "RS2_TIPOSAD",
         indexes = {

@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.model;
 import es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion;
 
 import javax.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
  * @author Indra
  */
 @Entity
+@BatchSize(size = 50)
 @SequenceGenerator(name = "tipo-entidad-sequence", sequenceName = "RS2_ENTIDA_SEQ", allocationSize = 1)
 @Table(name = "RS2_ENTIDA", indexes = {@Index(name = "RS2_ENTIDA_PK", columnList = "ENTI_CODIGO")})
 @NamedQueries({@NamedQuery(name = JEntidad.FIND_BY_ID, query = "select p from JEntidad p where p.codigo = :id"), @NamedQuery(name = JEntidad.COUNT_BY_IDENTIFICADOR, query = "select COUNT(p) from JEntidad p where lower(p.identificador) like :identificador")})

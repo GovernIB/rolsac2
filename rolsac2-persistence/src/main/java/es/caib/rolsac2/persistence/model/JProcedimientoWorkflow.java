@@ -3,6 +3,7 @@ package es.caib.rolsac2.persistence.model;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -168,6 +169,34 @@ public class JProcedimientoWorkflow {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "RS2_PRCTEM", joinColumns = {@JoinColumn(name = "PRTM_CODPRWF")}, inverseJoinColumns = {@JoinColumn(name = "PRTM_CODTEMA")})
     private Set<JTema> temas;
+
+    /**
+     * Públicos objetivo asociados al workflow
+     */
+    @OneToMany(mappedBy = "procedimiento", fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    private List<JProcedimientoPublicoObjectivo> publicosObjetivo;
+
+    /**
+     * Normativas asociadas al workflow
+     */
+    @OneToMany(mappedBy = "procedimiento", fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    private List<JProcedimientoNormativa> normativas;
+
+    /**
+     * Categorías PDU asociadas al workflow
+     */
+    @OneToMany(mappedBy = "procedimiento", fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    private List<JProcedimientoCategoriaPDU> categoriasPDU;
+
+    /**
+     * Trámites asociados al workflow
+     */
+    @OneToMany(mappedBy = "procedimiento", fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    private List<JProcedimientoTramite> tramites;
 
     @Column(name = "PRWF_INTGPDU", nullable = false, precision = 1, scale = 0)
     private boolean integrarPdu;
@@ -508,6 +537,38 @@ public class JProcedimientoWorkflow {
 
     public boolean isIntegrarPdu() {
         return integrarPdu;
+    }
+
+    public List<JProcedimientoPublicoObjectivo> getPublicosObjetivo() {
+        return publicosObjetivo;
+    }
+
+    public void setPublicosObjetivo(List<JProcedimientoPublicoObjectivo> publicosObjetivo) {
+        this.publicosObjetivo = publicosObjetivo;
+    }
+
+    public List<JProcedimientoNormativa> getNormativas() {
+        return normativas;
+    }
+
+    public void setNormativas(List<JProcedimientoNormativa> normativas) {
+        this.normativas = normativas;
+    }
+
+    public List<JProcedimientoCategoriaPDU> getCategoriasPDU() {
+        return categoriasPDU;
+    }
+
+    public void setCategoriasPDU(List<JProcedimientoCategoriaPDU> categoriasPDU) {
+        this.categoriasPDU = categoriasPDU;
+    }
+
+    public List<JProcedimientoTramite> getTramites() {
+        return tramites;
+    }
+
+    public void setTramites(List<JProcedimientoTramite> tramites) {
+        this.tramites = tramites;
     }
 
     @Override
