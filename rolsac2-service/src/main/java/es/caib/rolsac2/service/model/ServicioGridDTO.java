@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -269,11 +271,12 @@ public class ServicioGridDTO extends ModelApi {
     private boolean isVisible() {
         final Date now = new Date();
 
-        final boolean noCaducado = (getFechaDespublicacion() == null || getFechaDespublicacion().after(now));
-        final boolean publicado = (getFechaPublicacion() == null || getFechaPublicacion().before(now));
+        final boolean esPublicado = TypeProcedimientoEstado.PUBLICADO.toString().equals(this.estado) 
+            || TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(this.estado) || TypeProcedimientoEstado.PENDIENTE_CERRAR.toString().equals(this.estado);
+        final boolean fechaPublicacionValida = getFechaPublicacion() == null || getFechaPublicacion().before(now);
+        final boolean noCaducado = getFechaDespublicacion() == null || getFechaDespublicacion().after(now);
 
-        final boolean visible = this.estado != null && this.estado.contains("P");
-        return visible && noCaducado && publicado;
+        return esPublicado && fechaPublicacionValida && noCaducado;
     }
 
     @Override

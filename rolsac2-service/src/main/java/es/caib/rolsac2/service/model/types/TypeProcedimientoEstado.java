@@ -23,6 +23,10 @@ public enum TypeProcedimientoEstado {
      */
     PUBLICADO("P"),
     /**
+     * <P>PUBLICADO EN MODIFICACIÓN</P>
+     */
+    PUBLICADO_MODIFICACION("PM"),
+    /**
      * <P>CERRAR</P>
      */
     CERRADO("T");
