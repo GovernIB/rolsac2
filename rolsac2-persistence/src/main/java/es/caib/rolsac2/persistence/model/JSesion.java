@@ -16,7 +16,13 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(name = JSesion.FIND_BY_ID,
                 query = "select j from JSesion j where j.idUsuario = :idUsu"),
-        @NamedQuery(name = JSesion.COUNT_BY_ID, query = "select count(j) from JSesion j where j.idUsuario=: idUsu")
+        @NamedQuery(name = JSesion.COUNT_BY_ID, query = "select count(j) from JSesion j where j.idUsuario=: idUsu"),
+        @NamedQuery(name = JSesion.FIND_ALL,
+                query = "select j from JSesion j order by j.fechaUltimaSesion desc"),
+        @NamedQuery(name = JSesion.COUNT_ALL,
+                query = "select count(j) from JSesion j "),
+        @NamedQuery(name = JSesion.DELETE_ALL,
+                query = "delete from JSesion j "),
 })
 public class JSesion extends BaseEntity {
 
@@ -31,6 +37,13 @@ public class JSesion extends BaseEntity {
      */
     public static final String COUNT_BY_ID = "Sesion.COUNT_BY_ID";
 
+    public static final String FIND_ALL = "Sesion.FIND_ALL";
+
+    public static final String COUNT_ALL = "Sesion.COUNT_ALL";
+
+    public static final String DELETE_ALL = "Sesion.DELETE_ALL";
+
+
     /**
      * Codigo
      **/
@@ -41,32 +54,32 @@ public class JSesion extends BaseEntity {
     /**
      * Fecha última sesión
      */
-    @Column(name="SESI_FECHA", nullable = false)
+    @Column(name = "SESI_FECHA", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaUltimaSesion;
 
     /**
      * Perfil del usuario
      */
-    @Column(name="SESI_PERFIL", nullable = false, length = 50)
+    @Column(name = "SESI_PERFIL", nullable = false, length = 50)
     private String perfil;
 
     /**
      * Idioma utilizado
      */
-    @Column(name="SESI_IDIOMA", nullable = false, length = 2)
+    @Column(name = "SESI_IDIOMA", nullable = false, length = 2)
     private String idioma;
 
     /**
      * Entidad Activa
      **/
-    @Column(name="SESI_ENTIDA")
+    @Column(name = "SESI_ENTIDA")
     private Long idEntidad;
 
     /**
      * UA Activa
      **/
-    @Column(name="SESI_UA")
+    @Column(name = "SESI_UA")
     private Long idUa;
 
     /**

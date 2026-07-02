@@ -9,10 +9,8 @@ import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.facade.integracion.TraduccionServiceFacade;
-import es.caib.rolsac2.service.model.ConfiguracionGlobalGridDTO;
-import es.caib.rolsac2.service.model.PluginDTO;
-import es.caib.rolsac2.service.model.Propiedad;
-import es.caib.rolsac2.service.model.SesionDTO;
+import es.caib.rolsac2.service.model.*;
+import es.caib.rolsac2.service.model.filtro.SesionFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
@@ -31,6 +29,7 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -153,10 +152,46 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
         return sesionConverter.createDTO(sesionRepository.findById(idUsuario));
     }
 
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @Override
+    public Pagina<SesionDTO> findAllSesiones() {
+
+        try {
+            List<SesionDTO> items = sesionConverter.toDTOs(sesionRepository.findAllSesiones());
+            long total = sesionRepository.countAllSesiones();
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<SesionDTO> items = new ArrayList<>();
+            return new Pagina<>(items, 0L);
+        }
+    }
+
+
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @Override
+    public Pagina<SesionDTO> findByFiltro(SesionFiltro filtro) {
+        try {
+            List<SesionDTO> items = sesionRepository.findPageByFiltro(filtro);
+            long total = sesionRepository.countByFiltro(filtro);
+            return new Pagina<>(items, total);
+        } catch (Exception e) {
+            LOG.error("Error", e);
+            List<SesionDTO> items = new ArrayList<>();
+            return new Pagina<>(items, 0L);
+        }
+    }
+
+
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public Boolean checkSesion(Long idUsuario) {
         return sesionRepository.checkSesion(idUsuario);
+    }
+
+    @Override
+    public void deleteAllSesion() {
+        sesionRepository.deleteAllSesiones();
     }
 
     //********************************************************************************************************************************************

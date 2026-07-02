@@ -1,6 +1,8 @@
 package es.caib.rolsac2.service.facade;
 
+import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.SesionDTO;
+import es.caib.rolsac2.service.model.filtro.SesionFiltro;
 import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
 import org.fundaciobit.pluginsib.core.IPlugin;
@@ -32,7 +34,6 @@ public interface SystemServiceFacade {
      */
     IPlugin obtenerPluginEntidad(TypePluginEntidad tipoPlugin, Long idEntidad);
 
-
     void crearSesion(SesionDTO sesionDTO);
 
     void updateSesion(SesionDTO sesionDTO);
@@ -41,6 +42,12 @@ public interface SystemServiceFacade {
 
     SesionDTO findSesionById(Long idUsuario);
 
+    Pagina<SesionDTO> findAllSesiones();
+
+    Pagina<SesionDTO> findByFiltro(SesionFiltro filtro);
+
     Boolean checkSesion(Long idUsuario);
+
+    void deleteAllSesion();
 
 }

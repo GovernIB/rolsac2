@@ -72,11 +72,11 @@ public abstract class AbstractController {
                 clase.equals(ViewTipoMateriaSIA.class) || clase.equals(ViewTipoFormaInicio.class) || clase.equals(ViewTipoNormativa.class) || clase.equals(ViewTipoSexo.class) || clase.equals(ViewTipoBoletin.class)
                 || clase.equals(ViewTipoVia.class) || clase.equals(ViewTipoPublicoObjetivo.class) || clase.equals(ViewTipoSilencioAdministrativo.class) || clase.equals(ViewTipoLegitimacion.class)
                 || clase.equals(ViewUsuario.class)) || isAdministradorEntidad() && (clase.equals(ViewConfiguracionEntidad.class) || clase.equals(ViewPlugins.class) ||
-                clase.equals(ViewUsuario.class) || clase.equals(ViewEntidadRaiz.class) || clase.equals(ViewRoles.class) || clase.equals(ViewTipoUnidadAdministrativa.class) || clase.equals(ViewEntidades.class) 
+                clase.equals(ViewUsuario.class) || clase.equals(ViewEntidadRaiz.class) || clase.equals(ViewRoles.class) || clase.equals(ViewTipoUnidadAdministrativa.class) || clase.equals(ViewEntidades.class)
                 || clase.equals(ViewCategoriasPDU.class) || clase.equals(ViewPlatTramitElectronica.class) || clase.equals(ViewTipoTramitacion.class) || clase.equals(ViewTipoProcedimiento.class) || clase.equals(ViewTema.class) ||
                 clase.equals(ViewPublicoObjetivoEntidad.class) || clase.equals(ViewConfiguracionesAlertas.class) || clase.equals(ViewEventosPlat.class) || clase.equals(ViewProcesos.class) ||
                 clase.equals(ViewProcesosSolr.class) || clase.equals(ViewProcesosSIA.class) || clase.equals(ViewProcesosMigracion.class) || clase.equals(ViewProcesosLog.class) || clase.equals(ViewEvolucion.class) || clase.equals(ViewContenidos.class) ||
-                clase.equals(ViewUnidadAdministrativa.class)) || clase.equals(ViewLOPD.class) || clase.equals(ViewOrganigramaDir3.class) || (isAdministradorContenidos() && (clase.equals(ViewUnidadAdministrativa.class) || clase.equals(ViewNormativa.class)) ||
+                clase.equals(ViewUnidadAdministrativa.class)) || clase.equals(ViewLOPD.class) || clase.equals(ViewOrganigramaDir3.class) || clase.equals(ViewSesiones.class) || (isAdministradorContenidos() && (clase.equals(ViewUnidadAdministrativa.class) || clase.equals(ViewNormativa.class)) ||
                 (isAdministradorContenidos() || isGestor() || isInformador()) && clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class)
                 || clase.equals(ViewProcesosPDU.class)
         )))) {
@@ -85,9 +85,9 @@ public abstract class AbstractController {
 
         // Validar que los perfiles GESTOR, INFORMADOR y ADMINISTRADOR_CONTENIDOS tienen una Unidad Administrativa asociada
         // al acceder a Procedimientos, Servicios o Unidades Administrativas
-        if ((isGestor() || isInformador() || isAdministradorContenidos()) 
-                && (clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class) 
-                        || clase.equals(ViewUnidadAdministrativa.class))) {
+        if ((isGestor() || isInformador() || isAdministradorContenidos())
+                && (clase.equals(ViewProcedimientos.class) || clase.equals(ViewServicios.class)
+                || clase.equals(ViewUnidadAdministrativa.class))) {
             if (sessionBean.getUnidadActiva() == null) {
                 throw new GestorSinUAExcepcion();
             }
@@ -213,8 +213,6 @@ public abstract class AbstractController {
      * Setea el idioma a la ventana.
      */
     protected void setearIdioma() {
-        //idioma = sessionBean.getLang();
-
 
         /** Si es perfil SUPER_ADMINISTRADOR, se le asigna el idioma de la sesión
          *  Si es otro perfil: <br />
