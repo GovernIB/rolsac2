@@ -379,7 +379,7 @@ public class Literal implements Cloneable {
         }
         boolean vacio = true;
         for (Traduccion trad : this.getTraducciones()) {
-            if (trad.getLiteral() != null && !trad.getLiteral().isEmpty()) {
+            if (trad.getLiteral() != null && !trad.getLiteral().isBlank()) {
                 vacio = false;
                 break;
             }
@@ -400,7 +400,7 @@ public class Literal implements Cloneable {
 
         if (idiomas != null) {
             for (String idioma : idiomas) {
-                if (this.getTraduccion(idioma) == null || this.getTraduccion(idioma).isEmpty()) {
+                if (this.getTraduccion(idioma) == null || this.getTraduccion(idioma).isBlank()) {
                     return false;
                 }
             }
