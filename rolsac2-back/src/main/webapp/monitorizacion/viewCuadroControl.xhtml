@@ -82,7 +82,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                      selectionMode="single" selection="#{viewCuadroControl.procSeleccionado}"
                                      paginator="true" rows="5" paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                                      {NextPageLink} {LastPageLink}"
-                                     currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                                     currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                                      emptyMessage="#{labels['dict.noHayDatos']}" rowKey="#{dto.codigo}"
                                      reflow="true" paginatorPosition="bottom" paginatorAlwaysVisible="false">
                             <p:column headerText="#{labels['dict.nombre']}" styleClass="w50">
@@ -111,7 +111,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                      selectionMode="single" selection="#{viewCuadroControl.servSeleccionado}"
                                      paginator="true" rows="5" paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                                      {NextPageLink} {LastPageLink}"
-                                     currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                                     currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                                      emptyMessage="#{labels['dict.noHayDatos']}" rowKey="#{dto.codigo}"
                                      reflow="true" paginatorPosition="bottom" paginatorAlwaysVisible="false">
                             <p:column headerText="#{labels['dict.nombre']}" styleClass="w50">

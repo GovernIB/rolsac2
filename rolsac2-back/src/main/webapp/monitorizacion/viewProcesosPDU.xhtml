@@ -43,7 +43,7 @@ Pàgina amb el llistat de processos automàtics
                              paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                              {NextPageLink} {LastPageLink}"
-                             currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                             currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
                              reflow="true"
                              style="min-height: 300px;"
@@ -107,7 +107,7 @@ Pàgina amb el llistat de processos automàtics
                          paginatorPosition="bottom" paginatorAlwaysVisible="true"
                          paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                          {NextPageLink} {LastPageLink}"
-                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{viewProcesosPDU.datoSeleccionado}"
                          reflow="true"

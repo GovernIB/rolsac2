@@ -335,7 +335,7 @@ Pàgina amb el llistat de normativas
                          paginatorPosition="bottom" paginatorAlwaysVisible="true"
                          paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                          {NextPageLink} {LastPageLink}"
-                         currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                         currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          reflow="true"
                          selection="#{viewNormativa.datoSeleccionado}"

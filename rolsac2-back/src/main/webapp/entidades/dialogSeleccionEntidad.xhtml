@@ -47,7 +47,7 @@
                              paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                              {NextPageLink} {LastPageLink}"
-                             currentPageReportTemplate="#{labels.dataTable_currentPageReport}"
+                             currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
                              selectionMode="single" selection="#{dialogSeleccionEntidad.datoSeleccionado}"
                              reflow="true" scrollable="true" scrollHeight="240"
