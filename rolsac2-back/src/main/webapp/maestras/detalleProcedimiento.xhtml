@@ -126,7 +126,7 @@
                 <div class="form-group col-lg-6 col-md-12">
                     <p>
                         <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" styleClass="mb-1 pt-0 negrita"/>
-                        <p:outputLabel id="txtErrorSIA_#{paramName}" value="#{viewProcedimientos.procedimientoSeleccionado.errorSIA}"  />
+                        <p:outputLabel id="txtErrorSIA_#{paramName}" value="#{viewProcedimientos.procedimientoSeleccionado.errorSIA}" tooltip="#{viewProcedimientos.procedimientoSeleccionado.errorSIA}" />
                         <p:tooltip id="toolTipFadeSIA_#{paramName}" for="txtErrorSIA_#{paramName}" value="#{viewProcedimientos.procedimientoSeleccionado.errorSIA}"  position="top"/>
                     </p>
                 </div>
