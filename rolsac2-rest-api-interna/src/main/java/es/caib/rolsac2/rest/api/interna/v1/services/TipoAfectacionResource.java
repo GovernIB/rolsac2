@@ -119,7 +119,7 @@ public class TipoAfectacionResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoAfectacion", summary = "Obtiene un tipo de afectación", description = "Obtiene el tipo de afectación con el id(código) indicado")
+    @Operation(operationId = "getTipoAfectacion", summary = "Obtiene un tipo de afectación", description = "Obtiene el tipo de afectación con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoAfectacion(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de afectación", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

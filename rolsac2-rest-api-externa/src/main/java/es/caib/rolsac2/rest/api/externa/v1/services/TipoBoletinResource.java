@@ -82,7 +82,7 @@ public class TipoBoletinResource {
     @POST
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getBoletin", summary = "Obtiene un boletín", description = "Obtiene el boletín con el id(código) indicado")
+    @Operation(operationId = "getBoletin", summary = "Obtiene un boletín", description = "Obtiene el boletín con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoBoletin.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getBoletin(@Parameter(description = "Código de boletín", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

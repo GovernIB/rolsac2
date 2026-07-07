@@ -90,7 +90,7 @@ public class TipoNormativaResource {
     @POST
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoNormativa", summary = "Obtiene un tipo de normativa", description = "Obtiene el tipo de normativa con el id(código) indicado")
+    @Operation(operationId = "getTipoNormativa", summary = "Obtiene un tipo de normativa", description = "Obtiene el tipo de normativa con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoNormativa.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoNormativa(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de normativa", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

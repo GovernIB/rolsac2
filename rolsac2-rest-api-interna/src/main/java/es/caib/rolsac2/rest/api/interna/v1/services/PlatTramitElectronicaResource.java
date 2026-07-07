@@ -112,7 +112,7 @@ public class PlatTramitElectronicaResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getPlatTramitElectronica", summary = "Obtiene un plataforma de tramitación electrónica", description = "Obtiene la plataforma de tramitación electrónica con el id(código) indicado")
+    @Operation(operationId = "getPlatTramitElectronica", summary = "Obtiene un plataforma de tramitación electrónica", description = "Obtiene la plataforma de tramitación electrónica con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getPlatTramitElectronica(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de plataforma de tramitación electrónica", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

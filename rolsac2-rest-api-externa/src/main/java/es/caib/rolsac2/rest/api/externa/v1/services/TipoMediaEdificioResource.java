@@ -105,7 +105,7 @@ public class TipoMediaEdificioResource {
     @POST
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoMediaEdificio", summary = "Obtiene un tipo de media edificio", description = "Obtiene el tipo de media edificio con el id(código) indicado")
+    @Operation(operationId = "getTipoMediaEdificio", summary = "Obtiene un tipo de media edificio", description = "Obtiene el tipo de media edificio con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoMediaEdificio.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoMediaEdificio(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de media edificio", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

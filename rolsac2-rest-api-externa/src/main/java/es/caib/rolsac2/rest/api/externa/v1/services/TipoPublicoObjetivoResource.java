@@ -89,7 +89,7 @@ public class TipoPublicoObjetivoResource {
     @POST
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoPublicoObjetivo", summary = "Obtiene un tipo de publico objetivo SIA", description = "Obtiene el tipo de público objetivo SIA con el id(código) indicado")
+    @Operation(operationId = "getTipoPublicoObjetivo", summary = "Obtiene un tipo de publico objetivo SIA", description = "Obtiene el tipo de público objetivo SIA con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoPublicoObjetivo.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoPublicoObjetivo(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de publico objetivo SIA", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

@@ -135,7 +135,7 @@ public class TipoTramitacionResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoTramitacion", summary = "Obtiene un tipo de tramitación", description = "Obtiene el tipo de tramitación con el id(código) indicado")
+    @Operation(operationId = "getTipoTramitacion", summary = "Obtiene un tipo de tramitación", description = "Obtiene el tipo de tramitación con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoTramitacion(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de tramitación", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {

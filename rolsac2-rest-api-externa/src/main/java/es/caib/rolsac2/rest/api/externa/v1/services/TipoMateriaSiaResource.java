@@ -89,7 +89,7 @@ public class TipoMateriaSiaResource {
     @POST
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoMateriaSia", summary = "Obtiene un tipo de materia", description = "Obtiene el tipo de materia con el id(código) indicado")
+    @Operation(operationId = "getTipoMateriaSia", summary = "Obtiene un tipo de materia", description = "Obtiene el tipo de materia con el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaTipoMateriaSia.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getTipoMateriaSia(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de materia", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
