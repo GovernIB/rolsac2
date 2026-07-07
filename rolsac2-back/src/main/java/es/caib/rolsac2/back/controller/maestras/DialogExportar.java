@@ -118,7 +118,11 @@ public class DialogExportar extends AbstractController implements Serializable {
                     campos.add(new ExportarCampos(getLiteral("dict.fechaActualizacion"), "fechaActualizacion", "DATA_ACTUALITZACIO", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.usuarioUltimaActualizacion"), "usuarioUltimaActualizacion", "NOM_USUARI_DARRERA_ACT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.comun"), "comun", "COMU", true, 1));
-                    campos.add(new ExportarCampos(getLiteral("dict.exportarTramites"), "exportarTramites", null, true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.codigoTramite"), "codigoTramite", "CODI_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.nombreTramite"), "nombreTramite", "NOM_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.fechaPublicacion"), "fechaPublicacionTramite", "DATA_PUBLICACIO_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.fechaInicio"), "fechaInicioTramite", "DATA_INICI_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.fechaCierre"), "fechaCierreTramite", "DATA_TANCAMENT_TRAMIT", true, 1));
 
                 } else if (tipo.equals("SERV")) {
                     tipoProcServ = true;

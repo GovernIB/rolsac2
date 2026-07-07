@@ -201,6 +201,38 @@ public class UtilExport {
             }
         }
 
+        // Manejo específico para números: si no tiene dos WF, mostrar sólo el valor con prioridad;
+        // si tiene dos WF, comportarse como con otros tipos (concatenar con separador si ambos existen).
+        if ((valor != null && valor instanceof Number) || (valor2 != null && valor2 instanceof Number)) {
+            if (!tieneDosWF) {
+                Number valorNumber = prioridadPublicado ? (Number) valor : (Number) valor2;
+                if (valorNumber == null) {
+                    return "";
+                } else {
+                    return valorNumber.toString();
+                }
+            }
+
+            if (valor == null) {
+                if (valor2 == null) {
+                    return "";
+                } else {
+                    return caracterSeparador + valor2.toString();
+                }
+
+            } else {
+                if (valor2 == null) {
+                    return valor.toString() + caracterSeparador;
+                } else {
+                    if (valor.equals(valor2)) {
+                        return valor.toString();
+                    } else {
+                        return valor.toString() + caracterSeparador + valor2.toString();
+                    }
+                }
+            }
+        }
+
         if ((valor != null && valor instanceof Literal) || (valor2 != null && valor2 instanceof Literal)) {
             Literal literal = null;
             Literal literal2 = null;
@@ -653,13 +685,17 @@ public class UtilExport {
      */
     public static String[][] getValoresCompletos(List<ProcedimientoCompletoDTO> procs, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA) {
 
+        List<String> tramiteFieldNames = Arrays.asList("codigoProcTramite", "codigoTramite", "nombreTramite", "fechaPublicacionTramite", "fechaInicioTramite", "fechaCierreTramite");
         ExportarCampos exportarTramites = exportarDatos.getCampos().stream()
                 .filter(c -> "exportarTramites".equals(c.getCampo()))
                 .findFirst()
                 .orElse(null);
 
+        boolean tieneCamposTramite = exportarDatos.getCampos().stream().anyMatch(c -> tramiteFieldNames.contains(c.getCampo()));
+
         int totalFilas = calcularTotalFilas(procs);
-        String[][] retorno = new String[totalFilas][exportarDatos.getCampos().size() + (exportarTramites != null ? 4 : 0)];
+        int columnasExtra = (exportarTramites != null) ? 4 : 0;
+        String[][] retorno = new String[totalFilas][exportarDatos.getCampos().size() + columnasExtra];
         int fila = 0;
 
         for (ProcedimientoCompletoDTO procedimientoDTO : procs) {
@@ -671,7 +707,7 @@ public class UtilExport {
 
             // Obtener trámites combinados de ambos workflows (publicado y modificado)
             List<ProcedimientoTramiteDTO> tramitesCombinados = null;
-            if (exportarTramites != null) {
+            if (exportarTramites != null || tieneCamposTramite) {
                 tramitesCombinados = obtenerTramitesCombinados(procedimientoDTO);
             }
 
@@ -695,6 +731,7 @@ public class UtilExport {
             exportarDatos.getCampos().add(new ExportarCampos(null, "nombreTramite", "NOM_TRAMIT", true, 1));
             exportarDatos.getCampos().add(new ExportarCampos(null, "fechaPublicacionTramite", "DATA_PUBLICACIO_TRAMIT", true, 1));
             exportarDatos.getCampos().add(new ExportarCampos(null, "fechaInicioTramite", "DATA_INICI_TRAMIT", true, 1));
+            exportarDatos.getCampos().add(new ExportarCampos(null, "fechaCierreTramite", "DATA_TANCAMENT_TRAMIT", true, 1));
         }
 
         return retorno;
@@ -889,6 +926,24 @@ public class UtilExport {
                     break;
                 case "telefonico":
                     retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitTelefonica(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitTelefonica(), idioma, tieneDosWF, prioridadPublicado);
+                    break;
+                case "codigoProcTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getProcedimiento().getCodigo(), idioma) : "";
+                    break;
+                case "codigoTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getCodigo(), idioma) : "";
+                    break;
+                case "nombreTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getNombre(), idioma) : "";
+                    break;
+                case "fechaPublicacionTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaPublicacion(), idioma) : "";
+                    break;
+                case "fechaInicioTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaInicio(), idioma) : "";
+                    break;
+                case "fechaCierreTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaCierre(), idioma) : "";
                     break;
                 // Nuevos campos de trámite
                 case "exportarTramites":
