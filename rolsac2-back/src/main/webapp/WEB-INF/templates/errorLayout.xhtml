@@ -33,9 +33,16 @@ Plantilla per pàgines d'error.
         <h:outputStylesheet name="css/styles.css" />
 
         <header>
-            <!-- Header -->
+            <!-- Header simplificat per evitar bucles d'error amb sessionBean -->
             <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark bg-aplicacio">
-                <ui:include src="/WEB-INF/includes/header_logo_nombre.xhtml" />
+                <div class="navbar-brand menuGovern">
+                    <div class="logoGovern">
+                        <a href="#{request.contextPath}/index.xhtml" class="mr-auto">
+                            <h:graphicImage name="img/logo.png" styleClass="imatgeGovern"
+                                            alt="Govern de les Illes Balears"/>
+                        </a>
+                    </div>
+                </div>
             </nav>
             <!-- FI Header -->
         </header>

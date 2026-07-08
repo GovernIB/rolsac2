@@ -289,6 +289,11 @@ public class SessionBean implements Serializable {
                     systemServiceBean.crearSesion(sesionDTO);
                 } else {
                     this.perfil = checkPerfilPosible();
+                    if (this.perfil == null) {
+                        // Usuario sin perfil válido: redirigir sin lanzar excepción
+                        redirigirRuta("/error/noRolesException.xhtml");
+                        return;
+                    }
                     actualizarPerfiles();
                     actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
                     actualizarEntidades();
@@ -403,19 +408,14 @@ public class SessionBean implements Serializable {
      * Comprueba si hay algún perfil del usuario que se pueda setear por defecto.
      */
     private TypePerfiles checkPerfilPosible() {
-        Boolean perfilPosible = Boolean.FALSE;
         for (TypePerfiles perfilActivo : perfiles) {
             if (this.perfil == null || this.perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
-                perfilPosible = checkPermisosPerfil(perfilActivo);
-                if (perfilPosible) {
+                if (checkPermisosPerfil(perfilActivo)) {
                     return perfilActivo;
                 }
             }
         }
-        if (!perfilPosible) {
-            throw new NoAutorizadoException();
-        }
-
+        // No lanzar excepción aquí: devolver null para que el llamante redirija sin romper el @PostConstruct
         return null;
     }
 
