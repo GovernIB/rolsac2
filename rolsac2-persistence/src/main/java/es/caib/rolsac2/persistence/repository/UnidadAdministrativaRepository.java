@@ -69,7 +69,7 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     UnidadOrganicaDTO obtenerUnidadRaiz(Long idEntidad);
 
-    List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad, String idioma);
+    List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad);
 
     Pagina<IndexacionDTO> getUAsParaIndexacion(Long idEntidad);
 

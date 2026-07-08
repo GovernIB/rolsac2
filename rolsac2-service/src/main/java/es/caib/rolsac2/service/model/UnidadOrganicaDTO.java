@@ -2,6 +2,8 @@ package es.caib.rolsac2.service.model;
 
 import es.caib.rolsac2.service.model.types.TypeEstadoDir3;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -12,6 +14,8 @@ import java.util.Objects;
  */
 @Schema(name = "UnidadOrganica")
 public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrganicaDTO> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UnidadOrganicaDTO.class);
 
     /**
      * Codigo
@@ -168,12 +172,38 @@ public class UnidadOrganicaDTO extends ModelApi implements Comparable<UnidadOrga
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UnidadOrganicaDTO that = (UnidadOrganicaDTO) o;
-        return Objects.equals(codigoDir3, that.codigoDir3) && Objects.equals(codigoDir3Padre, that.codigoDir3Padre) && Objects.equals(denominacion, that.denominacion) && Objects.equals(version, that.version);
+        boolean equalCodigoDir3 = Objects.equals(codigoDir3, that.codigoDir3);
+        boolean equalCodigoDir3Padre = Objects.equals(codigoDir3Padre, that.codigoDir3Padre);
+        boolean equalDenominacion = coincideDenominacionEnAlgunIdioma(that);
+        boolean equalVersion = Objects.equals(version, that.version);
+        boolean equal = equalCodigoDir3 && equalCodigoDir3Padre && equalDenominacion && equalVersion;
+        if (!equal) {
+            LOG.error("UnidadOrganicaDTO.equals distinto: this[codigoDir3={}, codigoDir3Padre={}, denominacion={}, denominacionCooficial={}, version={}] vs that[codigoDir3={}, codigoDir3Padre={}, denominacion={}, denominacionCooficial={}, version={}] | igualCodigoDir3={}, igualCodigoDir3Padre={}, igualDenominacionEnAlgunIdioma={}, igualVersion={}",
+                    codigoDir3, codigoDir3Padre, denominacion, denominacionCooficial, version,
+                    that.codigoDir3, that.codigoDir3Padre, that.denominacion, that.denominacionCooficial, that.version,
+                    equalCodigoDir3, equalCodigoDir3Padre, equalDenominacion, equalVersion);
+        }
+        return equal;
+    }
+
+    private boolean coincideDenominacionEnAlgunIdioma(UnidadOrganicaDTO that) {
+      /*  return equalsTexto(denominacion, that.denominacion)
+                || equalsTexto(denominacion, that.denominacionCooficial)
+                || equalsTexto(denominacionCooficial, that.denominacion)
+                || equalsTexto(denominacionCooficial, that.denominacionCooficial);*/
+        return equalsTexto(denominacionCooficial, that.denominacionCooficial) && equalsTexto(denominacion, that.denominacion);
+    }
+
+    private boolean equalsTexto(String a, String b) {
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.trim().equalsIgnoreCase(b.trim());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo, codigoDir3, idEntidad, codigoDir3Padre, denominacion, estado);
+        return Objects.hash(codigoDir3, codigoDir3Padre, version);
     }
 
     @Override

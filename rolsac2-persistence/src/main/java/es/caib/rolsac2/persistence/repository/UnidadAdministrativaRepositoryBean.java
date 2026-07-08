@@ -880,10 +880,10 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
     }
 
     @Override
-    public List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad, String idioma) {
-        String sql = "SELECT p.codigoDIR3, p.padre.codigoDIR3, t.nombre, p.version FROM JUnidadAdministrativa p LEFT OUTER JOIN p.traducciones t ON t.idioma = :idioma " + "WHERE p.padre.codigoDIR3 = :codigoDir3 AND p.entidad.codigo=:idEntidad";
+    public List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad) {
+    	String sql = "SELECT p.codigoDIR3, p.padre.codigoDIR3, t.nombre, t2.nombre, p.version FROM JUnidadAdministrativa p LEFT OUTER JOIN p.traducciones t ON t.idioma = 'es'  LEFT OUTER JOIN p.traducciones t2 ON t2.idioma = 'ca'  WHERE p.padre.codigoDIR3 = :codigoDir3 AND p.entidad.codigo=:idEntidad";
         Query query = entityManager.createQuery(sql);
-        query.setParameter("idioma", idioma);
+        ///query.setParameter("idioma", idioma);
         query.setParameter("codigoDir3", codigoDir3);
         query.setParameter("idEntidad", idEntidad);
         List<Object[]> resultado = query.getResultList();
@@ -893,7 +893,8 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             unidad.setCodigoDir3((String) result[0]);
             unidad.setCodigoDir3Padre((String) result[1]);
             unidad.setDenominacion((String) result[2]);
-            unidad.setVersion((Integer) result[3]);
+            unidad.setDenominacionCooficial((String) result[3]);
+            unidad.setVersion((Integer) result[4]);
             unidad.setDenominacionDir3(unidad.getDenominacion() + " (" + unidad.getCodigoDir3() + ")");
             unidades.add(unidad);
         }

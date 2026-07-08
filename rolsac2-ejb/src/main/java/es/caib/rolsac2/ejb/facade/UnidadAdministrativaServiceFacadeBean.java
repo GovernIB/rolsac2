@@ -431,7 +431,7 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public List<UnidadOrganicaDTO> obtenerUnidadesHijasRolsac(String codigoDir3, Long idEntidad, String idioma) {
-        List<UnidadOrganicaDTO> unidadesHijasRolsac = unidadAdministrativaRepository.obtenerUnidadesHijas(codigoDir3, idEntidad, idioma);
+        List<UnidadOrganicaDTO> unidadesHijasRolsac = unidadAdministrativaRepository.obtenerUnidadesHijas(codigoDir3, idEntidad/*, idioma*/);
         List<JUnidadOrganica> jUnidadesHijas = unidadOrganicaRepository.listarUnidadesHijas(codigoDir3, idEntidad);
         List<UnidadOrganicaDTO> unidadesHijasDir3 = new ArrayList<>();
         for (JUnidadOrganica unidad : jUnidadesHijas) {
