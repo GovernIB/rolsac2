@@ -881,7 +881,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
 
     @Override
     public List<UnidadOrganicaDTO> obtenerUnidadesHijas(String codigoDir3, Long idEntidad) {
-    	String sql = "SELECT p.codigoDIR3, p.padre.codigoDIR3, t.nombre, t2.nombre, p.version FROM JUnidadAdministrativa p LEFT OUTER JOIN p.traducciones t ON t.idioma = 'es'  LEFT OUTER JOIN p.traducciones t2 ON t2.idioma = 'ca'  WHERE p.padre.codigoDIR3 = :codigoDir3 AND p.entidad.codigo=:idEntidad";
+        String sql = "SELECT p.codigoDIR3, p.padre.codigoDIR3, t.nombre, t2.nombre, p.version FROM JUnidadAdministrativa p LEFT OUTER JOIN p.traducciones t ON t.idioma = 'es'  LEFT OUTER JOIN p.traducciones t2 ON t2.idioma = 'ca'  WHERE p.padre.codigoDIR3 = :codigoDir3 AND p.entidad.codigo=:idEntidad";
         Query query = entityManager.createQuery(sql);
         ///query.setParameter("idioma", idioma);
         query.setParameter("codigoDir3", codigoDir3);
