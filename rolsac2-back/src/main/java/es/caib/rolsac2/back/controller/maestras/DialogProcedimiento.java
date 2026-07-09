@@ -1873,7 +1873,21 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean isMostrarBtnMensajes() {
-        return isMostrarBtnFlujo();
+        if (this.isGestor()) {
+            if (this.data.getComun() == 1) {
+                // Si es común, no mostrar botón
+                return false;
+            }
+            return !this.isNoEditable();
+        }
+        if (this.isInformador()) {
+            return false;
+        }
+        if (this.isAdministradorContenidos()) {
+            return true;
+        }
+        return false;
+
     }
 
     public Literal getComunLOPD() {
