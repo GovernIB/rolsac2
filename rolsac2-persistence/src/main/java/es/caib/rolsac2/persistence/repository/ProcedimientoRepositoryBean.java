@@ -19,13 +19,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.concurrent.atomic.AtomicLong;
-
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,11 +27,17 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementación del repositorio de Personal.
@@ -818,8 +817,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     private Map<Long, List<ProcedimientoTramiteDTO>> buildTramitesExport(List<JProcedimientoTramite> tramites,
-                                                                          Map<Long, List<ProcedimientoDocumentoDTO>> documentos,
-                                                                          Map<Long, List<TasaProcedimientoDTO>> tasasTramite) {
+                                                                         Map<Long, List<ProcedimientoDocumentoDTO>> documentos,
+                                                                         Map<Long, List<TasaProcedimientoDTO>> tasasTramite) {
         Map<Long, List<ProcedimientoTramiteDTO>> resultado = new LinkedHashMap<>();
         if (tramites == null || tramites.isEmpty()) {
             return resultado;
@@ -2506,7 +2505,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         dto.setDescripcion(tasa.getDescripcion());
         dto.setFormaPago(tasa.getFormaPago());
         dto.setUrl(tasa.getUrl());
-        
+
         actualizarTraduccionesTasa(jtasa, dto, codigoWF);
         entityManager.merge(jtasa);
     }
@@ -3257,18 +3256,34 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.fechaPublicacion <= :fechaPublicacionHasta) ");
         }
 
-        if (filtro.isRellenoFechaCierreTramiteDesde() && ambosWf) {
-            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo AND tram.fechaCierre >= :fechaCierreTramiteDesde) " +
-                    "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo AND tram2.fechaCierre >= :fechaCierreTramiteDesde)) ");
-        } else if (filtro.isRellenoFechaCierreTramiteDesde()) {
-            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre >= :fechaCierreTramiteDesde)) ");
-        }
+        boolean rellenoFechaCierreDesde = filtro.isRellenoFechaCierreTramiteDesde();
+        boolean rellenoFechaCierreHasta = filtro.isRellenoFechaCierreTramiteHasta();
 
-        if (filtro.isRellenoFechaCierreTramiteHasta() && ambosWf) {
-            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta) " +
-                    "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo  AND tram2.fechaCierre <= :fechaCierreTramiteHasta)) ");
-        } else if (filtro.isRellenoFechaCierreTramiteHasta()) {
-            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta)) ");
+        if (rellenoFechaCierreDesde && rellenoFechaCierreHasta) {
+            if (ambosWf) {
+                sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo AND tram.fechaCierre >= :fechaCierreTramiteDesde AND tram.fechaCierre <= :fechaCierreTramiteHasta) " +
+                        "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo AND tram2.fechaCierre >= :fechaCierreTramiteDesde AND tram2.fechaCierre <= :fechaCierreTramiteHasta)) ");
+            } else {
+                sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre >= :fechaCierreTramiteDesde AND tram.fechaCierre <= :fechaCierreTramiteHasta)) ");
+            }
+        } else {
+
+            if (rellenoFechaCierreDesde) {
+                if (ambosWf) {
+                    sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo AND tram.fechaCierre >= :fechaCierreTramiteDesde) " +
+                            "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo AND tram2.fechaCierre >= :fechaCierreTramiteDesde)) ");
+                } else {
+                    sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre >= :fechaCierreTramiteDesde)) ");
+                }
+            }
+            if (rellenoFechaCierreHasta) {
+                if (ambosWf) {
+                    sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta) " +
+                            "OR EXISTS (SELECT 1 FROM JProcedimientoTramite tram2 WHERE tram2.procedimiento.codigo = WF2.codigo  AND tram2.fechaCierre <= :fechaCierreTramiteHasta)) ");
+                } else {
+                    sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoTramite tram WHERE tram.procedimiento.codigo = WF.codigo  AND tram.fechaCierre <= :fechaCierreTramiteHasta)) ");
+                }
+            }
         }
 
         if (filtro.isRellenoVisibleSEDE()) {
@@ -4752,7 +4767,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
                 ((ServicioDTO) proc).setPlantillaSel(tipo);
             }
-            
+
             if (jprocWF.getListaTasas() != null && !jprocWF.getListaTasas().isEmpty()) {
                 JProcedimientoTasa jtasa = jprocWF.getListaTasas().get(0);
                 TasaServicioDTO tasaDTO = new TasaServicioDTO();
@@ -4975,7 +4990,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 TipoTramitacionDTO tipo = tipoTramitacionConverter.createDTO(jprocWF.getTramiteElectronicoPlantilla());
                 ((ServicioDTO) proc).setPlantillaSel(tipo);
             }
-            
+
             if (jprocWF.getListaTasas() != null && !jprocWF.getListaTasas().isEmpty()) {
                 JProcedimientoTasa jtasa = jprocWF.getListaTasas().get(0);
                 TasaServicioDTO tasaDTO = new TasaServicioDTO();
