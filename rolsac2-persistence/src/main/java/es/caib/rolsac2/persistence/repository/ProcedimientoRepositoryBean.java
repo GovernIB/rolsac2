@@ -3810,13 +3810,24 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
         if (filtro.isRellenoFechaCierreTramiteDesde()) {
-
-            Timestamp timeStampDate = new Timestamp(filtro.getFechaCierreTramiteDesde().getTime());
+            java.util.Calendar calDesde = java.util.Calendar.getInstance();
+            calDesde.setTime(filtro.getFechaCierreTramiteDesde());
+            calDesde.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            calDesde.set(java.util.Calendar.MINUTE, 0);
+            calDesde.set(java.util.Calendar.SECOND, 0);
+            calDesde.set(java.util.Calendar.MILLISECOND, 0);
+            Timestamp timeStampDate = new Timestamp(calDesde.getTimeInMillis());
             query.setParameter("fechaCierreTramiteDesde", timeStampDate);
         }
 
         if (filtro.isRellenoFechaCierreTramiteHasta()) {
-            Timestamp timeStampDate = new Timestamp(filtro.getFechaCierreTramiteHasta().getTime());
+            java.util.Calendar calHasta = java.util.Calendar.getInstance();
+            calHasta.setTime(filtro.getFechaCierreTramiteHasta());
+            calHasta.set(java.util.Calendar.HOUR_OF_DAY, 23);
+            calHasta.set(java.util.Calendar.MINUTE, 59);
+            calHasta.set(java.util.Calendar.SECOND, 59);
+            calHasta.set(java.util.Calendar.MILLISECOND, 999);
+            Timestamp timeStampDate = new Timestamp(calHasta.getTimeInMillis());
             query.setParameter("fechaCierreTramiteHasta", timeStampDate);
         }
 
