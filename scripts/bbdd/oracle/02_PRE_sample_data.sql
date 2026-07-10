@@ -117,7 +117,7 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de consulta al API REST DIR3CAIB', 'e
 
 Insert into RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
 VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de indexacion sia', 'es.caib.rolsac2.commons.plugins.sia.sia.SiaWSPlugin',
-        '[{"codigo":"url","valor":"https://pre-sia2.redsara.es/axis2/services/wsSIAActualizarActuaciones","orden":null}]',
+        '[{"codigo":"url","valor":"https://pre-sia2.redsara.es/axis2/services/wsSIAActualizarActuaciones","orden":null},{"codigo":"activosia","valor":"false","orden":null}]',
         'pluginsib.indexacion.sia.', 'SIA');
 
 Insert into RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
@@ -132,7 +132,7 @@ VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de indexacion', 'es.caib.rolsac2.comm
 
 Insert into RS2_PLUGIN (PLUG_CODIGO, PLUG_CODENTI, PLUG_DESC, PLUG_CLASSNAME, PLUG_PROPS, PLUG_PREPRO, PLUG_TIPO)
 VALUES (RS2_PLUGIN_SEQ.NEXTVAL, 1, 'Plugin de PDU', 'es.caib.rolsac2.commons.plugins.pdu.PDUPlugin',
-        '[{"codigo":"url","valor":"https://webgate.acceptance.ec.europa.eu/youreurope/sdg/public/dtx","orden":null},{"codigo":"usr","valor":"api-pdu","orden":null},{"codigo":"pwd","valor":"XXXXXX","orden":null}]',
+        '[{"codigo":"url","valor":"https://webgate.acceptance.ec.europa.eu/youreurope/sdg/public/dtx","orden":null},{"codigo":"usr","valor":"api-pdu","orden":null},{"codigo":"pwd","valor":"XXXXXX","orden":null},{"codigo":"activopdu","valor":"false","orden":null}]',
         'pluginsib.pdu.', 'PDU');
 
 insert into RS2_PROCES (PROCES_CODIGO, PROCES_CODENTI, PROCES_IDENTI, PROCES_DESCRI, proces_cron, proces_activo, proces_params) VALUES (RS2_PROCES_SEQ.NEXTVAL, 1, 'TEST', 'Proceso de prueba', null, 1, '[{"codigo":"valida","valor":"true"}]');

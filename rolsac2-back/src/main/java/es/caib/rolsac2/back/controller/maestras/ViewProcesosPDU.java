@@ -8,6 +8,7 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.filtro.ProcesoLogFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoPduFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
+import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import es.caib.rolsac2.service.model.types.TypeTipoProceso;
@@ -16,6 +17,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
+import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,22 +191,48 @@ public class ViewProcesosPDU extends AbstractController implements Serializable 
 
     public void indexarTodo() {
 
-        ListaPropiedades listaPropiedades = new ListaPropiedades();
         Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+
+        // Comprobamos que el plugin PDU esté activo antes de lanzar el proceso
+        if (!isPluginActivo(TypePluginEntidad.PDU, idEntidad, "activopdu")) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dict.procesoPDUNoActivo"));
+            return;
+        }
+
+        ListaPropiedades listaPropiedades = new ListaPropiedades();
         listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_COMPLETO);
         procesoTimerServiceFacade.procesadoManual(TypeTipoProceso.PDU_PUNT.valor, listaPropiedades, idEntidad);
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
     }
 
     public void indexarPendientes() {
+        Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
+
+        // Comprobamos que el plugin PDU esté activo antes de lanzar el proceso
+        if (!isPluginActivo(TypePluginEntidad.PDU, idEntidad, "activopdu")) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.ERROR, getLiteral("dict.procesoPDUNoActivo"));
+            return;
+        }
 
         ListaPropiedades listaPropiedades = new ListaPropiedades();
-        Long idEntidad = UtilJSF.getSessionBean().getEntidad().getCodigo();
         listaPropiedades.addPropiedad("accion", Constantes.INDEXAR_SIA_PENDIENTES);
         procesoTimerServiceFacade.procesadoManual(TypeTipoProceso.PDU_PUNT.valor, listaPropiedades, idEntidad);
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
     }
 
+    private boolean isPluginActivo(TypePluginEntidad tipo, Long idEntidad, String propName) {
+        try {
+            Object plg = systemServiceFacade.obtenerPluginEntidad(tipo, idEntidad);
+            if (!(plg instanceof AbstractPluginProperties)) {
+                return false;
+            }
+            String valor = ((AbstractPluginProperties) plg).getProperty(propName);
+            return "true".equalsIgnoreCase(valor);
+        } catch (Exception e) {
+            LOG.debug("No se pudo leer la propiedad del plugin o no existe: {}", e.getMessage());
+            return false;
+        }
+    }
 
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
