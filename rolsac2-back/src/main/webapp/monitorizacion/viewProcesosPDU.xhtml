@@ -3,8 +3,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 <!--
 Pàgina amb el llistat de processos automàtics
 -->
@@ -53,7 +52,6 @@ Pàgina amb el llistat de processos automàtics
                             oncomplete="triggerDblClick();"
                             global="false"/>
                     <p:ajax event="rowSelect" />
-                    <!--<p:ajax event="rowSelect" update="btnLanzar" />-->
 
                     <f:facet name="{RowsPerPageLabel}">
                         #{labels.dataTable_rowsPerPage}
@@ -65,7 +63,7 @@ Pàgina amb el llistat de processos automàtics
 
                     <p:column headerText="#{labels['dict.descripcion']}" styleClass="w140px">
                         <f:facet name="header"/>
-                        <h:outputText value="#{proceso.proceso.descripcion}"/>
+                        <h:outputText value="#{proceso.proceso != null ? proceso.proceso.descripcion : ''}"/>
                     </p:column>
                     <p:column headerText="#{labels['dict.fechaInicio']}" styleClass="w160px">
                         <f:facet name="header"/>
@@ -81,7 +79,7 @@ Pàgina amb el llistat de processos automàtics
                     </p:column>
                     <p:column headerText="#{labels['dict.activo']}" styleClass="w130px">
                         <f:facet name="header"/>
-                        <p:selectBooleanCheckbox value="#{proceso.proceso.activo}" disabled="true"></p:selectBooleanCheckbox>
+                        <h:outputText value="#{proceso.proceso != null and proceso.proceso.activo ? labels['dict.si'] : labels['dict.no']}"/>
                     </p:column>
                     <p:column headerText="#{labels['dict.resultado']}">
                         <f:facet name="header"/>
@@ -126,11 +124,11 @@ Pàgina amb el llistat de processos automàtics
                 </p:column>
                  <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.tipo']}"  styleClass="w160px">
                      <f:facet name="header"/>
-                     <h:outputText value="#{labels['viewProcesosPDU.tipo.' += proceso.tipo] }"/>
+                     <h:outputText value="#{proceso.tipo != null ? labels['viewProcesosPDU.tipo.' += proceso.tipo]  : ''}"/>
                  </p:column>
                  <p:column sortBy="#{proceso.accion}" headerText="#{labels['dict.accion']}"  styleClass="w160px">
                      <f:facet name="header"/>
-                     <h:outputText value="#{labels['viewProcesosPDU.accion.' += proceso.accion] }"/>
+                     <h:outputText value="#{proceso.accion != null ? labels['viewProcesosPDU.accion.' += proceso.accion] : ''}"/>
                  </p:column>
                      <p:column sortBy="#{proceso.tipo}" headerText="#{labels['dict.codigoElemento']}"  styleClass="w160px">
                          <f:facet name="header"/>

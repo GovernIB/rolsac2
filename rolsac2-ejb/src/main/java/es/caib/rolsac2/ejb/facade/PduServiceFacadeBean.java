@@ -227,6 +227,7 @@ public class PduServiceFacadeBean implements PduServiceFacade {
 
 
     @Override
+    @PermitAll
     public void quitarPDUnoDef(IndexacionPDUDto pduDto) {
         indexacionPDURepository.deleteByCodElemento(pduDto.getCodElemento());
     }
