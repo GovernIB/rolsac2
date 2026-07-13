@@ -29,10 +29,10 @@ public interface UnidadOrganicaConverter extends Converter<JUnidadOrganica, Unid
     void mergeEntity(@MappingTarget JUnidadOrganica entity, UnidadOrganicaDTO dto);
 
     default String convertDenominacionDir3(JUnidadOrganica entity) {
-        return entity.getDenominacion() + " (" + entity.getCodigoDir3() + ")";
+        return entity.getDenominacion() + " (" + entity.getCodigoDir3() + ", v" + entity.getVersion() + " )";
     }
 
     default String convertDenominacionCooficialDir3(JUnidadOrganica entity) {
-        return entity.getDenominacionCooficial() + " (" + entity.getCodigoDir3() + ")";
+        return entity.getDenominacionCooficial() + " (" + entity.getCodigoDir3() + ", v" + entity.getVersion() + " )";
     }
 }

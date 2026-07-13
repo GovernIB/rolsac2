@@ -128,11 +128,9 @@
                                 <f:facet name="header"/>
                                 <c:if test="#{sessionBean.esCatalan()}">
                                     <h:outputText value="#{unidad.denominacionCooficialDir3}"/>
-                                    <h:outputText value=" (DIR3, v#{unidad.version})" rendered="#{not empty unidad.version}"/>
                                 </c:if>
                                 <c:if test="#{!sessionBean.esCatalan()}">
                                     <h:outputText value="#{unidad.denominacionDir3}"/>
-                                    <h:outputText value=" (DIR3, v#{unidad.version})" rendered="#{not empty unidad.version}"/>
                                 </c:if>
                             </p:column>
 
