@@ -5074,6 +5074,35 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     @Override
     public JTipoTramitacion guardarTipoTramitacion(JTipoTramitacion tramiteElectronico) {
+        if (tramiteElectronico == null) {
+            return null;
+        }
+
+        try {
+            if (tramiteElectronico.getTramiteId() != null) {
+                // Buscamos si ya existe un tipo de tramitación con el mismo tramiteId y entidad
+                if (tramiteElectronico.getEntidad() != null && tramiteElectronico.getEntidad().getCodigo() != null) {
+                    Query q = entityManager.createQuery("SELECT t FROM JTipoTramitacion t WHERE t.tramiteId = :tid AND t.entidad.codigo = :enti");
+                    q.setParameter("tid", tramiteElectronico.getTramiteId());
+                    q.setParameter("enti", tramiteElectronico.getEntidad().getCodigo());
+                    List<JTipoTramitacion> res = q.getResultList();
+                    if (res != null && !res.isEmpty()) {
+                        return res.get(0);
+                    }
+                } else {
+                    // Si no tiene entidad, buscamos un tipo de tramitación con el mismo tramiteId y entidad nula
+                    Query q = entityManager.createQuery("SELECT t FROM JTipoTramitacion t WHERE t.tramiteId = :tid AND t.entidad IS NULL");
+                    q.setParameter("tid", tramiteElectronico.getTramiteId());
+                    List<JTipoTramitacion> res = q.getResultList();
+                    if (res != null && !res.isEmpty()) {
+                        return res.get(0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.debug("Error buscando tipo tramitacion existente, se persistirá uno nuevo", e);
+        }
+
         entityManager.persist(tramiteElectronico);
         return tramiteElectronico;
     }
