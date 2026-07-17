@@ -1488,7 +1488,19 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean isMostrarBtnFlujo() {
-        return isTotalHabilitadoComunes();
+        if (this.isGestor()) {
+            if (this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (this.isInformador()) {
+            return false;
+        } else if (this.isAdministradorContenidos()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isTotalHabilitadoComunes() {
@@ -1504,7 +1516,11 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean isMostrarBtnMensajes() {
-        return isTotalHabilitadoComunes();
+        if (this.isGestor() || this.isAdministradorContenidos()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Literal getComunLOPD() {
