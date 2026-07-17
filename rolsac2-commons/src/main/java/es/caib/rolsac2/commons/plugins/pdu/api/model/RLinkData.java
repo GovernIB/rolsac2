@@ -16,14 +16,14 @@ public class RLinkData {
     private String title;
 
     /**
-    * Descripción
-    */
+     * Descripción
+     */
     @JsonProperty("description")
     private String description;
 
     /**
-    * Url
-    */
+     * Url
+     */
     @JsonProperty("url")
     private String url;
 
@@ -95,8 +95,8 @@ public class RLinkData {
     private List<String> ignoreParams;
 
     /**
-    * Categorías
-    */
+     * Categorías
+     */
     @JsonProperty("categories")
     private List<RCategory> categories;
 
@@ -134,9 +134,9 @@ public class RLinkData {
     private List<String> associatedProcedures;
 
 
-
     /**
      * Obtiene la descripción del enlace.
+     *
      * @return la descripción del enlace.
      */
     public String getDescription() {
@@ -145,6 +145,7 @@ public class RLinkData {
 
     /**
      * Establece la descripción del enlace.
+     *
      * @param description la nueva descripción del enlace.
      */
     public void setDescription(String description) {
@@ -153,6 +154,7 @@ public class RLinkData {
 
     /**
      * Obtiene el título del enlace.
+     *
      * @return el título del enlace.
      */
     public String getTitle() {
@@ -161,6 +163,7 @@ public class RLinkData {
 
     /**
      * Establece el título del enlace.
+     *
      * @param title el nuevo título del enlace.
      */
     public void setTitle(String title) {
@@ -169,6 +172,7 @@ public class RLinkData {
 
     /**
      * Obtiene la URL del enlace.
+     *
      * @return la URL del enlace.
      */
     public String getUrl() {
@@ -177,14 +181,16 @@ public class RLinkData {
 
     /**
      * Establece la URL del enlace.
+     *
      * @param url la nueva URL del enlace.
      */
-    public void setUrl(String url){
+    public void setUrl(String url) {
         this.url = url;
     }
 
     /**
      * Obtiene el tipo de enlace.
+     *
      * @return el tipo de enlace.
      */
     public String getType() {
@@ -193,13 +199,16 @@ public class RLinkData {
 
     /**
      * Establece el tipo de enlace.
+     *
      * @param type el nuevo tipo de enlace.
      */
     public void setType(String type) {
         this.type = type;
     }
+
     /**
      * Obtiene el idioma del enlace.
+     *
      * @return el idioma del enlace.
      */
     public String getLanguage() {
@@ -208,6 +217,7 @@ public class RLinkData {
 
     /**
      * Establece el idioma del enlace.
+     *
      * @param language el nuevo idioma del enlace.
      */
     public void setLanguage(String language) {
@@ -216,6 +226,7 @@ public class RLinkData {
 
     /**
      * Obtiene el tipo de URL del enlace.
+     *
      * @return el tipo de URL del enlace.
      */
     public RTypeUrl getUrlType() {
@@ -224,6 +235,7 @@ public class RLinkData {
 
     /**
      * Establece el tipo de URL del enlace.
+     *
      * @param urlType el nuevo tipo de URL del enlace.
      */
     public void setUrlType(RTypeUrl urlType) {
@@ -232,6 +244,7 @@ public class RLinkData {
 
     /**
      * Obtiene el código nacional del enlace.
+     *
      * @return el código nacional del enlace.
      */
     public String getNationalCode() {
@@ -240,6 +253,7 @@ public class RLinkData {
 
     /**
      * Establece el código nacional del enlace.
+     *
      * @param nationalCode el nuevo código nacional del enlace.
      */
     public void setNationalCode(String nationalCode) {
@@ -248,6 +262,7 @@ public class RLinkData {
 
     /**
      * Obtiene la URL padre del enlace.
+     *
      * @return la URL padre del enlace.
      */
     public String getParentUrl() {
@@ -256,6 +271,7 @@ public class RLinkData {
 
     /**
      * Establece la URL padre del enlace.
+     *
      * @param parentUrl la nueva URL padre del enlace.
      */
     public void setParentUrl(String parentUrl) {
@@ -264,6 +280,7 @@ public class RLinkData {
 
     /**
      * Obtiene el tipo de eliminación del enlace.
+     *
      * @return el tipo de eliminación del enlace.
      */
     public RTypeDelete getDelete() {
@@ -272,6 +289,7 @@ public class RLinkData {
 
     /**
      * Establece el tipo de eliminación del enlace.
+     *
      * @param delete el nuevo tipo de eliminación del enlace.
      */
     public void setDelete(RTypeDelete delete) {
@@ -280,6 +298,7 @@ public class RLinkData {
 
     /**
      * Obtiene la información de resultados de búsqueda del panel de control SDG del enlace.
+     *
      * @return la información de resultados de búsqueda del panel de control SDG del enlace.
      */
     public String getSdgDashboardInfoSearchResults() {
@@ -288,6 +307,7 @@ public class RLinkData {
 
     /**
      * Establece la información de resultados de búsqueda del panel de control SDG del enlace.
+     *
      * @param sdgDashboardInfoSearchResults la nueva información de resultados de búsqueda del panel de control SDG del enlace.
      */
     public void setSdgDashboardInfoSearchResults(String sdgDashboardInfoSearchResults) {
@@ -296,6 +316,7 @@ public class RLinkData {
 
     /**
      * Obtiene la URL de rastreo del enlace.
+     *
      * @return la URL de rastreo del enlace.
      */
     public String getCrawlUrl() {
@@ -304,6 +325,7 @@ public class RLinkData {
 
     /**
      * Establece la URL de rastreo del enlace.
+     *
      * @param crawlUrl la nueva URL de rastreo del enlace.
      */
     public void setCrawlUrl(String crawlUrl) {
@@ -312,6 +334,7 @@ public class RLinkData {
 
     /**
      * Obtiene la lista de sitemaps del enlace.
+     *
      * @return la lista de sitemaps del enlace.
      */
     public List<String> getSitemaps() {
@@ -320,6 +343,7 @@ public class RLinkData {
 
     /**
      * Establece la lista de sitemaps del enlace.
+     *
      * @param sitemaps la nueva lista de sitemaps del enlace.
      */
     public void setSitemaps(List<String> sitemaps) {
@@ -328,6 +352,7 @@ public class RLinkData {
 
     /**
      * Obtiene la lista de rutas excluidas del enlace.
+     *
      * @return la lista de rutas excluidas del enlace.
      */
     public List<String> getExcludedPaths() {
@@ -336,6 +361,7 @@ public class RLinkData {
 
     /**
      * Establece la lista de rutas excluidas del enlace.
+     *
      * @param excludedPaths la nueva lista de rutas excluidas del enlace.
      */
     public void setExcludedPaths(List<String> excludedPaths) {
@@ -344,6 +370,7 @@ public class RLinkData {
 
     /**
      * Obtiene la lista de parámetros ignorados del enlace.
+     *
      * @return la lista de parámetros ignorados del enlace.
      */
     public List<String> getIgnoreParams() {
@@ -352,6 +379,7 @@ public class RLinkData {
 
     /**
      * Establece la lista de parámetros ignorados del enlace.
+     *
      * @param ignoreParams la nueva lista de parámetros ignorados del enlace.
      */
     public void setIgnoreParams(List<String> ignoreParams) {
@@ -360,6 +388,7 @@ public class RLinkData {
 
     /**
      * Obtiene la lista de categorías del enlace.
+     *
      * @return la lista de categorías del enlace.
      */
     public List<RCategory> getCategories() {
@@ -368,13 +397,16 @@ public class RLinkData {
 
     /**
      * Establece la lista de categorías del enlace.
+     *
      * @param categories la nueva lista de categorías del enlace.
      */
     public void setCategories(List<RCategory> categories) {
         this.categories = categories;
     }
+
     /**
      * Obtiene el nombre del procedimiento.
+     *
      * @return El nombre del procedimiento.
      */
     public String getProcedureName() {
@@ -383,6 +415,7 @@ public class RLinkData {
 
     /**
      * Establece el nombre del procedimiento.
+     *
      * @param procedureName El nuevo nombre del procedimiento.
      */
     public void setProcedureName(String procedureName) {
@@ -391,6 +424,7 @@ public class RLinkData {
 
     /**
      * Obtiene el tipo del procedimiento.
+     *
      * @return El tipo del procedimiento.
      */
     public String getProcedureType() {
@@ -399,6 +433,7 @@ public class RLinkData {
 
     /**
      * Establece el tipo del procedimiento.
+     *
      * @param procedureType El nuevo tipo del procedimiento.
      */
     public void setProcedureType(String procedureType) {
@@ -407,6 +442,7 @@ public class RLinkData {
 
     /**
      * Obtiene la disponibilidad del procedimiento.
+     *
      * @return La disponibilidad del procedimiento.
      */
     public String getProcedureAvailability() {
@@ -415,6 +451,7 @@ public class RLinkData {
 
     /**
      * Establece la disponibilidad del procedimiento.
+     *
      * @param procedureAvailability La nueva disponibilidad del procedim
      *
      */
@@ -424,6 +461,7 @@ public class RLinkData {
 
     /**
      * Obtiene los datos del procedimiento.
+     *
      * @return Los datos del procedimiento.
      */
     public List<String> getProcedureData() {
@@ -432,6 +470,7 @@ public class RLinkData {
 
     /**
      * Establece los datos del procedimiento.
+     *
      * @param procedureData Los nuevos datos del procedimiento.
      */
     public void setProcedureData(List<String> procedureData) {
@@ -440,6 +479,7 @@ public class RLinkData {
 
     /**
      * Obtiene los procedimientos asociados.
+     *
      * @return Los procedimientos asociados.
      */
     public List<String> getAssociatedProcedures() {
@@ -448,9 +488,38 @@ public class RLinkData {
 
     /**
      * Establece los procedimientos asociados.
+     *
      * @param associatedProcedures Los nuevos procedimientos asociados.
      */
     public void setAssociatedProcedures(List<String> associatedProcedures) {
         this.associatedProcedures = associatedProcedures;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder texto = new StringBuilder();
+        texto.append("RLinkData{");
+        texto.append("title='").append(title).append('\'');
+        texto.append(", description='").append(description).append('\'');
+        texto.append(", url='").append(url).append('\'');
+        texto.append(", type='").append(type).append('\'');
+        texto.append(", language='").append(language).append('\'');
+        texto.append(", urlType=").append(urlType);
+        texto.append(", nationalCode='").append(nationalCode).append('\'');
+        texto.append(", parentUrl='").append(parentUrl).append('\'');
+        texto.append(", delete=").append(delete);
+        texto.append(", sdgDashboardInfoSearchResults='").append(sdgDashboardInfoSearchResults).append('\'');
+        texto.append(", crawlUrl='").append(crawlUrl).append('\'');
+        texto.append(", sitemaps=").append(sitemaps);
+        texto.append(", excludedPaths=").append(excludedPaths);
+        texto.append(", ignoreParams=").append(ignoreParams);
+        texto.append(", categories=").append(categories);
+        texto.append(", procedureName='").append(procedureName).append('\'');
+        texto.append(", procedureType='").append(procedureType).append('\'');
+        texto.append(", procedureAvailability='").append(procedureAvailability).append('\'');
+        texto.append(", procedureData=").append(procedureData);
+        texto.append(", associatedProcedures=").append(associatedProcedures);
+        texto.append('}');
+        return texto.toString();
     }
 }
