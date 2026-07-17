@@ -896,6 +896,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             unidad.setDenominacionCooficial((String) result[3]);
             unidad.setVersion((Integer) result[4]);
             unidad.setDenominacionDir3(unidad.getDenominacion() + " (" + unidad.getCodigoDir3() + ", v" + unidad.getVersion() + ")");
+            unidad.setDenominacionCooficialDir3(unidad.getDenominacionCooficial() + " (" + unidad.getCodigoDir3() + ", v" + unidad.getVersion() + ")");
             unidades.add(unidad);
         }
         return unidades;

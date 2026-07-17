@@ -58,7 +58,6 @@
                                         <h:outputText value="#{evol.codigoDir3} - v#{evol.version}"/>
                                     </li>
                                     <li>
-
                                         <h:outputText value="#{evol.denominacion}"/>
                                     </li>
                                 </ul>
@@ -97,7 +96,7 @@
                                       styleClass="w100 h35px #{unidad.estado.equals(TypeEstadoDir3.ELIMINADO) ? 'org-eliminada' :
                                       unidad.estado.equals(TypeEstadoDir3.EXISTE_MODIFICADA) ? 'org-descr-nueva' : ''}">
                                 <f:facet name="header"/>
-                                <h:outputText value="#{unidad.denominacionDir3}"/>
+                                <h:outputText value="#{unidad.denominacionCooficialDir3}"/>
                                 <p:commandButton icon="pi pi-eye" styleClass="float-right"
                                                  actionListener="#{viewOrganigramaDir3.consultarHistorico(unidad)}"
                                                  process="@this" update="messages form:historico"
@@ -126,12 +125,7 @@
                                       styleClass="w100 h35px #{unidad.estado.equals(TypeEstadoDir3.NUEVO) ? 'org-nuevo' :
                                       unidad.estado.equals(TypeEstadoDir3.EXISTE_MODIFICADA) ? 'org-descr-nueva' : ''}">
                                 <f:facet name="header"/>
-                                <c:if test="#{sessionBean.esCatalan()}">
-                                    <h:outputText value="#{unidad.denominacionCooficialDir3}"/>
-                                </c:if>
-                                <c:if test="#{!sessionBean.esCatalan()}">
-                                    <h:outputText value="#{unidad.denominacionDir3}"/>
-                                </c:if>
+                                <h:outputText value="#{unidad.denominacionCooficialDir3}"/>
                             </p:column>
 
                         </p:treeTable>
@@ -164,8 +158,8 @@
             </p:confirmDialog>
             <h:outputScript>
                 const filtrado = (dir3code) => {
-                    document.getElementById("form:dataTable1:dir3Col:filter").value = dir3code;
-                    PF('arbolDir3').filter();
+                document.getElementById("form:dataTable1:dir3Col:filter").value = dir3code;
+                PF('arbolDir3').filter();
                 }
             </h:outputScript>
         </h:form>
