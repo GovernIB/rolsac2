@@ -1,7 +1,6 @@
 package es.caib.rolsac2.back.controller;
 
 import es.caib.rolsac2.back.exception.GestorSinUAExcepcion;
-import es.caib.rolsac2.back.exception.NoAutorizadoException;
 import es.caib.rolsac2.back.exception.PerfilException;
 import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
@@ -235,7 +234,7 @@ public class SessionBean implements Serializable {
                 return;
             }
             roles = seguridad.getRoles(idEntidades);
-            if (systemServiceBean.checkSesion(usuario.getCodigo())) {
+            if (systemServiceBean.checkSesion(usuario.getCodigo()) && systemServiceBean.comprobarDatos(usuario.getCodigo())) {
                 SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
 
                 //Si el perfil de la sesión no está en los perfiles del usuario, o es RS2_API, lo cambiamos por uno válido
