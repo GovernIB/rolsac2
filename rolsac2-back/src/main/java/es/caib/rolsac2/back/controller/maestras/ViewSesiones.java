@@ -105,25 +105,7 @@ public class ViewSesiones extends AbstractController implements Serializable {
                         }
                         filtro.setOrderBy(sortMeta.getField());
                     }
-                    Pagina<SesionDTO> pagina = new Pagina(new ArrayList(), 0);
-                    if (getFiltroIdentificador() != null && !getFiltroIdentificador().equals("")) {
-
-                        UsuarioDTO usuario = administracionEntServiceFacade.findUsuarioByIdentificador(getFiltroIdentificador());
-                        if (usuario != null) {
-                            filtro.setIdUsuario(usuario.getCodigo());
-                            pagina = systemServiceFacade.findByFiltro(filtro);
-                            setRowCount((int) pagina.getTotal());
-
-                        } else {
-                            LOG.error("No existe ese identificador de usuario");
-                            pagina = new Pagina(new ArrayList(), 0);
-                            setRowCount((int) pagina.getTotal());
-                            return pagina.getItems();
-                        }
-
-                    } else {
-                        pagina = systemServiceFacade.findAllSesiones();
-                    }
+                    Pagina<SesionDTO> pagina = systemServiceFacade.findAllSesiones(getFiltroIdentificador());
                     setRowCount((int) pagina.getTotal());
                     return pagina.getItems();
                 } catch (Exception e) {
