@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * EJB únic que s'executa a la inicialització.
+ * EJB Ãºnic que s'executa a la inicialitzaciÃ³.
  */
 @Singleton
 @Startup
@@ -63,22 +63,22 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     private Config config;
 
     /**
-     * Executat a l'inici de l'aplicació.
+     * Executat a l'inici de l'aplicaciÃ³.
      */
     @PostConstruct
     private void init() {
-        // Aquí es podrien llegir les opcions de configuració, i comprovar que tots els paràmetres necessaris hi són,
+        // AquÃ­ es podrien llegir les opcions de configuraciÃ³, i comprovar que tots els parÃ metres necessaris hi sÃ³n,
         // o fixar els valors per defecte pels que no hi siguin, programar timers no persistents, ...
-        LOG.info("Inici del mòdul EJB");
+        LOG.info("Inici del mÃ²dul EJB");
         propertiesLocales = recuperarConfiguracionProperties();
     }
 
     /**
-     * Executat quan s'atura l'aplicació.
+     * Executat quan s'atura l'aplicaciÃ³.
      */
     @PreDestroy
     private void destroy() {
-        LOG.info("Aturada del mòdul EJB");
+        LOG.info("Aturada del mÃ²dul EJB");
     }
 
     @Override
@@ -167,10 +167,10 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     @Override
-    public Pagina<SesionDTO> findAllSesiones() {
+    public Pagina<SesionDTO> findAllSesiones(String usuario) {
 
         try {
-            List<SesionDTO> items = sesionConverter.toDTOs(sesionRepository.findAllSesiones());
+            List<SesionDTO> items = sesionRepository.findAllSesiones(usuario);
             long total = sesionRepository.countAllSesiones();
             return new Pagina<>(items, total);
         } catch (Exception e) {
@@ -208,7 +208,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     //********************************************************************************************************************************************
-    //      Métodos privados
+    //      MÃ©todos privados
     //*********************************************************************************************************************************************/
 
     /**
@@ -229,7 +229,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
 
     /**
-     * Función encargada de instanciar un plugin
+     * FunciÃ³n encargada de instanciar un plugin
      *
      * @param plugins Lista de plugins
      * @param plgTipo Tipo de plugin

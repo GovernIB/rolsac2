@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementación del repositorio de tipo de forma de inicio.
+ * ImplementaciÃƒÂ³n del repositorio de tipo de forma de inicio.
  *
  * @author Indra
  */
@@ -38,9 +38,35 @@ public class SesionRepositoryBean extends AbstractCrudRepository<JSesion, Long>
     }
 
     @Override
-    public List<JSesion> findAllSesiones() {
-        TypedQuery<JSesion> query = entityManager.createNamedQuery(JSesion.FIND_ALL, JSesion.class);
-        return query.getResultList();
+    public List<SesionDTO> findAllSesiones(String usuario) {
+
+        String condicion = "";
+        if (usuario != null && !usuario.isEmpty()) {
+            condicion = " WHERE LOWER(u.identificador) like :usuario ";
+        }
+        Query query = entityManager.createQuery(
+                "SELECT j.idUsuario, j.fechaUltimaSesion, j.perfil, j.idioma, j.idEntidad, j.idUa, u.identificador " +
+                        "FROM JSesion j LEFT JOIN JUsuario u ON u.codigo = j.idUsuario " + condicion +
+                        "ORDER BY j.fechaUltimaSesion DESC", Object[].class);
+
+        if (usuario != null && !usuario.isEmpty()) {
+            query.setParameter("usuario", "%" + usuario.toLowerCase() + "%");
+        }
+        List<Object[]> results = query.getResultList();
+        List<SesionDTO> sesionDTOS = new ArrayList<>();
+        for (Object[] row : results) {
+            SesionDTO dto = new SesionDTO();
+            dto.setIdUsuario((Long) row[0]);
+            java.sql.Timestamp ts = (java.sql.Timestamp) row[1];
+            dto.setFechaUltimaSesion(ts != null ? new java.util.Date(ts.getTime()) : null);
+            dto.setPerfil((String) row[2]);
+            dto.setIdioma((String) row[3]);
+            dto.setIdEntidad((Long) row[4]);
+            dto.setIdUa((Long) row[5]);
+            dto.setUsuario((String) row[6]);
+            sesionDTOS.add(dto);
+        }
+        return sesionDTOS;
     }
 
     @Override
@@ -59,8 +85,8 @@ public class SesionRepositoryBean extends AbstractCrudRepository<JSesion, Long>
             );
         } else {
             sql = new StringBuilder(
-                    "SELECT j.idUsuario, j.fechaUltimaSesion, j.perfil, j.idioma, j.idEntidad, j.idUa "
-                            + " FROM JSesion j where 1 = 1 ");
+                    "SELECT j.idUsuario, j.fechaUltimaSesion, j.perfil, j.idioma, j.idEntidad, j.idUa, u.identificador "
+                            + " FROM JSesion j LEFT JOIN JUsuario u ON u.codigo = j.idUsuario where 1 = 1 ");
         }
         if (filtro.isRellenoPerfil()) {
             sql.append(" and LOWER(j.perfil) LIKE :perfil ");
@@ -78,6 +104,9 @@ public class SesionRepositoryBean extends AbstractCrudRepository<JSesion, Long>
 
         if (filtro.isRellenoIdUA()) {
             sql.append(" and j.idUa = :idUa ");
+        }
+        if (filtro.isRellenoUsuario()) {
+            sql.append(" and LOWER(u.identificador) LIKE :usuario ");
         }
 
 
@@ -191,7 +220,7 @@ public class SesionRepositoryBean extends AbstractCrudRepository<JSesion, Long>
                 return false;
             }
 
-            // Comprueba que la UA pertenece a la entidad (solo si ambas están informadas)
+            // Comprueba que la UA pertenece a la entidad (solo si ambas estÃƒÂ¡n informadas)
             if (sesion.getIdEntidad() != null) {
                 Long countUaEntidad = entityManager
                         .createQuery("SELECT COUNT(u) FROM JUnidadAdministrativa u WHERE u.codigo = :codUa AND u.entidad.codigo = :codEntidad", Long.class)
@@ -217,3 +246,4 @@ public class SesionRepositoryBean extends AbstractCrudRepository<JSesion, Long>
 
 
 }
+

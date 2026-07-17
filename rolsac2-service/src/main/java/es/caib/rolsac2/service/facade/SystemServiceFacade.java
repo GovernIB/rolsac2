@@ -50,7 +50,7 @@ public interface SystemServiceFacade {
 
     SesionDTO findSesionById(Long idUsuario);
 
-    Pagina<SesionDTO> findAllSesiones();
+    Pagina<SesionDTO> findAllSesiones(String usuario);
 
     Pagina<SesionDTO> findByFiltro(SesionFiltro filtro);
 

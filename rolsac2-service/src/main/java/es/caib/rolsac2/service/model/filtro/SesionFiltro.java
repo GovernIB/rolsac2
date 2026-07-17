@@ -8,7 +8,7 @@ public class SesionFiltro extends AbstractFiltro {
      */
     private String perfil;
     /**
-     * Filtro Código de usuario
+     * Filtro CÃƒÂ³digo de usuario
      */
     private Long idUsuario;
 
@@ -16,6 +16,10 @@ public class SesionFiltro extends AbstractFiltro {
      * Filtro Identificador de usuario
      */
     private String identificador;
+    /**
+     * Filtro nombre de usuario
+     */
+    private String usuario;
 
 
     /**
@@ -72,8 +76,25 @@ public class SesionFiltro extends AbstractFiltro {
         this.identificador = identificador;
     }
 
+        /**
+     * Obtiene el nombre del usuario
+     *
+     * @return
+     */
+    public String getUsuario() {
+        return usuario;
+    }
     /**
-     * Indica si el perfil está relleno
+     * Establece el nombre del usuario
+     *
+     * @param usuario
+     */
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    /**
+     * Indica si el perfil estÃƒÂ¡ relleno
      *
      * @return true o false
      */
@@ -82,7 +103,7 @@ public class SesionFiltro extends AbstractFiltro {
     }
 
     /**
-     * Indica si está relleno el identificador
+     * Indica si estÃƒÂ¡ relleno el identificador
      *
      * @return true o false
      **/
@@ -91,7 +112,7 @@ public class SesionFiltro extends AbstractFiltro {
     }
 
     /**
-     * Indica si está relleno el idUsuario
+     * Indica si estÃƒÂ¡ relleno el idUsuario
      *
      * @return true o false
      */
@@ -99,6 +120,14 @@ public class SesionFiltro extends AbstractFiltro {
         return idUsuario != null;
     }
 
+    /**
+     * Indica si está relleno el nombre de usuario
+     *
+     * @return true o false
+     */
+    public boolean isRellenoUsuario() {
+        return usuario != null && !usuario.isEmpty();
+    }
     @Override
     protected String getDefaultOrder() {
         return "perfil";

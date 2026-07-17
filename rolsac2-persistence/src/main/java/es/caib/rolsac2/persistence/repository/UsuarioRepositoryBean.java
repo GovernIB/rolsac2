@@ -45,7 +45,12 @@ public class UsuarioRepositoryBean extends AbstractCrudRepository<JUsuario, Long
     public JUsuario findByIdentificador(String identificador) {
         TypedQuery<JUsuario> query = entityManager.createNamedQuery(JUsuario.FIND_BY_IDENTIFICADOR, JUsuario.class);
         query.setParameter("identificador", identificador);
-        return query.getSingleResult();
+        JUsuario jusuario = null;
+        List<JUsuario> resultado = query.getResultList();
+        if (resultado != null && !resultado.isEmpty()) {
+            jusuario = resultado.get(0);
+        }
+        return jusuario;
     }
 
     /**

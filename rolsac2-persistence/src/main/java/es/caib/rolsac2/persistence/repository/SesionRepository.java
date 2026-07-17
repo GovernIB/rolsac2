@@ -7,7 +7,7 @@ import es.caib.rolsac2.service.model.filtro.SesionFiltro;
 import java.util.List;
 
 /**
- * Interface de las operaciones básicas sobre tipo de forma de inicio
+ * Interface de las operaciones basicas sobre tipo de forma de inicio
  *
  * @author Indra
  */
@@ -15,7 +15,7 @@ public interface SesionRepository extends CrudRepository<JSesion, Long> {
 
     Boolean checkSesion(Long idUsuario);
 
-    List<JSesion> findAllSesiones();
+    List<SesionDTO> findAllSesiones(String usuario);
 
     Long countAllSesiones();
 

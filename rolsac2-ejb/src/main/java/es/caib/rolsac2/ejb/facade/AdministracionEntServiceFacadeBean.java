@@ -246,9 +246,12 @@ public class AdministracionEntServiceFacadeBean implements AdministracionEntServ
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @PermitAll
     public UsuarioDTO findUsuarioByIdentificador(String identificador) {
         JUsuario jUsuario = usuarioRepository.findByIdentificador(identificador);
+        if (jUsuario == null) {
+            return null;
+        }
         UsuarioDTO usuarioDTO = converter.createDTO(jUsuario);
         List<UnidadAdministrativaGridDTO> unidadesAdministrativas = new ArrayList<>();
         if (jUsuario.getUnidadesAdministrativas() != null) {
