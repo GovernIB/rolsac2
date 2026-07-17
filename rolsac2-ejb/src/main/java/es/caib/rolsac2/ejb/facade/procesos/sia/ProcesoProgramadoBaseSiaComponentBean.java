@@ -11,6 +11,7 @@ import es.caib.rolsac2.service.model.types.TypePluginEntidad;
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
@@ -63,6 +64,24 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String fechaInicio = "La dada de inici es " + sdf.format(new Date());
         detalles.addPropiedad("Informació del procés", fechaInicio);
+
+        // Verificar si el plugin activosia se encuentra activo
+        try {
+            Object plg = systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.SIA, idEntidad);
+            String valor = ((AbstractPluginProperties) plg).getProperty("activosia");
+            if (!"true".equalsIgnoreCase(valor)) {
+                detalles.addPropiedad("Informació del procés", "Proceso no activo: propiedad activosia no activa");
+                res.setDetalles(detalles);
+                res.setFinalizadoOk(true);
+                return res;
+            }
+        } catch (Exception e) {
+            log.debug("No se pudo leer la propiedad 'activosia': {}", e.getMessage());
+            detalles.addPropiedad("Informació del procés", "Proceso no activo: no se pudo leer propiedad activosia");
+            res.setDetalles(detalles);
+            res.setFinalizadoOk(true);
+            return res;
+        }
 
         try {
             String accion;

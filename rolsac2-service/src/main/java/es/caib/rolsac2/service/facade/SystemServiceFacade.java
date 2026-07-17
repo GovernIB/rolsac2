@@ -27,6 +27,14 @@ public interface SystemServiceFacade {
 
 
     /**
+     * Devuelve true si el dato de sesion existe y está correcto.
+     *
+     * @param idUsuario IdUsuario
+     * @return True si ok , false si mal.
+     */
+    boolean comprobarDatos(Long idUsuario);
+
+    /**
      * Obtiene tipo plugin entidad.
      *
      * @param tipoPlugin tipo plugin

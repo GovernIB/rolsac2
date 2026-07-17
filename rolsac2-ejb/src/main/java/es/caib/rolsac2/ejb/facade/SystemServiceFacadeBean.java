@@ -128,7 +128,20 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void crearSesion(SesionDTO sesionDTO) {
         JSesion sesion = sesionConverter.createEntity(sesionDTO);
-        sesionRepository.create(sesion);
+        if (sesionRepository.comprobarDatos(sesionDTO)) {
+            sesionRepository.borrarSessionByusuario(sesionDTO.getIdUsuario());
+            sesionRepository.create(sesion);
+        }
+    }
+
+    @Override
+    @PermitAll
+    public boolean comprobarDatos(Long idUsuario) {
+        SesionDTO sesionDTO = sesionRepository.findByIdUsuario(idUsuario);
+        if (sesionDTO == null) {
+            return false;
+        }
+        return sesionRepository.comprobarDatos(sesionDTO);
     }
 
     @Override

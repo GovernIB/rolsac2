@@ -544,8 +544,24 @@ public class SiaUtils {
             }
         }
 
+        boolean tieneCiudadanosFuncionarioHabilitado = true;
+        if (procedimiento.getHabilitadoFuncionario() != null && SiaUtils.SI.equals(procedimiento.getHabilitadoFuncionario())) {
+            tieneCiudadanosFuncionarioHabilitado = false;
+            if (procedimiento.getPublicosObjetivo() != null) {
+                for (TipoPublicoObjetivoEntidadGridDTO pObj : procedimiento.getPublicosObjetivo()) {
+                    if (pObj != null && pObj.getCodigo() != null && pObj.getCodigo().intValue() == 200) {
+                        tieneCiudadanosFuncionarioHabilitado = true;
+                        break;
+                    }
+                }
+            }
+            if (!tieneCiudadanosFuncionarioHabilitado) {
+                mensajeError.append(SiaMessages.getMessage(prefijo + "habilitado.funcionario.sin.ciudadanos", idioma));
+            }
+        }
+
         /** Si cumple todos los datos ok, sino incrustamos el mensaje de error. **/
-        if (tieneMaterias && tieneNormativas && encontradoTipo && tieneNombre && tieneResumen && tieneSiaUA && noAsociadoSiaUA) {
+        if (tieneMaterias && tieneNormativas && encontradoTipo && tieneNombre && tieneResumen && tieneSiaUA && noAsociadoSiaUA && tieneCiudadanosFuncionarioHabilitado) {
             resultado.setCumpleDatos(true);
         } else {
             resultado.setCumpleDatos(false);

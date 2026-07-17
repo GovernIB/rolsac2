@@ -21,6 +21,8 @@ import java.util.Objects;
                 query = "select j from JSesion j order by j.fechaUltimaSesion desc"),
         @NamedQuery(name = JSesion.COUNT_ALL,
                 query = "select count(j) from JSesion j "),
+        @NamedQuery(name = JSesion.DELETE_BY_ID,
+                query = "delete from JSesion j  where j.idUsuario = :idUsu"),
         @NamedQuery(name = JSesion.DELETE_ALL,
                 query = "delete from JSesion j "),
 })
@@ -42,6 +44,7 @@ public class JSesion extends BaseEntity {
     public static final String COUNT_ALL = "Sesion.COUNT_ALL";
 
     public static final String DELETE_ALL = "Sesion.DELETE_ALL";
+    public static final String DELETE_BY_ID = "Sesion.DELETE_BY_ID";
 
 
     /**

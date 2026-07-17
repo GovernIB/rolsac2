@@ -16,6 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
@@ -67,6 +68,24 @@ public abstract class ProcesoProgramadoBasePduComponentBean implements ProcesoPr
         final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String fechaInicio = "La dada de inici es " + sdf.format(new Date());
         detalles.addPropiedad("Informació del procés", fechaInicio);
+
+        // Verificar activopdu se encuentra activo
+        try {
+            Object plg = systemServiceFacade.obtenerPluginEntidad(TypePluginEntidad.PDU, idEntidad);
+            String valor = ((AbstractPluginProperties) plg).getProperty("activopdu");
+            if (!"true".equalsIgnoreCase(valor)) {
+                detalles.addPropiedad("Informació del procés", "Proceso no activo: propiedad activopdu no activa");
+                res.setDetalles(detalles);
+                res.setFinalizadoOk(true);
+                return res;
+            }
+        } catch (Exception e) {
+            log.debug("No se pudo leer la propiedad 'activopdu': {}", e.getMessage());
+            detalles.addPropiedad("Informació del procés", "Proceso no activo: no se pudo leer propiedad activopdu");
+            res.setDetalles(detalles);
+            res.setFinalizadoOk(true);
+            return res;
+        }
 
         try {
 

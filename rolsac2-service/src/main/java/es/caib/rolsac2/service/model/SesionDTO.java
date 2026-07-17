@@ -3,9 +3,7 @@ package es.caib.rolsac2.service.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Dades de una sessió.
@@ -19,6 +17,11 @@ public class SesionDTO extends ModelApi {
      * Codigo
      */
     private Long idUsuario;
+
+    /**
+     * Usuario
+     */
+    private String usuario;
 
     /**
      * Fecha última sesión.
@@ -93,6 +96,14 @@ public class SesionDTO extends ModelApi {
         this.idUa = idUa;
     }
 
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,6 +121,7 @@ public class SesionDTO extends ModelApi {
     public String toString() {
         return "SesionDTO{" +
                 "idUsuario=" + idUsuario +
+                ",usuario=" + usuario +
                 ", fechaUltimaSesion=" + fechaUltimaSesion +
                 ", perfil='" + perfil + '\'' +
                 ", idioma='" + idioma + '\'' +

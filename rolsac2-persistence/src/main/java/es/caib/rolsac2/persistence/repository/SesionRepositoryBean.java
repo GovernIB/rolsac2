@@ -143,5 +143,77 @@ public class SesionRepositoryBean extends AbstractCrudRepository<JSesion, Long>
         return query.executeUpdate();
     }
 
+    @Override
+    public SesionDTO findByIdUsuario(Long idUsuario) {
+        TypedQuery<JSesion> query = entityManager.createNamedQuery(JSesion.FIND_BY_ID, JSesion.class);
+        query.setParameter("idUsu", idUsuario);
+        List<JSesion> jSesion = query.getResultList();
+        SesionDTO sesionDTO = null;
+        if (jSesion != null && !jSesion.isEmpty()) {
+            JSesion sesion = jSesion.get(0);
+            sesionDTO = new SesionDTO();
+            sesionDTO.setIdUsuario(sesion.getIdUsuario());
+            sesionDTO.setFechaUltimaSesion(sesion.getFechaUltimaSesion());
+            sesionDTO.setPerfil(sesion.getPerfil());
+            sesionDTO.setIdioma(sesion.getIdioma());
+            sesionDTO.setIdEntidad(sesion.getIdEntidad());
+            sesionDTO.setIdUa(sesion.getIdUa());
+        }
+        return sesionDTO;
+    }
+
+    @Override
+    public boolean comprobarDatos(SesionDTO sesion) {
+
+
+        if (sesion == null) {
+            return false;
+        }
+
+        // Comprueba si existe la entidad (si se ha informado)
+        if (sesion.getIdEntidad() != null) {
+            Long countEntidad = entityManager
+                    .createQuery("SELECT COUNT(e) FROM JEntidad e WHERE e.codigo = :codigo", Long.class)
+                    .setParameter("codigo", sesion.getIdEntidad())
+                    .getSingleResult();
+            if (countEntidad == 0) {
+                return false;
+            }
+        }
+
+        // Comprueba si existe la UA (si se ha informado)
+        if (sesion.getIdUa() != null) {
+            Long countUa = entityManager
+                    .createQuery("SELECT COUNT(u) FROM JUnidadAdministrativa u WHERE u.codigo = :codigo", Long.class)
+                    .setParameter("codigo", sesion.getIdUa())
+                    .getSingleResult();
+            if (countUa == 0) {
+                return false;
+            }
+
+            // Comprueba que la UA pertenece a la entidad (solo si ambas están informadas)
+            if (sesion.getIdEntidad() != null) {
+                Long countUaEntidad = entityManager
+                        .createQuery("SELECT COUNT(u) FROM JUnidadAdministrativa u WHERE u.codigo = :codUa AND u.entidad.codigo = :codEntidad", Long.class)
+                        .setParameter("codUa", sesion.getIdUa())
+                        .setParameter("codEntidad", sesion.getIdEntidad())
+                        .getSingleResult();
+                if (countUaEntidad == 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void borrarSessionByusuario(Long idUsuario) {
+
+        Query query = entityManager.createNamedQuery(JSesion.DELETE_BY_ID);
+        query.setParameter("idUsu", idUsuario);
+        query.executeUpdate();
+    }
+
 
 }

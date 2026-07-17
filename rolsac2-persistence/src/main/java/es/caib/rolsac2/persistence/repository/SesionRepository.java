@@ -24,4 +24,10 @@ public interface SesionRepository extends CrudRepository<JSesion, Long> {
     long countByFiltro(SesionFiltro filtro);
 
     int deleteAllSesiones();
+
+    SesionDTO findByIdUsuario(Long idUsuario);
+
+    boolean comprobarDatos(SesionDTO sesion);
+
+    void borrarSessionByusuario(Long idUsuario);
 }

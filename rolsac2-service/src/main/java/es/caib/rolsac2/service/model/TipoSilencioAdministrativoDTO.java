@@ -147,7 +147,7 @@ public class TipoSilencioAdministrativoDTO extends ModelApi implements Cloneable
 
     @Override
     public String toString() {
-        return "TipoSilencioAdministrativo{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion.toString() + '}';
+        return "TipoSilencioAdministrativo{" + "id=" + codigo + ", identificador=" + identificador + ", descripcion=" + descripcion + '}';
     }
 
     /**
