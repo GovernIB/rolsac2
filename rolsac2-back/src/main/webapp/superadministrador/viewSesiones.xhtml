@@ -64,6 +64,10 @@
                     <f:facet name="header"/>
                     <h:outputText value="#{sesion.idUsuario}"/>
                 </p:column>
+                <p:column sortBy="#{sesion.usuario}" headerText="#{labels['dict.usuario']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{sesion.usuario}"/>
+                </p:column>
                 <p:column sortBy="#{sesion.fechaUltimaSesion}" headerText="#{labels['dict.fechaUltimaSesion']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{sesion.fechaUltimaSesion}"/>
