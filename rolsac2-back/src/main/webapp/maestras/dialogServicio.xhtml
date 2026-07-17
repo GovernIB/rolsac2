@@ -1099,7 +1099,9 @@
                 var UMBRAL_DRAG = 4; // px de movimiento para considerar arrastre
 
                 function esCeldaDataTable(target) {
-                    return target.closest &amp;&amp; target.closest('.ui-datatable .ui-datatable-data tr.ui-widget-content td');
+                    if (!target || !target.closest) return false;
+                    // soportar tanto datatable como treetable
+                    return target.closest('.ui-datatable .ui-datatable-data tr.ui-widget-content td, .ui-datatable td, .ui-treetable td');
                 }
 
                 document.addEventListener('mousedown', function (e) {
