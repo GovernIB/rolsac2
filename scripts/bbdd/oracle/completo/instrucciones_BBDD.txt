@@ -1,0 +1,41 @@
+
+Para inicializar la base de datos Oracle, puedes seguir los siguientes pasos:
+
+- De manera opcional, se puede ejecutar el drop_schema.sql para eliminar el esquema existente antes de crear uno nuevo. Esto es útil si deseas empezar desde cero.
+
+- Ejecutar todos los scripts con el usuario ROLSAC2, a excepción de:
+    * El script 04_SYNONYM.sql, que debe ser ejecutado con el usuario WWW_ROLSAC2
+    * El script 05_GRANT.sql, que debe ser ejecutado con el usuario ROLSAC  (o el usuario que tenga los privilegios necesarios para otorgar permisos de ROLSAC1)
+    * El script 25_SYNONYM.sql que debe ser ejecutado con el usuario WWW_ROLSAC2
+    * El script 26_GRANT.sql que debe ser ejecutado con el usuario ROLSAC (o el usuario que tenga los privilegios necesarios para otorgar permisos de ROLSAC1)
+    * El script 27_SYNONYM.sql que debe ser ejecutado con el usuario WWW_ROLSAC2
+
+Los scripts deben ser ejecutados en el orden numérico indicado para asegurar que las dependencias entre objetos de la base de datos se resuelvan correctamente.
+A continuación se muestra un resumen de los scripts:
+1.   01_create_schema.sql -   Crea el esquema de la base de datos.
+2.   02_sample_data.sql -  Introduce los datos básicos de las tablas.
+3.   03_GRANT.sql - Da los permisos necesarios al usuario WWW_ROLSAC2 para acceder a las tablas.
+4.   04_SYNONYM.sql - Crea sinónimos de los datos de ROLSAC2 para ser ejecutado desde WWW_ROLSAC2.
+5.   migracion/05_GRANT.sql - Otorga permisos necesarios a ROLSAC1 para acceder a los objetos de ROLSAC2.
+6.   migracion/06_SYNONYM.sql - Crea sinónimos de los datos de ROLSAC2 para ser ejecutado desde ROLSAC1.
+7.   migracion/07_A_CHECK_ERROR_UA.sql - Procedimiento  que comprueba si la UA y sus padres cumplen lo de DIR3 no nulo y publicas.
+8.   migracion/08_A_TODOS_ASCENDENTES_CORRECTO.sql - Procedimiento recursivo que comprueba si la UA y sus padres cumplen lo de DIR3 no nulo y publicas.
+9.   migracion/09_A_OBTENER_UA_CON_DIR3.sql - Procedimiento que obtiene la UA con DIR3 no nulo y publicas y que sus padres lo cumplan
+10. migracion/10_A_CHECK_CUELGA_UA.sql - Procedimiento que comprueba si una UA cuelga de la UA raíz especificada.
+11. migracion/11_A_CHECK_CUELGA_UA_PROC.sql - Procedimiento que verifica si el procedimiento cuelga de una UA correcta en la jerarquía.
+12. migracion/12_DESACTIVAR_RESTRICCIONES.sql - Desactiva restricciones de integridad referencial para facilitar la migración de datos.
+13. migracion/13_DESACTIVAR_RESTRICCIONES_DOCS.sql - Desactiva restricciones específicas relacionadas con documentos.
+14. migracion/14_ACTIVAR_RESTRICCIONES_DOCS.sql - Reactiva las restricciones de documentos previamente desactivadas.
+15. migracion/15_MIGRAR_BORRARDATOS.sql - Procedimiento que borra los datos migrados de ROLSAC2.
+16. migracion/16_MIGRAR_NORMATIVA.sql - Procedimiento que migra normativas desde ROLSAC1 a ROLSAC2.
+17. migracion/17_MIGRAR_NORMATIVAS_AFE.sql - Procedimiento que migra las afectaciones entre normativas.
+18. migracion/18_MIGRAR_PROC.sql - Procedimiento que migra procedimientos desde ROLSAC1 a ROLSAC2.
+19. migracion/19_MIGRAR_SERV.sql - Procedimiento que migra servicios desde ROLSAC1 a ROLSAC2.
+20. migracion/20_MIGRAR_UA.sql - Procedimiento que migra unidades administrativas desde ROLSAC1 a ROLSAC2.
+21. migracion/21_MIGRAR_USUARIO.sql - Procedimiento que migra usuarios desde ROLSAC1 a ROLSAC2.
+22. migracion/22_OBTENER_PROF_UA.sql - Función que calcula la profundidad de una UA en la jerarquía.
+23. migracion/23_REVISAR_SEQ.sql - Procedimiento que ajusta las secuencias al valor máximo actual de las tablas.
+24. migracion/24_GRANT.sql - Otorga permisos de ejecución de los procedimientos de migración a WWW_ROLSAC2.
+25. migracion/25_SYNONYM.sql - Crea sinónimos de los procedimientos de migración para WWW_ROLSAC2.
+26. migracion/26_GRANT.sql - Otorga permisos de lectura sobre tablas de ROLSAC1 a WWW_ROLSAC2.
+27. migracion/27_SINONIMOS.sql - Crea sinónimos de las tablas de ROLSAC1 para facilitar el acceso desde WWW_ROLSAC2.
