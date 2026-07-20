@@ -8,7 +8,6 @@ import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.SesionDTO;
-import es.caib.rolsac2.service.model.UsuarioDTO;
 import es.caib.rolsac2.service.model.filtro.SesionFiltro;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
