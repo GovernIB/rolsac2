@@ -17,8 +17,8 @@ import es.caib.rolsac2.ejb.util.JSONUtil;
 import es.caib.rolsac2.ejb.util.JSONUtilException;
 import es.caib.rolsac2.persistence.converter.*;
 import es.caib.rolsac2.persistence.model.*;
-import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTasaTraduccion;
+import es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion;
 import es.caib.rolsac2.persistence.repository.*;
 import es.caib.rolsac2.service.exception.AuditoriaException;
 import es.caib.rolsac2.service.exception.DatoDuplicadoException;
@@ -1608,16 +1608,21 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     @Override
     @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR, TypePerfiles.RESTAPI_VALOR})
     public Long clonarProcedimiento(Long idProcedimiento, boolean wfSeleccionado, String usuario, String ruta) {
+        //LOG.debug("Clonar procedimiento");
         JProcedimiento jprocClonado = JProcedimiento.clonar(procedimientoRepository.getReference(idProcedimiento));
         Long idProcedimientoWF = procedimientoRepository.getCodigoByWF(idProcedimiento, wfSeleccionado);
         JProcedimientoWorkflow jprocWFClonado = JProcedimientoWorkflow.clonar(procedimientoRepository.getWF(idProcedimiento, wfSeleccionado), jprocClonado, usuario);
 
         procedimientoRepository.create(jprocClonado);
         if (jprocWFClonado.getTramiteElectronico() != null && jprocWFClonado.getTramiteElectronico().getCodigo() == null) {
-            JTipoTramitacion jtipo = procedimientoRepository.guardarTipoTramitacion(jprocWFClonado.getTramiteElectronico());
+            JTipoTramitacion jTipoClonado = JTipoTramitacion.clonar(jprocWFClonado.getTramiteElectronico());
+            //LOG.debug("JTipoClonado:{}", jTipoClonado);
+            JTipoTramitacion jtipo = procedimientoRepository.guardarTipoTramitacion(jTipoClonado);
+            //LOG.debug("JTipo:{}", jtipo);
             jprocWFClonado.setTramiteElectronico(jtipo);
         }
         Long idProcWFClonado = procedimientoRepository.createWF(jprocWFClonado);
+        //LOG.debug("Proc clonado");
 
         //Normativa
         procedimientoRepository.clonarNormativas(idProcedimientoWF, idProcWFClonado);
@@ -1668,6 +1673,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         } catch (Exception e) {
             LOG.error("Error creando auditoria de clonación", e);
         }
+
+        // LOG.debug("Clonar procedimiento FIN");
 
         return idProcWFClonado;
     }

@@ -5,7 +5,9 @@ import es.caib.rolsac2.persistence.model.JTipoTramitacion;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -55,15 +57,23 @@ public class JTipoTramitacionTraduccion extends BaseEntity {
     public static List<JTipoTramitacionTraduccion> clonar(List<JTipoTramitacionTraduccion> traducciones, JTipoTramitacion tipoTramitacion) {
         List<JTipoTramitacionTraduccion> retorno = null;
         if (traducciones != null) {
-            retorno = new ArrayList<>();
+            Map<String, JTipoTramitacionTraduccion> traduccionesPorIdioma = new LinkedHashMap<>();
             for (JTipoTramitacionTraduccion otroTrad : traducciones) {
+                if (otroTrad == null || otroTrad.getIdioma() == null) {
+                    continue;
+                }
+                String idioma = otroTrad.getIdioma().trim().toLowerCase();
+                if (traduccionesPorIdioma.containsKey(idioma)) {
+                    continue;
+                }
                 JTipoTramitacionTraduccion traduccion = new JTipoTramitacionTraduccion();
                 traduccion.setDescripcion(otroTrad.getDescripcion());
-                traduccion.setIdioma(otroTrad.getIdioma());
+                traduccion.setIdioma(idioma);
                 traduccion.setTipoTramitacion(tipoTramitacion);
                 traduccion.setUrl(otroTrad.getUrl());
-                retorno.add(traduccion);
+                traduccionesPorIdioma.put(idioma, traduccion);
             }
+            retorno = new ArrayList<>(traduccionesPorIdioma.values());
         }
         return retorno;
     }

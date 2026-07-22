@@ -2,9 +2,9 @@ package es.caib.rolsac2.persistence.model;
 
 import es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion;
 import es.caib.rolsac2.service.model.TipoTramitacionDTO;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
-import org.hibernate.annotations.BatchSize;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -336,11 +336,7 @@ public class JTipoTramitacion extends BaseEntity {
      * @param traducciones traducciones
      */
     public void setTraducciones(List<JTipoTramitacionTraduccion> traducciones) {
-        if (this.traducciones == null || this.traducciones.isEmpty()) {
-            this.traducciones = traducciones;
-        } else {
-            this.traducciones.addAll(traducciones);
-        }
+        this.traducciones = traducciones;
     }
 
     @Override
@@ -358,12 +354,29 @@ public class JTipoTramitacion extends BaseEntity {
 
     @Override
     public String toString() {
-        return "JTipoTramitacion{" + "id=" + codigo + '}';
-       /* return "JTipoTramitacion{" + "id=" + codigo + ", tramitPresencial="
-                + tramitPresencial + ", plantilla=" + plantilla + ", tramitElectronica=" + tramitElectronica
-                + '\'' + ", codPlatTramitacion=" + codPlatTramitacion
-                + ", tramiteId='" + tramiteId + '\'' + ", tramiteVersion=" + tramiteVersion + ", tramiteParametros='"
-                + tramiteParametros + '\'' + '}'; **/
+        StringBuilder texto = new StringBuilder("JTipoTramitacion{" +
+                "codigo=" + codigo +
+                ", tramitPresencial=" + tramitPresencial +
+                ", tramitElectronica=" + tramitElectronica +
+                ", tramitTelefonica=" + tramitTelefonica +
+                ", codPlatTramitacion=" + (codPlatTramitacion != null ? codPlatTramitacion.getCodigo() : null) +
+                ", tramiteId='" + tramiteId + '\'' +
+                ", faseProc=" + faseProc +
+                ", tramiteVersion=" + tramiteVersion +
+                ", tramiteParametros='" + tramiteParametros + '\'' +
+                ", plantilla=" + plantilla +
+                ", entidad=" + (entidad != null ? entidad.getCodigo() : null) +
+                '}');
+        if (this.traducciones != null && !traducciones.isEmpty()) {
+            texto.append(", traducciones=[");
+            for (JTipoTramitacionTraduccion traduccion : traducciones) {
+                texto.append(traduccion.toString()).append(", ");
+            }
+            texto.delete(texto.length() - 2, texto.length()); // Elimina la última coma y espacio
+            texto.append("]");
+        }
+
+        return texto.toString();
     }
 
     /**
