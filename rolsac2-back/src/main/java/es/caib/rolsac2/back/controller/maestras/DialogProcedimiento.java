@@ -473,6 +473,23 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
+
+         if (data != null && data.getHabilitadoFuncionario() != null && "S".equals(data.getHabilitadoFuncionario())) {
+            boolean tieneCiudadanosFuncionarioHabilitado = false;
+             if (data.getPublicosObjetivo() != null) {
+                for (TipoPublicoObjetivoEntidadGridDTO pObj : data.getPublicosObjetivo()) {
+                    if (pObj != null && pObj.getCodigo() != null && pObj.getCodigo().intValue() == 200) {
+                        tieneCiudadanosFuncionarioHabilitado = true;
+                        break;
+                    }
+                }
+            }
+            if (!tieneCiudadanosFuncionarioHabilitado) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.funcionarHabilitado.sinPOCiudadano"));
+                return;
+            }
+        }
+
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "P");
         UtilJSF.anyadirMochila("procedimiento", this.data);
@@ -828,7 +845,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                     UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionProcFechaPublicacion"));
                     todoCorrecto = false;
                 }
-                if (tramite.getListaTasas() != null){
+                if (tramite.getListaTasas() != null) {
                     for (TasaProcedimientoDTO tasa : tramite.getListaTasas()) {
                         if (tasa == null) {
                             continue;
