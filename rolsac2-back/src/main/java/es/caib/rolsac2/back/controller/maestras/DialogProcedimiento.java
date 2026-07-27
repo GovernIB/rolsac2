@@ -1852,7 +1852,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 // Si es común, no mostrar botón
                 return false;
             }
-            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
                 // En caso de estar pendiente de validación, no mostrar botón
                 return false;
             }
