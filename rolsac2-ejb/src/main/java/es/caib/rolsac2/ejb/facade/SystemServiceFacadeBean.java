@@ -203,6 +203,7 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     }
 
     @Override
+    @RolesAllowed({TypePerfiles.SUPER_ADMINISTRADOR_VALOR})
     public void deleteAllSesion() {
         sesionRepository.deleteAllSesiones();
     }
