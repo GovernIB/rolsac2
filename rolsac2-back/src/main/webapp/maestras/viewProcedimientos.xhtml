@@ -624,7 +624,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </f:facet>
                 <p:column headerText=" " styleClass="w40px">
                     <f:facet name="header"/>
-                    <p:rowToggler rendered="#{viewProcedimientos.mostrarMenuBorrador(procedimiento)}"/>
+                    <p:rowToggler rendered="#{procedimiento.tieneBorrador()}"/>
                 </p:column>
                 <p:column headerText=" " styleClass="w60px">
                     <f:facet name="header"/>
@@ -715,13 +715,13 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </div>
                 </p:column>
 
-                <p:rowExpansion rendered="#{viewProcedimientos.mostrarMenuBorrador(procedimiento)}">
+                <p:rowExpansion rendered="#{procedimiento.tieneBorrador()}">
                     <ui:param name="borrador" value="#{viewProcedimientos.getBorrador(procedimiento)}"/>
                     <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100"
                                  style="table-layout:fixed; width:100%;" columnClasses="align-middle w170px,align-middle w-auto,align-middle w170px,align-middle w200px,align-middle w170px">
                         <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
                         <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
-                        <h:outputText value="#{borrador.uaInstructor.codigo}"/>
+                        <h:outputText value="#{borrador.uaInstructor.nombre.getTraduccion(sessionBean.lang)}"/>
                         <h:outputText value="#{borrador.fechaActualizacion}">
                             <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                         </h:outputText>

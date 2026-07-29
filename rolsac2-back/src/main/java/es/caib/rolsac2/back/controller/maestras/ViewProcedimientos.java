@@ -241,18 +241,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         filtro = new ProcedimientoFiltro();
         filtro.setFechaCierreTramiteDesde(null);
         filtro.setFechaCierreTramiteHasta(null);
-/*
-        boolean verComunes = this.isGestor() || this.isInformador();
-
-        if (verComunes) {
-            if (this.isGestor()) {
-                filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
-            } else {
-                filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
-            }
-        } else {
-            filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-        }*/
+        filtro.setHijasActivas(true);
+        filtro.setTodasUnidadesOrganicas(true);
         if (sessionBean.getUnidadActiva() != null) {
             filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
         } else {

@@ -303,6 +303,20 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     </p:selectOneMenu>
                                 </div>
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.servicioInstructor']}:" for="txtServicioInstructor"/>
+                                    <div class="filtroControl">
+                                        <p:inputText id="txtServicioInstructor" value="#{viewProcedimientos.filtro.uaInstructorNombre}"
+                                                     styleClass="w70" disabled="true"/>
+                                        <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                                         styleClass="text-success"
+                                                         process="@this"
+                                                         actionListener="#{viewProcedimientos.seleccionarUaInstructor()}">
+                                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogUaInstructor}"
+                                                    process="@this" update="txtServicioInstructor"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtEstadoCodigoSIA"/>
                                     <p:selectOneMenu id="txtEstadoCodigoSIA" value="#{viewServicios.filtro.estadoSIA}" styleClass="w95">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
@@ -362,14 +376,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
                                     </p:selectOneMenu>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ui-g-12">
-                        <div class="p-3 mb-3 border rounded bg-light">
-                            <div class="font-weight-bold mb-3">#{labels['viewProcedimientos.bloque.informacionTramite']}</div>
-                            <div class="row">
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:" for="txtTtramiteTelem"/>
                                     <p:selectCheckboxMenu id="txtTtramiteTelem" value="#{viewServicios.canalesSeleccionados}" style="min-width: 15rem"
@@ -394,6 +400,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </div>
                         </div>
                     </div>
+
 
                     <div class="ui-g-12 text-center">
                         <p:commandButton value="#{labels['dict.limpiarFiltro']}" icon="pi pi-trash" iconPos="top"
@@ -435,7 +442,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </f:facet>
                 <p:column headerText=" " styleClass="w40px">
                     <f:facet name="header"/>
-                    <p:rowToggler rendered="#{viewServicios.mostrarMenuBorrador(servicio)}"/>
+                    <p:rowToggler rendered="#{servicio.tieneBorrador()}"/>
                 </p:column>
                 <p:column  headerText=" " styleClass="w60px">
                     <f:facet name="header"/>
@@ -520,14 +527,14 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </div>
                 </p:column>
 
-                <p:rowExpansion rendered="#{viewServicios.mostrarMenuBorrador(servicio)}">
+                <p:rowExpansion rendered="#{servicio.tieneBorrador()}">
                     <ui:param name="borrador" value="#{viewServicios.getBorrador(servicio)}"/>
                     <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100"
                                  style="table-layout:fixed; width:100%;"
                                  columnClasses="align-middle w170px,align-middle w-auto,align-middle w170px,align-middle w200px,align-middle w170px">
                         <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
                         <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
-                        <h:outputText value="#{borrador.uaInstructor.codigo}"/>
+                        <h:outputText value="#{borrador.uaInstructor.nombre.getTraduccion(sessionBean.lang)}"/>
                         <h:outputText value="#{borrador.fechaActualizacion}">
                             <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                         </h:outputText>

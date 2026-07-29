@@ -292,19 +292,8 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void limpiarFiltro() {
         filtro = new ProcedimientoFiltro();
-/*
-        boolean verComunes = this.isGestor() || this.isInformador();
-
-        if (verComunes) {
-            if (this.isGestor()) {
-                filtro.setIdUAInstructorOComun(codigosUaDescendientesGestor);
-            } else {
-                filtro.setIdUAInstructorOComun(Arrays.asList(sessionBean.getUnidadActiva().getCodigo()));
-            }
-        } else {
-            filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-        }
-*/
+        filtro.setHijasActivas(true);
+        filtro.setTodasUnidadesOrganicas(true);
         filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
 
 
