@@ -6,10 +6,7 @@ import es.caib.rolsac2.back.security.Security;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
-import es.caib.rolsac2.service.model.types.TypeAlertas;
-import es.caib.rolsac2.service.model.types.TypeIdiomaFijo;
-import es.caib.rolsac2.service.model.types.TypeIdiomaOpcional;
-import es.caib.rolsac2.service.model.types.TypePerfiles;
+import es.caib.rolsac2.service.model.types.*;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
@@ -18,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -70,6 +66,7 @@ public class SessionBean implements Serializable {
 
     @EJB
     private AdministracionSupServiceFacade administracionSupServiceFacade;
+
 
     private UnidadAdministrativaDTO unidadActiva;
 
@@ -149,9 +146,11 @@ public class SessionBean implements Serializable {
     @PostConstruct
     private void init() {
         LOG.info("Inicialitzant locale de l'usuari");
-        Application app = context.getApplication();
-        current = app.getViewHandler().calculateLocale(context);
-        lang = current.getDisplayLanguage().contains("ca") ? "ca" : "es";
+        lang = "ca";
+        String idiomaPorDefecto = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        if (idiomaPorDefecto != null) {
+            lang = idiomaPorDefecto;
+        }
         current = Locale.forLanguageTag(lang);
         // inicializamos mochila
         mochilaDatos = new HashMap<>();
