@@ -237,7 +237,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </div>
             </div>
 
-             <div class="filtroProcedimientosBasico">
+              <h:panelGroup id="panelFiltrosBasicos" layout="block">
+               <div class="filtroProcedimientosBasico">
                 <div class="row filtroBasicoGrid">
                     <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                         <h:outputText value="#{labels['viewProcedimientos.codigoProc']}:" for="txtCodigoProc"/>
@@ -277,6 +278,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </div>
                 </div>
             </div>
+            </h:panelGroup>
 
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
@@ -575,7 +577,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <div class="ui-g-12 text-center">
                         <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                          iconPos="top" action="#{viewProcedimientos.limpiarFiltro()}"
-                                         process="@form" update="panel"/>
+                                         process="@form" update="panelFiltrosBasicos panel dataTable"
+                                         resetValues="true"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                          actionListener="#{viewProcedimientos.buscar()}" update="messages dataTable"
                                          onstart="start()" oncomplete="stop()"
@@ -709,7 +712,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
-                                         rendered="#{viewProcedimientos.mostrarBorrarPublicado(procedimiento)}"
+                                         rendered="#{viewProcedimientos.mostrarBorrar(procedimiento)}"
                                          actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento)}"
                                          process="@this"/>
                     </div>

@@ -555,4 +555,14 @@ public class ProcedimientoGridDTO extends ModelApi {
         }
         return true;
     }
+
+    /**
+     * Indica si el procedimiento tiene un borrador asociado.
+     * Evita recalcular el método múltiples veces en la UI.
+     *
+     * @return true si el estado es PM (Publicado Modificado) o PPV (Publicado Pendiente Verificación)
+     */
+    public boolean tieneBorrador() {
+        return "PM".equals(estado) || "PPV".equals(estado);
+    }
 }

@@ -330,11 +330,23 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void dblClickProcedimiento() {
-        if (datoSeleccionado != null) {
-            if (datoSeleccionado.getCodigoWFMod() != null && !isInformador()) {
-                editarProcedimiento();
-            } else if (datoSeleccionado.getCodigoWFPub() != null || isInformador()) {
+        if (datoSeleccionado == null) {
+            return;
+        }
+
+        if (!mostrarConsultar(datoSeleccionado) && !mostrarBorrar(datoSeleccionado) && !mostrarEditar(datoSeleccionado)) {
+            return;
+        } else {
+            if (mostrarEditar(datoSeleccionado) && (mostrarConsultar(datoSeleccionado) || mostrarBorrar(datoSeleccionado))) {
+                return;
+            } else if (mostrarConsultar(datoSeleccionado) && mostrarBorrar(datoSeleccionado)) {
+                return;
+            } else if (mostrarConsultar(datoSeleccionado)) {
                 consultarProcedimiento();
+            } else if (mostrarBorrar(datoSeleccionado)) {
+                PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
+            } else {
+                editarProcedimiento();
             }
         }
     }
@@ -375,6 +387,38 @@ public class ViewServicios extends AbstractController implements Serializable {
             String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
             abrirVentana(modo, serv, estados);
 
+        }
+    }
+
+    public void seleccionarUaInstructor() {
+        if (filtro.getUaInstructorCodigo() != null) {
+            UnidadAdministrativaDTO uaInstructor = uaService.findUASimpleByID(filtro.getUaInstructorCodigo(), sessionBean.getLang(), null);
+            if (uaInstructor != null) {
+                UtilJSF.anyadirMochila("ua", uaInstructor);
+            }
+        }
+        UtilJSF.openDialog("/comun/dialogSeleccionarUA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 750);
+    }
+
+    public void returnDialogUaInstructor(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            UnidadAdministrativaDTO uaInstructor = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaInstructor == null) {
+                if (sessionBean.getUnidadActiva() != null) {
+                    filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+                } else {
+                    filtro.setIdUAInstructor(null);
+                }
+                filtro.setUaInstructorNombre(null);
+            } else {
+                filtro.setIdUAInstructor(uaInstructor.getCodigo());
+                if (uaInstructor.getNombre() != null) {
+                    filtro.setUaInstructorNombre(uaInstructor.getNombre().getTraduccionConValor(sessionBean.getLang()));
+                } else {
+                    filtro.setUaInstructorNombre(null);
+                }
+            }
         }
     }
 
@@ -1314,7 +1358,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         return "M".equals(estado) || "P".equals(estado) || ("PV".equals(estado) && !this.isGestor());
     }
 
-    public boolean mostrarBorrarPublicado(ServicioGridDTO servicio) {
+    public boolean mostrarBorrar(ServicioGridDTO servicio) {
         return servicio != null && !isModoConsulta() && "M".equals(servicio.getEstado())
                 && !(this.isGestor() && BooleanUtils.isTrue(servicio.getComun()));
     }

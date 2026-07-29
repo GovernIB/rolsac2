@@ -1,8 +1,7 @@
 package es.caib.rolsac2.service.model;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import es.caib.rolsac2.service.model.types.TypeProcedimientoEstado;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -26,6 +25,7 @@ public class ServicioGridDTO extends ModelApi {
     public Date siaFecha;
     private Integer codigoSIA;
     private String nombre;
+    private String uaInstructor;
 
     /**
      * Numero
@@ -77,7 +77,7 @@ public class ServicioGridDTO extends ModelApi {
         //retorno.setFechaDespublicacion(serv.getFechaDespublicacion());
         retorno.setFechaActualizacion(serv.getFechaActualizacion());
         //retorno.setNumero(serv.getNumero());
-
+        retorno.setUaInstructor(serv.getUaInstructor().getNombre().getTraduccion("es"));
         return retorno;
     }
 
@@ -128,6 +128,14 @@ public class ServicioGridDTO extends ModelApi {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getUaInstructor() {
+        return uaInstructor;
+    }
+
+    public void setUaInstructor(String uaInstructor) {
+        this.uaInstructor = uaInstructor;
     }
 
     public String getEstado() {
@@ -221,6 +229,7 @@ public class ServicioGridDTO extends ModelApi {
         this.comun = comun;
     }
 
+
     public String getLiteralComun() {
         if (comun == null) {
             return "";
@@ -271,8 +280,8 @@ public class ServicioGridDTO extends ModelApi {
     private boolean isVisible() {
         final Date now = new Date();
 
-        final boolean esPublicado = TypeProcedimientoEstado.PUBLICADO.toString().equals(this.estado) 
-            || TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(this.estado) || TypeProcedimientoEstado.PENDIENTE_CERRAR.toString().equals(this.estado);
+        final boolean esPublicado = TypeProcedimientoEstado.PUBLICADO.toString().equals(this.estado)
+                || TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(this.estado) || TypeProcedimientoEstado.PENDIENTE_CERRAR.toString().equals(this.estado);
         final boolean fechaPublicacionValida = getFechaPublicacion() == null || getFechaPublicacion().before(now);
         final boolean noCaducado = getFechaDespublicacion() == null || getFechaDespublicacion().after(now);
 
@@ -300,5 +309,15 @@ public class ServicioGridDTO extends ModelApi {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Indica si el servicio tiene un borrador asociado.
+     * Evita recalcular el método múltiples veces en la UI.
+     *
+     * @return true si el estado es PM (Publicado Modificado) o PPV (Publicado Pendiente Verificación)
+     */
+    public boolean tieneBorrador() {
+        return "PM".equals(estado) || "PPV".equals(estado);
     }
 }

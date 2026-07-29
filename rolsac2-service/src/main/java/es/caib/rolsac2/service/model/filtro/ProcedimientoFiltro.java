@@ -48,7 +48,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private List<NormativaGridDTO> normativas;
     private String estado;
     private List<String> estados;
-    private boolean hijasActivas = false;
+    private boolean hijasActivas;
     private List<Long> idUAsHijas;
 
     /**
@@ -65,7 +65,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private List<Long> idUAsInstructor;
 
     private List<Long> idsUAsHijasAux;
-    private boolean todasUnidadesOrganicas = false;
+    private boolean todasUnidadesOrganicas;
 
     private TipoViaDTO finVia;
     private String tramiteVigente;
@@ -1640,6 +1640,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return tipoProcedimiento != null && tipoProcedimiento.getCodigo() != null;
     }
 
+    public boolean isRellenoUaInstructorNombre() {
+        return uaInstructorNombre != null && !uaInstructorNombre.isEmpty();
+    }
+
+    public boolean isRellenoUaInstructorCodigo() {
+        return uaInstructorCodigo != null;
+    }
+
     public boolean isRellenoFormaInicio() {
         return formaInicio != null && formaInicio.getCodigo() != null;
     }
@@ -1836,7 +1844,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     public String getDisponibleFuncionarioHabilitado() {
         return disponibleFuncionarioHabilitado;
     }
-
 
 
     public boolean isRellenoCanales() {
@@ -2317,7 +2324,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return idUAs != null && !idUAs.isEmpty();
     }
 
-    public boolean isRellenoUAInterna(){
+    public boolean isRellenoUAInterna() {
         return uAInterna != null;
     }
 }

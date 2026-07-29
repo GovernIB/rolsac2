@@ -283,11 +283,23 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void dblClickProcedimiento() {
-        if (datoSeleccionado != null) {
-            if (datoSeleccionado.getCodigoWFMod() != null && !isInformador()) {
-                editarProcedimiento();
-            } else if (datoSeleccionado.getCodigoWFPub() != null || isInformador()) {
+        if (datoSeleccionado == null) {
+            return;
+        }
+
+        if (!mostrarConsultar(datoSeleccionado) && !mostrarBorrar(datoSeleccionado) && !mostrarEditar(datoSeleccionado)) {
+            return;
+        } else {
+            if (mostrarEditar(datoSeleccionado) && (mostrarConsultar(datoSeleccionado) || mostrarBorrar(datoSeleccionado))) {
+                return;
+            } else if (mostrarConsultar(datoSeleccionado) && mostrarBorrar(datoSeleccionado)) {
+                return;
+            } else if (mostrarConsultar(datoSeleccionado)) {
                 consultarProcedimiento();
+            } else if (mostrarBorrar(datoSeleccionado)) {
+                PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
+            } else {
+                editarProcedimiento();
             }
         }
     }
@@ -833,10 +845,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         if (!respuesta.isCanceled()) {
             UnidadAdministrativaDTO uaInstructor = (UnidadAdministrativaDTO) respuesta.getResult();
             if (uaInstructor == null) {
-                filtro.setUaInstructorCodigo(null);
+                if (sessionBean.getUnidadActiva() != null) {
+                    filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+                } else {
+                    filtro.setIdUAInstructor(null);
+                }
                 filtro.setUaInstructorNombre(null);
             } else {
-                filtro.setUaInstructorCodigo(uaInstructor.getCodigo());
+                filtro.setIdUAInstructor(uaInstructor.getCodigo());
                 if (uaInstructor.getNombre() != null) {
                     filtro.setUaInstructorNombre(uaInstructor.getNombre().getTraduccionConValor(sessionBean.getLang()));
                 } else {
@@ -1250,7 +1266,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         return "M".equals(estado) || "P".equals(estado) || ("PV".equals(estado) && !this.isGestor());
     }
 
-    public boolean mostrarBorrarPublicado(ProcedimientoGridDTO procedimiento) {
+    public boolean mostrarBorrar(ProcedimientoGridDTO procedimiento) {
         return procedimiento != null && !isModoConsulta() && "M".equals(procedimiento.getEstado())
                 && !(this.isGestor() && BooleanUtils.isTrue(procedimiento.getComun()));
     }

@@ -168,6 +168,16 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 procedimientoGridDTO.setFechaDespublicacion((Date) jproc[17]);
                 procedimientoGridDTO.setMensajesPendienteGestor((Boolean) jproc[18]);
                 procedimientoGridDTO.setMensajesPendienteSupervisor((Boolean) jproc[19]);
+                String uaInstructorPub = (String) jproc[20];
+                String uaInstructorMod = (String) jproc[21];
+                String uaInstructor;
+                if (uaInstructorPub != null && !uaInstructorPub.isEmpty()) {
+                    uaInstructor = uaInstructorPub;
+                } else {
+                    uaInstructor = uaInstructorMod;
+                }
+                procedimientoGridDTO.setUaInstructor(uaInstructor);
+
 
                 procs.add(procedimientoGridDTO);
             }
@@ -253,7 +263,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 procedimientoGridDTO.setFechaDespublicacion((Date) jproc[17]);
                 procedimientoGridDTO.setMensajesPendienteGestor((Boolean) jproc[18]);
                 procedimientoGridDTO.setMensajesPendienteSupervisor((Boolean) jproc[19]);
-                procedimientoGridDTO.setUaInstructor("" + ((Long) jproc[20]));
+                String uaInstructorPub = (String) jproc[20];
+                String uaInstructorMod = (String) jproc[21];
+                String uaInstructor;
+                if (uaInstructorPub != null && !uaInstructorPub.isEmpty()) {
+                    uaInstructor = uaInstructorPub;
+                } else {
+                    uaInstructor = uaInstructorMod;
+                }
+                procedimientoGridDTO.setUaInstructor(uaInstructor);
 
                 procs.add(procedimientoGridDTO);
             }
@@ -3202,7 +3220,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 ambosWf = true;
             }
         } else {
-            sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1 and rownum = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor, wf.uaInstructor.codigo FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, wf.codigo, wf2.codigo, wf.estado || '' || wf2.estado, j.tipo , j.codigoSIA, j.estadoSIA , j.siaFecha, t.nombre, t2.nombre, tipoPro1.descripcion, tipoPro2.descripcion, j.fechaActualizacion, wf.comun, wf2.comun, (select tram.codigo || '#' || to_char(tram.fechaPublicacion, 'DD/MM/YYYY HH24:MI') || '#' || to_char(tram.fechaCierre, 'DD/MM/YYYY HH24:MI') FROM JProcedimientoTramite tram where wf.codigo = tram.procedimiento.codigo and tram.fase = 1 and rownum = 1), wf.fechaPublicacion, wf.fechaCaducidad, j.mensajesPendienteGestor, j.mensajesPendienteSupervisor, uaInsTrad1.nombre, uaInsTrad2.nombre FROM JProcedimiento j LEFT OUTER JOIN j.procedimientoWF WF ON wf.workflow = " + TypeProcedimientoWorkflow.DEFINITIVO.getValor() + " LEFT OUTER JOIN j.procedimientoWF WF2 ON wf2.workflow = " + TypeProcedimientoWorkflow.MODIFICACION.getValor() + " LEFT OUTER JOIN WF.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN WF2.traducciones t2 ON t2.idioma=:idioma LEFT OUTER JOIN WF.tipoProcedimiento TIPPRO1 LEFT OUTER JOIN TIPPRO1.descripcion tipoPro1 on tipoPro1.idioma =:idioma LEFT OUTER JOIN WF2.tipoProcedimiento TIPPRO2 LEFT OUTER JOIN TIPPRO2.descripcion tipoPro2 on tipoPro2.idioma =:idioma LEFT OUTER JOIN WF.uaInstructor uaIns1 LEFT OUTER JOIN uaIns1.traducciones uaInsTrad1 ON uaInsTrad1.idioma =:idioma LEFT OUTER JOIN WF2.uaInstructor uaIns2 LEFT OUTER JOIN uaIns2.traducciones uaInsTrad2 ON uaInsTrad2.idioma =:idioma where 1 = 1 ");
             ambosWf = true;
         }
 
@@ -3299,6 +3317,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento or WF2.tipoProcedimiento.codigo = :tipoProcedimiento) ");
         } else if (filtro.isRellenoTipoProcedimiento()) {
             sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento) ");
+        }
+
+        if (filtro.isRellenoUaInstructorCodigo() && ambosWf) {
+            sql.append(" AND (WF.uaInstructor.codigo = :uaInstructorCodigo OR WF2.uaInstructor.codigo = :uaInstructorCodigo) ");
+        } else if (filtro.isRellenoUaInstructorCodigo()) {
+            sql.append(" AND WF.uaInstructor.codigo = :uaInstructorCodigo ");
         }
 
         if (filtro.isRellenoSilencioAdministrativo() && ambosWf) {
@@ -3845,6 +3869,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoTipoProcedimiento()) {
             query.setParameter("tipoProcedimiento", filtro.getTipoProcedimiento().getCodigo());
+        }
+        if (filtro.isRellenoUaInstructorCodigo()) {
+            query.setParameter("uaInstructorCodigo", filtro.getUaInstructorCodigo());
         }
         if (filtro.isRellenoSilencioAdministrativo()) {
             query.setParameter("tipoSilencio", filtro.getSilencioAdministrativo().getCodigo());

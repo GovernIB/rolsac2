@@ -237,6 +237,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </div>
             </div>
 
+            <h:panelGroup id="panelFiltrosBasicos" layout="block">
              <div class="filtroProcedimientosBasico">
                 <div class="row filtroBasicoGrid">
                     <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
@@ -271,6 +272,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </div>
                 </div>
             </div>
+            </h:panelGroup>
 
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
@@ -305,13 +307,13 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.servicioInstructor']}:" for="txtServicioInstructor"/>
                                     <div class="filtroControl">
-                                        <p:inputText id="txtServicioInstructor" value="#{viewProcedimientos.filtro.uaInstructorNombre}"
+                                        <p:inputText id="txtServicioInstructor" value="#{viewServicios.filtro.uaInstructorNombre}"
                                                      styleClass="w70" disabled="true"/>
                                         <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
                                                          styleClass="text-success"
                                                          process="@this"
-                                                         actionListener="#{viewProcedimientos.seleccionarUaInstructor()}">
-                                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogUaInstructor}"
+                                                         actionListener="#{viewServicios.seleccionarUaInstructor()}">
+                                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogUaInstructor}"
                                                     process="@this" update="txtServicioInstructor"/>
                                         </p:commandButton>
                                     </div>
@@ -404,7 +406,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                     <div class="ui-g-12 text-center">
                         <p:commandButton value="#{labels['dict.limpiarFiltro']}" icon="pi pi-trash" iconPos="top"
-                                         action="#{viewServicios.limpiarFiltro()}" process="@form" update="panel"/>
+                                         action="#{viewServicios.limpiarFiltro()}" process="@form"
+                                         update="panelFiltrosBasicos panel dataTable" resetValues="true"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                          actionListener="#{viewServicios.buscar()}" update="messages dataTable"
                                          onstart="start()" oncomplete="stop()" process="@form"/>
@@ -452,7 +455,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{servicio.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{servicio.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w110px">
+                <p:column sortBy="#{servicio.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w100px">
                     <f:facet name="header"/>
                     <h:outputText value="#{servicio.codigoSIA}"/>
                 </p:column>
@@ -464,12 +467,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{servicio.nombre}"/>
                 </p:column>
-                <!--
-                <p:column sortBy="#{procedimiento.tipoProcedimiento}" headerText="#{labels['dict.tipoProcedimiento']}" styleClass="w170px">
+                <p:column sortBy="#{servicio.uaInstructor}" headerText="#{labels['viewProcedimientos.servicioInstructor']}" styleClass="w160px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{procedimiento.tipoProcedimiento}"/>
-                </p:column>-->
-                <p:column sortBy="#{servicio.fechaActualizacion}" headerText="#{labels['viewProcedimientos.fechaActualizacion']}"  styleClass="w200px">
+                    <h:outputText value="#{servicio.uaInstructor}"/>
+                </p:column>
+                <p:column sortBy="#{servicio.fechaActualizacion}" headerText="#{labels['viewProcedimientos.fechaActualizacion']}"  styleClass="w170px">
                     <f:facet name="header"/>
                     <h:outputText value="#{servicio.fechaActualizacion}">
                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
@@ -520,7 +522,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarBorrarPublicado(servicio)}"
+                                         rendered="#{viewServicios.mostrarBorrar(servicio)}"
                                          actionListener="#{viewServicios.borrarServicio(servicio)}"
                                          process="@this"/>
 
