@@ -196,226 +196,225 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             </p:confirmDialog>
 
 
+            <div class="cabeceraFiltros">
+                <div class="row" style="display:flex; align-items:center; flex-wrap:nowrap; width:100%;">
+                    <div class="ui-g-12" style="display:flex; align-items:center; flex-wrap:nowrap; flex:1 1 auto; min-width:0;">
+                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" style="white-space: nowrap; flex-shrink:0;" />
+                        <p:inputText id="filtroBusqueda"  value="#{viewServicios.filtro.texto}" styleClass="estiloGrande ml-2 mr-2"
+                                     style="flex: 1 1 auto; min-width: 0; width: auto; max-width: none;" />
+                        <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
+                                         styleClass="mr-2" icon="pi pi-search"
+                                         actionListener="#{viewServicios.buscarEvt()}"
+                                         update="messages dataTable"
+                                         process="@form" style="display: none"
+                                         onstart="PF('statusDialog').show()"
+                                         oncomplete="PF('statusDialog').hide()"/>
+                        <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
+                                         styleClass="mr-2" icon="pi pi-search"
+                                         actionListener="#{viewServicios.buscar()}"
+                                         update="messages dataTable"
+                                         process="@form"/>
+                        <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus"
+                                         onclick="PF('panel').toggle();cambiarBoton()"/>
+                    </div>
+                    <div class="ui-g-12 text-right" style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:nowrap; white-space:nowrap; flex:0 0 auto; width:auto; margin-left:auto;">
+                        <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
+                                         iconPos="top" actionListener="#{viewServicios.nuevoProcedimiento}"
+                                         process="@this" rendered="#{!viewServicios.isModoConsulta()}">
+                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
+                                    onstart="startCargando()" oncomplete="stopCargando()"
+                                    update="messages dataTable"/>
+                        </p:commandButton>
+                        <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
+                                         action="#{viewServicios.ayuda('viewProcedimientos')}" process="@this"
+                                         update="messages dataTable"/>
+
+                        <p:remoteCommand name="rcDialogCerrado"
+                                         process="@this"
+                                         action="#{viewServicios.returnDialogoMochila()}"
+                                         update="dataTable includeDetalle"/>
+                    </div>
+                </div>
+            </div>
+
+             <div class="filtroProcedimientosBasico">
+                <div class="row filtroBasicoGrid">
+                    <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                        <h:outputText value="#{labels['viewServicios.codigoServ']}:" for="txtCodigoProc"/>
+                        <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95"
+                                     onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
+                    </div>
+                    <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                        <h:outputText value="#{labels['viewServicios.codigoSIA']}:" for="txtCodigoSIA"/>
+                        <p:inputText id="txtCodigoSIA" value="#{viewServicios.filtro.codigoSIA}" styleClass="w95"
+                                     onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
+                    </div>
+                    <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                        <h:outputText value="#{labels['viewServicios.estado']}:" for="txtTipoEstado"/>
+                        <p:selectOneMenu id="txtTipoEstado" value="#{viewServicios.filtro.estado}" styleClass="w95" autoWidth="false">
+                            <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                            <f:selectItems value="#{typeEstados.values()}" var="estado"
+                                           itemValue="#{estado.toString()}"
+                                           itemLabel="#{labels['TypeProcedimientoEstado.' += estado]}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                        <h:outputText value="#{labels['viewProcedimientos.mensajesPorLeer']}:" for="txtMensajesPorLeer"/>
+                        <p:selectOneMenu id="txtMensajesPorLeer" value="#{viewServicios.filtro.mensajesPendiente}"
+                                         styleClass="w95" autoWidth="false">
+                            <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="#{labels['viewProcedimientos.sinMensajes']}" itemValue="NO"/>
+                            <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientes']}" itemValue="PE"/>
+                            <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientesSupervisor']}" itemValue="PS"/>
+                            <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientesGestor']}" itemValue="PG"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+            </div>
+
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
-                <f:facet name="header">
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-9 ui-lg-9">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
-                            <p:inputText id="filtro" value="#{viewServicios.filtro.texto}"
-                                         styleClass="mr-2"></p:inputText>
-                            <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
-                                             styleClass="estiloGrande ml-2 mr-2" icon="pi pi-search"
-                                             actionListener="#{viewServicios.buscarEvt()}"
-                                             update="messages dataTable"
-                                             process="@form" style="display: none"
-                                             onstart="PF('statusDialog').show()"
-                                             oncomplete="PF('statusDialog').hide()" />
-                            <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
-                                             styleClass="mr-2" icon="pi pi-search"
-                                             actionListener="#{viewServicios.buscar()}"
-                                             update="messages dataTable"
-                                             process="@form"/>
-                            <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" />
-                        </div>
-                        <div class="ui-g-12 ui-md-3 ui-lg-3 text-right">
-                            <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
-                                     iconPos="top" actionListener="#{viewServicios.nuevoProcedimiento}"
-                                     process="@this" rendered="#{!viewServicios.isModoConsulta()}">
-                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                update="messages dataTable"/>
-                            </p:commandButton>
-                            <p:commandButton value="#{labels['dict.ayuda']}" icon="pi pi-info-circle" iconPos="top"
-                                     action="#{viewServicios.ayuda('viewServicios')}" process="@this"
-                                     update="messages dataTable"/>
-
+                <div class="p-m-0 row">
+                    <div class="ui-g-12">
+                        <div class="p-3 mb-3 border rounded bg-light">
+                            <div class="font-weight-bold mb-3">#{labels['viewProcedimientos.bloque.informacionGeneral']}</div>
+                            <div class="row">
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewServicios.uaHijas']}:" for="txtUAHijas"/>
+                                    <p:selectBooleanCheckbox id="txtUAHijas" style="padding-top: 8px;" value="#{viewServicios.filtro.hijasActivas}">
+                                        <p:ajax process="@this" event="change" partialSubmit="true"
+                                                listener="#{viewServicios.filtroHijasActivasChange}"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewServicios.unidadesOrganicas']}:" for="txtunidadesOrganicas"/>
+                                    <p:selectBooleanCheckbox id="txtunidadesOrganicas" style="padding-top: 8px;"
+                                                             value="#{viewServicios.filtro.todasUnidadesOrganicas}">
+                                        <p:ajax process="@this" event="change" partialSubmit="true"
+                                                listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.visibleASede']}:" for="txtVisibleSede"/>
+                                    <p:selectOneMenu id="txtVisibleSede" value="#{viewServicios.filtro.visibleSEDE}" styleClass="w95">
+                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                        <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
+                                        <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtEstadoCodigoSIA"/>
+                                    <p:selectOneMenu id="txtEstadoCodigoSIA" value="#{viewServicios.filtro.estadoSIA}" styleClass="w95">
+                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                        <f:selectItem itemLabel="#{labels['dict.ninguno']}" itemValue="N"/>
+                                        <f:selectItem itemLabel="#{labels['dict.activo']}" itemValue="A"/>
+                                        <f:selectItem itemLabel="#{labels['dict.noActivo']}" itemValue="B"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewServicios.publicoObjetivo']}:" for="txtPublicoObjetivo"/>
+                                    <div class="filtroControl">
+                                        <p:inputText id="txtPublicoObjetivo"
+                                                     value="#{viewServicios.filtro.getPublicoObjetivos(sessionBean.lang)}"
+                                                     styleClass="w70" disabled="true"/>
+                                        <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                                         styleClass="text-success"
+                                                         process="@this"
+                                                         actionListener="#{viewServicios.seleccionarPubObjetivos()}">
+                                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogPubObjEnt}"
+                                                    process="@this" update="txtPublicoObjetivo"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewServicios.materias']}:" for="txtMaterias"/>
+                                    <div class="filtroControl">
+                                        <p:inputText id="txtMaterias" value="#{viewServicios.filtro.getMaterias(sessionBean.lang)}"
+                                                     styleClass="w70" disabled="true"/>
+                                        <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                                         styleClass="text-success"
+                                                         process="@this" actionListener="#{viewServicios.seleccionarMaterias()}">
+                                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogMateria}"
+                                                    process="@this" update="txtMaterias"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
+                                    <div class="filtroControl">
+                                        <p:inputText id="txtTemas" value="#{viewServicios.filtro.getTemas(sessionBean.lang)}"
+                                                     styleClass="w70" disabled="true"/>
+                                        <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
+                                                         styleClass="text-success"
+                                                         process="@this"
+                                                         actionListener="#{viewServicios.seleccionarTemas()}">
+                                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogTema}"
+                                                    process="@this" update="txtTemas"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
+                                    <p:selectOneMenu id="txtEsComun" value="#{viewServicios.filtro.comun}"
+                                                     styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
+                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </f:facet>
 
-                <p class="p-m-0">
-                    <div class="row">
-                        <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
-                            <p>
-                                <h:outputText value="#{labels['viewServicios.uaHijas']}:" for="txtUAHijas"/>
-                            </p>
-                            <p:selectBooleanCheckbox id="txtUAHijas" value="#{viewServicios.filtro.hijasActivas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true"
-                                        listener="#{viewServicios.filtroHijasActivasChange}"/>
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-1 bloque">
-                            <p>
-                                <h:outputText value="#{labels['viewServicios.unidadesOrganicas']}:" for="txtunidadesOrganicas"/>
-                            </p>
-                            <p:selectBooleanCheckbox id="txtunidadesOrganicas"
-                                                     value="#{viewServicios.filtro.todasUnidadesOrganicas}">
-                                <p:ajax process="@this" event="change" partialSubmit="true"
-                                        listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
-                            </p:selectBooleanCheckbox>
-                        </div>
-                        <div class="ui-g-12 ui-md-2 ui-lg-2 bloque">
-                            <h:outputText value="#{labels['viewProcedimientos.visibleASede']}:"  for="txtVisibleSede"/>
-                            <p:selectOneMenu id="txtVisibleSede" value="#{viewServicios.filtro.visibleSEDE}"
-                                             styleClass="w95">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
-                                <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewServicios.codigoSIA']}:" for="txtCodigoSIA"/>
-                            <p:inputText id="txtCodigoSIA" value="#{viewServicios.filtro.codigoSIA}" styleClass="w95"
-                                         onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtEstadoCodigoSIA"/>
-                            <p:selectOneMenu id="txtEstadoCodigoSIA" value="#{viewServicios.filtro.estadoSIA}"
-                                             styleClass="w95">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItem itemLabel="#{labels['dict.ninguno']}" itemValue="N"/>
-                                <f:selectItem itemLabel="#{labels['dict.activo']}" itemValue="A"/>
-                                <f:selectItem itemLabel="#{labels['dict.noActivo']}" itemValue="B"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewServicios.codigoServ']}:" for="txtCodigoProc" />
-                            <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}" styleClass="w95" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"  />
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <div>
-                                <h:outputText value="#{labels['viewServicios.estado']}:" for="txtTipoEstado"/>
+                    <div class="ui-g-12">
+                        <div class="p-3 mb-3 border rounded bg-light">
+                            <div class="font-weight-bold mb-3">#{labels['viewProcedimientos.bloque.informacionTramite']}</div>
+                            <div class="row">
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:" for="txtTtramiteTelem"/>
+                                    <p:selectCheckboxMenu id="txtTtramiteTelem" value="#{viewServicios.canalesSeleccionados}" style="min-width: 15rem"
+                                                          multiple="true" scrollHeight="250"
+                                                          label="#{labels['viewServicios.seleccioneCanales']}">
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.presencial']}" itemValue="P"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.telematico']}" itemValue="T"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.telefonico']}" itemValue="F"/>
+                                    </p:selectCheckboxMenu>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.plataformaTramitacion']}:" for="txtPlataforma"/>
+                                    <p:selectOneMenu id="txtPlataforma" value="#{viewServicios.filtro.plataforma}"
+                                                     styleClass="w95" autoWidth="false"
+                                                     converter="#{platTramitElectronicaConverter}">
+                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                        <f:selectItems value="#{viewServicios.listPlataformas}" var="estado"
+                                                       itemValue="#{estado}"
+                                                       itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
+                                    </p:selectOneMenu>
+                                </div>
                             </div>
-                            <p:selectOneMenu id="txtTipoEstado" value="#{viewServicios.filtro.estado}"
-                                             styleClass="w95">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{typeEstados.values()}" var="estado"
-                                               itemValue="#{estado.toString()}"
-                                               itemLabel="#{labels['TypeProcedimientoEstado.' += estado]}"/>
-
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <div>
-                                <h:outputText value="#{labels['viewServicios.publicoObjetivo']}:" for="txtPublicoObjetivo"/>
-                            </div>
-                            <p:inputText id="txtPublicoObjetivo"
-                                         value="#{viewServicios.filtro.getPublicoObjetivos(sessionBean.lang)}"
-                                         styleClass="w70" disabled="true"/>
-                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
-                                             styleClass="text-success"
-                                             process="@this"
-                                             actionListener="#{viewServicios.seleccionarPubObjetivos()}">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogPubObjEnt}"
-                                        process="@this" update="txtPublicoObjetivo"/>
-                            </p:commandButton>
-                        </div>
-
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <div>
-                                <h:outputText value="#{labels['viewServicios.materias']}:" for="txtMaterias"/>
-                            </div>
-                            <p:inputText id="txtMaterias" value="#{viewServicios.filtro.getMaterias(sessionBean.lang)}"
-                                         styleClass="w70" disabled="true"/>
-                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
-                                             styleClass="text-success"
-                                             process="@this" actionListener="#{viewServicios.seleccionarMaterias()}">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogMateria}"
-                                        process="@this" update="txtMaterias"/>
-                            </p:commandButton>
-                        </div>
-
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <div>
-                                <h:outputText value="#{labels['viewProcedimientos.temas']}:" for="txtTemas"/>
-                            </div>
-                            <p:inputText id="txtTemas"
-                                         value="#{viewServicios.filtro.getTemas(sessionBean.lang)}"
-                                         styleClass="w70" disabled="true"/>
-                            <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
-                                             styleClass="text-success"
-                                             process="@this"
-                                             actionListener="#{viewServicios.seleccionarTemas()}">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogTema}"
-                                        process="@this" update="txtTemas"/>
-                            </p:commandButton>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
-                            <p:selectOneMenu id="txtEsComun" value="#{viewServicios.filtro.comun}"
-                                             styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <div>
-                                <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:" for="txtTtramiteTelem"/>
-                            </div>
-                            <p:selectCheckboxMenu id="txtTtramiteTelem" value="#{viewServicios.canalesSeleccionados}" style="min-width: 15rem"
-                                                  multiple="true" scrollHeight="250"
-                                                  label="#{labels['viewServicios.seleccioneCanales']}" >
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.presencial']}" itemValue="P"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.telematico']}" itemValue="T"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.telefonico']}" itemValue="F"/>
-                            </p:selectCheckboxMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewProcedimientos.plataformaTramitacion']}:"
-                                          for="txtPlataforma"/>
-                            <p:selectOneMenu id="txtPlataforma" value="#{viewServicios.filtro.plataforma}"
-                                             styleClass="w95" autoWidth="false"
-                                             converter="#{platTramitElectronicaConverter}">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItems value="#{viewServicios.listPlataformas}" var="estado"
-                                               itemValue="#{estado}"
-                                               itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
-                            </p:selectOneMenu>
-                        </div>
-                        <div class="ui-g-12 ui-md-6 ui-lg-4 bloque">
-                            <h:outputText value="#{labels['viewProcedimientos.mensajesPorLeer']}:"
-                                          for="txtMensajesPorLeer"/>
-                            <p:selectOneMenu id="txtMensajesPorLeer"
-                                             value="#{viewServicios.filtro.mensajesPendiente}"
-                                             styleClass="w95" autoWidth="false">
-                                <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.sinMensajes']}" itemValue="NO"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientes']}"
-                                              itemValue="PE"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientesSupervisor']}"
-                                              itemValue="PS"/>
-                                <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientesGestor']}"
-                                              itemValue="PG"/>
-                            </p:selectOneMenu>
-                        </div>
-
-
-                        <div class="ui-g-12 text-center">
-                            <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="mr-2"
-                                             icon="pi pi-trash" iconPos="top" action="#{viewServicios.limpiarFiltro()}"
-                                             process="@form" update="panel"/>
-                            <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
-                                             actionListener="#{viewServicios.buscar()}" update="messages dataTable"
-                                             onstart="start()" oncomplete="stop()"
-                                             process="@form" />
-
-                            <h:inputHidden id="descargarFlag" value="#{viewServicios.downloadReady}" />
-                            <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
-                                             actionListener="#{viewServicios.exportar()}" process="@form">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoExportar}" update="messages descargarFlag"
-                                        oncomplete="if($('#form\\:descargarFlag').val()==='true'){ $('#form\\:descargarDoc').click(); }" />
-                            </p:commandButton>
-                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
-                                <p:fileDownload value="#{viewServicios.file}" />
-                            </p:commandButton>
                         </div>
                     </div>
-                </p>
 
+                    <div class="ui-g-12 text-center">
+                        <p:commandButton value="#{labels['dict.limpiarFiltro']}" icon="pi pi-trash" iconPos="top"
+                                         action="#{viewServicios.limpiarFiltro()}" process="@form" update="panel"/>
+                        <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
+                                         actionListener="#{viewServicios.buscar()}" update="messages dataTable"
+                                         onstart="start()" oncomplete="stop()" process="@form"/>
+                        <h:inputHidden id="descargarFlag" value="#{viewServicios.downloadReady}"/>
+                        <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print" styleClass="ml-2"
+                                         actionListener="#{viewServicios.exportar()}" process="@form">
+                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoExportar}" update="messages descargarFlag"
+                                    oncomplete="if($('#form\\:descargarFlag').val()==='true'){ $('#form\\:descargarDoc').click(); }"/>
+                        </p:commandButton>
+                        <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
+                            <p:fileDownload value="#{viewServicios.file}"/>
+                        </p:commandButton>
+                    </div>
+                </div>
             </p:panel>
-            <p:dataTable id="dataTable" value="#{viewServicios.lazyModel}" var="procedimiento"
-                         paginator="true" lazy="true" filterDelay="300" widgetVar="procedimientoTable"
+            <p:dataTable id="dataTable" value="#{viewServicios.lazyModel}" var="servicio"
+                         paginator="true" lazy="true" filterDelay="300" widgetVar="servicioTable"
                          rows="#{viewServicios.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
                          first="#{viewServicios.filtro.paginaFirst}"
                          paginatorPosition="bottom" paginatorAlwaysVisible="true"
@@ -434,110 +433,128 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
+                <p:column headerText=" " styleClass="w40px">
+                    <f:facet name="header"/>
+                    <p:rowToggler rendered="#{viewServicios.mostrarMenuBorrador(servicio)}"/>
+                </p:column>
                 <p:column  headerText=" " styleClass="w60px">
                     <f:facet name="header"/>
-                    <i class="#{procedimiento.getIcon()} font30px"></i>
+                    <i class="#{servicio.getIcon()} font30px"></i>
                 </p:column>
-                <p:column sortBy="#{procedimiento.codigo}" headerText="#{labels['dict.codigo']}"  styleClass="w100px">
+                <p:column sortBy="#{servicio.codigo}" headerText="#{labels['dict.codigo']}"  styleClass="w100px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{procedimiento.codigo}"/>
+                    <h:outputText value="#{servicio.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{procedimiento.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w110px">
+                <p:column sortBy="#{servicio.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w110px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{procedimiento.codigoSIA}"/>
+                    <h:outputText value="#{servicio.codigoSIA}"/>
                 </p:column>
                 <p:column headerText="#{labels['dict.estado']}" styleClass="w170px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += procedimiento.estado.toString()]}"/>
+                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += servicio.estado.toString()]}"/>
                 </p:column>
-                <p:column sortBy="#{procedimiento.nombre}" headerText="#{labels['dict.nombre']}">
+                <p:column sortBy="#{servicio.nombre}" headerText="#{labels['dict.nombre']}">
                     <f:facet name="header"/>
-                    <h:outputText value="#{procedimiento.nombre}"/>
+                    <h:outputText value="#{servicio.nombre}"/>
                 </p:column>
                 <!--
                 <p:column sortBy="#{procedimiento.tipoProcedimiento}" headerText="#{labels['dict.tipoProcedimiento']}" styleClass="w170px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.tipoProcedimiento}"/>
                 </p:column>-->
-                <p:column sortBy="#{procedimiento.fechaActualizacion}" headerText="#{labels['viewProcedimientos.fechaActualizacion']}"  styleClass="w200px">
+                <p:column sortBy="#{servicio.fechaActualizacion}" headerText="#{labels['viewProcedimientos.fechaActualizacion']}"  styleClass="w200px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{procedimiento.fechaActualizacion}">
+                    <h:outputText value="#{servicio.fechaActualizacion}">
                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                     </h:outputText>
                 </p:column>
-                <p:column sortBy="#{procedimiento.comun}" headerText="#{labels['viewProcedimientos.comun']}" styleClass="w100px">
+                <p:column sortBy="#{servicio.comun}" headerText="#{labels['viewProcedimientos.comun']}" styleClass="w100px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{procedimiento.getLiteralComun()}"/>
+                    <h:outputText value="#{servicio.getLiteralComun()}"/>
                 </p:column>
                 <p:column  headerText=" " styleClass="w70px">
                     <f:facet name="header"/>
-                    <p:commandLink action="#{viewServicios.abrirMensajes(procedimiento.getCodigo())}" rendered="#{procedimiento.tieneMensajesPendientes()}">
-                        <p:graphicImage value="#{procedimiento.getCssMensajes()}"  styleClass="w50px" />
+                    <p:commandLink action="#{viewServicios.abrirMensajes(servicio.getCodigo())}" rendered="#{servicio.tieneMensajesPendientes()}">
+                        <p:graphicImage value="#{servicio.getCssMensajes()}"  styleClass="w50px" />
                         <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogMensajes}" process="@this" update="dataTable" />
                     </p:commandLink>
 
                 </p:column>
 
-                <p:column headerText="#{labels['dict.acciones']}" styleClass="w260px">
+                <p:column headerText="#{labels['dict.acciones']}" styleClass="w140px">
                     <f:facet name="header"/>
                     <div class="d-flex flex-nowrap align-items-center">
                         <p:commandButton icon="pi pi-copy" title="#{labels['dict.clonar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarClonar(procedimiento)}"
-                                         actionListener="#{viewServicios.clonarServicio(procedimiento)}"
+                                         rendered="#{viewServicios.mostrarClonar(servicio)}"
+                                         actionListener="#{viewServicios.clonarServicio(servicio)}"
                                          process="@this">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoClonar}"
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarConsultar(procedimiento)}"
-                                         actionListener="#{viewServicios.consultarServicio(procedimiento)}"
+                                         rendered="#{viewServicios.mostrarConsultar(servicio)}"
+                                         actionListener="#{viewServicios.consultarServicio(servicio)}"
                                          process="@this" onstart="startCargando()" oncomplete="stopCargando()">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarEditar(procedimiento)}"
-                                         actionListener="#{viewServicios.editarServicio(procedimiento)}"
+                                         rendered="#{viewServicios.mostrarEditar(servicio)}"
+                                         actionListener="#{viewServicios.editarServicio(servicio)}"
                                          process="@this" onstart="startCargando()" oncomplete="stopCargando()">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarConsultarBorradorPublicado(procedimiento)}"
-                                         actionListener="#{viewServicios.consultarServicio(procedimiento)}"
+                                         rendered="#{viewServicios.mostrarConsultarBorradorPublicado(servicio)}"
+                                         actionListener="#{viewServicios.consultarServicio(servicio)}"
                                          process="@this" onstart="startCargando()" oncomplete="stopCargando()">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarBorrarPublicado(procedimiento)}"
-                                         actionListener="#{viewServicios.borrarServicio(procedimiento)}"
+                                         rendered="#{viewServicios.mostrarBorrarPublicado(servicio)}"
+                                         actionListener="#{viewServicios.borrarServicio(servicio)}"
                                          process="@this"/>
 
-                        <p:menuButton value="#{labels['dict.borrador']}"
-                                      styleClass="mr-1"
-                                      rendered="#{viewServicios.mostrarMenuBorrador(procedimiento)}">
-                            <p:menuitem value="#{labels['dict.editar']}"
-                                        rendered="#{viewServicios.mostrarEditarBorrador(procedimiento)}"
-                                        actionListener="#{viewServicios.editarServicio(procedimiento)}"
-                                        process="@this" onstart="startCargando()" oncomplete="stopCargando()">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:menuitem>
-                            <p:menuitem value="#{labels['dict.consultar']}"
-                                        rendered="#{viewServicios.mostrarConsultarBorrador(procedimiento) or viewServicios.mostrarConsultarBorradorPublicado(procedimiento)}"
-                                        actionListener="#{viewServicios.consultarServicio(procedimiento)}"
-                                        process="@this" onstart="startCargando()" oncomplete="stopCargando()">
-                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                        update="messages dataTable"/>
-                            </p:menuitem>
-                            <p:menuitem value="#{labels['dict.borrar']}"
-                                        rendered="#{viewServicios.mostrarBorrarBorrador(procedimiento)}"
-                                        actionListener="#{viewServicios.borrarServicio(procedimiento)}"
-                                        process="@this"/>
-                        </p:menuButton>
                     </div>
                 </p:column>
+
+                <p:rowExpansion rendered="#{viewServicios.mostrarMenuBorrador(servicio)}">
+                    <ui:param name="borrador" value="#{viewServicios.getBorrador(servicio)}"/>
+                    <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100"
+                                 style="table-layout:fixed; width:100%;"
+                                 columnClasses="align-middle w170px,align-middle w-auto,align-middle w170px,align-middle w200px,align-middle w170px">
+                        <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
+                        <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
+                        <h:outputText value="#{borrador.uaInstructor.codigo}"/>
+                        <h:outputText value="#{borrador.fechaActualizacion}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                        </h:outputText>
+                        <h:panelGroup class="d-flex flex-nowrap align-items-center">
+                            <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
+                                             rendered="#{viewServicios.mostrarConsultarBorrador(servicio)}"
+                                             actionListener="#{viewServicios.consultarServicio(servicio)}"
+                                             process="@this" update="messages dataTable"
+                                             onstart="startCargando()" oncomplete="stopCargando()">
+                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
+                                             rendered="#{viewServicios.mostrarEditarBorrador(servicio)}"
+                                             actionListener="#{viewServicios.editarServicio(servicio)}"
+                                             process="@this" update="messages dataTable"
+                                             onstart="startCargando()" oncomplete="stopCargando()">
+                                <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
+                                             rendered="#{viewServicios.mostrarBorrarBorrador(servicio)}"
+                                             actionListener="#{viewServicios.borrarServicio(servicio)}"
+                                             process="@this" update="messages dataTable"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:rowExpansion>
             </p:dataTable>
 
             <h:outputScript>
@@ -576,7 +593,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 };
             </h:outputScript>
 
-            <p:confirmDialog message="#{labels['viewProcedimientos.aviso.noExisteModif']}"
+            <p:confirmDialog message="#{labels['viewServicios.aviso.noExisteModif']}"
                              header="#{labels['dict.aviso']}"
                              widgetVar="cdDeseaCrearEditar">
                 <p:commandButton value="#{labels['dict.si']}" onclick="confirmation.hide()"

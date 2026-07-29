@@ -465,6 +465,22 @@ public class ViewServicios extends AbstractController implements Serializable {
         clonarServicio();
     }
 
+    public ServicioDTO getBorrador(ServicioGridDTO servicio) {
+        if (servicio == null) {
+            return null;
+        }
+        Long idMod = servicio.getCodigoWFMod();
+        if (idMod == null) {
+            return null;
+        }
+        try {
+            return procedimientoService.findServicioById(idMod);
+        } catch (Exception e) {
+            LOG.error("Error obteniendo borrador de procedimiento: " + idMod, e);
+            return null;
+        }
+    }
+
     public void borrarProcedimentoMod() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));

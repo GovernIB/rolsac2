@@ -197,11 +197,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
 
             <div class="cabeceraFiltros">
-                <div class="row">
-                    <div class="ui-g-12 ui-md-9 ui-lg-9">
-                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                <div class="row" style="display:flex; align-items:center; flex-wrap:nowrap; width:100%;">
+                    <div class="ui-g-12" style="display:flex; align-items:center; flex-wrap:nowrap; flex:1 1 auto; min-width:0;">
+                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" style="white-space: nowrap; flex-shrink:0;" />
                         <p:inputText id="filtroBusqueda"  value="#{viewProcedimientos.filtro.texto}" styleClass="estiloGrande ml-2 mr-2"
-                                        style="width: 40rem; max-width: 100%;" />
+                                        style="flex: 1 1 auto; min-width: 0; width: auto; max-width: none;" />
                         <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
                                             styleClass="mr-2" icon="pi pi-search"
                                             actionListener="#{viewProcedimientos.buscarEvt()}"
@@ -217,7 +217,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus"
                                             onclick="PF('panel').toggle();cambiarBoton()"/>
                     </div>
-                    <div class="ui-g-12 ui-md-3 ui-lg-3 text-right">
+                    <div class="ui-g-12 text-right" style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:nowrap; white-space:nowrap; flex:0 0 auto; width:auto; margin-left:auto;">
                         <p:commandButton value="#{labels['dict.nuevo']}" styleClass="mr-2" icon="pi pi-file-o"
                                             iconPos="top" actionListener="#{viewProcedimientos.nuevoProcedimiento}"
                                             process="@this" rendered="#{!viewProcedimientos.isModoConsulta()}">
@@ -611,7 +611,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             >
                 <!--
                         selectionMode="single"
-                         rowKey="#{procedimiento.codigo}"
                          sortBy="#{viewProcedimientos.filtro.orderBy}"
                          sortOrder="#{viewProcedimientos.filtro.order}"
 
@@ -623,6 +622,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
                 </f:facet>
+                <p:column headerText=" " styleClass="w40px">
+                    <f:facet name="header"/>
+                    <p:rowToggler rendered="#{viewProcedimientos.mostrarMenuBorrador(procedimiento)}"/>
+                </p:column>
                 <p:column headerText=" " styleClass="w60px">
                     <f:facet name="header"/>
                     <i class="#{procedimiento.getIcon()} font30px"></i>
@@ -631,7 +634,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.codigo}"/>
                 </p:column>
-                <p:column sortBy="#{procedimiento.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w110px">
+                <p:column sortBy="#{procedimiento.codigoSIA}" headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w100px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.codigoSIA}"/>
                 </p:column>
@@ -643,13 +646,16 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.nombre}"/>
                 </p:column>
-                <p:column sortBy="#{procedimiento.tipoProcedimiento}" headerText="#{labels['dict.tipoProcedimiento']}"
-                          styleClass="w170px">
+                <p:column sortBy="#{procedimiento.uaInstructor}" headerText="#{labels['viewProcedimientos.servicioInstructor']}" styleClass="w160px">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{procedimiento.uaInstructor}"/>
+                </p:column>
+                <p:column sortBy="#{procedimiento.tipoProcedimiento}" headerText="#{labels['dict.tipoProcedimiento']}" styleClass="w160px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.tipoProcedimiento}"/>
                 </p:column>
                 <p:column sortBy="#{procedimiento.fechaActualizacion}"
-                          headerText="#{labels['viewProcedimientos.fechaActualizacion']}" styleClass="w200px">
+                          headerText="#{labels['viewProcedimientos.fechaActualizacion']}" styleClass="w170px">
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.fechaActualizacion}">
                         <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
@@ -660,10 +666,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     <f:facet name="header"/>
                     <h:outputText value="#{procedimiento.getLiteralComun()}"/>
                 </p:column>
-<!--                <p:column headerText="Unidad administrativa" styleClass="w110px">-->
-<!--                    <f:facet name="header"/>-->
-<!--                    <h:outputText value="#{procedimiento.uaInstructor}"/>-->
-<!--                </p:column>-->
                 <p:column headerText=" " styleClass="w100px">
                     <f:facet name="header"/>
                     <p:commandLink action="#{viewProcedimientos.abrirMensajes(procedimiento.getCodigo())}"
@@ -713,64 +715,39 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </div>
                 </p:column>
 
-                <p:column headerText=" " styleClass="w60px">
-                    <f:facet name="header"/>
-                    <p:rowToggler rendered="#{viewProcedimientos.mostrarMenuBorrador(procedimiento)}"/>
-                </p:column>
-
-                <p:rowExpansion rendered="#{viewProcedimientos.tieneBorrador(procedimiento)}">
-                    <p:dataTable value="#{viewProcedimientos.getBorrador(procedimiento)}" var="borrador"
-                                 styleClass="table table-sm table-bordered mb-0 table-row-expansion"
-                                 rowIndexVar="row">
-                        <p:column headerText=" " styleClass="w60px text-center">
-                            <i class="#{borrador.getIcon()} font30px"></i>
-                        </p:column>
-                        <p:column headerText="#{labels['dict.codigo']}" styleClass="w100px">
-                            <h:outputText value="#{borrador.codigo}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['viewProcedimientos.sia.codigo']}" styleClass="w110px">
-                            <h:outputText value="#{borrador.codigoSIA}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['dict.estado']}" styleClass="w170px">
-                            <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['dict.nombre']}">
-                            <h:outputText value="#{borrador.nombre.getTraduccion(sessionBean.lang)}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['dict.tipoProcedimiento']}" styleClass="w170px">
-                            <h:outputText value="#{borrador.tipoProcedimiento.descripcion.getTraduccion(sessionBean.lang)}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['viewProcedimientos.fechaActualizacion']}" styleClass="w200px">
-                            <h:outputText value="#{borrador.fechaActualizacion}">
-                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="#{labels['viewProcedimientos.comun']}" styleClass="w90px text-center">
-                            <h:outputText value="#{borrador.comun == 1 ? labels['dict.si'] : labels['dict.no']}"/>
-                        </p:column>
-                        <p:column headerText="#{labels['dict.acciones']}" styleClass="w160px">
-                            <div class="d-flex flex-nowrap align-items-center">
-                                <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
-                                                 rendered="#{viewProcedimientos.mostrarConsultarBorrador(procedimiento)}"
-                                                 actionListener="#{viewProcedimientos.consultarProcedimiento(procedimiento)}"
-                                                 process="@this" onstart="startCargando()" oncomplete="stopCargando()">
-                                    <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
-                                            update="messages dataTable"/>
-                                </p:commandButton>
-                                <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
-                                                 rendered="#{viewProcedimientos.mostrarEditarBorrador(procedimiento)}"
-                                                 actionListener="#{viewProcedimientos.editarProcedimiento(procedimiento)}"
-                                                 process="@this" onstart="startCargando()" oncomplete="stopCargando()">
-                                    <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
-                                            update="messages dataTable"/>
-                                </p:commandButton>
-                                <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
-                                                 rendered="#{viewProcedimientos.mostrarBorrarBorrador(procedimiento)}"
-                                                 actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento)}"
-                                                 process="@this"/>
-                            </div>
-                        </p:column>
-                    </p:dataTable>
+                <p:rowExpansion rendered="#{viewProcedimientos.mostrarMenuBorrador(procedimiento)}">
+                    <ui:param name="borrador" value="#{viewProcedimientos.getBorrador(procedimiento)}"/>
+                    <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100"
+                                 style="table-layout:fixed; width:100%;" columnClasses="align-middle w170px,align-middle w-auto,align-middle w170px,align-middle w200px,align-middle w170px">
+                        <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
+                        <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
+                        <h:outputText value="#{borrador.uaInstructor.codigo}"/>
+                        <h:outputText value="#{borrador.fechaActualizacion}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                        <h:panelGroup class="d-flex flex-nowrap align-items-center">
+                            <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
+                                            rendered="#{viewProcedimientos.mostrarConsultarBorrador(procedimiento)}"
+                                            actionListener="#{viewProcedimientos.consultarProcedimiento(procedimiento)}"
+                                            process="@this" update="messages dataTable"
+                                            onstart="startCargando()" oncomplete="stopCargando()">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
+                                            rendered="#{viewProcedimientos.mostrarEditarBorrador(procedimiento)}"
+                                            actionListener="#{viewProcedimientos.editarProcedimiento(procedimiento)}"
+                                            process="@this" update="messages dataTable"
+                                            onstart="startCargando()" oncomplete="stopCargando()">
+                                <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
+                                        update="messages dataTable"/>
+                            </p:commandButton>
+                            <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
+                                            rendered="#{viewProcedimientos.mostrarBorrarBorrador(procedimiento)}"
+                                            actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento)}"
+                                            process="@this" update="messages dataTable"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
                 </p:rowExpansion>
             </p:dataTable>
 

@@ -400,6 +400,22 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         clonarProcedimiento();
     }
 
+    public ProcedimientoDTO getBorrador(ProcedimientoGridDTO procedimiento) {
+        if (procedimiento == null) {
+            return null;
+        }
+        Long idMod = procedimiento.getCodigoWFMod();
+        if (idMod == null) {
+            return null;
+        }
+        try {
+            return procedimientoService.findProcedimientoById(idMod);
+        } catch (Exception e) {
+            LOG.error("Error obteniendo borrador de procedimiento: " + idMod, e);
+            return null;
+        }
+    }
+
     public void borrarProcedimentoMod() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
@@ -952,26 +968,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
             UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", TypeModoAcceso.CONSULTA, params, true, 800, 350);
         }
-    }
-    
-    public ProcedimientoDTO getBorrador(ProcedimientoGridDTO procedimiento) {
-        if (procedimiento == null) {
-            return null;
-        }
-        Long idMod = procedimiento.getCodigoWFMod();
-        if (idMod == null) {
-            return null;
-        }
-        try {
-            return procedimientoService.findProcedimientoById(idMod);
-        } catch (Exception e) {
-            LOG.error("Error obteniendo borrador de procedimiento: " + idMod, e);
-            return null;
-        }
-    }
-
-    public boolean tieneBorrador(ProcedimientoGridDTO procedimiento) {
-        return procedimiento != null && procedimiento.getCodigoWFMod() != null;
     }
 
     public void consultarTema(Integer index) {
