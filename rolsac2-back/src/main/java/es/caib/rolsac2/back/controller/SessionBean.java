@@ -356,6 +356,15 @@ public class SessionBean implements Serializable {
         String idUsuario = seguridad.getIdentificadorUsuario();
         UsuarioDTO usuarioPerfil = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario, lang);
         SesionDTO sesionDTO = systemServiceBean.findSesionById(usuarioPerfil.getCodigo());
+        if (sesionDTO == null) {
+            // La sesión fue eliminada (p.ej. borrarTodasSesiones); la reconstruimos con el estado actual
+            sesionDTO = new SesionDTO();
+            sesionDTO.setIdUsuario(usuarioPerfil.getCodigo());
+            sesionDTO.setIdioma(lang);
+            sesionDTO.setPerfil(this.perfil != null ? this.perfil.toString() : perfil.toString());
+            sesionDTO.setIdEntidad(this.entidad != null ? this.entidad.getCodigo() : null);
+            sesionDTO.setIdUa(this.unidadActiva != null ? this.unidadActiva.getCodigo() : null);
+        }
         sesionDTO.setFechaUltimaSesion(new Date());
         TypePerfiles perfilAntiguo = this.perfil;
 

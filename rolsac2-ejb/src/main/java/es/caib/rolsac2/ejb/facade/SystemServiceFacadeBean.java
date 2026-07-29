@@ -148,8 +148,16 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public void updateSesion(SesionDTO sesionDTO) {
         JSesion sesion = sesionRepository.findById(sesionDTO.getIdUsuario());
-        sesionConverter.mergeEntity(sesion, sesionDTO);
-        sesionRepository.update(sesion);
+        if (sesion == null) {
+            // La sesión fue eliminada (p.ej. borrarTodasSesiones); la recreamos
+            JSesion nuevaSesion = sesionConverter.createEntity(sesionDTO);
+            if (sesionRepository.comprobarDatos(sesionDTO)) {
+                sesionRepository.create(nuevaSesion);
+            }
+        } else {
+            sesionConverter.mergeEntity(sesion, sesionDTO);
+            sesionRepository.update(sesion);
+        }
     }
 
     @Override
