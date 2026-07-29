@@ -1489,7 +1489,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public boolean isMostrarBtnFlujo() {
         if (this.isGestor()) {
-        	if (this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION || this.data.getEstado() == TypeProcedimientoEstado.PUBLICADO) {
+            if (this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION || this.data.getEstado() == TypeProcedimientoEstado.PUBLICADO) {
                 return true;
             } else {
                 return false;
@@ -1516,7 +1516,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean isMostrarBtnMensajes() {
-        if (this.isGestor() || this.isAdministradorContenidos()){
+        if (this.isGestor() || this.isAdministradorContenidos()) {
             return true;
         } else {
             return false;

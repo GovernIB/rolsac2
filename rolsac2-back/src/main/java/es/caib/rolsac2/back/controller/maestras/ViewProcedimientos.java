@@ -380,6 +380,26 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
     }
 
+    public void editarProcedimiento(ProcedimientoGridDTO procedimiento) {
+        this.datoSeleccionado = procedimiento;
+        editarProcedimiento();
+    }
+
+    public void consultarProcedimiento(ProcedimientoGridDTO procedimiento) {
+        this.datoSeleccionado = procedimiento;
+        consultarProcedimiento();
+    }
+
+    public void borrarProcedimiento(ProcedimientoGridDTO procedimiento) {
+        this.datoSeleccionado = procedimiento;
+        PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
+    }
+
+    public void clonarProcedimiento(ProcedimientoGridDTO procedimiento) {
+        this.datoSeleccionado = procedimiento;
+        clonarProcedimiento();
+    }
+
     public void borrarProcedimentoMod() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
@@ -759,6 +779,16 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         UtilJSF.openDialog("tipo/dialogSeleccionMateriaSIA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
     }
 
+    public void seleccionarUaInstructor() {
+        if (filtro.getUaInstructorCodigo() != null) {
+            UnidadAdministrativaDTO uaInstructor = uaService.findUASimpleByID(filtro.getUaInstructorCodigo(), sessionBean.getLang(), null);
+            if (uaInstructor != null) {
+                UtilJSF.anyadirMochila("ua", uaInstructor);
+            }
+        }
+        UtilJSF.openDialog("/comun/dialogSeleccionarUA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 750);
+    }
+
     public void seleccionarNormativas() {
         UtilJSF.anyadirMochila("normativasSeleccionadas", filtro.getNormativas());
         UtilJSF.openDialog("tipo/dialogSeleccionNormativa", TypeModoAcceso.EDICION, new HashMap<>(), true, 1200, 750);
@@ -788,6 +818,24 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 }
                 filtro.setMaterias(new ArrayList<>());
                 filtro.getMaterias().addAll(materiasSeleccionadas);
+            }
+        }
+    }
+
+    public void returnDialogUaInstructor(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            UnidadAdministrativaDTO uaInstructor = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaInstructor == null) {
+                filtro.setUaInstructorCodigo(null);
+                filtro.setUaInstructorNombre(null);
+            } else {
+                filtro.setUaInstructorCodigo(uaInstructor.getCodigo());
+                if (uaInstructor.getNombre() != null) {
+                    filtro.setUaInstructorNombre(uaInstructor.getNombre().getTraduccionConValor(sessionBean.getLang()));
+                } else {
+                    filtro.setUaInstructorNombre(null);
+                }
             }
         }
     }
@@ -904,6 +952,26 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
             UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", TypeModoAcceso.CONSULTA, params, true, 800, 350);
         }
+    }
+    
+    public ProcedimientoDTO getBorrador(ProcedimientoGridDTO procedimiento) {
+        if (procedimiento == null) {
+            return null;
+        }
+        Long idMod = procedimiento.getCodigoWFMod();
+        if (idMod == null) {
+            return null;
+        }
+        try {
+            return procedimientoService.findProcedimientoById(idMod);
+        } catch (Exception e) {
+            LOG.error("Error obteniendo borrador de procedimiento: " + idMod, e);
+            return null;
+        }
+    }
+
+    public boolean tieneBorrador(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && procedimiento.getCodigoWFMod() != null;
     }
 
     public void consultarTema(Integer index) {
@@ -1177,6 +1245,50 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void setDownloadReady(boolean downloadReady) {
         this.downloadReady = downloadReady;
+    }
+
+    public boolean mostrarClonar(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta() && !(this.isGestor() && BooleanUtils.isTrue(procedimiento.getComun()));
+    }
+
+    public boolean mostrarConsultar(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && procedimiento.getCodigoWFPub() != null;
+    }
+
+    public boolean mostrarEditar(ProcedimientoGridDTO procedimiento) {
+        if (procedimiento == null || isModoConsulta()) {
+            return false;
+        }
+
+        String estado = procedimiento.getEstado();
+        return "M".equals(estado) || "P".equals(estado) || ("PV".equals(estado) && !this.isGestor());
+    }
+
+    public boolean mostrarBorrarPublicado(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta() && "M".equals(procedimiento.getEstado())
+                && !(this.isGestor() && BooleanUtils.isTrue(procedimiento.getComun()));
+    }
+
+    public boolean mostrarMenuBorrador(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta() && ("PM".equals(procedimiento.getEstado()) || "PPV".equals(procedimiento.getEstado()));
+    }
+
+    public boolean mostrarConsultarBorradorPublicado(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta() && "PV".equals(procedimiento.getEstado()) && this.isGestor();
+    }
+
+    public boolean mostrarEditarBorrador(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta()
+                && ("PM".equals(procedimiento.getEstado()) || ("PPV".equals(procedimiento.getEstado()) && !this.isGestor()));
+    }
+
+    public boolean mostrarConsultarBorrador(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta() && "PPV".equals(procedimiento.getEstado()) && this.isGestor();
+    }
+
+    public boolean mostrarBorrarBorrador(ProcedimientoGridDTO procedimiento) {
+        return procedimiento != null && !isModoConsulta() && "PM".equals(procedimiento.getEstado())
+                && !(this.isGestor() && BooleanUtils.isTrue(procedimiento.getComun()));
     }
 
     public boolean isEstadoEditable() {

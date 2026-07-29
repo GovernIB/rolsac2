@@ -445,6 +445,26 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
     }
 
+    public void editarServicio(ServicioGridDTO servicio) {
+        this.datoSeleccionado = servicio;
+        editarProcedimiento();
+    }
+
+    public void consultarServicio(ServicioGridDTO servicio) {
+        this.datoSeleccionado = servicio;
+        consultarProcedimiento();
+    }
+
+    public void borrarServicio(ServicioGridDTO servicio) {
+        this.datoSeleccionado = servicio;
+        PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
+    }
+
+    public void clonarServicio(ServicioGridDTO servicio) {
+        this.datoSeleccionado = servicio;
+        clonarServicio();
+    }
+
     public void borrarProcedimentoMod() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
@@ -1270,6 +1290,50 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void setDownloadReady(boolean downloadReady) {
         this.downloadReady = downloadReady;
+    }
+
+    public boolean mostrarClonar(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta() && !(this.isGestor() && BooleanUtils.isTrue(servicio.getComun()));
+    }
+
+    public boolean mostrarConsultar(ServicioGridDTO servicio) {
+        return servicio != null && servicio.getCodigoWFPub() != null;
+    }
+
+    public boolean mostrarEditar(ServicioGridDTO servicio) {
+        if (servicio == null || isModoConsulta()) {
+            return false;
+        }
+
+        String estado = servicio.getEstado();
+        return "M".equals(estado) || "P".equals(estado) || ("PV".equals(estado) && !this.isGestor());
+    }
+
+    public boolean mostrarBorrarPublicado(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta() && "M".equals(servicio.getEstado())
+                && !(this.isGestor() && BooleanUtils.isTrue(servicio.getComun()));
+    }
+
+    public boolean mostrarMenuBorrador(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta() && ("PM".equals(servicio.getEstado()) || "PPV".equals(servicio.getEstado()));
+    }
+
+    public boolean mostrarConsultarBorradorPublicado(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta() && "PV".equals(servicio.getEstado()) && this.isGestor();
+    }
+
+    public boolean mostrarEditarBorrador(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta()
+                && ("PM".equals(servicio.getEstado()) || ("PPV".equals(servicio.getEstado()) && !this.isGestor()));
+    }
+
+    public boolean mostrarConsultarBorrador(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta() && "PPV".equals(servicio.getEstado()) && this.isGestor();
+    }
+
+    public boolean mostrarBorrarBorrador(ServicioGridDTO servicio) {
+        return servicio != null && !isModoConsulta() && "PM".equals(servicio.getEstado())
+                && !(this.isGestor() && BooleanUtils.isTrue(servicio.getComun()));
     }
 
     public boolean isEstadoEditable() {

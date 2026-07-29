@@ -162,6 +162,17 @@ body {
     margin-right: 5px;
 }
 
+.cabeceraFiltros {
+    background: rgb(245, 245, 245) none repeat scroll 0% 0%;
+    padding: 0px 15px 0px 15px;
+    display: flex;
+}
+
+.cabeceraFiltros .row {
+    width: 100%;
+    margin: 0;
+}
+
 .panelSinBotonToggle .ui-panel-titlebar-icon {
     display: none;
 }
@@ -1831,9 +1842,114 @@ a.iconoXarxes {
     font-weight: bold;
     /*color: #444;*/
 }
-.bloque {
-    display: block;
+#form\:panel .bloque {
+    display: flex;
+    align-items: center;
+    gap: .55rem .75rem;
+    flex-wrap: nowrap;
+    min-height: 42px;
 }
+
+#form\:panel .bloque > span,
+#form\:panel .bloque > label,
+.filtroProcedimientosBasico .bloque > span,
+.filtroProcedimientosBasico .bloque > label,
+#form\:panel .bloque > div > span,
+.filtroProcedimientosBasico .bloque > div > span {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+#form\:panel .bloque > .ui-inputtext,
+#form\:panel .bloque > .ui-selectonemenu,
+#form\:panel .bloque > .ui-selectbooleancheckbox,
+#form\:panel .bloque > .ui-datepicker,
+#form\:panel .bloque > .ui-calendar,
+#form\:panel .bloque > .ui-button {
+    flex: 1 1 220px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.filtroControl {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    flex: 1 1 220px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.filtroControl > .ui-inputtext,
+.filtroControl > .ui-selectonemenu,
+.filtroControl > .ui-selectbooleancheckbox,
+.filtroControl > .ui-datepicker,
+.filtroControl > .ui-calendar {
+    flex: 1 1 180px;
+    min-width: 0;
+    max-width: 100%;
+    width: auto !important;
+}
+
+
+.filtroProcedimientosBasico {
+    background: rgb(245, 245, 245) none repeat scroll 0 0;
+    box-sizing: border-box;
+    margin: 0 0 0px;
+    padding: 10px 15px 0;
+    width: 100%;
+}
+
+.filtroProcedimientosBasico .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.filtroProcedimientosBasico .filtroBasicoGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+    width: 100%;
+}
+
+.filtroProcedimientosBasico .filtroBasicoGrid > .bloque {
+    flex: 1 0 180px;
+    min-width: 180px;
+    max-width: none;
+}
+
+.filtroProcedimientosBasico .bloque {
+    display: flex;
+    align-items: center;
+    gap: .55rem .75rem;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.filtroProcedimientosBasico .bloque > .ui-inputtext,
+.filtroProcedimientosBasico .bloque > .ui-selectonemenu,
+.filtroProcedimientosBasico .bloque > .ui-selectbooleancheckbox {
+    flex: 1 1 180px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+#form\:panel .bloque .w95,
+#form\:panel .bloque .w90,
+#form\:panel .bloque .w70,
+#form\:panel .bloque .w80 {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.filtroProcedimientosBasico .bloque .w95 {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
 .pi-info-circle{
     width: 20px;
 }
