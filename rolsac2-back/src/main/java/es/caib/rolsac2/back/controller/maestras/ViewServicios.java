@@ -102,6 +102,9 @@ public class ViewServicios extends AbstractController implements Serializable {
     // Flag para indicar si se puede descargar el fichero exportado.
     private boolean downloadReady;
 
+    // Estado visual de expansión de filas en la tabla de servicios.
+    private final Map<Long, Boolean> serviciosExpandidos = new HashMap<>();
+
     /**
      * Cuando se exporta los datos
      **/
@@ -111,6 +114,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         LOG.debug("load View Servicios");
         permisoAccesoVentana(ViewServicios.class);
         this.limpiarFiltro();
+        this.serviciosExpandidos.clear();
         cargarFiltros();
         buscar();
         idioma = sessionBean.getLang();
@@ -1339,6 +1343,49 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void setDownloadReady(boolean downloadReady) {
         this.downloadReady = downloadReady;
+    }
+
+    public boolean isBorradorExpandido(Long codigoServicio) {
+        return codigoServicio != null && Boolean.TRUE.equals(serviciosExpandidos.get(codigoServicio));
+    }
+
+    public void actualizarEstadoBorradorToggle() {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String codigoServicioParam = params.get("codigoProcedimiento");
+        String expandidoParam = params.get("expandido");
+        String rowIndexParam = params.get("rowIndex");
+
+        if (codigoServicioParam == null) {
+            return;
+        }
+
+        try {
+            Long codigoServicio = Long.valueOf(codigoServicioParam);
+            boolean expandido = Boolean.parseBoolean(expandidoParam);
+            serviciosExpandidos.put(codigoServicio, expandido);
+
+            if (rowIndexParam != null && !rowIndexParam.isEmpty()) {
+                String updateId = "form:dataTable:" + rowIndexParam + ":estadoValor";
+                PrimeFaces.current().ajax().update(updateId);
+            }
+        } catch (NumberFormatException e) {
+            LOG.error("No se pudo interpretar el codigo del servicio: {}", codigoServicioParam, e);
+        } catch (Exception e) {
+            LOG.error("Error en actualizarEstadoBorradorToggle", e);
+        }
+    }
+
+    public String getLiteralEstado(ServicioGridDTO servicio) {
+        if (servicio == null || servicio.getEstado() == null) {
+            return "";
+        }
+
+        TypeProcedimientoEstado estado = TypeProcedimientoEstado.fromString(servicio.getEstado());
+        if (estado == null) {
+            return servicio.getEstado();
+        }
+
+        return getLiteral("TypeProcedimientoEstado." + estado.toString(isBorradorExpandido(servicio.getCodigo())));
     }
 
     public boolean mostrarClonar(ServicioGridDTO servicio) {

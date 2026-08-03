@@ -13,15 +13,13 @@ import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
-import es.caib.rolsac2.service.model.types.TypeModoAcceso;
-import es.caib.rolsac2.service.model.types.TypeNivelGravedad;
-import es.caib.rolsac2.service.model.types.TypeParametroVentana;
-import es.caib.rolsac2.service.model.types.TypePropiedadConfiguracion;
+import es.caib.rolsac2.service.model.types.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +104,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     // Flag para indicar si se puede descargar el fichero exportado
     private boolean downloadReady;
 
+    // Estado visual de expansión de filas en la tabla de procedimientos
+    private final Map<Long, Boolean> procedimientosExpandidos = new HashMap<>();
+
     public void load() {
         LOG.debug("load View Procedimientos");
         permisoAccesoVentana(ViewProcedimientos.class);
@@ -115,6 +116,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }*/
 
         this.limpiarFiltro();
+        this.procedimientosExpandidos.clear();
         cargarFiltros();
         buscar();
         idioma = sessionBean.getLang();
@@ -1290,6 +1292,87 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void setDownloadReady(boolean downloadReady) {
         this.downloadReady = downloadReady;
+    }
+
+    public boolean isBorradorExpandido(Long codigoProcedimiento) {
+        return codigoProcedimiento != null && Boolean.TRUE.equals(procedimientosExpandidos.get(codigoProcedimiento));
+    }
+
+    public void actualizarEstadoBorradorToggle() {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String codigoProcedimientoParam = params.get("codigoProcedimiento");
+        String expandidoParam = params.get("expandido");
+        String rowIndexParam = params.get("rowIndex");
+
+        LOG.info("===== actualizarEstadoBorradorToggle INICIO =====");
+        LOG.info("codigo: {}, expandido: {}, rowIndex: {}", codigoProcedimientoParam, expandidoParam, rowIndexParam);
+
+        if (codigoProcedimientoParam == null) {
+            LOG.warn("codigoProcedimientoParam es null");
+            return;
+        }
+
+        try {
+            Long codigoProcedimiento = Long.valueOf(codigoProcedimientoParam);
+            boolean expandido = Boolean.parseBoolean(expandidoParam);
+            procedimientosExpandidos.put(codigoProcedimiento, expandido);
+
+            LOG.info("Procedimiento {} marcado como expandido: {}", codigoProcedimiento, expandido);
+
+            // Forzar actualización de la celda de estado en la fila
+            if (rowIndexParam != null && !rowIndexParam.isEmpty()) {
+                String updateId = "form:dataTable:" + rowIndexParam + ":estadoValor";
+                LOG.info("solicitando update de ID: {}", updateId);
+                PrimeFaces.current().ajax().update(updateId);
+                LOG.info("PrimeFaces.current().ajax().update() ejecutado");
+            }
+            LOG.info("===== actualizarEstadoBorradorToggle FIN =====");
+        } catch (NumberFormatException e) {
+            LOG.error("No se pudo interpretar el código del procedimiento: {}", codigoProcedimientoParam, e);
+        } catch (Exception e) {
+            LOG.error("Error en actualizarEstadoBorradorToggle", e);
+        }
+    }
+
+    public void onRowToggle(ToggleEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        Long codigoProcedimiento = null;
+        Object data = event.getData();
+        if (data instanceof ProcedimientoGridDTO) {
+            codigoProcedimiento = ((ProcedimientoGridDTO) data).getCodigo();
+        } else if (data instanceof Number) {
+            codigoProcedimiento = ((Number) data).longValue();
+        } else if (data instanceof String) {
+            try {
+                codigoProcedimiento = Long.valueOf((String) data);
+            } catch (NumberFormatException e) {
+                LOG.debug("No se pudo interpretar el código del procedimiento en el rowToggle: {}", data, e);
+            }
+        }
+
+        if (codigoProcedimiento != null) {
+            procedimientosExpandidos.put(codigoProcedimiento, Visibility.VISIBLE.equals(event.getVisibility()));
+        }
+    }
+
+    public String getLiteralEstado(ProcedimientoGridDTO procedimiento) {
+        if (procedimiento == null || procedimiento.getEstado() == null) {
+            return "";
+        }
+
+        TypeProcedimientoEstado estado = TypeProcedimientoEstado.fromString(procedimiento.getEstado());
+        if (estado == null) {
+            return procedimiento.getEstado();
+        }
+
+        if (procedimiento.tieneBorrador()) {
+            return getLiteral("TypeProcedimientoEstado." + estado.toString(isBorradorExpandido(procedimiento.getCodigo())));
+        } else {
+            return getLiteral("TypeProcedimientoEstado." + estado.toString());
+        }
     }
 
     public boolean mostrarClonar(ProcedimientoGridDTO procedimiento) {

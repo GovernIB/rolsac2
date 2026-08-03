@@ -175,6 +175,13 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
             </p:dialog>
 
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
+            <p:remoteCommand name="actualizarEstadoBorradorToggle"
+                             process="@this"
+                             partialSubmit="true"
+                             async="false"
+                             oncomplete="console.log('actualizarEstadoBorradorToggle completado')"
+                             onstart="console.log('actualizarEstadoBorradorToggle iniciado')"
+                             actionListener="#{viewProcedimientos.actualizarEstadoBorradorToggle}"/>
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
                              widgetVar="actualizarBusqueda"
                              oncomplete="$('#form\\:btnBuscar').click();"
@@ -648,7 +655,9 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                 </p:column>
                 <p:column headerText="#{labels['dict.estado']}" styleClass="w170px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += procedimiento.estado.toString()]}"/>
+                    <h:panelGroup id="estadoValor">
+                        <h:outputText value="#{viewProcedimientos.getLiteralEstado(procedimiento)}"/>
+                    </h:panelGroup>
                 </p:column>
                 <p:column sortBy="#{procedimiento.nombre}" headerText="#{labels['dict.nombre']}">
                     <f:facet name="header"/>
@@ -791,6 +800,100 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                         toggler.trigger('click');
                     }
                 }
+
+                function sincronizarTodosBorrador() {
+                    var dataTable = PF('procedimientoTable');
+                    if (!dataTable || !dataTable.tbody || dataTable.tbody.length === 0) {
+                        return;
+                    }
+
+                    var rows = dataTable.tbody.find('tr[data-rk]');
+                    rows.each(function(index) {
+                        var row = $(this);
+                        var codigoProcedimiento = row.attr('data-rk');
+                        if (!codigoProcedimiento) {
+                            return true;
+                        }
+
+                        var expandido = row.hasClass('ui-expanded-row');
+                        actualizarEstadoBorradorToggle([
+                            { name: 'codigoProcedimiento', value: codigoProcedimiento },
+                            { name: 'expandido', value: expandido },
+                            { name: 'rowIndex', value: index }
+                        ]);
+                    });
+                }
+
+                function setupRowToggler() {
+                    if (window.rowTogglerSetup) {
+                        return;
+                    }
+                    window.rowTogglerSetup = true;
+
+                    console.log('setupRowToggler iniciado');
+
+                    var observer = new MutationObserver(function(mutations) {
+                        for (var i = 0; i < mutations.length; i++) {
+                            var mutation = mutations[i];
+                            // Detectar cuando una fila cambia de clase (cuando se expande/contrae)
+                            if (mutation.attributeName === 'class' && mutation.target.tagName === 'TR') {
+                                var row = $(mutation.target);
+                                var codigoProcedimiento = row.attr('data-rk');
+
+                                if (codigoProcedimiento && row.has('td').length > 0) {
+                                    // Esta es la fila principal, no la de expansión
+                                    var expandido = row.hasClass('ui-expanded-row');
+
+                                    // Calcular el índice correctamente: es la posición de esta fila dentro de la tabla
+                                    var tbody = row.closest('tbody');
+                                    var rowIndex = -1;
+                                    if (tbody.length > 0) {
+                                        var allRows = tbody.find('tr[data-rk]');
+                                        rowIndex = allRows.index(row);
+                                    }
+
+                                    if (rowIndex >= 0) {
+                                        console.log('Toggle detectado: código=' + codigoProcedimiento + ', expandido=' + expandido + ', rowIndex=' + rowIndex);
+
+                                        // Usar setTimeout para asegurar que PrimeFaces haya completado el toggle
+                                        setTimeout(function() {
+                                            actualizarEstadoBorradorToggle([
+                                                { name: 'codigoProcedimiento', value: codigoProcedimiento },
+                                                { name: 'expandido', value: expandido },
+                                                { name: 'rowIndex', value: rowIndex }
+                                            ]);
+                                        }, 100);
+                                    } else {
+                                        console.log('No se pudo calcular rowIndex para: ' + codigoProcedimiento);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    var dataTableElement = document.querySelector('#form\\:dataTable tbody');
+                    if (dataTableElement) {
+                        console.log('Iniciando MutationObserver para DataTable');
+                        observer.observe(dataTableElement, {
+                            subtree: true,
+                            attributes: true,
+                            attributeFilter: ['class'],
+                            characterData: false,
+                            childList: false
+                        });
+                    } else {
+                        console.log('DataTable tbody NO encontrada');
+                    }
+                }
+
+                // Ejecutar inmediatamente
+                try {
+                    setupRowToggler();
+                    console.log('setupRowToggler completado');
+                } catch(e) {
+                    console.error('Error en setupRowToggler:', e);
+                }
+
                 function triggerDblClick() {
                     $('#form\\:btnEditarHidden').click();
                 }

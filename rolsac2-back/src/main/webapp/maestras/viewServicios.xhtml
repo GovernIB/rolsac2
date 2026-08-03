@@ -175,6 +175,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <i class="pi pi-spinner pi-spin" style="font-size:3rem;margin-left:30px;"></i>
             </p:dialog>
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
+            <p:remoteCommand name="actualizarEstadoBorradorToggle"
+                             process="@this"
+                             partialSubmit="true"
+                             async="false"
+                             actionListener="#{viewServicios.actualizarEstadoBorradorToggle}"/>
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
                              widgetVar="actualizarBusqueda"
                              oncomplete="$('#form\\:btnBuscar').click();"
@@ -466,7 +471,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </p:column>
                 <p:column headerText="#{labels['dict.estado']}" styleClass="w170px">
                     <f:facet name="header"/>
-                    <h:outputText value="#{labels['TypeProcedimientoEstado.' += servicio.estado.toString()]}"/>
+                    <h:panelGroup id="estadoValor">
+                        <h:outputText value="#{viewServicios.getLiteralEstado(servicio)}"/>
+                    </h:panelGroup>
                 </p:column>
                 <p:column sortBy="#{servicio.nombre}" headerText="#{labels['dict.nombre']}">
                     <f:facet name="header"/>
@@ -530,15 +537,20 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          rendered="#{viewServicios.mostrarBorrar(servicio)}"
                                          actionListener="#{viewServicios.borrarServicio(servicio)}"
                                          process="@this"/>
+                        <p:commandButton type="button" icon="pi pi-list" title="#{labels['dict.borrador']}"
+                                         styleClass="ui-button-outlined mr-1"
+                                         rendered="#{servicio.tieneBorrador()}"
+                                         onclick="toggleBorradorDesdeAcciones(this); return false;"/>
 
                     </div>
                 </p:column>
 
                 <p:rowExpansion rendered="#{servicio.tieneBorrador()}">
                     <ui:param name="borrador" value="#{viewServicios.getBorrador(servicio)}"/>
-                    <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100"
+                    <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100 expansion-dblclick"
                                  style="table-layout:fixed; width:100%;"
-                                 columnClasses="align-middle w170px,align-middle w-auto,align-middle w170px,align-middle w200px,align-middle w170px">
+                                 columnClasses="align-middle w170px bordeTabla,align-middle w-auto bordeTabla,align-middle w170px bordeTabla,align-middle w200px bordeTabla,align-middle w170px bordeTabla"
+                                 ondblclick="editarProcedimientoExpansion(event, this);">
                         <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
                         <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
                         <h:outputText value="#{borrador.uaInstructor.nombre.getTraduccion(sessionBean.lang)}"/>
@@ -554,7 +566,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
+                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1 btnEditarBorradorExpansion"
                                              rendered="#{viewServicios.mostrarEditarBorrador(servicio)}"
                                              actionListener="#{viewServicios.editarServicio(servicio)}"
                                              process="@this" update="messages dataTable"
@@ -572,6 +584,82 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             </p:dataTable>
 
             <h:outputScript>
+                //<![CDATA[
+                function editarProcedimientoExpansion(event, rowElement) {
+                    if ($(event.target).closest('button, a, input, .ui-button, .ui-commandlink').length > 0) {
+                        return;
+                    }
+
+                    var editButton = $(rowElement).find('.btnEditarBorradorExpansion').first();
+                    if (editButton.length && !editButton.hasClass('ui-state-disabled')) {
+                        editButton.trigger('click');
+                    }
+                }
+
+                function toggleBorradorDesdeAcciones(buttonElement) {
+                    var row = $(buttonElement).closest('tr');
+                    var toggler = row.find('.ui-row-toggler').first();
+                    if (toggler.length > 0) {
+                        toggler.trigger('click');
+                    }
+                }
+
+                function setupRowToggler() {
+                    if (window.rowTogglerSetupServicios) {
+                        return;
+                    }
+                    window.rowTogglerSetupServicios = true;
+
+                    var observer = new MutationObserver(function(mutations) {
+                        for (var i = 0; i < mutations.length; i++) {
+                            var mutation = mutations[i];
+                            if (mutation.attributeName === 'class' && mutation.target.tagName === 'TR') {
+                                var row = $(mutation.target);
+                                var codigoServicio = row.attr('data-rk');
+
+                                if (codigoServicio && row.has('td').length > 0) {
+                                    var expandido = row.hasClass('ui-expanded-row');
+                                    var tbody = row.closest('tbody');
+                                    var rowIndex = -1;
+                                    if (tbody.length > 0) {
+                                        var allRows = tbody.find('tr[data-rk]');
+                                        rowIndex = allRows.index(row);
+                                    }
+
+                                    if (rowIndex >= 0) {
+                                        (function(codigo, estaExpandido, idx) {
+                                            setTimeout(function() {
+                                                actualizarEstadoBorradorToggle([
+                                                    { name: 'codigoProcedimiento', value: codigo },
+                                                    { name: 'expandido', value: estaExpandido },
+                                                    { name: 'rowIndex', value: idx }
+                                                ]);
+                                            }, 100);
+                                        })(codigoServicio, expandido, rowIndex);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    var dataTableElement = document.querySelector('#form\\:dataTable tbody');
+                    if (dataTableElement) {
+                        observer.observe(dataTableElement, {
+                            subtree: true,
+                            attributes: true,
+                            attributeFilter: ['class'],
+                            characterData: false,
+                            childList: false
+                        });
+                    }
+                }
+
+                try {
+                    setupRowToggler();
+                } catch (e) {
+                    console.error('Error en setupRowToggler servicios:', e);
+                }
+
                 function triggerDblClick() {
                     $('#form\\:btnEditarHidden').click();
                 }
@@ -605,6 +693,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 $('#divCargando').css('width', width);
                 $('#divCargando').css('height', height);
                 };
+                //]]>
             </h:outputScript>
 
             <p:confirmDialog message="#{labels['viewServicios.aviso.noExisteModif']}"

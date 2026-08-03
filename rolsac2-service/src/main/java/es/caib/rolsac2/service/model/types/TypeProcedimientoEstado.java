@@ -13,6 +13,10 @@ public enum TypeProcedimientoEstado {
     /**
      * <P>ESTADO MODIFICACIÓN PENDIENTE SUBIR</P>
      */
+    PUBLICADO_PENDIENTE_PUBLICAR("PPV"),
+    /**
+     * <P>ESTADO MODIFICACIÓN PENDIENTE SUBIR</P>
+     */
     PENDIENTE_PUBLICAR("PV"),
     /**
      * <P>PENDIENTE RESERVAR</P>
@@ -104,6 +108,22 @@ public enum TypeProcedimientoEstado {
 
     public String toString() {
         return valor;
+    }
+
+    public String toString(boolean expandido) {
+
+        if (!expandido) {
+            return valor;
+        }
+
+        switch (this) {
+            case PUBLICADO_MODIFICACION:
+                return PUBLICADO.toString();
+            case PUBLICADO_PENDIENTE_PUBLICAR:
+                return PUBLICADO.toString();
+            default:
+                return valor;
+        }
     }
 
     /**
