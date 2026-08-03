@@ -232,7 +232,8 @@
         </p:panel>
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
-        <p:selectBooleanCheckbox id="checkMail" value="#{dialogProcedimientoFlujo.checkMail}" itemLabel="#{labels['dialogProcedimientoFlujo.enviarCorreo']}"/>
+        <p:selectBooleanCheckbox id="checkMail" value="#{dialogProcedimientoFlujo.checkMail}" itemLabel="#{labels['dialogProcedimientoFlujo.enviarCorreo']}"
+                                 rendered="#{dialogProcedimientoFlujo.administradorContenidos}"/>
         <p:commandButton id="btnCopy"  icon="pi pi-clipboard" value="#{labels['dialogProcedimientoFlujo.copiarXat']}"/>
         <pe:clipboard id="clipboard" text="#{dialogProcedimientoFlujo.estructurarCopiaChat()}" action="copy"
                       trigger="btnCopy" successMessage="Copiado" errorMessage="Error al copiar"/>

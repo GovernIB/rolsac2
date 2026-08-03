@@ -205,6 +205,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
     }
 
     public void guardarOEnviarMail() {
+        if (!isAdministradorContenidos()) {
+            checkMail = false;
+        }
         if (checkMail) {
             /* Las validaciones ahora se hace en DialogProcedimiento
             boolean correctoPDU = checkPdu();
@@ -372,31 +375,13 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
          return;
          } ***/
 
-        //Si el estado actual o seleccionado es pendiente, entonces es un cambio de un
-        if ((typeEstadoActual != null && typeEstadoActual.isEstadoPendiente()) || (estadoSeleccionado != null && estadoSeleccionado.isEstadoPendiente())) {
-            //if (sessionBean.getPerfil() == TypePerfiles.GESTOR && estadoSeleccionado.isEstadoPendiente()) {
-            String literal = estadoSeleccionado.getLiteralMensajePendiente(sessionBean.getLang());
-            String valorLiteral = null;
-            if (literal != null) {
-                valorLiteral = systemServiceFacade.obtenerPropiedadConfiguracion(literal);
-            }
-            if (literal != null && valorLiteral != null && !valorLiteral.isEmpty()) {
-                Mensaje msg = new Mensaje();
-                final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                //String fecha = sdf.format((Date) Calendar.getInstance().getTime());
-                //msg.setFecha(fecha);
-                msg.setFechaReal((Date) Calendar.getInstance().getTime());
-                String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-                msg.setUsuario(usuario);
-                msg.setMensaje(valorLiteral);
-                msg.setPendienteMensajesGestor(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
-                msg.setPendienteMensajesSupervisor(!(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS));
-                msg.setAdmContenido(sessionBean.getPerfil() == TypePerfiles.ADMINISTRADOR_CONTENIDOS);
-                if (emailEnviado) {
-                    msg.setFechaEmail((Date) Calendar.getInstance().getTime());
-                }
-                mensajes.add(0, msg);
-            }
+        if (mensajes == null) {
+            mensajes = new ArrayList<>();
+        }
+        //Mensaje automático de cambio de estado
+        Mensaje msgAutomatico = crearMensajeAutomaticoEstado(emailEnviado);
+        if (msgAutomatico != null) {
+            mensajes.add(0, msgAutomatico);
         }
 
         if (mensajeNuevo != null && !mensajeNuevo.isEmpty()) {
@@ -481,6 +466,86 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         procedimientoService.actualizarMensajes(idProcedimiento, mensajesJSON, getLeidoSupervisor(), getLeidoGestor());
         //Normalizamos los mensajes para que se muestren correctamente.
         ValidacionTipoUtils.normalizarMensajes(mensajes);
+    }
+
+    private Mensaje crearMensajeAutomaticoEstado(boolean emailEnviado) {
+        String mensajeAutomatico = getTextoMensajeAutomatico(typeEstadoActual, estadoSeleccionado);
+        if (mensajeAutomatico == null || mensajeAutomatico.isEmpty()) {
+            return null;
+        }
+
+        Mensaje msg = new Mensaje();
+        msg.setFechaReal(new Date());
+        msg.setUsuario(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
+        msg.setMensaje(mensajeAutomatico);
+        boolean esAdministradorContenido = isAdministradorContenidos();
+        msg.setAdmContenido(esAdministradorContenido);
+        msg.setPendienteMensajesGestor(esAdministradorContenido);
+        msg.setPendienteMensajesSupervisor(!esAdministradorContenido);
+        if (emailEnviado) {
+            msg.setFechaEmail(new Date());
+        }
+        return msg;
+    }
+
+    private String getTextoMensajeAutomatico(TypeProcedimientoEstado estadoOrigen, TypeProcedimientoEstado estadoDestino) {
+        if (estadoOrigen == null || estadoDestino == null) {
+            return null;
+        }
+
+        switch (estadoOrigen) {
+            case MODIFICACION:
+                if (estadoDestino == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.modificacion.pendientePublicar");
+                }
+                if (estadoDestino == TypeProcedimientoEstado.PUBLICADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado");
+                }
+                break;
+            case PENDIENTE_PUBLICAR:
+                if (estadoDestino == TypeProcedimientoEstado.PUBLICADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.pendientePublicar.publicado");
+                }
+                if (estadoDestino == TypeProcedimientoEstado.MODIFICACION) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.pendientePublicar.modificacion");
+                }
+                break;
+            case PUBLICADO:
+                if (estadoDestino == TypeProcedimientoEstado.PUBLICADO_MODIFICACION) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.publicadoModificacion");
+                }
+                if (estadoDestino == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.pendienteCerrar");
+                }
+                if (estadoDestino == TypeProcedimientoEstado.CERRADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.cerrado");
+                }
+                break;
+            case PUBLICADO_MODIFICACION:
+                if (estadoDestino == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicadoModificacion.pendientePublicar");
+                }
+                if (estadoDestino == TypeProcedimientoEstado.PUBLICADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado");
+                }
+                break;
+            case PENDIENTE_CERRAR:
+                if (estadoDestino == TypeProcedimientoEstado.PUBLICADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.pendienteCerrar.publicado");
+                }
+                if (estadoDestino == TypeProcedimientoEstado.CERRADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.cerrado");
+                }
+                break;
+            case CERRADO:
+                if (estadoDestino == TypeProcedimientoEstado.PUBLICADO) {
+                    return getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.cerrado.publicado");
+                }
+                break;
+            default:
+                return null;
+        }
+        return null;
     }
 
     private boolean getLeidoSupervisor() {
