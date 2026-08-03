@@ -3319,6 +3319,12 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento) ");
         }
 
+        if (filtro.isRellenoServicioResponsable() && ambosWf){
+            sql.append(" AND (LOWER(t.uaResponsable) LIKE :servicioResponsable OR LOWER(t2.uaResponsable) LIKE :servicioResponsable) ");
+        } else if (filtro.isRellenoServicioResponsable()) {
+            sql.append(" AND (LOWER(t.uaResponsable) LIKE :servicioResponsable) ");
+        }
+
         if (filtro.isRellenoUaInstructorCodigo() && ambosWf) {
             sql.append(" AND (WF.uaInstructor.codigo = :uaInstructorCodigo OR WF2.uaInstructor.codigo = :uaInstructorCodigo) ");
         } else if (filtro.isRellenoUaInstructorCodigo()) {
@@ -3869,6 +3875,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoTipoProcedimiento()) {
             query.setParameter("tipoProcedimiento", filtro.getTipoProcedimiento().getCodigo());
+        }
+        if (filtro.isRellenoServicioResponsable()){
+            query.setParameter("servicioResponsable", "%" + filtro.getServicioResponsable().toLowerCase() + "%");
         }
         if (filtro.isRellenoUaInstructorCodigo()) {
             query.setParameter("uaInstructorCodigo", filtro.getUaInstructorCodigo());

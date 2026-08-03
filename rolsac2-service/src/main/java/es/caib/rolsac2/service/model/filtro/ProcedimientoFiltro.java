@@ -171,6 +171,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private Long uaResponsableCodigo;
     private String uaResponsableNombre;
     private Long uaInstructorCodigo;
+    private String servicioResponsable;
     private String uaInstructorNombre;
 
     private Long lopdResponsableCodigo;
@@ -341,6 +342,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.finFechaActualitzacion = otro.finFechaActualitzacion;
         this.uaResponsableCodigo = otro.uaResponsableCodigo;
         this.uaResponsableNombre = otro.uaResponsableNombre;
+        this.servicioResponsable = otro.servicioResponsable;
         this.uaInstructorCodigo = otro.uaInstructorCodigo;
         this.uaInstructorNombre = otro.uaInstructorNombre;
         this.lopdResponsableCodigo = otro.lopdResponsableCodigo;
@@ -1316,6 +1318,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return uaInstructorCodigo;
     }
 
+    public void setServicioResponsable(String servicioResponsable) {
+        this.servicioResponsable = servicioResponsable;
+    }
+
+    public String getServicioResponsable() {
+        return servicioResponsable;
+    }
+
     public void setUaInstructorCodigo(Long uaInstructorCodigo) {
         this.uaInstructorCodigo = uaInstructorCodigo;
     }
@@ -1638,6 +1648,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoTipoProcedimiento() {
         return tipoProcedimiento != null && tipoProcedimiento.getCodigo() != null;
+    }
+
+    public boolean isRellenoServicioResponsable(){
+        return servicioResponsable != null && !servicioResponsable.isEmpty();
     }
 
     public boolean isRellenoUaInstructorNombre() {

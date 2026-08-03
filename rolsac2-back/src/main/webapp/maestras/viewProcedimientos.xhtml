@@ -314,7 +314,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
                                     </p:selectOneMenu>
                                 </div>
-                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                <!--div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.servicioInstructor']}:" for="txtServicioInstructor"/>
                                     <div class="filtroControl">
                                         <p:inputText id="txtServicioInstructor" value="#{viewProcedimientos.filtro.uaInstructorNombre}"
@@ -327,6 +327,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                     process="@this" update="txtServicioInstructor"/>
                                         </p:commandButton>
                                     </div>
+                                </div-->
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.servicioResponsable']}:" for="txtServicioResponsable"/>
+                                    <p:inputText id="txtServicioResponsable" value="#{viewProcedimientos.filtro.servicioResponsable}"
+                                                 styleClass="w95"/>
                                 </div>
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.tipoProcedimiento']}:"
@@ -718,10 +723,18 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     </div>
                 </p:column>
 
-                <p:rowExpansion rendered="#{procedimiento.tieneBorrador()}">
+                 <p:rowExpansion rendered="#{procedimiento.tieneBorrador()}">
                     <ui:param name="borrador" value="#{viewProcedimientos.getBorrador(procedimiento)}"/>
-                    <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100"
-                                 style="table-layout:fixed; width:100%;" columnClasses="align-middle w170px,align-middle w-auto,align-middle w170px,align-middle w200px,align-middle w170px">
+                    <h:panelGrid columns="5"
+                                 styleClass="table table-sm table-bordered mb-0
+                             table-row-expansion w-100 expansion-dblclick"
+                                 style="table-layout:fixed; width:100%"
+                                 columnClasses="align-middle w170px bordeTabla,
+                                align-middle w-auto bordeTabla,
+                                align-middle w170px bordeTabla,
+                                align-middle w200px bordeTabla,
+                                align-middle w170px bordeTabla"
+                                 ondblclick="editarProcedimientoExpansion(event, this);">
                         <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
                         <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
                         <h:outputText value="#{borrador.uaInstructor.nombre.getTraduccion(sessionBean.lang)}"/>
@@ -737,7 +750,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
+                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1 btnEditarBorradorExpansion"
                                             rendered="#{viewProcedimientos.mostrarEditarBorrador(procedimiento)}"
                                             actionListener="#{viewProcedimientos.editarProcedimiento(procedimiento)}"
                                             process="@this" update="messages dataTable"
@@ -755,6 +768,20 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             </p:dataTable>
 
             <h:outputScript>
+                //<![CDATA[
+                function editarProcedimientoExpansion(event, rowElement) {
+                // No ejecutar el doble clic sobre botones o enlaces.
+                if ($(event.target).closest(
+                'button, a, input, .ui-button, .ui-commandlink'
+                ).length > 0) {
+                return;
+                }
+
+                var editButton = $(rowElement).find('.btnEditarBorradorExpansion').first();
+                if (editButton.length && !editButton.hasClass('ui-state-disabled')) {
+                editButton.trigger('click');
+                }
+                }
                 function triggerDblClick() {
                     $('#form\\:btnEditarHidden').click();
                 }
@@ -790,6 +817,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                     $('#divCargando').css('width', width);
                     $('#divCargando').css('height', height);
                 };
+                   //]]>
             </h:outputScript>
 
             <p:confirmDialog message="#{labels['viewProcedimientos.aviso.noExisteModif']}"

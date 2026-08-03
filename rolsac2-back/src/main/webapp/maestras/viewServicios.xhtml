@@ -304,7 +304,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
                                     </p:selectOneMenu>
                                 </div>
-                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                <!--div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.servicioInstructor']}:" for="txtServicioInstructor"/>
                                     <div class="filtroControl">
                                         <p:inputText id="txtServicioInstructor" value="#{viewServicios.filtro.uaInstructorNombre}"
@@ -317,6 +317,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                     process="@this" update="txtServicioInstructor"/>
                                         </p:commandButton>
                                     </div>
+                                </div-->
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.servicioResponsable']}:" for="txtServicioResponsable"/>
+                                    <p:inputText id="txtServicioResponsable" value="#{viewServicios.filtro.servicioResponsable}"
+                                                 styleClass="w95"/>
                                 </div>
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['dict.estadoCodigoSIA']}:" for="txtEstadoCodigoSIA"/>

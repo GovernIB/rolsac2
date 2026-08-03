@@ -304,6 +304,49 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
     }
 
+    public void editarProcedimientoBorrador(Object codigo) {
+        if (codigo == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
+        } else {
+            ProcedimientoDTO proc = procedimientoService.findProcedimientoById((Long) codigo);
+            TypeModoAcceso modo = BooleanUtils.isTrue((datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) || ((datoSeleccionado.getEstado().equals("PV") || datoSeleccionado.getEstado().equals("PPV")) && this.isGestor())) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+            String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
+            abrirVentana(modo, proc, estados);
+
+        }
+    }
+
+    public void editarProcedimientoBorradorRC() {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Long codigoProc = parseLongOrNull(params.get("codigoProc"));
+        Long codigoWf = parseLongOrNull(params.get("codigoWf"));
+        String estado = params.get("estado");
+        Boolean comun = Boolean.valueOf(params.get("comun"));
+
+        if (codigoWf == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
+            return;
+        }
+
+        ProcedimientoDTO proc = procedimientoService.findProcedimientoById(codigoWf);
+        TypeModoAcceso modo = BooleanUtils.isTrue(comun) && (this.isGestor() || this.isInformador())
+                || (("PV".equals(estado) || "PPV".equals(estado)) && this.isGestor())
+                ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+        String estados = codigoProc != null ? procedimientoService.getWorkflowEstados(codigoProc) : null;
+        abrirVentana(modo, proc, estados);
+    }
+
+    private Long parseLongOrNull(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     public void editarProcedimiento() {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));

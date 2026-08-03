@@ -2080,3 +2080,7 @@ button.ui-state-hover:hover{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.bordeTabla {
+    border: 1px solid #ddd !important;
+    border-color: #ddd !important;
+}
