@@ -203,8 +203,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
             <div class="cabeceraFiltros">
                 <div class="row" style="display:flex; align-items:center; flex-wrap:nowrap; width:100%;">
-                    <div class="ui-g-12" style="display:flex; align-items:center; flex-wrap:nowrap; flex:1 1 auto; min-width:0;">
-                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" style="white-space: nowrap; flex-shrink:0;" />
+                    <div class="ui-g-12 pr-0" style="display:flex; align-items:center; flex-wrap:nowrap; flex:1 1 auto; min-width:0;">
+                        <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande mr-2" style="white-space: nowrap; flex-shrink:0; font-weight: bold" />
                         <p:inputText id="filtroBusqueda"  value="#{viewServicios.filtro.texto}" styleClass="estiloGrande ml-2 mr-2"
                                      style="flex: 1 1 auto; min-width: 0; width: auto; max-width: none;" />
                         <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
@@ -219,7 +219,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          actionListener="#{viewServicios.buscar()}"
                                          update="messages dataTable"
                                          process="@form"/>
-                        <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus"
+                        <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" styleClass="mr-0"
                                          onclick="PF('panel').toggle();cambiarBoton()"/>
                     </div>
                     <div class="ui-g-12 text-right" style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:nowrap; white-space:nowrap; flex:0 0 auto; width:auto; margin-left:auto;">
@@ -502,7 +502,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                 </p:column>
 
-                <p:column headerText="#{labels['dict.acciones']}" styleClass="w140px">
+                <p:column headerText="#{labels['dict.acciones']}" styleClass="w150px">
                     <f:facet name="header"/>
                     <div class="d-flex flex-nowrap align-items-center">
                         <p:commandButton icon="pi pi-copy" title="#{labels['dict.clonar']}" styleClass="mr-1"
@@ -547,18 +547,26 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                 <p:rowExpansion rendered="#{servicio.tieneBorrador()}">
                     <ui:param name="borrador" value="#{viewServicios.getBorrador(servicio)}"/>
-                    <h:panelGrid columns="5" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100 expansion-dblclick"
+                    <h:panelGrid columns="8" styleClass="table table-sm table-bordered mb-0 table-row-expansion w-100 expansion-dblclick"
                                  style="table-layout:fixed; width:100%;"
-                                 columnClasses="align-middle w170px bordeTabla,align-middle w-auto bordeTabla,align-middle w170px bordeTabla,align-middle w200px bordeTabla,align-middle w170px bordeTabla"
+                                 columnClasses="align-middle w290px bordeTabla2,
+                                 align-middle w170px bordeTabla,
+                                 align-middle w-auto bordeTabla,
+                                 align-middle w160px bordeTabla,
+                                 align-middle w340px bordeTabla,
+                                align-middle w140px bordeTabla"
                                  ondblclick="editarProcedimientoExpansion(event, this);">
+                        <h:outputText value=""/>
                         <h:outputText value="#{labels['TypeProcedimientoEstado.' += borrador.estado.toString()]}"/>
                         <h:outputText value="#{borrador.nombreProcedimientoWorkFlow.getTraduccionConValor(sessionBean.lang)}"/>
                         <h:outputText value="#{borrador.uaInstructor.nombre.getTraduccion(sessionBean.lang)}"/>
-                        <h:outputText value="#{borrador.fechaActualizacion}">
+                       <!-- <h:outputText value="#{borrador.fechaActualizacion}">
                             <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                        </h:outputText>
+                        </h:outputText>-->
+                        <h:outputText value=""/>
                         <h:panelGroup class="d-flex flex-nowrap align-items-center">
-                            <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
+                            <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}"
+                                             styleClass="mr-1 btnConsultarBorradorExpansion"
                                              rendered="#{viewServicios.mostrarConsultarBorrador(servicio)}"
                                              actionListener="#{viewServicios.consultarServicio(servicio)}"
                                              process="@this" update="messages dataTable"
@@ -566,7 +574,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
-                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1 btnEditarBorradorExpansion"
+                            <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}"
+                                             styleClass="mr-1 btnEditarBorradorExpansion"
                                              rendered="#{viewServicios.mostrarEditarBorrador(servicio)}"
                                              actionListener="#{viewServicios.editarServicio(servicio)}"
                                              process="@this" update="messages dataTable"
@@ -590,9 +599,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         return;
                     }
 
-                    var editButton = $(rowElement).find('.btnEditarBorradorExpansion').first();
-                    if (editButton.length && !editButton.hasClass('ui-state-disabled')) {
-                        editButton.trigger('click');
+                    var actionButton = $(rowElement).find(
+                    '.btnEditarBorradorExpansion, .btnConsultarBorradorExpansion'
+                    ).filter(':visible').first();
+                    if (actionButton.length && !actionButton.hasClass('ui-state-disabled')) {
+                    actionButton.trigger('click');
                     }
                 }
 

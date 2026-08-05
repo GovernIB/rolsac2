@@ -164,7 +164,7 @@ body {
 
 .cabeceraFiltros {
     background: rgb(245, 245, 245) none repeat scroll 0% 0%;
-    padding: 0px 15px 0px 15px;
+    padding: 5px 15px 0px 15px;
     display: flex;
 }
 
@@ -432,6 +432,45 @@ div.ui-dialog-content span.ui-confirm-dialog-severity {
 .w10i {    width: 10% !important;}
 .w5i  {    width: 5%  !important;}
 
+
+.w490px {    width: 490px;}
+.w485px {    width: 485px;}
+.w480px {    width: 480px;}
+.w475px {    width: 475px;}
+.w470px {    width: 470px;}
+.w465px {    width: 465px;}
+.w460px {    width: 460px;}
+.w455px {    width: 455px;}
+.w450px {    width: 450px;}
+.w445px {    width: 445px;}
+.w440px {    width: 440px;}
+.w435px {    width: 435px;}
+.w430px {    width: 430px;}
+.w425px {    width: 425px;}
+.w420px {    width: 420px;}
+.w415px {    width: 415px;}
+.w410px {    width: 410px;}
+.w405px {    width: 405px;}
+.w400px {    width: 400px;}
+.w395px {    width: 395px;}
+.w390px {    width: 390px;}
+.w385px {    width: 385px;}
+.w380px {    width: 380px;}
+.w375px {    width: 375px;}
+.w370px {    width: 370px;}
+.w365px {    width: 365px;}
+.w360px {    width: 360px;}
+.w355px {    width: 355px;}
+.w350px {    width: 350px;}
+.w345px {    width: 345px;}
+.w340px {    width: 340px;}
+.w335px {    width: 335px;}
+.w330px {    width: 330px;}
+.w325px {    width: 325px;}
+.w320px {    width: 320px;}
+.w315px {    width: 315px;}
+.w310px {    width: 310px;}
+.w305px {    width: 305px;}
 .w300px {    width: 300px;}
 .w295px {    width: 295px;}
 .w290px {    width: 290px;}
@@ -1899,7 +1938,7 @@ a.iconoXarxes {
     background: rgb(245, 245, 245) none repeat scroll 0 0;
     box-sizing: border-box;
     margin: 0 0 0px;
-    padding: 10px 15px 0;
+    padding: 0px 15px 10px 15px;
     width: 100%;
 }
 
@@ -2080,7 +2119,27 @@ button.ui-state-hover:hover{
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.bordeTabla {
-    border: 1px solid #ddd !important;
-    border-color: #ddd !important;
+
+tr.ui-expanded-row-content.ui-widget-content >td {
+    background-color: #eee;
 }
+
+.bordeTabla {
+    border: 0px solid #ddd !important;
+    border-color: #eee !important;
+}
+
+.table-row-expansion .bordeTabla  {
+    border: 2px dotted #f99 !important;
+    background-color: #ffffef;
+}
+.table-row-expansion{
+    border:0;
+}
+
+.table-row-expansion .bordeTabla2  {
+    border: none !important;
+    border-color: #eee !important;
+    background-color: #eee;
+}
+
