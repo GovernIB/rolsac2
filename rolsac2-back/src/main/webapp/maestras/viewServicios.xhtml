@@ -380,17 +380,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     </div>
                                 </div>
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
-                                    <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
-                                    <p:selectOneMenu id="txtEsComun" value="#{viewServicios.filtro.comun}"
-                                                     styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
-                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
-                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
-                                    </p:selectOneMenu>
-                                </div>
-                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.canalPresentacion']}:" for="txtTtramiteTelem"/>
-                                    <p:selectCheckboxMenu id="txtTtramiteTelem" value="#{viewServicios.canalesSeleccionados}" style="min-width: 15rem"
+                                    <p:selectCheckboxMenu id="txtTtramiteTelem" value="#{viewServicios.canalesSeleccionados}" styleClass="w95" autoWidth="false"
                                                           multiple="true" scrollHeight="250"
                                                           label="#{labels['viewServicios.seleccioneCanales']}">
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.presencial']}" itemValue="P"/>
@@ -407,6 +398,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                         <f:selectItems value="#{viewServicios.listPlataformas}" var="estado"
                                                        itemValue="#{estado}"
                                                        itemLabel="#{estado.descripcion.getTraduccion(sessionBean.lang)}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
+                                    <p:selectOneMenu id="txtEsComun" value="#{viewServicios.filtro.comun}"
+                                                     styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
+                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
                                     </p:selectOneMenu>
                                 </div>
                             </div>

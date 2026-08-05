@@ -250,6 +250,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             filtro.setIdUAInstructor(null);
         }
+        filtroHijasActivasChange();
 
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
@@ -393,12 +394,16 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void consultarProcedimiento() {
         if (datoSeleccionado != null) {
-            Long idProcPub = datoSeleccionado.getCodigoWFPub();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorkflow.PUBLICADO.getValor());
-            if (idProcPub == null) {
+            Long idProc = datoSeleccionado.getCodigoWFPub();
+            //procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorkflow.PUBLICADO.getValor());
+            if (idProc == null) {
+                idProc = datoSeleccionado.getCodigoWFMod();
+            }
+            if (idProc == null) {
                 // Mensaje --> No tiene publicado el dato
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
             } else {
-                ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcPub);
+                ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProc);
                 String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
                 abrirVentana(TypeModoAcceso.CONSULTA, proc, estados);
             }
@@ -435,6 +440,23 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     public void consultarProcedimiento(ProcedimientoGridDTO procedimiento) {
         this.datoSeleccionado = procedimiento;
         consultarProcedimiento();
+    }
+
+    public void consultarBorrador(ProcedimientoGridDTO procedimiento) {
+        this.datoSeleccionado = procedimiento;
+        if (this.datoSeleccionado == null) {
+            return;
+        }
+
+        Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
+        if (idProcMod == null) {
+            consultarProcedimiento();
+            return;
+        }
+
+        ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
+        String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
+        abrirVentana(TypeModoAcceso.CONSULTA, proc, estados);
     }
 
     public void borrarProcedimiento(ProcedimientoGridDTO procedimiento) {

@@ -299,7 +299,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         filtro.setHijasActivas(true);
         filtro.setTodasUnidadesOrganicas(true);
         filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-
+        filtroHijasActivasChange();
 
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
@@ -448,12 +448,16 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void consultarProcedimiento() {
         if (datoSeleccionado != null) {
-            Long idProcPub = datoSeleccionado.getCodigoWFPub();//procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorkflow.PUBLICADO.getValor());
-            if (idProcPub == null) {
+            Long idProc = datoSeleccionado.getCodigoWFPub();
+            //procedimientoService.getCodigoByWF(datoSeleccionado.getCodigo(), TypeProcedimientoWorkflow.PUBLICADO.getValor());
+            if (idProc == null) {
+                idProc = datoSeleccionado.getCodigoWFMod();
+            }
+            if (idProc == null) {
                 // Mensaje --> No tiene publicado el dato
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.procNoPublicado"), getLiteral("msg.seleccioneElemento"));
             } else {
-                ServicioDTO serv = procedimientoService.findServicioById(idProcPub);
+                ServicioDTO serv = procedimientoService.findServicioById(idProc);
                 String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
                 abrirVentana(TypeModoAcceso.CONSULTA, serv, estados);
             }
@@ -490,6 +494,23 @@ public class ViewServicios extends AbstractController implements Serializable {
     public void consultarServicio(ServicioGridDTO servicio) {
         this.datoSeleccionado = servicio;
         consultarProcedimiento();
+    }
+
+    public void consultarBorrador(ServicioGridDTO servicio) {
+        this.datoSeleccionado = servicio;
+        if (this.datoSeleccionado == null) {
+            return;
+        }
+
+        Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
+        if (idProcMod == null) {
+            consultarProcedimiento();
+            return;
+        }
+
+        ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
+        String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
+        abrirVentana(TypeModoAcceso.CONSULTA, serv, estados);
     }
 
     public void borrarServicio(ServicioGridDTO servicio) {

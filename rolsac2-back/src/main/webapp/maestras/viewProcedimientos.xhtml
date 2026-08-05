@@ -481,21 +481,21 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                     </p:selectOneMenu>
                                 </div>
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
-                                    <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
-                                    <p:selectOneMenu id="txtEsComun" value="#{viewProcedimientos.filtro.comun}"
-                                                     styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
-                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
-                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
-                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
-                                    </p:selectOneMenu>
-                                </div>
-                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <h:outputText value="#{labels['viewProcedimientos.integrarPdu']}:" for="selIntegrarPdu" />
                                     <p:selectOneMenu id="selIntegrarPdu" value="#{viewProcedimientos.filtro.integrarPdu}"
                                                      styleClass="w95" autoWidth="false" >
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.pdu.integrar.si']}" itemValue="true"/>
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.pdu.integrar.no']}" itemValue="false"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                    <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
+                                    <p:selectOneMenu id="txtEsComun" value="#{viewProcedimientos.filtro.comun}"
+                                                     styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
+                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
+                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
                                     </p:selectOneMenu>
                                 </div>
                             </div>
@@ -737,7 +737,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                     <ui:param name="borrador" value="#{viewProcedimientos.getBorrador(procedimiento)}"/>
                     <h:panelGrid columns="5"
                                  styleClass="table table-sm table-bordered mb-0
-                             table-row-expansion w-100 expansion-dblclick"
+                                 table-row-expansion w-100 expansion-dblclick"
                                  style="table-layout:fixed; width:100%"
                                  columnClasses="align-middle w170px bordeTabla,
                                 align-middle w-auto bordeTabla,
@@ -754,7 +754,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                         <h:panelGroup class="d-flex flex-nowrap align-items-center">
                             <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
                                             rendered="#{viewProcedimientos.mostrarConsultarBorrador(procedimiento)}"
-                                            actionListener="#{viewProcedimientos.consultarProcedimiento(procedimiento)}"
+                                            actionListener="#{viewProcedimientos.consultarBorrador(procedimiento)}"
                                             process="@this" update="messages dataTable"
                                             onstart="startCargando()" oncomplete="stopCargando()">
                                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
