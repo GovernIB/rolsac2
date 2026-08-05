@@ -46,8 +46,11 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
     private static final String BASE_URL = "url";
     private static final String USER = "usr";
     private static final String PASSWORD = "pwd";
+    private static final String DEPUR_ENABLED = "depurar";
 
     private static Client client;
+
+    private boolean debug = false;
     /**
      * log.
      */
@@ -72,9 +75,22 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
                 .build();
     }
 
+    private final void mensajeDepuracion(String mensaje) {
+        if (debug) {
+            LOG.error(mensaje);
+        }
+    }
 
     @Override
     public RRespuestaImportarEnlace importarEnlace(RPeticionImportarEnlace peticionImportarEnlace) {
+
+        String sDepurar = getProperty(DEPUR_ENABLED);
+        if (sDepurar != null && sDepurar.equalsIgnoreCase("true")) {
+            debug = true;
+            mensajeDepuracion("** INICIADO LA DEPURACION DE PDU PLUGIN **");
+            mensajeDepuracion("URL:" + getProperty(BASE_URL) + "/import");
+            mensajeDepuracion("PETICION:" + peticionImportarEnlace);
+        }
 
         Invocation.Builder request = client.target(getProperty(BASE_URL) + "/import").request(MediaType.APPLICATION_JSON);
 
@@ -85,16 +101,20 @@ public class PDUPlugin extends AbstractPluginProperties implements IPluginPdu {
             );
 
             String json = response.readEntity(String.class);
+            mensajeDepuracion("RESPUESTA.JSON:" + json);
             response.close();
 
             RRespuestaImportarEnlace respuesta = new ObjectMapper().readValue(json, RRespuestaImportarEnlace.class);
+            mensajeDepuracion("RESPUESTA:" + respuesta);
             List<String> enlaces = new ArrayList<>();
             for (RLinkData dato : peticionImportarEnlace.getLinkData()) {
                 if (dato.getUrl() != null) {
+                    mensajeDepuracion("DATO.GETURL:" + dato.getUrl());
                     enlaces.add(dato.getUrl());
                 }
             }
             respuesta.setEnlaces(enlaces);
+            mensajeDepuracion("** FIN LA DEPURACION DE PDU PLUGIN **");
             return respuesta;
         } catch (JsonProcessingException e) {
             LOG.error("Error al procesar la respuesta de PDU", e);
