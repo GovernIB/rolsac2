@@ -517,8 +517,9 @@ public class ProcedimientoGridDTO extends ModelApi {
     private boolean isVisible() {
         final Date now = new Date();
 
-        final boolean esPublicado = TypeProcedimientoEstado.PUBLICADO.toString().equals(this.estado) 
-            || TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(this.estado) || TypeProcedimientoEstado.PENDIENTE_CERRAR.toString().equals(this.estado);
+        final boolean esPublicado = TypeProcedimientoEstado.PUBLICADO.toString().equals(this.estado)
+                || TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString().equals(this.estado)
+                || TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(this.estado) || TypeProcedimientoEstado.PENDIENTE_CERRAR.toString().equals(this.estado);
         final boolean fechaPublicacionValida = getFechaPublicacion() == null || getFechaPublicacion().before(now);
         final boolean noCaducado = getFechaDespublicacion() == null || getFechaDespublicacion().after(now);
 

@@ -21,7 +21,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
-import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -109,6 +104,14 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     // Estado visual de expansión de filas en la tabla de procedimientos
     private final Map<Long, Boolean> procedimientosExpandidos = new HashMap<>();
+
+    // Códigos del procedimiento sobre el que se va a actuar en el confirmDialog / diálogo de crear-editar.
+    // Se guardan cuando se pulsa el botón de acción de una fila para no depender de datoSeleccionado,
+    // que puede quedar desincronizado al no requerirse ya la selección explícita de la fila.
+    private Long codigoPendiente;
+    private Long codigoWFModPendiente;
+    private Long codigoWFPubPendiente;
+    private Boolean comunPendiente;
 
     public void load() {
         LOG.debug("load View Procedimientos");
@@ -359,6 +362,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         } else {
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
+                // Guardamos los códigos para que editarProcedimientoSinPreguntar() los recupere
+                // aunque datoSeleccionado se pise antes de confirmar en el diálogo.
+                guardarPendiente(this.datoSeleccionado);
                 PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
                 return;
             }
@@ -372,28 +378,51 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void editarProcedimientoSinPreguntar() {
-        if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
-        } else {
-            Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
-            boolean realizarBusqueda = false;
-            if (idProcMod == null) {
-                String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-                String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil(), ruta);
-                registrarMensaje(datoSeleccionado.getCodigo(), "editar");
-                realizarBusqueda = true;
-            }
-            this.datoSeleccionado.setCodigoWFMod(idProcMod);
-            ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
-
-            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
-            abrirVentana(modo, proc, estados);
-            if (realizarBusqueda) {
-                this.buscar();
-            }
+        // Recupera los códigos guardados al pulsar "Editar" en la fila; si no hay, cae en datoSeleccionado.
+        Long codigoProc = codigoPendiente;
+        Long idProcMod = codigoWFModPendiente;
+        Long idProcPub = codigoWFPubPendiente;
+        Boolean comun = comunPendiente;
+        if (codigoProc == null && datoSeleccionado != null) {
+            codigoProc = datoSeleccionado.getCodigo();
+            idProcMod = datoSeleccionado.getCodigoWFMod();
+            idProcPub = datoSeleccionado.getCodigoWFPub();
+            comun = datoSeleccionado.getComun();
         }
+        editarProcedimientoSinPreguntar(codigoProc, idProcMod, idProcPub, comun);
+    }
+
+    /**
+     * Versión con parámetros explícitos: usada desde el confirmDialog "cdDeseaCrearEditar"
+     * para no depender del estado interno de datoSeleccionado.
+     */
+    public void editarProcedimientoSinPreguntar(Long codigoProc, Long idProcMod, Long idProcPub, Boolean comun) {
+        if (codigoProc == null && idProcMod == null && idProcPub == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
+            return;
+        }
+        boolean realizarBusqueda = false;
+        if (idProcMod == null) {
+            String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+            String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            idProcMod = procedimientoService.generarModificacion(idProcPub, usuario, sessionBean.getPerfil(), ruta);
+            registrarMensaje(codigoProc, "editar");
+            realizarBusqueda = true;
+        }
+        // Sincronizamos datoSeleccionado para el resto del ciclo (returnDialogo, refresco, etc.).
+        if (datoSeleccionado != null && codigoProc != null && codigoProc.equals(datoSeleccionado.getCodigo())) {
+            datoSeleccionado.setCodigoWFMod(idProcMod);
+        }
+        ProcedimientoDTO proc = procedimientoService.findProcedimientoById(idProcMod);
+
+        TypeModoAcceso modo = BooleanUtils.isTrue(comun) && (this.isGestor() || this.isInformador())
+                ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+        String estados = codigoProc != null ? procedimientoService.getWorkflowEstados(codigoProc) : null;
+        abrirVentana(modo, proc, estados);
+        if (realizarBusqueda) {
+            this.buscar();
+        }
+        limpiarPendiente();
     }
 
     public void consultarProcedimiento() {
@@ -415,26 +444,44 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public void borrarProcedimiento() {
-        if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
-        } else {
-            Long idProcMod = datoSeleccionado.getCodigoWFMod();
-            Long idProcPub = datoSeleccionado.getCodigoWFPub();
-            if (idProcMod != null) {
-                //PrimeFaces.current().executeScript("PF('confirmDlgBorrarModificado').show();");
-                registrarMensaje(datoSeleccionado.getCodigo(), "borrar");
-                procedimientoService.deleteWF(idProcMod);
-                this.datoSeleccionado.setCodigoWFMod(null);
-                ProcedimientoGridDTO proc = this.datoSeleccionado;
-                this.buscar();
-                this.seleccionarPorId(proc);
-            } else if (idProcPub != null) {
-                //PrimeFaces.current().executeScript("PF('confirmDlgBorrarPublicado').show();");
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.borrarPublicado"));
-            } else {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + ".");// UtilJSF.getLiteral("info.borrado.ok"));
-            }
+        // Prioriza los códigos guardados al pulsar el botón de acción de la fila.
+        Long codigoProc = codigoPendiente;
+        Long idProcMod = codigoWFModPendiente;
+        Long idProcPub = codigoWFPubPendiente;
+        if (codigoProc == null && datoSeleccionado != null) {
+            codigoProc = datoSeleccionado.getCodigo();
+            idProcMod = datoSeleccionado.getCodigoWFMod();
+            idProcPub = datoSeleccionado.getCodigoWFPub();
         }
+        borrarProcedimiento(codigoProc, idProcMod, idProcPub);
+    }
+
+    /**
+     * Versión con parámetros explícitos: usada desde el confirmDialog para no depender
+     * del estado interno de datoSeleccionado.
+     */
+    public void borrarProcedimiento(Long codigoProc, Long idProcMod, Long idProcPub) {
+        if (codigoProc == null && idProcMod == null && idProcPub == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            return;
+        }
+        if (idProcMod != null) {
+            if (codigoProc != null) {
+                registrarMensaje(codigoProc, "borrar");
+            }
+            procedimientoService.deleteWF(idProcMod);
+            if (datoSeleccionado != null && codigoProc != null && codigoProc.equals(datoSeleccionado.getCodigo())) {
+                datoSeleccionado.setCodigoWFMod(null);
+            }
+            ProcedimientoGridDTO proc = this.datoSeleccionado;
+            this.buscar();
+            this.seleccionarPorId(proc);
+        } else if (idProcPub != null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewProcedimientos.error.borrarPublicado"));
+        } else {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + ".");
+        }
+        limpiarPendiente();
     }
 
     public void editarProcedimiento(ProcedimientoGridDTO procedimiento) {
@@ -466,6 +513,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void borrarProcedimiento(ProcedimientoGridDTO procedimiento) {
         this.datoSeleccionado = procedimiento;
+        guardarPendiente(procedimiento);
         PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
     }
 
@@ -537,8 +585,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.publicadoModificacion"));
         } else if (accion == "borrar") {
             mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.borradorDescartado"));
-        }
-        else{
+        } else {
             mensaje.setMensaje(null);
         }
         mensaje.setAdmContenido(esAdministradorContenido);
@@ -1353,17 +1400,17 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         return codigoProcedimiento != null && Boolean.TRUE.equals(procedimientosExpandidos.get(codigoProcedimiento));
     }
 
+    /**
+     * Sincroniza desde cliente el estado expandido/contraído de la fila y
+     * refresca la celda de estado de esa fila.
+     */
     public void actualizarEstadoBorradorToggle() {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String codigoProcedimientoParam = params.get("codigoProcedimiento");
         String expandidoParam = params.get("expandido");
         String rowIndexParam = params.get("rowIndex");
 
-        LOG.info("===== actualizarEstadoBorradorToggle INICIO =====");
-        LOG.info("codigo: {}, expandido: {}, rowIndex: {}", codigoProcedimientoParam, expandidoParam, rowIndexParam);
-
         if (codigoProcedimientoParam == null) {
-            LOG.warn("codigoProcedimientoParam es null");
             return;
         }
 
@@ -1372,45 +1419,38 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             boolean expandido = Boolean.parseBoolean(expandidoParam);
             procedimientosExpandidos.put(codigoProcedimiento, expandido);
 
-            LOG.info("Procedimiento {} marcado como expandido: {}", codigoProcedimiento, expandido);
-
-            // Forzar actualización de la celda de estado en la fila
             if (rowIndexParam != null && !rowIndexParam.isEmpty()) {
                 String updateId = "form:dataTable:" + rowIndexParam + ":estadoValor";
-                LOG.info("solicitando update de ID: {}", updateId);
                 PrimeFaces.current().ajax().update(updateId);
-                LOG.info("PrimeFaces.current().ajax().update() ejecutado");
             }
-            LOG.info("===== actualizarEstadoBorradorToggle FIN =====");
         } catch (NumberFormatException e) {
-            LOG.error("No se pudo interpretar el código del procedimiento: {}", codigoProcedimientoParam, e);
+            LOG.error("No se pudo interpretar el codigo del procedimiento: {}", codigoProcedimientoParam, e);
         } catch (Exception e) {
             LOG.error("Error en actualizarEstadoBorradorToggle", e);
         }
     }
 
-    public void onRowToggle(ToggleEvent event) {
-        if (event == null) {
+    /**
+     * Guarda los códigos identificativos del procedimiento sobre el que se va a
+     * confirmar una acción (borrar / editar sin preguntar). Evita depender de
+     * datoSeleccionado durante el paso por el confirmDialog.
+     */
+    private void guardarPendiente(ProcedimientoGridDTO procedimiento) {
+        if (procedimiento == null) {
+            limpiarPendiente();
             return;
         }
+        this.codigoPendiente = procedimiento.getCodigo();
+        this.codigoWFModPendiente = procedimiento.getCodigoWFMod();
+        this.codigoWFPubPendiente = procedimiento.getCodigoWFPub();
+        this.comunPendiente = procedimiento.getComun();
+    }
 
-        Long codigoProcedimiento = null;
-        Object data = event.getData();
-        if (data instanceof ProcedimientoGridDTO) {
-            codigoProcedimiento = ((ProcedimientoGridDTO) data).getCodigo();
-        } else if (data instanceof Number) {
-            codigoProcedimiento = ((Number) data).longValue();
-        } else if (data instanceof String) {
-            try {
-                codigoProcedimiento = Long.valueOf((String) data);
-            } catch (NumberFormatException e) {
-                LOG.debug("No se pudo interpretar el código del procedimiento en el rowToggle: {}", data, e);
-            }
-        }
-
-        if (codigoProcedimiento != null) {
-            procedimientosExpandidos.put(codigoProcedimiento, Visibility.VISIBLE.equals(event.getVisibility()));
-        }
+    private void limpiarPendiente() {
+        this.codigoPendiente = null;
+        this.codigoWFModPendiente = null;
+        this.codigoWFPubPendiente = null;
+        this.comunPendiente = null;
     }
 
     public String getLiteralEstado(ProcedimientoGridDTO procedimiento) {
@@ -1429,6 +1469,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             return getLiteral("TypeProcedimientoEstado." + estado.toString());
         }
     }
+
 
     public boolean mostrarClonar(ProcedimientoGridDTO procedimiento) {
         return procedimiento != null && !isModoConsulta() && !(this.isGestor() && BooleanUtils.isTrue(procedimiento.getComun()));

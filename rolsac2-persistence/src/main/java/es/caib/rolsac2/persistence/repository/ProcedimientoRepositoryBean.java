@@ -3468,7 +3468,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoEstado()) {
             if (ambosWf) {
-                sql.append(" AND ( wf.estado = :estado OR wf2.estado = :estado) ");
+                if (TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(filtro.getEstado())) {
+                    sql.append(" AND (wf.estado = 'P' AND wf2.estado = 'M') ");
+                } else if (TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString().equals(filtro.getEstado())) {
+                    sql.append(" AND (wf.estado = 'P' AND wf2.estado = 'PV') ");
+                } else {
+                    sql.append(" AND (wf.estado = :estado OR wf2.estado = :estado) ");
+                }
             } else {
                 sql.append(" AND ( wf.estado = :estado) ");
             }
@@ -3907,7 +3913,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoEstadoSIA() && !"N".equals(filtro.getEstadoSIA())) {
             query.setParameter("estadoSIA", filtro.getEstadoSIA());
         }
-        if (filtro.isRellenoEstado()) {
+        if (filtro.isRellenoEstado()
+            && !TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(filtro.getEstado())
+            && !TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString().equals(filtro.getEstado())) {
             query.setParameter("estado", filtro.getEstado());
         }
         if (filtro.isRellenoEstados()) {

@@ -179,8 +179,6 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                              process="@this"
                              partialSubmit="true"
                              async="false"
-                             oncomplete="console.log('actualizarEstadoBorradorToggle completado')"
-                             onstart="console.log('actualizarEstadoBorradorToggle iniciado')"
                              actionListener="#{viewProcedimientos.actualizarEstadoBorradorToggle}"/>
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
                              widgetVar="actualizarBusqueda"
@@ -191,15 +189,11 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                var="typeEstados"></p:importConstants>
             <p:confirmDialog id="confirmBorrar" varWidget="confirmBorrar"
                              widgetVar="confirmBorrar" header="#{labels['msg.aviso']}"
-                             message="#{labels['msg.eliminarRegistro']}" global="true" showEffect="fade"
-                             hideEffect="fade">
-                <p:commandButton value="#{labels['dict.si']}"
-                                 actionListener="#{viewProcedimientos.borrarProcedimiento()}"
-                                 process="@this"
-                                 update="messages dataTable"
-                                 oncomplete="PF('confirmBorrar').hide()"/>
-                <p:commandButton value="#{labels['dict.no']}" type="button" styleClass="ui-confirmdialog-no"
-                                 icon="ui-icon-close"/>
+                             global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="#{labels['dict.si']}" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                <p:commandButton value="#{labels['dict.no']}" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
             </p:confirmDialog>
 
 
@@ -711,16 +705,31 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                     update="messages dataTable"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
-                                         rendered="#{viewProcedimientos.mostrarEditar(procedimiento)}"
+                                         rendered="#{viewProcedimientos.mostrarEditar(procedimiento) and procedimiento.codigoWFMod != null}"
                                          actionListener="#{viewProcedimientos.editarProcedimiento(procedimiento)}"
                                          process="@this" onstart="startCargando()" oncomplete="stopCargando()">
                             <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
+                        <p:commandButton icon="pi pi-pencil" title="#{labels['dict.editar']}" styleClass="mr-1"
+                                         rendered="#{viewProcedimientos.mostrarEditar(procedimiento) and procedimiento.codigoWFMod == null}"
+                                         actionListener="#{viewProcedimientos.editarProcedimientoSinPreguntar(procedimiento.codigo, null, procedimiento.codigoWFPub, procedimiento.comun)}"
+                                         process="@this" update="messages dataTable"
+                                         onstart="startCargando()" oncomplete="stopCargando()">
+                            <p:confirm header="#{labels['dict.aviso']}"
+                                       message="#{labels['viewProcedimientos.aviso.noExisteModif']}"
+                                       icon="pi pi-exclamation-triangle"/>
+                            <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
+                                    update="messages dataTable"/>
+                        </p:commandButton>
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
                                          rendered="#{viewProcedimientos.mostrarBorrar(procedimiento)}"
-                                         actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento)}"
-                                         process="@this"/>
+                                         actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento.codigo, procedimiento.codigoWFMod, procedimiento.codigoWFPub)}"
+                                         process="@this" update="messages dataTable">
+                            <p:confirm header="#{labels['msg.aviso']}"
+                                       message="#{labels['msg.eliminarRegistro']}"
+                                       icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
                         <p:commandButton type="button"  icon="pi pi-list" title="#{labels['dict.borrador']}" styleClass="ui-button-outlined mr-1" rendered="#{procedimiento.tieneBorrador()}" onclick="toggleBorradorDesdeAcciones(this); return false;"/>
 
                     </div>
@@ -769,8 +778,12 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:commandButton>
                             <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
                                             rendered="#{viewProcedimientos.mostrarBorrarBorrador(procedimiento)}"
-                                            actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento)}"
-                                            process="@this" update="messages dataTable"/>
+                                            actionListener="#{viewProcedimientos.borrarProcedimiento(procedimiento.codigo, procedimiento.codigoWFMod, procedimiento.codigoWFPub)}"
+                                            process="@this" update="messages dataTable">
+                                <p:confirm header="#{labels['msg.aviso']}"
+                                           message="#{labels['msg.eliminarRegistro']}"
+                                           icon="pi pi-exclamation-triangle"/>
+                            </p:commandButton>
                         </h:panelGroup>
                     </h:panelGrid>
                 </p:rowExpansion>
@@ -802,50 +815,21 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                     }
                 }
 
-                function sincronizarTodosBorrador() {
-                    var dataTable = PF('procedimientoTable');
-                    if (!dataTable || !dataTable.tbody || dataTable.tbody.length === 0) {
-                        return;
-                    }
-
-                    var rows = dataTable.tbody.find('tr[data-rk]');
-                    rows.each(function(index) {
-                        var row = $(this);
-                        var codigoProcedimiento = row.attr('data-rk');
-                        if (!codigoProcedimiento) {
-                            return true;
-                        }
-
-                        var expandido = row.hasClass('ui-expanded-row');
-                        actualizarEstadoBorradorToggle([
-                            { name: 'codigoProcedimiento', value: codigoProcedimiento },
-                            { name: 'expandido', value: expandido },
-                            { name: 'rowIndex', value: index }
-                        ]);
-                    });
-                }
-
                 function setupRowToggler() {
                     if (window.rowTogglerSetup) {
                         return;
                     }
                     window.rowTogglerSetup = true;
 
-                    console.log('setupRowToggler iniciado');
-
                     var observer = new MutationObserver(function(mutations) {
                         for (var i = 0; i < mutations.length; i++) {
                             var mutation = mutations[i];
-                            // Detectar cuando una fila cambia de clase (cuando se expande/contrae)
                             if (mutation.attributeName === 'class' && mutation.target.tagName === 'TR') {
                                 var row = $(mutation.target);
                                 var codigoProcedimiento = row.attr('data-rk');
 
                                 if (codigoProcedimiento && row.has('td').length > 0) {
-                                    // Esta es la fila principal, no la de expansión
                                     var expandido = row.hasClass('ui-expanded-row');
-
-                                    // Calcular el índice correctamente: es la posición de esta fila dentro de la tabla
                                     var tbody = row.closest('tbody');
                                     var rowIndex = -1;
                                     if (tbody.length > 0) {
@@ -854,18 +838,15 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                     }
 
                                     if (rowIndex >= 0) {
-                                        console.log('Toggle detectado: código=' + codigoProcedimiento + ', expandido=' + expandido + ', rowIndex=' + rowIndex);
-
-                                        // Usar setTimeout para asegurar que PrimeFaces haya completado el toggle
-                                        setTimeout(function() {
-                                            actualizarEstadoBorradorToggle([
-                                                { name: 'codigoProcedimiento', value: codigoProcedimiento },
-                                                { name: 'expandido', value: expandido },
-                                                { name: 'rowIndex', value: rowIndex }
-                                            ]);
-                                        }, 100);
-                                    } else {
-                                        console.log('No se pudo calcular rowIndex para: ' + codigoProcedimiento);
+                                        (function(codigo, estaExpandido, idx) {
+                                            setTimeout(function() {
+                                                actualizarEstadoBorradorToggle([
+                                                    { name: 'codigoProcedimiento', value: codigo },
+                                                    { name: 'expandido', value: estaExpandido },
+                                                    { name: 'rowIndex', value: idx }
+                                                ]);
+                                            }, 100);
+                                        })(codigoProcedimiento, expandido, rowIndex);
                                     }
                                 }
                             }
@@ -874,7 +855,6 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
 
                     var dataTableElement = document.querySelector('#form\\:dataTable tbody');
                     if (dataTableElement) {
-                        console.log('Iniciando MutationObserver para DataTable');
                         observer.observe(dataTableElement, {
                             subtree: true,
                             attributes: true,
@@ -882,16 +862,12 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                             characterData: false,
                             childList: false
                         });
-                    } else {
-                        console.log('DataTable tbody NO encontrada');
                     }
                 }
 
-                // Ejecutar inmediatamente
                 try {
                     setupRowToggler();
-                    console.log('setupRowToggler completado');
-                } catch(e) {
+                } catch (e) {
                     console.error('Error en setupRowToggler:', e);
                 }
 
