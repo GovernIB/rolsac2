@@ -147,32 +147,37 @@ public class SessionBean implements Serializable {
     private void init() {
         LOG.info("Inicialitzant locale de l'usuari");
         lang = "ca";
-        TypePropiedadConfiguracion propiedadIdioma;
-        List<TypePerfiles> perfilesUsuario = seguridad.getPerfiles();
-        if (perfilesUsuario.contains(TypePerfiles.SUPER_ADMINISTRADOR) || perfilesUsuario.contains(TypePerfiles.ADMINISTRADOR_ENTIDAD)) {
-            propiedadIdioma = TypePropiedadConfiguracion.BACKEND_IDIOMAS;
-        } else {
-            propiedadIdioma = TypePropiedadConfiguracion.IDIOMA_DEFECTO;
-        }
-        String idiomaPorDefecto = systemServiceBean.obtenerPropiedadConfiguracion(propiedadIdioma);
-        if (idiomaPorDefecto != null) {
-            if (propiedadIdioma == TypePropiedadConfiguracion.BACKEND_IDIOMAS) {
-                String[] idiomas = idiomaPorDefecto.split(",");
+        String idUsuario = seguridad.getIdentificadorUsuario();
+        usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario);
+        SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
+        boolean esPrimerAcceso = sesion == null;
+
+        current = Locale.forLanguageTag(lang);
+        // inicializamos mochila
+        mochilaDatos = new HashMap<>();
+
+        cargarDatos();
+
+        if (esPrimerAcceso) {
+            if ((TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil) || TypePerfiles.GESTOR.equals(perfil)
+                 || TypePerfiles.INFORMADOR.equals(perfil)) && entidad != null) {
+                lang = entidad.getAdmContenidoSeleccionIdioma();
+            } else{
+                String backendIdiomas = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.BACKEND_IDIOMAS);
+                String[] idiomas = backendIdiomas.split(",");
                 String idioma = idiomas[0].trim();
                 if (!idioma.isEmpty()) {
                     lang = idioma;
                 }
-            } else {
-                lang = idiomaPorDefecto;
+            }
+
+            current = Locale.forLanguageTag(lang);
+            sesion = systemServiceBean.findSesionById(usuario.getCodigo());
+            if (sesion != null) {
+                sesion.setIdioma(lang);
+                systemServiceBean.updateSesion(sesion);
             }
         }
-        current = Locale.forLanguageTag(lang);
-        // inicializamos mochila
-        mochilaDatos = new HashMap<>();
-        String idUsuario = seguridad.getIdentificadorUsuario();
-        usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(seguridad.getIdentificadorUsuario());
-
-        cargarDatos();
 
         // Comprobar si tiene perfil de acceso en rosalc y si no redirigir a página de error
 
@@ -307,8 +312,6 @@ public class SessionBean implements Serializable {
                         redirigirRuta("/error/noRolesException.xhtml");
                         return;
                     }
-                    lang = obtenerIdiomaPorDefecto(this.perfil);
-                    current = Locale.forLanguageTag(lang);
                     actualizarPerfiles();
                     actualizarUnidadAdministrativa(usuario, perfil, sesionDTO);
                     actualizarEntidades();
@@ -328,7 +331,6 @@ public class SessionBean implements Serializable {
                     sesionDTO.setIdEntidad(this.entidad.getCodigo());
                     sesionDTO.setIdUa(this.unidadActiva.getCodigo());
                     sesionDTO.setPerfil(this.perfil.toString());
-                    sesionDTO.setIdioma(lang);
                     systemServiceBean.crearSesion(sesionDTO);
                 }
 
@@ -391,12 +393,6 @@ public class SessionBean implements Serializable {
             lang = entidad.getAdmContenidoSeleccionIdioma();
             sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
-        } else {
-            lang = obtenerIdiomaPorDefecto(perfil);
-            if (lang != null) {
-                sesionDTO.setIdioma(lang);
-                current = Locale.forLanguageTag(lang);
-            }
         }
 
 
@@ -1051,32 +1047,6 @@ public class SessionBean implements Serializable {
 
     }
 
-    /**
-     * Obtiene el idioma por defecto para el perfil de sesión
-     * @param perfilSesion
-     * @return String con el idioma por defecto, "ca" si no se encuentra ninguno
-     */
-    private String obtenerIdiomaPorDefecto(TypePerfiles perfilSesion) {
-        String idiomaBack = null;
-        String idiomaPorDefecto = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.BACKEND_IDIOMAS);
-        if (idiomaPorDefecto != null && !idiomaPorDefecto.trim().isEmpty()) {
-            String[] idiomas = idiomaPorDefecto.split(",");
-            String idioma = idiomas[0].trim();
-            if (!idioma.isEmpty()) {
-                idiomaBack = idioma;
-            }
-        }
-
-        if (perfilSesion == null || TypePerfiles.SUPER_ADMINISTRADOR.equals(perfilSesion) || TypePerfiles.ADMINISTRADOR_ENTIDAD.equals(perfilSesion)) {
-            return idiomaBack != null ? idiomaBack : "ca";
-        }
-
-        if (this.entidad != null && this.entidad.getIdiomaDefectoRest() != null && !this.entidad.getIdiomaDefectoRest().trim().isEmpty()) {
-            return this.entidad.getIdiomaDefectoRest().trim();
-        }
-
-        return idiomaBack != null ? idiomaBack : "ca";
-    }
 
     /**
      * Función utilizada para actualizar el logo de la entidad
