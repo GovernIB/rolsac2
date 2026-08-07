@@ -707,6 +707,61 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 //]]>
             </h:outputScript>
 
+            <h:outputScript>
+                // Detectar arrastre del raton dentro de datatable para permitir seleccion de texto
+                (function () {
+                    var startX = 0, startY = 0, isDragSeleccionTexto = false;
+                    var UMBRAL_DRAG = 4; // px de movimiento para considerar arrastre
+
+                    function esCeldaDataTable(target) {
+                        if (!target || !target.closest) return false;
+                        // soportar tanto datatable como treetable
+                        return target.closest('.ui-datatable .ui-datatable-data tr.ui-widget-content td, .ui-datatable td, .ui-treetable td');
+                    }
+
+                    document.addEventListener('mousedown', function (e) {
+                        if (!esCeldaDataTable(e.target)) {
+                            return;
+                        }
+                        startX = e.pageX;
+                        startY = e.pageY;
+                        isDragSeleccionTexto = false;
+                    }, true);
+
+                    document.addEventListener('mousemove', function (e) {
+                        if (!esCeldaDataTable(e.target)) {
+                            return;
+                        }
+                        if (Math.abs(e.pageX - startX) > UMBRAL_DRAG || Math.abs(e.pageY - startY) > UMBRAL_DRAG) {
+                            isDragSeleccionTexto = true;
+                        }
+                    }, true);
+
+                    // Si se detecta arrastre del raton dentro de la celda,
+                    // se impide que el click llegue al manejador de
+                    // seleccion de fila de PrimeFaces, para no perder la seleccion de texto.
+                    document.addEventListener('mouseup', function (e) {
+                        if (!esCeldaDataTable(e.target)) {
+                            return;
+                        }
+                        if (isDragSeleccionTexto) {
+                            e.stopPropagation();
+                        }
+                    }, true);
+
+                    document.addEventListener('click', function (e) {
+                        if (!esCeldaDataTable(e.target)) {
+                            return;
+                        }
+                        if (isDragSeleccionTexto) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }
+                        isDragSeleccionTexto = false;
+                    }, true);
+                })();
+            </h:outputScript>
+
             <p:confirmDialog message="#{labels['viewProcedimientos.aviso.noExisteModif']}"
                              header="#{labels['dict.aviso']}"
                              widgetVar="cdDeseaCrearEditar">
