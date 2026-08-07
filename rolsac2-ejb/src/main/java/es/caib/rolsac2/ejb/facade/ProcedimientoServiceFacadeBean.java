@@ -1647,9 +1647,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             List<AuditoriaCambio> cambios = new ArrayList<>();
             //Mensaje de clonación
             AuditoriaCambio cambioClon = new AuditoriaCambio();
-            cambioClon.setIdCampo("auditoria.procedimiento.clonar");
+            if (Constantes.PROCEDIMIENTO.equals(jprocClonado.getTipo())) {
+                cambioClon.setIdCampo("auditoria.procedimiento.clonar");
+            } else {
+                cambioClon.setIdCampo("auditoria.servicio.clonar");
+            }
             AuditoriaValorCampo valorClon = new AuditoriaValorCampo();
-            valorClon.setValorNuevo(idProcedimiento.toString());
+            valorClon.setValorNuevo(procedimientoRepository.getNombreProcedimientoServicio(idProcedimiento));
             cambioClon.getValoresModificados().add(valorClon);
             cambios.add(cambioClon);
 
