@@ -1435,7 +1435,8 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public boolean mostrarConsultar(ProcedimientoGridDTO procedimiento) {
-        return procedimiento != null && procedimiento.getCodigoWFPub() != null;
+        return ((procedimiento != null && procedimiento.getCodigoWFPub() != null) 
+                || (procedimiento != null && !isModoConsulta() && "PV".equals(procedimiento.getEstado()) && this.isGestor()));
     }
 
     public boolean mostrarEditar(ProcedimientoGridDTO procedimiento) {
@@ -1454,10 +1455,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public boolean mostrarMenuBorrador(ProcedimientoGridDTO procedimiento) {
         return procedimiento != null && !isModoConsulta() && ("PM".equals(procedimiento.getEstado()) || "PPV".equals(procedimiento.getEstado()));
-    }
-
-    public boolean mostrarConsultarBorradorPublicado(ProcedimientoGridDTO procedimiento) {
-        return procedimiento != null && !isModoConsulta() && "PV".equals(procedimiento.getEstado()) && this.isGestor();
     }
 
     public boolean mostrarEditarBorrador(ProcedimientoGridDTO procedimiento) {

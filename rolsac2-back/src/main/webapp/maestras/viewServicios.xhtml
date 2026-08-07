@@ -526,13 +526,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
-                        <p:commandButton icon="pi pi-eye" title="#{labels['dict.consultar']}" styleClass="mr-1"
-                                         rendered="#{viewServicios.mostrarConsultarBorradorPublicado(servicio)}"
-                                         actionListener="#{viewServicios.consultarServicio(servicio)}"
-                                         process="@this" onstart="startCargando()" oncomplete="stopCargando()">
-                            <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                    update="messages dataTable"/>
-                        </p:commandButton>
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
                                          rendered="#{viewServicios.mostrarBorrar(servicio)}"
                                          actionListener="#{viewServicios.borrarServicio(servicio)}"

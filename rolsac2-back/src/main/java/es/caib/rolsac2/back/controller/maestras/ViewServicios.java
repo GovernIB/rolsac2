@@ -1414,7 +1414,8 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public boolean mostrarConsultar(ServicioGridDTO servicio) {
-        return servicio != null && servicio.getCodigoWFPub() != null;
+        return ((servicio != null && servicio.getCodigoWFPub() != null) 
+                || (servicio != null && !isModoConsulta() && "PV".equals(servicio.getEstado()) && this.isGestor()));
     }
 
     public boolean mostrarEditar(ServicioGridDTO servicio) {
@@ -1433,10 +1434,6 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public boolean mostrarMenuBorrador(ServicioGridDTO servicio) {
         return servicio != null && !isModoConsulta() && ("PM".equals(servicio.getEstado()) || "PPV".equals(servicio.getEstado()));
-    }
-
-    public boolean mostrarConsultarBorradorPublicado(ServicioGridDTO servicio) {
-        return servicio != null && !isModoConsulta() && "PV".equals(servicio.getEstado()) && this.isGestor();
     }
 
     public boolean mostrarEditarBorrador(ServicioGridDTO servicio) {
