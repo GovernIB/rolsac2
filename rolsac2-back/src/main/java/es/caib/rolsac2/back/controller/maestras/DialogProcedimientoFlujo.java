@@ -156,6 +156,9 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
                     if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.MODIFICACION) {
                         estados.add(TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
                     }
+                    if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+                        estados.add(TypeProcedimientoEstado.MODIFICACION);
+                    }
                     if (typeEstadoActual != null && typeEstadoActual == TypeProcedimientoEstado.PUBLICADO) {
                         if (this.estadoProcedimiento != null && !this.estadoProcedimiento.contains("PV") && !this.estadoProcedimiento.contains("M")) {
                             /* Si el procedimiento tiene un WF modificado que esta en pendiente publicacion o en modificacion, no se puede mover en el flujo segun grafica #226 */
