@@ -8,12 +8,14 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.utils.UtilJSON;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
@@ -31,6 +33,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -378,6 +381,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
                 String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
                 idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil(), ruta);
+                registrarMensaje(datoSeleccionado.getCodigo(), "editar");
                 realizarBusqueda = true;
             }
             this.datoSeleccionado.setCodigoWFMod(idProcMod);
@@ -418,6 +422,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             Long idProcPub = datoSeleccionado.getCodigoWFPub();
             if (idProcMod != null) {
                 //PrimeFaces.current().executeScript("PF('confirmDlgBorrarModificado').show();");
+                registrarMensaje(datoSeleccionado.getCodigo(), "borrar");
                 procedimientoService.deleteWF(idProcMod);
                 this.datoSeleccionado.setCodigoWFMod(null);
                 ProcedimientoGridDTO proc = this.datoSeleccionado;
@@ -493,6 +498,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             if (idProcMod == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + " Modificacion");
             } else {
+                registrarMensaje(datoSeleccionado.getCodigo(), "borrar");
                 procedimientoService.deleteWF(idProcMod);
                 ProcedimientoGridDTO proc = this.datoSeleccionado;
                 this.buscar();
@@ -517,6 +523,33 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             }
         }
     }
+
+    private void registrarMensaje(Long codigoProcedimiento, String accion) {
+        String mensajesJson = procedimientoService.getMensajesByCodigo(codigoProcedimiento);
+        List<Mensaje> mensajes = mensajesJson == null || mensajesJson.isEmpty()
+                ? new ArrayList<>() : (List<Mensaje>) UtilJSON.getMensaje(mensajesJson);
+
+        Mensaje mensaje = new Mensaje();
+        boolean esAdministradorContenido = isAdministradorContenidos();
+        mensaje.setFechaReal(new Date());
+        mensaje.setUsuario(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
+        if (accion == "editar") {
+            mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.publicadoModificacion"));
+        } else if (accion == "borrar") {
+            mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.borradorDescartado"));
+        }
+        else{
+            mensaje.setMensaje(null);
+        }
+        mensaje.setAdmContenido(esAdministradorContenido);
+        mensaje.setPendienteMensajesGestor(esAdministradorContenido);
+        mensaje.setPendienteMensajesSupervisor(!esAdministradorContenido);
+        mensajes.add(0, mensaje);
+
+        ValidacionTipoUtils.sanitizarMensajes(mensajes);
+        procedimientoService.actualizarMensajes(codigoProcedimiento, UtilJSON.toJSON(mensajes), !esAdministradorContenido, esAdministradorContenido);
+    }
+
 
     /**
      * Imprime el listado de normativas.
