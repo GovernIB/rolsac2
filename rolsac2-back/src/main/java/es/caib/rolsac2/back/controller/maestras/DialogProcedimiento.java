@@ -1873,7 +1873,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 // En caso de estar pendiente de cerrar, no mostrar botón
                 return false;
             }
-            return !this.isNoEditable();
+            return true;
         }
         if (this.isInformador()) {
             return false;
@@ -1882,7 +1882,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return true;
         }
         return false;
-
     }
 
     public void setMostrarBtnFlujo(boolean mostrarBtnFlujo) {

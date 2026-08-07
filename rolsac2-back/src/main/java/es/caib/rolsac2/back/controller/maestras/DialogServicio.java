@@ -1489,18 +1489,23 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public boolean isMostrarBtnFlujo() {
         if (this.isGestor()) {
-            if (this.data.getEstado() == TypeProcedimientoEstado.MODIFICACION || this.data.getEstado() == TypeProcedimientoEstado.PUBLICADO) {
-                return true;
-            } else {
+            if (this.data.getComun() == 1) {
+                // Si es común, no mostrar botón
                 return false;
             }
-        } else if (this.isInformador()) {
-            return false;
-        } else if (this.isAdministradorContenidos()) {
+            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
+                // En caso de estar pendiente de cerrar, no mostrar botón
+                return false;
+            }
             return true;
-        } else {
+        }
+        if (this.isInformador()) {
             return false;
         }
+        if (this.isAdministradorContenidos()) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isTotalHabilitadoComunes() {
