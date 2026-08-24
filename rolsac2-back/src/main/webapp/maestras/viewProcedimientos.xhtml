@@ -725,9 +725,9 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                 </p:column>
                 <p:column headerText="#{labels['dict.estado']}" styleClass="w170px">
                     <f:facet name="header"/>
-                    <p:outputPanel id="estadoValor" styleClass="estado-text-#{procedimiento.codigo}" >
+                    <h:panelGroup id="estadoValor" styleClass="estado-text-#{procedimiento.codigo}" >
                         <h:outputText value="#{viewProcedimientos.getLiteralEstado(procedimiento)}"/>
-                    </p:outputPanel>
+                    </h:panelGroup>
                 </p:column>
                 <p:column sortBy="#{procedimiento.nombre}" headerText="#{labels['dict.nombre']}">
                     <f:facet name="header"/>

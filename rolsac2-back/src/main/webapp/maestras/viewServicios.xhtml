@@ -531,9 +531,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 </p:column>
                 <p:column headerText="#{labels['dict.estado']}" styleClass="w170px">
                     <f:facet name="header"/>
-                    <p:outputPanel id="estadoValor" styleClass="estado-text-#{servicio.codigo}">
+                    <h:panelGroup id="estadoValor" styleClass="estado-text-#{servicio.codigo}">
                         <h:outputText value="#{viewServicios.getLiteralEstado(servicio)}"/>
-                    </p:outputPanel>
+                    </h:panelGroup>
                 </p:column>
                 <p:column sortBy="#{servicio.nombre}" headerText="#{labels['dict.nombre']}">
                     <f:facet name="header"/>
@@ -675,7 +675,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 
                 /*Permite restaurar las filas expandidas al relizar busquedas, en el caso que no estuvieran ya expandidas */
                 function restaurarBorradoresExpandido() {
-                    var dataTable = PF('procedimientoTable');
+                    var dataTable = PF('servicioTable');
                     if (!dataTable || !dataTable.tbody) {
                         return;
                     }
@@ -795,7 +795,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p:commandButton value="#{labels['dict.si']}" onclick="PF('cdDeseaCrearEditar').hide()"
                                  styleClass="font15pxi"
                                  action="#{viewServicios.editarProcedimientoSinPreguntar()}"
-                                 update="form:dataTable"/>
+                                 update="messages"/>
                 <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdDeseaCrearEditar').hide()"
                                  styleClass="font15pxi"/>
             </p:confirmDialog>
