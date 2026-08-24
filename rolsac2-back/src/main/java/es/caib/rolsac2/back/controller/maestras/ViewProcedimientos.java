@@ -24,6 +24,8 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.Visibility;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -1396,34 +1398,25 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         return codigoProcedimiento != null && Boolean.TRUE.equals(procedimientosExpandidos.get(codigoProcedimiento));
     }
 
-    /**
-     * Sincroniza desde cliente el estado expandido/contraído de la fila y
-     * refresca la celda de estado de esa fila.
-     */
-    public void actualizarEstadoBorradorToggle() {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String codigoProcedimientoParam = params.get("codigoProcedimiento");
-        String expandidoParam = params.get("expandido");
-        String rowIndexParam = params.get("rowIndex");
 
-        if (codigoProcedimientoParam == null) {
+    public void onRowToggle(ToggleEvent event) {
+        ProcedimientoGridDTO procedimiento = (ProcedimientoGridDTO) event.getData();
+        if (procedimiento == null || procedimiento.getCodigo() == null) {
             return;
         }
 
-        try {
-            Long codigoProcedimiento = Long.valueOf(codigoProcedimientoParam);
-            boolean expandido = Boolean.parseBoolean(expandidoParam);
-            procedimientosExpandidos.put(codigoProcedimiento, expandido);
-
-            if (rowIndexParam != null && !rowIndexParam.isEmpty()) {
-                String updateId = "form:dataTable:" + rowIndexParam + ":estadoValor";
-                PrimeFaces.current().ajax().update(updateId);
-            }
-        } catch (NumberFormatException e) {
-            LOG.error("No se pudo interpretar el codigo del procedimiento: {}", codigoProcedimientoParam, e);
-        } catch (Exception e) {
-            LOG.error("Error en actualizarEstadoBorradorToggle", e);
+        boolean expandido = Visibility.VISIBLE.equals(event.getVisibility());
+        if (expandido) {
+            procedimientosExpandidos.put(procedimiento.getCodigo(), Boolean.TRUE);
+        } else {
+            procedimientosExpandidos.remove(procedimiento.getCodigo());
         }
+
+        // actualizamos por javascript el estado, llamando al update no funciona
+        String nuevoEstado = getLiteralEstado(procedimiento);
+        String script = "$('.estado-text-" + procedimiento.getCodigo() + "').text('" + nuevoEstado + "');";
+        PrimeFaces.current().executeScript(script);
+
     }
 
     /**
