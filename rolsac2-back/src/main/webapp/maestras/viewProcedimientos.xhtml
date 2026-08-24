@@ -247,15 +247,16 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-1 align-content-center">
                             <h:outputText value="#{labels['viewProcedimientos.codigoProcMin']}:" for="txtCodigoProc"/>
                             <p:inputText id="txtCodigoProc" value="#{viewProcedimientos.filtro.codigoProc}"
-                                         styleClass="w100" maxlength="10" />
-                            <p:keyFilter regEx="/[0-9]/"/>
+                                         styleClass="w100" maxlength="10">
+                                <p:keyFilter mask="num"/>
+                            </p:inputText>
                         </div>
-
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-1 align-content-center">
                             <h:outputText value="#{labels['viewProcedimientos.codigoSIA']}:" for="txtCodigoSIA"/>
                             <p:inputText id="txtCodigoSIA" value="#{viewProcedimientos.filtro.codigoSIA}"
-                                         styleClass="w100" maxlength="10"/>
-                            <p:keyFilter regEx="/[0-9]/"/>
+                                         styleClass="w100" maxlength="10">
+                                <p:keyFilter mask="num"/>
+                            </p:inputText>
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 align-content-center">
                             <h:outputText value="#{labels['viewProcedimientos.estado']}:" for="txtTipoEstado"/>
@@ -492,7 +493,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.pdu.integrar.no']}" itemValue="false"/>
                                     </p:selectOneMenu>
                                 </div>
-                                <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
+                                <h:panelGroup styleClass="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque" layout="block" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
                                     <h:outputText value="#{labels['viewProcedimientos.esComun']}:" for="txtEsComun" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
                                     <p:selectOneMenu id="txtEsComun" value="#{viewProcedimientos.filtro.comun}"
                                                      styleClass="w95" autoWidth="false" rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
@@ -500,7 +501,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.comun']}" itemValue="S"/>
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.especifico']}" itemValue="N"/>
                                     </p:selectOneMenu>
-                                </div>
+                                </h:panelGroup>
                             </div>
                         </div>
                     </div>
@@ -636,6 +637,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                 <p:ajax event="rowSelect" global="false"
                         process="@form" listener="#{viewProcedimientos.calcularProc()}" onstart="onClickDatableStart();" oncomplete="onClickDatableFin();" />
                 <p:ajax event="rowDblselect" global="false" oncomplete="triggerDblClick();" process="@form"/>
+                <p:ajax event="page" global="false" oncomplete="setupRowToggler();" />
 
                 <f:facet name="{RowsPerPageLabel}">
                     #{labels.dataTable_rowsPerPage}
