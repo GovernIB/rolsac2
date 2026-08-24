@@ -22,6 +22,8 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.Visibility;
 
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -1366,32 +1368,25 @@ public class ViewServicios extends AbstractController implements Serializable {
         return codigoServicio != null && Boolean.TRUE.equals(serviciosExpandidos.get(codigoServicio));
     }
 
-    public void actualizarEstadoBorradorToggle() {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String codigoServicioParam = params.get("codigoProcedimiento");
-        String expandidoParam = params.get("expandido");
-        String rowIndexParam = params.get("rowIndex");
-
-        if (codigoServicioParam == null) {
+    public void onRowToggle(ToggleEvent event) {
+        ServicioGridDTO servicio = (ServicioGridDTO) event.getData();
+        if (servicio == null || servicio.getCodigo() == null) {
             return;
         }
 
-        try {
-            Long codigoServicio = Long.valueOf(codigoServicioParam);
-            boolean expandido = Boolean.parseBoolean(expandidoParam);
-            serviciosExpandidos.put(codigoServicio, expandido);
-
-            if (rowIndexParam != null && !rowIndexParam.isEmpty()) {
-                String updateId = "form:dataTable:" + rowIndexParam + ":estadoValor";
-                PrimeFaces.current().ajax().update(updateId);
-            }
-        } catch (NumberFormatException e) {
-            LOG.error("No se pudo interpretar el codigo del servicio: {}", codigoServicioParam, e);
-        } catch (Exception e) {
-            LOG.error("Error en actualizarEstadoBorradorToggle", e);
+        boolean expandido = Visibility.VISIBLE.equals(event.getVisibility());
+        if (expandido) {
+            serviciosExpandidos.put(servicio.getCodigo(), Boolean.TRUE);
+        } else {
+            serviciosExpandidos.remove(servicio.getCodigo());
         }
-    }
 
+        // actualizamos por javascript el estado, llamando al update no funciona
+        String nuevoEstado = getLiteralEstado(servicio);
+        String script = "$('.estado-text-" + servicio.getCodigo() + "').text('" + nuevoEstado + "');";
+        PrimeFaces.current().executeScript(script);
+    }
+    
     public String getLiteralEstado(ServicioGridDTO servicio) {
         if (servicio == null || servicio.getEstado() == null) {
             return "";
