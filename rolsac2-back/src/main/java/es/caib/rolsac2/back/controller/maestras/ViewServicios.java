@@ -338,19 +338,15 @@ public class ViewServicios extends AbstractController implements Serializable {
             return;
         }
 
-        if (!mostrarConsultar(datoSeleccionado) && !mostrarBorrar(datoSeleccionado) && !mostrarEditar(datoSeleccionado)) {
+        if (mostrarConsultar(datoSeleccionado) && mostrarEditar(datoSeleccionado)) {
             return;
         } else {
-            if (mostrarEditar(datoSeleccionado) && (mostrarConsultar(datoSeleccionado) || mostrarBorrar(datoSeleccionado))) {
-                return;
-            } else if (mostrarConsultar(datoSeleccionado) && mostrarBorrar(datoSeleccionado)) {
-                return;
-            } else if (mostrarConsultar(datoSeleccionado)) {
+            if (mostrarConsultar(datoSeleccionado)) {
                 consultarProcedimiento();
-            } else if (mostrarBorrar(datoSeleccionado)) {
-                PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
-            } else {
+            } else if (mostrarEditar(datoSeleccionado)) {
                 editarProcedimiento();
+            } else{
+                return;
             }
         }
     }

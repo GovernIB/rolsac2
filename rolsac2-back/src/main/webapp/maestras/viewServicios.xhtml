@@ -212,13 +212,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          actionListener="#{viewServicios.buscarEvt()}"
                                          update="messages dataTable"
                                          process="@form" style="display: none"
-                                         onstart="PF('statusDialog').show()"
-                                         oncomplete="PF('statusDialog').hide()"/>
+                                         onstart="start()"
+                                         oncomplete="stop()"/>
                         <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
                                          styleClass="mr-2" icon="pi pi-search"
                                          actionListener="#{viewServicios.buscar()}"
                                          update="messages dataTable"
-                                         process="@form"/>
+                                         process="@form"
+                                         onstart="start()"
+                                         oncomplete="stop()"/>
                         <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" styleClass="mr-0"
                                          onclick="PF('panel').toggle();cambiarBoton()"/>
                     </div>
@@ -646,9 +648,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         }
                     });
 
-                    var dataTableElement = document.querySelector('#form\\:dataTable tbody');
-                    if (dataTableElement) {
-                        observer.observe(dataTableElement, {
+                    var formElement = document.querySelector('#form');
+                    if (formElement) {
+                        observer.observe(formElement, {
                             subtree: true,
                             attributes: true,
                             attributeFilter: ['class'],
@@ -665,8 +667,15 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 }
 
                 function triggerDblClick() {
-                    $('#form\\:btnEditarHidden').click();
+                    var filaSeleccionada = $('#form\\:dataTable tr[data-rk].ui-state-highlight').first();
+                    var puedeConsultar = filaSeleccionada.find('button:has(.pi-eye):visible').length > 0;
+                    var puedeEditar = filaSeleccionada.find('button:has(.pi-pencil):visible').length > 0;
+
+                    if (puedeConsultar !== puedeEditar) {
+                        $('#form\\:btnEditarHidden').click();
+                    }
                 }
+
                 function cambiarBoton() {
                     if ( $('#form\\:btnBusquedaAvanzada span').hasClass('pi-plus'))  {
                         $('#form\\:btnBusquedaAvanzada span').removeClass('pi-plus');
