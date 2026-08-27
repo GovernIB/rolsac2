@@ -62,7 +62,6 @@ public class ViewServicios extends AbstractController implements Serializable {
     private ServicioGridDTO datoSeleccionado;
     private ServicioDTO servicioSeleccionado;
     private String uaRaiz;
-    private String idioma;
     private ProcedimientoFiltro filtro;
     private LazyDataModel<ServicioGridDTO> lazyModel;
     private String[] canalesSeleccionados;
@@ -84,6 +83,12 @@ public class ViewServicios extends AbstractController implements Serializable {
     public LazyDataModel<ServicioGridDTO> getLazyModel() {
         return lazyModel;
     }
+
+    /**
+     * Cuando se exporta los datos
+     **/
+    private ExportarDatos exportarDatos;
+    private String idioma;
 
     /**
      * Pagina detalle
@@ -108,15 +113,13 @@ public class ViewServicios extends AbstractController implements Serializable {
     // Estado visual de expansión de filas en la tabla de servicios.
     private final Map<Long, Boolean> serviciosExpandidos = new HashMap<>();
 
+    // Códigos del procedimiento sobre el que se va a actuar en el confirmDialog / diálogo de crear-editar.
+    // Se guardan cuando se pulsa el botón de acción de una fila para no depender de datoSeleccionado,
+    // que puede quedar desincronizado al no requerirse ya la selección explícita de la fila.
     private Long codigoPendiente;
     private Long codigoWFModPendiente;
     private Long codigoWFPubPendiente;
     private Boolean comunPendiente;
-
-    /**
-     * Cuando se exporta los datos
-     **/
-    private ExportarDatos exportarDatos;
 
     public void load() {
         LOG.debug("load View Servicios");
@@ -262,13 +265,14 @@ public class ViewServicios extends AbstractController implements Serializable {
             idsUasInstructor.add(sessionBean.getUnidadActiva().getCodigo());
             filtro.setIdUAsInstructor(idsUasInstructor);
         } else if (filtro.isTodasUnidadesOrganicas()) {
-
             List<Long> ids = new ArrayList<>();
+
             for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
                 if (filtro.isHijasActivas()) {
                     List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
                     ids.addAll(idsUa);
                 }
+
                 ids.add(ua.getCodigo());
             }
             filtro.setIdUAsInstructor(ids);
@@ -280,26 +284,6 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void filtroUnidadOrganicasChange() {
         filtroHijasActivasChange();
-//        if (filtro.isTodasUnidadesOrganicas()) {
-//            if (filtro.isHijasActivas()) {
-//                List<Long> ids = new ArrayList<>();
-//
-//                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-//                    List<Long> idsUa = uaService.listarDescendientes(ua.getCodigo());
-//                    ids.addAll(idsUa);
-//                }
-//                filtro.setIdUAsInstructor(ids);
-//            } else {
-//                List<Long> idsUa = new ArrayList<>();
-//                for (UnidadAdministrativaDTO ua : sessionBean.obtenerUnidadesAdministrativasUsuario()) {
-//                    idsUa.add(ua.getCodigo());
-//                }
-//                idsUa.add(sessionBean.getUnidadActiva().getCodigo());
-//                filtro.setIdUAsInstructor(idsUa);
-//            }
-//        } else if (filtro.isHijasActivas() && !filtro.isTodasUnidadesOrganicas()) {
-//            filtro.setIdUAsInstructor(uaService.listarDescendientes(sessionBean.getUnidadActiva().getCodigo()));
-//        }
     }
 
     public void limpiarFiltro() {
@@ -311,9 +295,9 @@ public class ViewServicios extends AbstractController implements Serializable {
 
         filtro.setIdioma(sessionBean.getLang());
         //filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
-        filtro.setTipo("S");
         filtro.setEsProcedimiento(Boolean.FALSE);
         filtro.setOrder("DESCENDING");
+        filtro.setTipo("S");
         canalesSeleccionados = new String[0];
     }
 
@@ -324,11 +308,12 @@ public class ViewServicios extends AbstractController implements Serializable {
         listTipoLegitimacion = maestrasSupService.findAllTipoLegitimacion();
         listTipoProcedimiento = maestrasSupService.findAllTipoProcedimiento(sessionBean.getEntidad().getCodigo());
         listTipoPublicoObjetivo = maestrasSupService.findAllTiposPublicoObjetivo();
-        listPlantillas = new ArrayList<>();
         listFinVias = maestrasSupService.findAllTipoVia();
-        listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
-        listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
         temasPadre = temaServiceFacade.getGridRoot(sessionBean.getLang(), sessionBean.getEntidad().getCodigo());
+        listPlantillas = new ArrayList<>();
+        listPlantillas.addAll(maestrasSupService.findPlantillasTiposTramitacion(sessionBean.getEntidad().getCodigo(), null));
+
+        listPlataformas = platTramitElectronicaServiceFacade.findAll(sessionBean.getEntidad().getCodigo());
 
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String paramCodigo = params.get("codigoServ");
@@ -363,9 +348,10 @@ public class ViewServicios extends AbstractController implements Serializable {
         if (datoSeleccionado == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
         } else {
-
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
+                // Guardamos los códigos para que editarProcedimientoSinPreguntar() los recupere
+                // aunque datoSeleccionado se pise antes de confirmar en el diálogo.
                 guardarPendiente(this.datoSeleccionado);
                 PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
                 return;
@@ -379,7 +365,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
     }
 
-    public void editarProcedimientoSinPreguntar() {
+    public void editarServicioSinPreguntar() {
         // Recupera los códigos guardados al pulsar "Editar" en la fila; si no hay, cae en datoSeleccionado.
         Long codigoProc = codigoPendiente;
         Long idProcMod = codigoWFModPendiente;
@@ -391,14 +377,14 @@ public class ViewServicios extends AbstractController implements Serializable {
             idProcPub = datoSeleccionado.getCodigoWFPub();
             comun = datoSeleccionado.getComun();
         }
-        editarProcedimientoSinPreguntar(codigoProc, idProcMod, idProcPub, comun);
+        editarServicioSinPreguntar(codigoProc, idProcMod, idProcPub, comun);
     }
 
     /**
      * Versión con parámetros explícitos: usada desde el confirmDialog "cdDeseaCrearEditar"
      * para no depender del estado interno de datoSeleccionado.
      */
-    public void editarProcedimientoSinPreguntar(Long codigoServ, Long idProcMod, Long idProcPub, Boolean comun) {
+    public void editarServicioSinPreguntar(Long codigoServ, Long idProcMod, Long idProcPub, Boolean comun) {
         if (codigoServ == null && idProcMod == null && idProcPub == null) {
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
             return;
@@ -427,78 +413,6 @@ public class ViewServicios extends AbstractController implements Serializable {
         limpiarPendiente();
     }
 
-    private void registrarMensaje(Long codigoProcedimiento, String accion) {
-        String mensajesJson = procedimientoService.getMensajesByCodigo(codigoProcedimiento);
-        List<Mensaje> mensajes = mensajesJson == null || mensajesJson.isEmpty()
-                ? new ArrayList<>() : (List<Mensaje>) UtilJSON.getMensaje(mensajesJson);
-
-        Mensaje mensaje = new Mensaje();
-        boolean esAdministradorContenido = isAdministradorContenidos();
-        mensaje.setFechaReal(new Date());
-        mensaje.setUsuario(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
-        if ("editar".equals(accion)) {
-            mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.publicadoModificacion"));
-        }
-        mensaje.setAdmContenido(esAdministradorContenido);
-        mensaje.setPendienteMensajesGestor(esAdministradorContenido);
-        mensaje.setPendienteMensajesSupervisor(!esAdministradorContenido);
-        mensajes.add(0, mensaje);
-
-        ValidacionTipoUtils.sanitizarMensajes(mensajes);
-        procedimientoService.actualizarMensajes(codigoProcedimiento, UtilJSON.toJSON(mensajes), !esAdministradorContenido, esAdministradorContenido);
-    }
-
-    public void seleccionarUaInstructor() {
-        if (filtro.getUaInstructorCodigo() != null) {
-            UnidadAdministrativaDTO uaInstructor = uaService.findUASimpleByID(filtro.getUaInstructorCodigo(), sessionBean.getLang(), null);
-            if (uaInstructor != null) {
-                UtilJSF.anyadirMochila("ua", uaInstructor);
-            }
-        }
-        UtilJSF.openDialog("/comun/dialogSeleccionarUA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 750);
-    }
-
-    public void returnDialogUaInstructor(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-        if (!respuesta.isCanceled()) {
-            UnidadAdministrativaDTO uaInstructor = (UnidadAdministrativaDTO) respuesta.getResult();
-            if (uaInstructor == null) {
-                if (sessionBean.getUnidadActiva() != null) {
-                    filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
-                } else {
-                    filtro.setIdUAInstructor(null);
-                }
-                filtro.setUaInstructorNombre(null);
-            } else {
-                filtro.setIdUAInstructor(uaInstructor.getCodigo());
-                if (uaInstructor.getNombre() != null) {
-                    filtro.setUaInstructorNombre(uaInstructor.getNombre().getTraduccionConValor(sessionBean.getLang()));
-                } else {
-                    filtro.setUaInstructorNombre(null);
-                }
-            }
-        }
-    }
-
-    public void abrirMensajes(Long codigo) {
-        final Map<String, String> params = new HashMap<>();
-        String mensajes = procedimientoService.getMensajesByCodigo(codigo);
-        UtilJSF.anyadirMochila("mensajes", mensajes);
-        UtilJSF.anyadirMochila("tipo", "S");
-        params.put("SOLO_MENSAJES", "S");
-        params.put("ID", codigo.toString());
-        //params.put("ESTADO", data.getEstado().toString());
-        UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
-    }
-
-    public void returnDialogMensajes(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-        if (!respuesta.isCanceled()) {
-            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
-            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
-            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
-        }
-    }
 
     public void consultarProcedimiento() {
         if (datoSeleccionado != null) {
@@ -518,27 +432,47 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
     }
 
-    public void borrarProcedimiento() {
-        if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));// UtilJSF.getLiteral("info.borrado.ok"));
-        } else {
-            Long idProcMod = datoSeleccionado.getCodigoWFMod();
-            Long idProcPub = datoSeleccionado.getCodigoWFPub();
-            if (idProcMod != null) {
-                //PrimeFaces.current().executeScript("PF('confirmDlgBorrarModificado').show();");
-                procedimientoService.deleteWF(idProcMod);
-                this.datoSeleccionado.setCodigoWFMod(null);
-                ServicioGridDTO proc = this.datoSeleccionado;
-                this.buscar();
-                this.seleccionarPorId(proc);
-            } else if (idProcPub != null) {
-                //PrimeFaces.current().executeScript("PF('confirmDlgBorrarPublicado').show();");
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.borrarPublicado"));
-            } else {
-                UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + ".");// UtilJSF.getLiteral("info.borrado.ok"));
-            }
+    public void borrarServicio() {
+        // Prioriza los códigos guardados al pulsar el botón de acción de la fila.
+        Long codigoSer = codigoPendiente;
+        Long idSerMod = codigoWFModPendiente;
+        Long idSerPub = codigoWFPubPendiente;
+        if (codigoSer == null && datoSeleccionado != null) {
+            codigoSer = datoSeleccionado.getCodigo();
+            idSerMod = datoSeleccionado.getCodigoWFMod();
+            idSerPub = datoSeleccionado.getCodigoWFPub();
         }
+        borrarServicio(codigoSer, idSerMod, idSerPub);
     }
+
+    /**
+     * Versión con parámetros explícitos: usada desde el confirmDialog para no depender
+     * del estado interno de datoSeleccionado.
+     */
+    public void borrarServicio(Long codigoSer, Long idSerMod, Long idSerPub) {
+        if (codigoSer == null && idSerMod == null && idSerPub == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+            return;
+        }
+        if (idSerMod != null) {
+            if (codigoSer != null) {
+                registrarMensaje(codigoSer, "borrar");
+            }
+            procedimientoService.deleteWF(idSerMod);
+            if (datoSeleccionado != null && codigoSer != null && codigoSer.equals(datoSeleccionado.getCodigo())) {
+                this.datoSeleccionado.setCodigoWFMod(null);
+            }
+            ServicioGridDTO serv = this.datoSeleccionado;
+            this.buscar();
+            this.seleccionarPorId(serv);
+        } else if (idSerPub != null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("viewServicios.error.borrarPublicado"));
+        } else {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + ".");
+        }
+        limpiarPendiente();
+    }
+
 
     public void editarServicio(ServicioGridDTO servicio) {
         this.datoSeleccionado = servicio;
@@ -569,6 +503,7 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void borrarServicio(ServicioGridDTO servicio) {
         this.datoSeleccionado = servicio;
+        guardarPendiente(servicio);
         PrimeFaces.current().executeScript("PF('confirmBorrar').show();");
     }
 
@@ -601,6 +536,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             if (idProcMod == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento") + " Modificacion");
             } else {
+                registrarMensaje(datoSeleccionado.getCodigo(), "borrar");
                 procedimientoService.deleteWF(idProcMod);
                 ServicioGridDTO proc = this.datoSeleccionado;
                 this.buscar();
@@ -626,6 +562,99 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
     }
 
+    private void registrarMensaje(Long codigoProcedimiento, String accion) {
+        String mensajesJson = procedimientoService.getMensajesByCodigo(codigoProcedimiento);
+        List<Mensaje> mensajes = mensajesJson == null || mensajesJson.isEmpty()
+                ? new ArrayList<>() : (List<Mensaje>) UtilJSON.getMensaje(mensajesJson);
+
+        Mensaje mensaje = new Mensaje();
+        boolean esAdministradorContenido = isAdministradorContenidos();
+        mensaje.setFechaReal(new Date());
+        mensaje.setUsuario(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
+        if ("editar".equals(accion)) {
+            mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.publicadoModificacion"));
+        } else if ("borrar".equals(accion)) {
+            mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.borradorDescartado"));
+        } else {
+            mensaje.setMensaje(null);
+        }
+        mensaje.setAdmContenido(esAdministradorContenido);
+        mensaje.setPendienteMensajesGestor(esAdministradorContenido);
+        mensaje.setPendienteMensajesSupervisor(!esAdministradorContenido);
+        mensajes.add(0, mensaje);
+
+        ValidacionTipoUtils.sanitizarMensajes(mensajes);
+        procedimientoService.actualizarMensajes(codigoProcedimiento, UtilJSON.toJSON(mensajes), !esAdministradorContenido, esAdministradorContenido);
+    }
+
+
+    /**
+     * Imprime el listado de normativas.
+     */
+    public void exportar() {
+        final Map<String, String> params = new HashMap<>();
+        params.put(TypeParametroVentana.TIPO.toString(), "SERV");
+        UtilJSF.anyadirMochila("exportar", exportarDatos);
+        UtilJSF.openDialog("dialogExportar", TypeModoAcceso.ALTA, params, true, 800, 700);
+    }
+
+
+    /**
+     * Devuelve el resultado del dialogo de traspaso.
+     *
+     * @param event
+     */
+    public void returnDialogoExportar(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            exportarDatos = (ExportarDatos) respuesta.getResult();
+            this.downloadReady = true;
+        } else {
+            this.downloadReady = false;
+        }
+    }
+
+    /**
+     * Devuelve el fichero
+     */
+    public StreamedContent getFile() {
+
+        ExportarDatos exportarDatos = this.exportarDatos.clone();
+
+        List<ExportarCampos> campos = new ArrayList<>();
+        // Eliminamos los campos no seleccionados
+        for (ExportarCampos campo : exportarDatos.getCampos()) {
+            if (campo.isSeleccionado()) {
+                campos.add(campo);
+            }
+        }
+        exportarDatos.setCampos(campos);
+        List<ProcedimientoCompletoDTO> procedimientos = procedimientoService.findExportByFiltro(filtro, exportarDatos);
+
+        Map<String, String> literalesWF = new HashMap<>();
+        literalesWF.put("1", getLiteral("dict.wf.1"));
+        literalesWF.put("0", getLiteral("dict.wf.0"));
+
+        Map<String, String> literalesEstado = new HashMap<>();
+        literalesEstado.put("M", getLiteral("TypeProcedimientoEstado.M"));
+        literalesEstado.put("T", getLiteral("TypeProcedimientoEstado.T"));
+        literalesEstado.put("PT", getLiteral("TypeProcedimientoEstado.PT"));
+        literalesEstado.put("PV", getLiteral("TypeProcedimientoEstado.PV"));
+        literalesEstado.put("P", getLiteral("TypeProcedimientoEstado.P"));
+        literalesEstado.put("PPV", getLiteral("TypeProcedimientoEstado.PPV"));
+        literalesEstado.put("PM", getLiteral("TypeProcedimientoEstado.PM"));
+        literalesEstado.put("TPV", getLiteral("TypeProcedimientoEstado.TPV"));
+        literalesEstado.put("TM", getLiteral("TypeProcedimientoEstado.TM"));
+
+        Map<String, String> literalesEstadoSIA = new HashMap<>();
+        literalesEstadoSIA.put("A", getLiteral("dialogProcedimiento.estadoSIA.A"));
+        literalesEstadoSIA.put("B", getLiteral("dialogProcedimiento.estadoSIA.B"));
+
+        String[][] datos = UtilExport.getValoresCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA);
+        String[] cabecera = UtilExport.getCabecera(exportarDatos);
+        return UtilExport.generarStreamedContent("Servei", cabecera, datos, exportarDatos);
+    }
+
     private void seleccionarPorId(ServicioGridDTO idProcSeleccionado) {
         if (idProcSeleccionado == null || this.lazyModel == null) {
             return;
@@ -633,25 +662,6 @@ public class ViewServicios extends AbstractController implements Serializable {
 
         this.datoSeleccionado = idProcSeleccionado;
     }
-
-    private void guardarPendiente(ServicioGridDTO servicio) {
-        if (servicio == null) {
-            limpiarPendiente();
-            return;
-        }
-        this.codigoPendiente = servicio.getCodigo();
-        this.codigoWFModPendiente = servicio.getCodigoWFMod();
-        this.codigoWFPubPendiente = servicio.getCodigoWFPub();
-        this.comunPendiente = servicio.getComun();
-    }
-
-    private void limpiarPendiente() {
-        this.codigoPendiente = null;
-        this.codigoWFModPendiente = null;
-        this.codigoWFPubPendiente = null;
-        this.comunPendiente = null;
-    }
-
 
     public void clonarServicio() {
         if (datoSeleccionado == null) {
@@ -698,75 +708,9 @@ public class ViewServicios extends AbstractController implements Serializable {
         UtilJSF.anyadirMochila("listTipoSilencio", listTipoSilencio);
         UtilJSF.anyadirMochila("listTipoLegitimacion", listTipoLegitimacion);
         UtilJSF.anyadirMochila("listTipoProcedimiento", listTipoProcedimiento);
-        UtilJSF.anyadirMochila("temasPadre", temasPadre);
         UtilJSF.anyadirMochila("listFinVias", listFinVias);
+        UtilJSF.anyadirMochila("temasPadre", temasPadre);
         UtilJSF.openDialog("dialogServicio", modoAcceso, params, true, ancho, 743);
-    }
-
-    /**
-     * Imprime el listado de normativas.
-     */
-    public void exportar() {
-        final Map<String, String> params = new HashMap<>();
-        params.put(TypeParametroVentana.TIPO.toString(), "SERV");
-        UtilJSF.anyadirMochila("exportar", exportarDatos);
-        UtilJSF.openDialog("dialogExportar", TypeModoAcceso.ALTA, params, true, 800, 700);
-    }
-
-
-    /**
-     * Devuelve el resultado del dialogo de traspaso.
-     *
-     * @param event
-     */
-    public void returnDialogoExportar(final SelectEvent event) {
-        final DialogResult respuesta = (DialogResult) event.getObject();
-        if (!respuesta.isCanceled()) {
-            this.downloadReady = true;
-            exportarDatos = (ExportarDatos) respuesta.getResult();
-        } else {
-            this.downloadReady = false;
-        }
-    }
-
-    /**
-     * Devuelve el fichero
-     */
-    public StreamedContent getFile() {
-        ExportarDatos exportarDatos = this.exportarDatos.clone();
-
-        List<ExportarCampos> campos = new ArrayList<>();
-        // Eliminamos los campos no seleccionados
-        for (ExportarCampos campo : exportarDatos.getCampos()) {
-            if (campo.isSeleccionado()) {
-                campos.add(campo);
-            }
-        }
-        exportarDatos.setCampos(campos);
-
-        List<ProcedimientoCompletoDTO> procedimientos = procedimientoService.findExportByFiltro(filtro, exportarDatos);
-
-        Map<String, String> literalesWF = new HashMap<>();
-        literalesWF.put("1", getLiteral("dict.wf.1"));
-        literalesWF.put("0", getLiteral("dict.wf.0"));
-
-        Map<String, String> literalesEstado = new HashMap<>();
-        literalesEstado.put("M", getLiteral("TypeProcedimientoEstado.M"));
-        literalesEstado.put("T", getLiteral("TypeProcedimientoEstado.T"));
-        literalesEstado.put("PT", getLiteral("TypeProcedimientoEstado.PT"));
-        literalesEstado.put("PV", getLiteral("TypeProcedimientoEstado.PV"));
-        literalesEstado.put("P", getLiteral("TypeProcedimientoEstado.P"));
-        literalesEstado.put("PPV", getLiteral("TypeProcedimientoEstado.PPV"));
-        literalesEstado.put("PM", getLiteral("TypeProcedimientoEstado.PM"));
-        literalesEstado.put("TPV", getLiteral("TypeProcedimientoEstado.TPV"));
-        literalesEstado.put("TM", getLiteral("TypeProcedimientoEstado.TM"));
-
-        Map<String, String> literalesEstadoSIA = new HashMap<>();
-        literalesEstadoSIA.put("A", getLiteral("dialogProcedimiento.estadoSIA.A"));
-        literalesEstadoSIA.put("B", getLiteral("dialogProcedimiento.estadoSIA.B"));
-        String[][] datos = UtilExport.getValoresCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA);
-        String[] cabecera = UtilExport.getCabecera(exportarDatos);
-        return UtilExport.generarStreamedContent("Servei", cabecera, datos, exportarDatos);
     }
 
     /**
@@ -950,19 +894,21 @@ public class ViewServicios extends AbstractController implements Serializable {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public String getRowKey(ServicioGridDTO objeto) {
+                return objeto.getCodigo().toString();
+            }
+
+            @Override
             public ServicioGridDTO getRowData(String rowKey) {
                 if (getWrappedData() != null) {
                     for (ServicioGridDTO proc : (List<ServicioGridDTO>) getWrappedData()) {
                         if (proc.getCodigo().toString().equals(rowKey)) return proc;
                     }
                 }
+
                 return null;
             }
 
-            @Override
-            public String getRowKey(ServicioGridDTO objeto) {
-                return objeto.getCodigo().toString();
-            }
 
             public int count(Map<String, FilterMeta> filterBy) {
                 return getRowCount();
@@ -971,6 +917,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             @Override
             public List<ServicioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();
@@ -1050,43 +997,19 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
     }
 
-    public void consultarNormativa() {
-        if (normativaSeleccionada == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else {
-            final Map<String, String> params = new HashMap<>();
-            params.put("ID", normativaSeleccionada.getCodigo().toString());
-            UtilJSF.openDialog("dialogNormativa", TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
-        }
-    }
-
-    public void consultarDocumento() {
-        if (documentoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else {
-            final Map<String, String> params = new HashMap<>();
-            params.put(TypeParametroVentana.ID.toString(), servicioSeleccionado.getCodigo() == null ? "" : servicioSeleccionado.getCodigoWF().toString());
-            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
-            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
-            UtilJSF.openDialog("dialogDocumentoProcedimiento", TypeModoAcceso.CONSULTA, params, true, 800, 380);
-        }
-    }
-
-    public void consultarDocumentoLOPD() {
-        if (documentoLOPDSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
-        } else {
-            final Map<String, String> params = new HashMap<>();
-            params.put("ID", servicioSeleccionado.getCodigo() == null ? "" : servicioSeleccionado.getCodigo().toString());
-            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
-            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
-            UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", TypeModoAcceso.CONSULTA, params, true, 800, 350);
-        }
-    }
-
     public void seleccionarMaterias() {
         UtilJSF.anyadirMochila("materiasSeleccionadas", filtro.getMaterias());
         UtilJSF.openDialog("tipo/dialogSeleccionMateriaSIA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+    }
+
+    public void seleccionarUaInstructor() {
+        if (filtro.getUaInstructorCodigo() != null) {
+            UnidadAdministrativaDTO uaInstructor = uaService.findUASimpleByID(filtro.getUaInstructorCodigo(), sessionBean.getLang(), null);
+            if (uaInstructor != null) {
+                UtilJSF.anyadirMochila("ua", uaInstructor);
+            }
+        }
+        UtilJSF.openDialog("/comun/dialogSeleccionarUA", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 750);
     }
 
     public void seleccionarNormativas() {
@@ -1121,6 +1044,49 @@ public class ViewServicios extends AbstractController implements Serializable {
             }
         }
     }
+
+    public void returnDialogUaInstructor(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            UnidadAdministrativaDTO uaInstructor = (UnidadAdministrativaDTO) respuesta.getResult();
+            if (uaInstructor == null) {
+                if (sessionBean.getUnidadActiva() != null) {
+                    filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+                } else {
+                    filtro.setIdUAInstructor(null);
+                }
+                filtro.setUaInstructorNombre(null);
+            } else {
+                filtro.setIdUAInstructor(uaInstructor.getCodigo());
+                if (uaInstructor.getNombre() != null) {
+                    filtro.setUaInstructorNombre(uaInstructor.getNombre().getTraduccionConValor(sessionBean.getLang()));
+                } else {
+                    filtro.setUaInstructorNombre(null);
+                }
+            }
+        }
+    }
+
+    public void abrirMensajes(Long codigo) {
+        final Map<String, String> params = new HashMap<>();
+        String mensajes = procedimientoService.getMensajesByCodigo(codigo);
+        UtilJSF.anyadirMochila("mensajes", mensajes);
+        UtilJSF.anyadirMochila("tipo", "S");
+        params.put("SOLO_MENSAJES", "S");
+        params.put("ID", codigo.toString());
+        //params.put("ESTADO", data.getEstado().toString());
+        UtilJSF.openDialog("dialogProcedimientoFlujo", TypeModoAcceso.EDICION, params, true, 830, 500);
+    }
+
+    public void returnDialogMensajes(final SelectEvent event) {
+        final DialogResult respuesta = (DialogResult) event.getObject();
+        if (!respuesta.isCanceled()) {
+            RespuestaFlujo respuestaFlujo = (RespuestaFlujo) respuesta.getResult();
+            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
+            procedimientoService.actualizarMensajes(Long.valueOf(respuestaFlujo.getCodigoProcedimiento()), respuestaFlujo.getMensajes(), respuestaFlujo.isPendienteMensajesSupervisor(), respuestaFlujo.isPendienteMensajesGestor());
+        }
+    }
+
 
     public void returnDialogNormativa(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
@@ -1169,6 +1135,40 @@ public class ViewServicios extends AbstractController implements Serializable {
                 filtro.setTemas(new ArrayList<>());
                 filtro.getTemas().addAll(temas);
             }
+        }
+    }
+
+    public void consultarNormativa() {
+        if (normativaSeleccionada == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", normativaSeleccionada.getCodigo().toString());
+            UtilJSF.openDialog("dialogNormativa", TypeModoAcceso.CONSULTA, params, true, (Integer.parseInt(sessionBean.getScreenWidth()) - 200), (Integer.parseInt(sessionBean.getScreenHeight()) - 150));
+        }
+    }
+
+    public void consultarDocumento() {
+        if (documentoSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put(TypeParametroVentana.ID.toString(), servicioSeleccionado.getCodigo() == null ? "" : servicioSeleccionado.getCodigoWF().toString());
+            UtilJSF.anyadirMochila("documento", this.documentoSeleccionado.clone());
+            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+            UtilJSF.openDialog("dialogDocumentoProcedimiento", TypeModoAcceso.CONSULTA, params, true, 800, 380);
+        }
+    }
+
+    public void consultarDocumentoLOPD() {
+        if (documentoLOPDSeleccionado == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("msg.seleccioneElemento"));
+        } else {
+            final Map<String, String> params = new HashMap<>();
+            params.put("ID", servicioSeleccionado.getCodigo() == null ? "" : servicioSeleccionado.getCodigo().toString());
+            UtilJSF.anyadirMochila("documento", this.documentoLOPDSeleccionado.clone());
+            params.put(TypeParametroVentana.TIPO.toString(), "PROC_DOC");
+            UtilJSF.openDialog("dialogDocumentoProcedimientoLOPD", TypeModoAcceso.CONSULTA, params, true, 800, 350);
         }
     }
 
@@ -1226,6 +1226,14 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     public void setListTipoLegitimacion(List<TipoLegitimacionDTO> listTipoLegitimacion) {
         this.listTipoLegitimacion = listTipoLegitimacion;
+    }
+
+    public List<TipoViaDTO> getListFinVias() {
+        return listFinVias;
+    }
+
+    public void setListFinVias(List<TipoViaDTO> listFinVias) {
+        this.listFinVias = listFinVias;
     }
 
     public List<TipoTramitacionDTO> getListPlantillas() {
@@ -1302,13 +1310,6 @@ public class ViewServicios extends AbstractController implements Serializable {
         this.wfModificado = wfModificado;
     }
 
-    public List<TipoViaDTO> getListFinVias() {
-        return listFinVias;
-    }
-
-    public void setListFinVias(List<TipoViaDTO> listFinVias) {
-        this.listFinVias = listFinVias;
-    }
 
     public List<TemaGridDTO> getTemasPadre() {
         return temasPadre;
@@ -1442,6 +1443,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         return codigoServicio != null && Boolean.TRUE.equals(serviciosExpandidos.get(codigoServicio));
     }
 
+
     public void onRowToggle(ToggleEvent event) {
         ServicioGridDTO servicio = (ServicioGridDTO) event.getData();
         if (servicio == null || servicio.getCodigo() == null) {
@@ -1459,8 +1461,33 @@ public class ViewServicios extends AbstractController implements Serializable {
         String nuevoEstado = getLiteralEstado(servicio);
         String script = "$('.estado-text-" + servicio.getCodigo() + "').text('" + nuevoEstado + "');";
         PrimeFaces.current().executeScript(script);
+
     }
-    
+
+    /**
+     * Guarda los códigos identificativos del procedimiento sobre el que se va a
+     * confirmar una acción (borrar / editar sin preguntar). Evita depender de
+     * datoSeleccionado durante el paso por el confirmDialog.
+     */
+    private void guardarPendiente(ServicioGridDTO servicio) {
+        if (servicio == null) {
+            limpiarPendiente();
+            return;
+        }
+        this.codigoPendiente = servicio.getCodigo();
+        this.codigoWFModPendiente = servicio.getCodigoWFMod();
+        this.codigoWFPubPendiente = servicio.getCodigoWFPub();
+        this.comunPendiente = servicio.getComun();
+    }
+
+    private void limpiarPendiente() {
+        this.codigoPendiente = null;
+        this.codigoWFModPendiente = null;
+        this.codigoWFPubPendiente = null;
+        this.comunPendiente = null;
+    }
+
+
     public String getLiteralEstado(ServicioGridDTO servicio) {
         if (servicio == null || servicio.getEstado() == null) {
             return "";
@@ -1471,15 +1498,20 @@ public class ViewServicios extends AbstractController implements Serializable {
             return servicio.getEstado();
         }
 
-        return getLiteral("TypeProcedimientoEstado." + estado.toString(isBorradorExpandido(servicio.getCodigo())));
+        if (servicio.tieneBorrador()) {
+            return getLiteral("TypeProcedimientoEstado." + estado.toString(isBorradorExpandido(servicio.getCodigo())));
+        } else {
+            return getLiteral("TypeProcedimientoEstado." + estado.toString());
+        }
     }
+
 
     public boolean mostrarClonar(ServicioGridDTO servicio) {
         return servicio != null && !isModoConsulta() && !(this.isGestor() && BooleanUtils.isTrue(servicio.getComun()));
     }
 
     public boolean mostrarConsultar(ServicioGridDTO servicio) {
-        return ((servicio != null && servicio.getCodigoWFPub() != null) 
+        return ((servicio != null && servicio.getCodigoWFPub() != null)
                 || (servicio != null && !isModoConsulta() && "PV".equals(servicio.getEstado()) && this.isGestor()));
     }
 

@@ -669,16 +669,6 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         }
 
         this.datoSeleccionado = idProcSeleccionado;
-        /*
-        Iterator<ProcedimientoGridDTO> it = this.lazyModel.iterator();
-
-        while (it != null && it.hasNext()) {
-            ProcedimientoGridDTO procGrid = it.next();
-            if (procGrid != null && procGrid.getCodigo().compareTo(idProcSeleccionado) == 0) {
-                this.datoSeleccionado = procGrid;
-                break;
-            }
-        }*/
     }
 
     public void clonarProcedimiento() {
