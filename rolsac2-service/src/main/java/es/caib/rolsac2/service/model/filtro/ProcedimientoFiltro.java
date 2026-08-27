@@ -1,4 +1,4 @@
-package es.caib.rolsac2.service.model.filtro;
+﻿package es.caib.rolsac2.service.model.filtro;
 
 import es.caib.rolsac2.service.model.*;
 
@@ -2340,5 +2340,38 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public boolean isRellenoUAInterna() {
         return uAInterna != null;
+    }
+    public boolean isRellenoInicioFechaActualitzacion() {
+        return inicioFechaActualitzacion != null && !inicioFechaActualitzacion.isEmpty();
+    }
+    public boolean isRellenoFinFechaActualitzacion() {
+        return finFechaActualitzacion != null && !finFechaActualitzacion.isEmpty();
+    }
+    public boolean isRellenoUaResponsableCodigo() {
+        return uaResponsableCodigo != null;
+    }
+    public boolean isRellenoUaResponsableNombre() {
+        return uaResponsableNombre != null && !uaResponsableNombre.isEmpty();
+    }
+    public boolean isRellenoLopdResponsableCodigo() {
+        return lopdResponsableCodigo != null;
+    }
+    public boolean isRellenoLopdResponsableNombre() {
+        return lopdResponsableNombre != null && !lopdResponsableNombre.isEmpty();
+    }
+    public boolean isRellenoLopdFinalidad() {
+        return lopdFinalidad != null && !lopdFinalidad.isEmpty();
+    }
+    public boolean isRellenoLopdDestinatarioCodigo() {
+        return lopdDestinatarioCodigo != null;
+    }
+    public boolean isRellenoLopdDestinatarioNombre() {
+        return lopdDestinatarioNombre != null && !lopdDestinatarioNombre.isEmpty();
+    }
+    public boolean isRellenoLopdCabecera() {
+        return lopdCabecera != null && !lopdCabecera.isEmpty();
+    }
+    public boolean isRellenoLopdDerechos() {
+        return lopdDerechos != null && !lopdDerechos.isEmpty();
     }
 }

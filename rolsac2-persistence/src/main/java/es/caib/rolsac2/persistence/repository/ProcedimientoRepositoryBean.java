@@ -1,4 +1,4 @@
-package es.caib.rolsac2.persistence.repository;
+﻿package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;
@@ -3797,6 +3797,62 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
 
+        if (filtro.isRellenoNombre() && ambosWf) {
+            sql.append(" AND (LOWER(t.nombre) LIKE :nombre OR LOWER(t2.nombre) LIKE :nombre) ");
+        } else if (filtro.isRellenoNombre()) {
+            sql.append(" AND LOWER(t.nombre) LIKE :nombre ");
+        }
+        if (filtro.isRellenoActivoLopd() && ambosWf) {
+            sql.append(" AND (WF.activoLOPD = :activoLopd OR WF2.activoLOPD = :activoLopd) ");
+        } else if (filtro.isRellenoActivoLopd()) {
+            sql.append(" AND WF.activoLOPD = :activoLopd ");
+        }
+        if (filtro.isRellenoResponsableEmail() && ambosWf) {
+            sql.append(" AND (LOWER(WF.responsableEmail) LIKE :responsableEmail OR LOWER(WF2.responsableEmail) LIKE :responsableEmail) ");
+        } else if (filtro.isRellenoResponsableEmail()) {
+            sql.append(" AND LOWER(WF.responsableEmail) LIKE :responsableEmail ");
+        }
+        if (filtro.isRellenoIncidenciasEmail() && ambosWf) {
+            sql.append(" AND (LOWER(WF.incidenciasEmail) LIKE :incidenciasEmail OR LOWER(WF2.incidenciasEmail) LIKE :incidenciasEmail) ");
+        } else if (filtro.isRellenoIncidenciasEmail()) {
+            sql.append(" AND LOWER(WF.incidenciasEmail) LIKE :incidenciasEmail ");
+        }
+        if (filtro.isRellenoResponsableTelefono() && ambosWf) {
+            sql.append(" AND (LOWER(WF.responsableTelefono) LIKE :responsableTelefono OR LOWER(WF2.responsableTelefono) LIKE :responsableTelefono) ");
+        } else if (filtro.isRellenoResponsableTelefono()) {
+            sql.append(" AND LOWER(WF.responsableTelefono) LIKE :responsableTelefono ");
+        }
+        if (filtro.isRellenoInicioFechaActualitzacion()) {
+            sql.append(" AND j.fechaActualizacion >= :inicioFechaActualitzacion ");
+        }
+        if (filtro.isRellenoFinFechaActualitzacion()) {
+            sql.append(" AND j.fechaActualizacion <= :finFechaActualitzacion ");
+        }
+        if (filtro.isRellenoUaResponsableCodigo() && ambosWf) {
+            sql.append(" AND (WF.uaCompetente.codigo = :uaResponsableCodigo OR WF2.uaCompetente.codigo = :uaResponsableCodigo) ");
+        } else if (filtro.isRellenoUaResponsableCodigo()) {
+            sql.append(" AND WF.uaCompetente.codigo = :uaResponsableCodigo ");
+        }
+        if (filtro.isRellenoUaResponsableNombre() && ambosWf) {
+            sql.append(" AND (LOWER(TRIM(t.uaResponsable)) LIKE :uaResponsableNombre OR LOWER(TRIM(t2.uaResponsable)) LIKE :uaResponsableNombre) ");
+        } else if (filtro.isRellenoUaResponsableNombre()) {
+            sql.append(" AND LOWER(TRIM(t.uaResponsable)) LIKE :uaResponsableNombre ");
+        }
+        if (filtro.isRellenoLopdResponsableNombre() && ambosWf) {
+            sql.append(" AND (LOWER(WF.lopdResponsable) LIKE :lopdResponsableNombre OR LOWER(WF2.lopdResponsable) LIKE :lopdResponsableNombre) ");
+        } else if (filtro.isRellenoLopdResponsableNombre()) {
+            sql.append(" AND LOWER(WF.lopdResponsable) LIKE :lopdResponsableNombre ");
+        }
+        if (filtro.isRellenoLopdFinalidad() && ambosWf) {
+            sql.append(" AND (LOWER(t.lopdFinalidad) LIKE :lopdFinalidad OR LOWER(t2.lopdFinalidad) LIKE :lopdFinalidad) ");
+        } else if (filtro.isRellenoLopdFinalidad()) {
+            sql.append(" AND LOWER(t.lopdFinalidad) LIKE :lopdFinalidad ");
+        }
+        if (filtro.isRellenoLopdDestinatarioNombre() && ambosWf) {
+            sql.append(" AND (LOWER(t.lopdDestinatario) LIKE :lopdDestinatarioNombre OR LOWER(t2.lopdDestinatario) LIKE :lopdDestinatarioNombre) ");
+        } else if (filtro.isRellenoLopdDestinatarioNombre()) {
+            sql.append(" AND LOWER(t.lopdDestinatario) LIKE :lopdDestinatarioNombre ");
+        }
         if (filtro.getOrderBy() != null) {
             sql.append(" order by ").append(getOrden(filtro.getOrderBy(), filtro.isAscendente(), ambosWf));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
@@ -4015,6 +4071,57 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
 
+        if (filtro.isRellenoNombre()) {
+            query.setParameter("nombre", "%" + filtro.getNombre().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoActivoLopd()) {
+            query.setParameter("activoLopd", filtro.getActivoLopd());
+        }
+        if (filtro.isRellenoResponsableEmail()) {
+            query.setParameter("responsableEmail", "%" + filtro.getResponsableEmail().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoIncidenciasEmail()) {
+            query.setParameter("incidenciasEmail", "%" + filtro.getIncidenciasEmail().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoResponsableTelefono()) {
+            query.setParameter("responsableTelefono", "%" + filtro.getResponsableTelefono().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoInicioFechaActualitzacion()) {
+            try {
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = df.parse(filtro.getInicioFechaActualitzacion());
+                Timestamp timeStampDate = new Timestamp(date.getTime());
+                query.setParameter("inicioFechaActualitzacion", timeStampDate);
+            } catch (ParseException e) {
+                LOG.error("Error al parsear inicioFechaActualitzacion", e);
+            }
+        }
+        if (filtro.isRellenoFinFechaActualitzacion()) {
+            try {
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = df.parse(filtro.getFinFechaActualitzacion());
+                Timestamp timeStampDate = new Timestamp(date.getTime());
+                query.setParameter("finFechaActualitzacion", timeStampDate);
+            } catch (ParseException e) {
+                LOG.error("Error al parsear finFechaActualitzacion", e);
+            }
+        }
+        if (filtro.isRellenoUaResponsableCodigo()) {
+            query.setParameter("uaResponsableCodigo", filtro.getUaResponsableCodigo());
+        }
+        if (filtro.isRellenoUaResponsableNombre()) {
+            String uaResponsableNombre = filtro.getUaResponsableNombre().trim().toLowerCase().replaceAll("\\s+", "%");
+            query.setParameter("uaResponsableNombre", "%" + uaResponsableNombre + "%");
+        }
+        if (filtro.isRellenoLopdResponsableNombre()) {
+            query.setParameter("lopdResponsableNombre", "%" + filtro.getLopdResponsableNombre().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoLopdFinalidad()) {
+            query.setParameter("lopdFinalidad", "%" + filtro.getLopdFinalidad().toLowerCase() + "%");
+        }
+        if (filtro.isRellenoLopdDestinatarioNombre()) {
+            query.setParameter("lopdDestinatarioNombre", "%" + filtro.getLopdDestinatarioNombre().toLowerCase() + "%");
+        }
         return query;
     }
 

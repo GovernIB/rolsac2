@@ -15,6 +15,7 @@ import es.caib.rolsac2.service.model.types.TypePerfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -278,7 +279,7 @@ public class EntidadServiceFacadeBean implements EntidadServiceFacade {
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR, TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    @PermitAll
     public String getIdiomaPorDefecto(Long idEntidad) {
         return entidadRepository.getIdiomaPorDefecto(idEntidad);
     }

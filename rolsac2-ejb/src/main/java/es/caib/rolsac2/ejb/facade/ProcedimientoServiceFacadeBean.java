@@ -1076,7 +1076,8 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
     }
 
     @Override
-    @RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    //@RolesAllowed({TypePerfiles.RESTAPI_VALOR})
+    @PermitAll
     public Pagina<ProcedimientoBaseDTO> findProcedimientosByFiltroRest(ProcedimientoFiltro filtro) {
         if (filtro.isRellenoBuscarEnDescendientesUA() && (filtro.isRellenoCodigoUaDir3() || filtro.isRellenoIdUA())) {
             Long idUA = null;
