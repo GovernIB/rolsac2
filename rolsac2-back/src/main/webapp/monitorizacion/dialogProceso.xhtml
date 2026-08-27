@@ -74,7 +74,8 @@
                     <p:outputLabel value="#{labels['dict.activo']}:" for="txtActivo"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:selectBooleanCheckbox id="txtActivo" value="#{dialogProceso.data.activo}"/>
+                    <p:selectBooleanCheckbox id="txtActivo" value="#{dialogProceso.data.activo}"
+                                             aria-label="#{dialogProceso.data.activo ? labels['dict.activo'] : labels['dict.noActivo']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">

@@ -49,7 +49,8 @@
                         <c:if test="#{ sessionBean.obtenerUasEntidad().size() > 1 }">
                             <button type="button"
                                     class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    aria-label="#{labels['msg.seleccion.uas']}">
                             </button>
                             <div class="dropdown-menu">
                                 <c:forEach
@@ -79,7 +80,8 @@
                                 </p:commandButton>
                                 <button type="button"
                                         class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                        aria-label="#{labels['msg.seleccion.uas']}">
                                 </button>
 
                                 <div class="dropdown-menu">
@@ -102,12 +104,14 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-molla-icono btn-molla"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    aria-label="#{labels['msg.seleccion.uas']}"
                                     onclick="hijosUa()">
                                 #{labels['msg.seleccion.uas']}
                             </button>
                             <button type="button"
                                     class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    aria-label="#{labels['msg.seleccion.uas']}"
                                     onclick="hijosUa()">
                             </button>
                             <p:remoteCommand name="hijosUa"
@@ -161,6 +165,7 @@
 
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
             <p:commandButton value="#{labels['viewUnidadAdministrativa.actualizar']}" id="actualizarBusqueda"
+                             aria-label="#{labels['viewUnidadAdministrativa.actualizar']}"
                              widgetVar="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewUnidadAdministrativa.buscar}"
                              update="dataTable"/>
@@ -169,13 +174,19 @@
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
-                            <p:inputText id="filtroBusqueda"  value="#{viewUnidadAdministrativa.filtroTexto}" styleClass="estiloGrande ml-2 mr-2"  />
+                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText id="filtroBusqueda" value="#{viewUnidadAdministrativa.filtroTexto}"
+                                         aria-label="#{labels['dict.filtro']}"
+                                         styleClass="estiloGrande ml-2 mr-2" />
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                             aria-label="#{labels['dict.busqueda']}"
                                              actionListener="#{viewUnidadAdministrativa.buscar()}" process="@form"/>
-                            <p:selectBooleanCheckbox value="#{viewUnidadAdministrativa.mostrarOcultas}" styleClass="ml-2"
+                            <p:selectBooleanCheckbox value="#{viewUnidadAdministrativa.mostrarOcultas}"
+                                                     aria-label="#{labels['viewUnidadAdministrativa.mostrarOcultas']}"
+                                                     styleClass="ml-2"
                                                      itemLabel="#{labels['viewUnidadAdministrativa.mostrarOcultas']}"/>
                             <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
+                                             aria-label="#{labels['dict.exportar']}"
                                              actionListener="#{viewUnidadAdministrativa.exportar()}" process="@form">
                                 <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
                             </p:commandButton>
@@ -187,6 +198,7 @@
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                                  <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}"
                                              styleClass="estiloGrande ml-2 mr-2" icon="pi pi-search"
+                                             aria-label="#{labels['dict.busqueda']}"
                                              actionListener="#{viewUnidadAdministrativa.buscarEvt()}"
                                              update="messages dataTable"
                                              process="@form" style="display: none"

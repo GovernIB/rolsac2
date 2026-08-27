@@ -32,6 +32,7 @@ Pàgina amb el llistat de processos automàtics
         <h:form id="form" prependId="false">
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"  />
             <p:commandButton value="#{labels['viewProcesos.actualizar']}" id="actualizarBusqueda"
+                             aria-label="#{labels['viewProcesos.actualizar']}"
                              style="display:none" ajax="false" action="#{viewProcesos.buscar}"
                              update="dataTable"/>
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
@@ -45,22 +46,26 @@ Pàgina amb el llistat de processos automàtics
                             <p:commandButton value="#{labels['dialogProceso.procesadoManual']}"  styleClass="mr-2"
                                              id="btnLanzar"
                                              icon="pi pi-arrow-right"
+                                             aria-label="#{labels['dialogProceso.procesadoManual']}"
                                              action="#{viewProcesos.procesadoManual()}"
                                              process="@all"
                                              update="messages" disabled="#{viewProcesos.datoSeleccionado == null}"/>
                             <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"  styleClass="mr-2"
+                                             aria-label="#{labels['dict.nuevo']}"
                                              actionListener="#{viewProcesos.nuevoProceso()}"
                                              process="@this">
                                 <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  styleClass="mr-2"
+                                             aria-label="#{labels['dict.editar']}"
                                              actionListener="#{viewProcesos.editarProceso()}"
                                              process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewProcesos.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  styleClass="mr-2"
+                                             aria-label="#{labels['dict.borrar']}"
                                              action="#{viewProcesos.borrarProceso()}"
                                              process="@form" update="messages dataTable">
                                 <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
@@ -105,7 +110,8 @@ Pàgina amb el llistat de processos automàtics
                 </p:column>
                 <p:column sortBy="#{proceso.activo}" headerText="#{labels['dict.activo']}">
                     <f:facet name="header"/>
-                    <p:selectBooleanCheckbox value="#{proceso.activo}" disabled="true"></p:selectBooleanCheckbox>
+                    <p:selectBooleanCheckbox value="#{proceso.activo}" aria-label="#{proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"
+                                             disabled="true"></p:selectBooleanCheckbox>
                 </p:column>
             </p:dataTable>
             <h:outputScript>

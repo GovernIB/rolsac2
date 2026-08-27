@@ -119,20 +119,24 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <p:panel id="panel" >
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"
+                                           aria-label="#{labels['dict.codigo']}" />
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:inputText id="txtCodigo" value="#{viewConfiguracionEntidad.data.codigo}"
+                                         aria-label="#{labels['dict.codigo']}"
                                          styleClass="w95" disabled="true"/>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                            <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
+                                           aria-label="#{labels['dict.identificador']}" />
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:inputText id="txtIdentificador" value="#{viewConfiguracionEntidad.data.identificador}"
+                                         aria-label="#{labels['dict.identificador']}"
                                          styleClass="w95" disabled="true" maxlength="50"
                                         onpaste="validatePaste(event, /^[a-z0-9_-]{1,50}$/i);">
                                 <p:keyFilter regEx="/[a-z0-9_-]/i" preventPaste="false"/>
@@ -143,7 +147,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dict.comunUA']}:" for="txtUAComun"/>
+                            <p:outputLabel value="#{labels['dict.comunUA']}:" for="txtUAComun"
+                                           aria-label="#{labels['dict.comunUA']}" />
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <my:literalComponent id="txtUAComun" styleClass="w95"
@@ -165,7 +170,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idiomas.permitidos']}:" for="txtIdiomasPermitidos"
+                                           aria-label="#{labels['dialogEntidad.idiomas.permitidos']}" />
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasPermitidos" value="#{viewConfiguracionEntidad.idiomasPermitidos}"
@@ -182,7 +188,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
                             <p:outputLabel value="#{labels['dialogEntidad.idiomas.obligatorios']}:"
-                                          for="txtIdiomasObligatorios"/>
+                                           for="txtIdiomasObligatorios"
+                                           aria-label="#{labels['dialogEntidad.idiomas.obligatorios']}" />
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectManyButton id="txtIdiomasObligatorios" value="#{viewConfiguracionEntidad.idiomasObligatorios}"
@@ -196,7 +203,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"
+                                           aria-label="#{labels['dialogEntidad.idioma.defecto']}" />
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaDefecto" value="#{viewConfiguracionEntidad.data.idiomaDefectoRest}"
@@ -210,7 +218,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}:" for="txtIdiomaPrioritario"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}:" for="txtIdiomaPrioritario"
+                                           aria-label="#{labels['dialogEntidad.idioma.admContenidoIdiomaPrioritario']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtIdiomaPrioritario" value="#{viewConfiguracionEntidad.data.admContenidoIdiomaPrioritario}"
@@ -225,7 +234,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}:" for="txtAdmSeleccionIdioma"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}:" for="txtAdmSeleccionIdioma"
+                                           aria-label="#{labels['dialogEntidad.idioma.admContenidoSeleccionIdioma']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:selectOneMenu id="txtAdmSeleccionIdioma" value="#{viewConfiguracionEntidad.data.admContenidoSeleccionIdioma}"
@@ -239,17 +249,20 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.temas.maximo']}:" for="txtNivelTemasMaximo"/>
+                            <p:outputLabel value="#{labels['dialogEntidad.temas.maximo']}:" for="txtNivelTemasMaximo"
+                                           aria-label="#{labels['dialogEntidad.temas.maximo']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-8 ui-lg-5">
                             <p:inputNumber id="txtNivelTemasMaximo" value="#{viewConfiguracionEntidad.nivelTemasMaximo}"
+                                aria-label="#{labels['dialogEntidad.temas.maximo']}"
                                 minValue="0" maxValue="9" decimalPlaces="0" maxlength="1" autoNumericOptions="{'overrideMinMaxLimits': 'doNothing'}"
                                 disabled="#{viewConfiguracionEntidad.isModoConsulta()}"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.logo']}:" for=""/>
+                            <p:outputLabel value="#{labels['dialogEntidad.logo']}:" for=""
+                                           aria-label="#{labels['dialogEntidad.logo']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
@@ -275,11 +288,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         </c:when>
                                         <c:otherwise>
                                             <p:commandButton id="logoDescarga" value="#{viewConfiguracionEntidad.data.logo.filename}"
+                                                             aria-label="#{labels['dialogEntidad.logo']}"
                                                              ajax="false" process="@this"
                                                              icon="pi pi-arrow-down">
                                                 <p:fileDownload value="#{viewConfiguracionEntidad.obtenerLogo()}" ></p:fileDownload>
                                             </p:commandButton>
                                             <p:commandButton actionListener="#{viewConfiguracionEntidad.eliminarLogo()}" icon="pi pi-times"
+                                                             aria-label="#{labels['dict.borrar']}"
                                                              update="form:logo"></p:commandButton>
                                         </c:otherwise>
                                     </c:choose>
@@ -291,7 +306,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['dialogEntidad.logo2']}:" for=""/>
+                            <p:outputLabel value="#{labels['dialogEntidad.logo2']}:" for=""
+                                           aria-label="#{labels['dialogEntidad.logo2']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
@@ -316,11 +332,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         </c:when>
                                         <c:otherwise>
                                             <p:commandButton id="logo2Descarga" value="#{viewConfiguracionEntidad.data.logo2.filename}"
+                                                             aria-label="#{labels['dialogEntidad.logo2']}"
                                                              ajax="false" process="@this"
                                                              icon="pi pi-arrow-down">
                                                 <p:fileDownload value="#{viewConfiguracionEntidad.obtenerLogo2()}" ></p:fileDownload>
                                             </p:commandButton>
                                             <p:commandButton actionListener="#{viewConfiguracionEntidad.eliminarLogo2()}" icon="pi pi-times"
+                                                             aria-label="#{labels['dict.borrar']}"
                                                              update="form:logo2"></p:commandButton>
                                         </c:otherwise>
                                     </c:choose>
@@ -332,7 +350,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </div>
                     <div class="row">
                         <div class="ui-g-12 ui-md-4 ui-lg-2">
-                            <p:outputLabel value="#{labels['viewConfiguracionEntidad.css']}:" for=""/>
+                            <p:outputLabel value="#{labels['viewConfiguracionEntidad.css']}:" for=""
+                                           aria-label="#{labels['viewConfiguracionEntidad.css']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
@@ -357,11 +376,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         </c:when>
                                         <c:otherwise>
                                             <p:commandButton id="cssDescarga" value="#{viewConfiguracionEntidad.data.cssPersonalizado.filename}"
+                                                             aria-label="#{labels['viewConfiguracionEntidad.css']}"
                                                              ajax="false" process="@this"
                                                              icon="pi pi-arrow-down">
                                                 <p:fileDownload value="#{viewConfiguracionEntidad.obtenerCss()}" ></p:fileDownload>
                                             </p:commandButton>
                                             <p:commandButton actionListener="#{viewConfiguracionEntidad.eliminarCss()}" icon="pi pi-times"
+                                                             aria-label="#{labels['dict.borrar']}"
                                                              update="form:css"></p:commandButton>
                                         </c:otherwise>
                                     </c:choose>
@@ -376,6 +397,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                         <p:commandButton action="#{viewConfiguracionEntidad.guardar}"
                                          value="#{labels['dict.guardar']}"
+                                         aria-label="#{labels['dict.guardar']}"
                                          process="@all" update="messages">
                             <f:ajax event="click" listener="#{sessionBean.updateLogo()}" render=":imgLogo :imgDefecto :imgLogo2 :imgDefecto2"></f:ajax>
                         </p:commandButton>

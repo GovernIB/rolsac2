@@ -44,7 +44,8 @@ Pàgina amb el llistat de normativas
                         <c:if test="#{ TypePerfiles.ADMINISTRADOR_CONTENIDOS != sessionBean.getPerfil() }">
                             <button type="button"
                                     class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    aria-label="#{labels['msg.seleccion.uas']}">
                             </button>
                             <div class="dropdown-menu">
                                 <c:forEach
@@ -72,7 +73,8 @@ Pàgina amb el llistat de normativas
                                 </p:commandButton>
                                 <button type="button"
                                         class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                        aria-label="#{labels['msg.seleccion.uas']}">
                                 </button>
 
                                 <div class="dropdown-menu">
@@ -95,12 +97,14 @@ Pàgina amb el llistat de normativas
                         <div class="btn-group">
                             <button type="button" class="btn btn-molla-icono btn-molla"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    aria-label="#{labels['msg.seleccion.uas']}"
                                     onclick="hijosUa()">
                                 #{labels['msg.seleccion.uas']}
                             </button>
                             <button type="button"
                                     class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    aria-label="#{labels['msg.seleccion.uas']}"
                                     onclick="hijosUa()">
                             </button>
                             <p:remoteCommand name="hijosUa"
@@ -162,6 +166,7 @@ Pàgina amb el llistat de normativas
 
             <p:remoteCommand name="rc" update="dataTable @form" process="@this"/>
             <p:commandButton value="#{labels['viewNormativas.actualizar']}" id="actualizarBusqueda"
+                             aria-label="#{labels['viewNormativas.actualizar']}"
                              style="display:none" ajax="false" action="#{viewNormativa.buscar}"
                              update="dataTable"/>
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
@@ -169,14 +174,19 @@ Pàgina amb el llistat de normativas
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
-                            <p:inputText id="filtroBusqueda"  value="#{viewNormativa.filtroTexto}" styleClass="estiloGrande ml-2 mr-2"  />
+                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText id="filtroBusqueda" value="#{viewNormativa.filtroTexto}"
+                                         aria-label="#{labels['dict.filtro']}"
+                                         styleClass="estiloGrande ml-2 mr-2" />
                             <p:commandButton id="btnBuscarEvt" value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
+                                             aria-label="#{labels['dict.busqueda']}"
                                              actionListener="#{viewNormativa.buscar()}" process="@form"
                                              onstart="PF('statusDialog').show()"
                                              oncomplete="PF('statusDialog').hide()"/>
-                            <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" styleClass="ml-2" />
+                            <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" title="#{labels['dict.filtro']}"
+                                             aria-label="#{labels['dict.filtro']}" onclick="PF('panel').toggle();cambiarBoton()" styleClass="ml-2" />
                             <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print"  styleClass="ml-2"
+                                             aria-label="#{labels['dict.exportar']}"
                                              actionListener="#{viewNormativa.exportar()}" process="@form">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
                             </p:commandButton>
@@ -192,6 +202,7 @@ Pàgina amb el llistat de normativas
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton value="#{labels['dialogTraspasoBOIB.titulo']}" icon="pi pi-star"
                                              iconPos="top"
+                                             aria-label="#{labels['dialogTraspasoBOIB.titulo']}"
                                              actionListener="#{viewNormativa.abrirTraspaso}"
                                              process="@this" styleClass="mr-2" rendered="#{!viewNormativa.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogoTraspaso}"
@@ -199,12 +210,14 @@ Pàgina amb el llistat de normativas
                             </p:commandButton>
                             <p:commandButton id="btnNuevo" value="#{labels['dict.nuevo']}" icon="pi pi-file-o"
                                              iconPos="top" styleClass="mr-2"
+                                             aria-label="#{labels['dict.nuevo']}"
                                              actionListener="#{viewNormativa.nuevaNormativa}"
                                              process="@this" rendered="#{!viewNormativa.isModoConsulta()}">
                                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
+                                             aria-label="#{labels['dict.editar']}"
                                              actionListener="#{viewNormativa.editarNormativa}" styleClass="mr-2"
                                              process="@form" update="messages" rendered="#{!viewNormativa.isModoConsulta()}"
                                              disabled="#{viewNormativa.datoSeleccionado == null}">
@@ -212,10 +225,12 @@ Pàgina amb el llistat de normativas
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" icon="pi pi-pencil" iconPos="top"
+                                             aria-label="#{labels['dict.consultar']}"
                                              actionListener="#{viewNormativa.consultarNormativa()}" styleClass="mr-2"
                                              process="@form" update="messages" rendered="#{viewNormativa.isModoConsulta()}">
                             </p:commandButton>
                             <p:commandButton id="btnBorrar" value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
+                                             aria-label="#{labels['dict.borrar']}"
                                              action="#{viewNormativa.borrarNormativa}" styleClass="mr-2"
                                              process="@form" update="messages dataTable"
                                              disabled="#{viewNormativa.datoSeleccionado == null}">
@@ -229,14 +244,15 @@ Pàgina amb el llistat de normativas
                     <div class="row">
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                            <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtTitulo" value="#{viewNormativa.filtro.nombre}"
+                                         aria-label="#{labels['dict.titulo']}"
                                          styleClass="w95" />
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
+                            <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
@@ -244,7 +260,7 @@ Pàgina amb el llistat de normativas
                                         value="#{viewNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
+                            <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:calendar id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget"
@@ -254,14 +270,15 @@ Pàgina amb el llistat de normativas
 
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                            <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtNumero" value="#{viewNormativa.filtro.numero}"
+                                         aria-label="#{labels['dialogNormativa.numero']}"
                                          styleClass="w95" />
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
+                            <p:outputLabel value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtTipoNormativa" value="#{viewNormativa.filtro.tipoNormativa}"
@@ -272,7 +289,7 @@ Pàgina amb el llistat de normativas
                             </p:selectOneMenu>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
+                            <p:outputLabel value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtBoletin" value="#{viewNormativa.filtro.tipoBoletin}"
@@ -284,19 +301,21 @@ Pàgina amb el llistat de normativas
                         </div>
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtCodigoNorm" value="#{viewNormativa.filtro.codigo}"
+                                         aria-label="#{labels['dict.codigo']}"
                                          styleClass="w95"
                                          onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;"/>
                         </div>
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <h:outputText value="#{labels['viewNormativas.vigente']}:" for="txtVigente" />
+                            <p:outputLabel value="#{labels['viewNormativas.vigente']}:" for="txtVigente" />
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <p:selectBooleanCheckbox id="txtVigente" value="#{viewNormativa.filtro.vigente}"
+                                             aria-label="#{labels['viewNormativas.vigente']}"
                                              styleClass="w95"  >
                                 <f:converter converterId="javax.faces.Boolean" />
                             </p:selectBooleanCheckbox>
@@ -315,9 +334,11 @@ Pàgina amb el llistat de normativas
 
                         <div class="ui-g-12 text-center">
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
+                                             aria-label="#{labels['dict.limpiarFiltro']}"
                                              iconPos="top" action="#{viewNormativa.limpiarFiltro()}"
                                              process="@form" update="panel"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
+                                             aria-label="#{labels['dict.busqueda']}"
                                              actionListener="#{viewNormativa.buscar()}" update="messages dataTable"
                                              process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
                         </div>

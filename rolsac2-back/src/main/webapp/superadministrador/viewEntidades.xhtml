@@ -31,6 +31,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     <ui:define name="content">
         <h:form id="form">
             <p:commandButton value="#{labels['viewEntidades.boton.actualizar']}" id="actualizarBusqueda"
+                             aria-label="#{labels['viewEntidades.boton.actualizar']}"
                              style="display:none" ajax="false"
                              action="#{viewEntidades.buscar}" update="dataTable"/>
 
@@ -39,25 +40,31 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}:"    styleClass="estiloGrande ml-3 mr-2" />
-                            <p:inputText value="#{viewEntidades.filtroTexto}"   styleClass="estiloGrande ml-2 mr-2" />
+                            <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:inputText value="#{viewEntidades.filtroTexto}"
+                                         aria-label="#{labels['dict.filtro']}"
+                                         styleClass="estiloGrande ml-2 mr-2" />
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
+                                             aria-label="#{labels['dict.busqueda']}"
                                              update="messages dataTable" actionListener="#{viewEntidades.buscar()}"
                                              process="@form" styleClass="mr-2"/>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
 
                             <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top" styleClass="mr-2"
+                                             aria-label="#{labels['dict.nuevo']}"
                                              actionListener="#{viewEntidades.nuevoEntidad}" process="@this">
                                 <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
+                                             aria-label="#{labels['dict.editar']}"
                                              actionListener="#{viewEntidades.editarEntidad}" process="@form" update="messages">
                                 <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
+                                             aria-label="#{labels['dict.borrar']}"
                                              action="#{viewEntidades.borrarEntidad}" process="@form"
                                              update="messages dataTable">
                                 <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogoBorrar}"

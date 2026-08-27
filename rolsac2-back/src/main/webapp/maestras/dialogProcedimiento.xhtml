@@ -449,7 +449,7 @@
 
 
                                             <h:outputLink id="lblUAiconoResp" value="#" styleClass="w20px labelWarningUAPadre">
-                                                <h:outputText id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
+                                                <h:outputLabel id="lblUAiconoResp2" value=" "  styleClass="ml-3 pt-1 labelWarningUA pi #{dialogProcedimiento.getCssUACompetente()}" />
                                             </h:outputLink>
                                             <p:tooltip id="toolTipFadeResp" for="lblUAiconoResp" value="#{labels['dialogProcedimiento.msgInstructorError']}" position="top"/>
 
@@ -685,7 +685,7 @@
                             <p:ajax event="rowUnselect"/>
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                                <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                                <h:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                             </p:column>
 
                         </p:dataTable>
@@ -774,7 +774,7 @@
                                             </div>
                                         </div>
                                         <p:graphicImage value="../images/SIA.svg" rendered="#{td.getTipoMateriaSIA() != null}"/>
-                                        <h:outputText id="texto"
+                                        <h:outputLabel id="texto"
                                                       value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                                         <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
                                                    value="#{dialogProcedimiento.getTooltip(td)}" position="right"/>
@@ -831,7 +831,7 @@
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                       styleClass="text-center w75 ">
-                                <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" />
+                                <h:outputLabel value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" />
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -897,7 +897,7 @@
 
                                 <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                           styleClass="text-center w75">
-                                    <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                                    <h:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                                 </p:column>
                             </p:dataTable>
                         </div>
@@ -958,7 +958,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                                <h:outputLabel value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -1027,7 +1027,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <h:outputText value="LOPD" class="labelGrande" />
+                                <h:outputLabel value="LOPD" class="labelGrande" />
                             </p:column>
 
                         </p:dataTable>
@@ -1096,7 +1096,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                                <h:outputText value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
+                                <h:outputLabel value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" />
                             </p:column>
                         </p:dataTable>
                     </div>
