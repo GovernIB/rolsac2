@@ -8,12 +8,14 @@ import es.caib.rolsac2.back.model.DialogResult;
 import es.caib.rolsac2.back.model.RespuestaFlujo;
 import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
+import es.caib.rolsac2.back.utils.ValidacionTipoUtils;
 import es.caib.rolsac2.service.facade.*;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
 import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.types.*;
+import es.caib.rolsac2.service.utils.UtilJSON;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
@@ -23,7 +25,6 @@ import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.primefaces.event.ToggleEvent;
-import org.primefaces.model.Visibility;
 
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -106,6 +107,11 @@ public class ViewServicios extends AbstractController implements Serializable {
 
     // Estado visual de expansión de filas en la tabla de servicios.
     private final Map<Long, Boolean> serviciosExpandidos = new HashMap<>();
+
+    private Long codigoPendiente;
+    private Long codigoWFModPendiente;
+    private Long codigoWFPubPendiente;
+    private Boolean comunPendiente;
 
     /**
      * Cuando se exporta los datos
@@ -360,6 +366,7 @@ public class ViewServicios extends AbstractController implements Serializable {
 
             Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
             if (idProcMod == null) {
+                guardarPendiente(this.datoSeleccionado);
                 PrimeFaces.current().executeScript("PF('cdDeseaCrearEditar').show();");
                 return;
             }
@@ -373,23 +380,72 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void editarProcedimientoSinPreguntar() {
-        if (datoSeleccionado == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
-        } else {
-            Long idProcMod = this.datoSeleccionado.getCodigoWFMod();
-            if (idProcMod == null) {
-                String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-                String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
-                idProcMod = procedimientoService.generarModificacion(datoSeleccionado.getCodigoWFPub(), usuario, sessionBean.getPerfil(), ruta);
-                this.datoSeleccionado.setCodigoWFMod(idProcMod);
-            }
-            ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
-
-            TypeModoAcceso modo = BooleanUtils.isTrue(datoSeleccionado.getComun()) && (this.isGestor() || this.isInformador()) ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
-            String estados = procedimientoService.getWorkflowEstados(this.datoSeleccionado.getCodigo());
-            abrirVentana(modo, serv, estados);
-
+        // Recupera los códigos guardados al pulsar "Editar" en la fila; si no hay, cae en datoSeleccionado.
+        Long codigoProc = codigoPendiente;
+        Long idProcMod = codigoWFModPendiente;
+        Long idProcPub = codigoWFPubPendiente;
+        Boolean comun = comunPendiente;
+        if (codigoProc == null && datoSeleccionado != null) {
+            codigoProc = datoSeleccionado.getCodigo();
+            idProcMod = datoSeleccionado.getCodigoWFMod();
+            idProcPub = datoSeleccionado.getCodigoWFPub();
+            comun = datoSeleccionado.getComun();
         }
+        editarProcedimientoSinPreguntar(codigoProc, idProcMod, idProcPub, comun);
+    }
+
+    /**
+     * Versión con parámetros explícitos: usada desde el confirmDialog "cdDeseaCrearEditar"
+     * para no depender del estado interno de datoSeleccionado.
+     */
+    public void editarProcedimientoSinPreguntar(Long codigoServ, Long idProcMod, Long idProcPub, Boolean comun) {
+        if (codigoServ == null && idProcMod == null && idProcPub == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dict.info"), getLiteral("msg.seleccioneElemento"));
+            return;
+        }
+        boolean realizarBusqueda = false;
+        if (idProcMod == null) {
+            String usuario = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+            String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
+            idProcMod = procedimientoService.generarModificacion(idProcPub, usuario, sessionBean.getPerfil(), ruta);
+            registrarMensaje(codigoServ, "editar");
+            realizarBusqueda = true;
+        }
+        // Sincronizamos datoSeleccionado para el resto del ciclo (returnDialogo, refresco, etc.).
+        if (datoSeleccionado != null && codigoServ != null && codigoServ.equals(datoSeleccionado.getCodigo())) {
+            datoSeleccionado.setCodigoWFMod(idProcMod);
+        }
+        ServicioDTO serv = procedimientoService.findServicioById(idProcMod);
+
+        TypeModoAcceso modo = BooleanUtils.isTrue(comun) && (this.isGestor() || this.isInformador())
+                ? TypeModoAcceso.CONSULTA : TypeModoAcceso.EDICION;
+        String estados = codigoServ != null ? procedimientoService.getWorkflowEstados(codigoServ) : null;
+        abrirVentana(modo, serv, estados);
+        if (realizarBusqueda) {
+            this.buscar();
+        }
+        limpiarPendiente();
+    }
+
+    private void registrarMensaje(Long codigoProcedimiento, String accion) {
+        String mensajesJson = procedimientoService.getMensajesByCodigo(codigoProcedimiento);
+        List<Mensaje> mensajes = mensajesJson == null || mensajesJson.isEmpty()
+                ? new ArrayList<>() : (List<Mensaje>) UtilJSON.getMensaje(mensajesJson);
+
+        Mensaje mensaje = new Mensaje();
+        boolean esAdministradorContenido = isAdministradorContenidos();
+        mensaje.setFechaReal(new Date());
+        mensaje.setUsuario(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
+        if ("editar".equals(accion)) {
+            mensaje.setMensaje(getLiteral("dialogProcedimientoFlujo.mensajeAutomatico.publicado.publicadoModificacion"));
+        }
+        mensaje.setAdmContenido(esAdministradorContenido);
+        mensaje.setPendienteMensajesGestor(esAdministradorContenido);
+        mensaje.setPendienteMensajesSupervisor(!esAdministradorContenido);
+        mensajes.add(0, mensaje);
+
+        ValidacionTipoUtils.sanitizarMensajes(mensajes);
+        procedimientoService.actualizarMensajes(codigoProcedimiento, UtilJSON.toJSON(mensajes), !esAdministradorContenido, esAdministradorContenido);
     }
 
     public void seleccionarUaInstructor() {
@@ -576,6 +632,24 @@ public class ViewServicios extends AbstractController implements Serializable {
         }
 
         this.datoSeleccionado = idProcSeleccionado;
+    }
+
+    private void guardarPendiente(ServicioGridDTO servicio) {
+        if (servicio == null) {
+            limpiarPendiente();
+            return;
+        }
+        this.codigoPendiente = servicio.getCodigo();
+        this.codigoWFModPendiente = servicio.getCodigoWFMod();
+        this.codigoWFPubPendiente = servicio.getCodigoWFPub();
+        this.comunPendiente = servicio.getComun();
+    }
+
+    private void limpiarPendiente() {
+        this.codigoPendiente = null;
+        this.codigoWFModPendiente = null;
+        this.codigoWFPubPendiente = null;
+        this.comunPendiente = null;
     }
 
 
