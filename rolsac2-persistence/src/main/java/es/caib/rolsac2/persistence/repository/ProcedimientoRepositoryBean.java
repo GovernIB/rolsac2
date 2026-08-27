@@ -1,4 +1,4 @@
-﻿package es.caib.rolsac2.persistence.repository;
+package es.caib.rolsac2.persistence.repository;
 
 import es.caib.rolsac2.commons.plugins.indexacion.api.model.ResultadoAccion;
 import es.caib.rolsac2.commons.plugins.sia.api.model.ResultadoSIA;

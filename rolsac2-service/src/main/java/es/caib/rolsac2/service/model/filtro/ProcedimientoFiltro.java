@@ -1,4 +1,4 @@
-﻿package es.caib.rolsac2.service.model.filtro;
+package es.caib.rolsac2.service.model.filtro;
 
 import es.caib.rolsac2.service.model.*;
 
