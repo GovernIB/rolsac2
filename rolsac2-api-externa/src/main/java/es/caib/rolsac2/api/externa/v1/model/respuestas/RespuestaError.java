@@ -6,8 +6,8 @@ import es.caib.rolsac2.api.externa.v1.exception.ParamException;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.validation.ValidationException;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.ValidationException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -21,31 +21,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RespuestaError extends RespuestaBase {
 
     public RespuestaError(String status, String mensaje, Long tiempo) {
-        super(status, mensaje, 0l, tiempo);
+        super(status, mensaje, tiempo);
     }
-
-    ;
 
     public RespuestaError() {
         super();
     }
 
     public RespuestaError(ExcepcionAplicacion ex) {
-        super(ex.getStatus() + "", ex.getMensajeError(), 0l, null);
+        super(ex.getStatus() + "", ex.getMensajeError(), 0l);
     }
 
     public RespuestaError(NotFoundException ex) {
-        super(ex.getResponse().getStatus() + "", Constantes.MSJ_404_GENERICO, 0l, null);
+        super(ex.getResponse().getStatus() + "", Constantes.MSJ_404_GENERICO, 0l);
     }
 
     public RespuestaError(ParamException ex) {
-        super(ex.getResponse().getStatus() + "", Constantes.MSJ_400_GENERICO + "(parametro: " + ex.getParameterName() + " // Tipo esperado: " + ex.getParameterName() + ")", 0l, null);
+        super(ex.getResponse().getStatus() + "", Constantes.MSJ_400_GENERICO + "(parametro: " + ex.getParameterName() + " // Tipo esperado: " + ex.getParameterName() + ")", 0l);
     }
 
     public RespuestaError(ValidationException ex, String errores) {
-        super(Response.Status.BAD_REQUEST.getStatusCode() + "", Constantes.MSJ_400_GENERICO + "(" + errores + ")", 0l, null);
+        super(Response.Status.BAD_REQUEST.getStatusCode() + "", Constantes.MSJ_400_GENERICO + "(" + errores + ")", 0l);
     }
-
-
 
 }

@@ -153,38 +153,8 @@
                         <configuration>
                             <application>es.caib.rolsac2.rest.api.externa.JAXRSConfiguration</application>
                             <endpointClasses>
-<!--                                 <endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.PersonalResource</endpointClass> -->
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoBoletinResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.UAResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.NormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ServiciosResource</endpointClass>
+                               <!-- <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ServiciosResource</endpointClass> -->
                                 <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ProcedimientosResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoAfectacionResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoSilencioAdministrativoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoUnidadAdministrativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoNormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoFormaInicioResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoLegitimacionResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoMateriaSiaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoPublicoObjetivoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoSexoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoViaResource</endpointClass>
-                                <!--<endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.TipoMediaEdificioResource</endpointClass>-->
-<!--                                 <endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.TipoMediaFichaResource</endpointClass> -->
-                                <!--endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoMediaUAResource</endpointClass-->
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoProcedimientoResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoTramitacionResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.EntidadesResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.PlatTramitElectronicaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.FicheroResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TemaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TipoPublicoObjetivoEntidadResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.DocumentoNormativaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TramiteResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.EstadisticaResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TestGetResource</endpointClass>
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.TestPostResource</endpointClass>
-<!--                                 <endpointClass>services.v1.es.caib.rolsac2.rest.api.externa.ProcedimientoDocumentoResource</endpointClass> -->
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>
