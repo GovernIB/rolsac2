@@ -8,15 +8,22 @@ Peu de pàgina
 -->
 <ui:composition>
     <footer id="footer">
-        <div class="row mr-auto ml-3 mr-3 peuResponsive">
+        <div class="row mr-auto ml-3 mr-3 peuResponsive text-center">
             <!-- Esquerra -->
             <div class="col-3 pt-2 elementPeuResponsive">
                 <strong class="text-uppercase font-weight-bold">
                     <p:outputLabel value="#{version.projectName} &#169; GOVERN DE LES ILLES BALEARS" styleClass="estiloGrande" />
                 </strong>
             </div>
-            <div class="col-3 pt-2 elementPeuResponsive">
-                <p:outputLabel value="#{labels['dict.version']}:" styleClass="estiloGrande" /> <h:outputText value="#{version.version}" styleClass="estiloGrande"/><a href="#{version.url}" class="estiloGrande"> (#{version.commit})</a>
+            <div class="col-2 pt-2 elementPeuResponsive">
+                <p:outputLabel value="#{labels['dict.version']}:" styleClass="estiloGrande" /> 
+                <h:outputText value="#{version.version}" styleClass="estiloGrande"/>
+                <a href="#{version.url}" class="estiloGrande"> (#{version.commit})</a>
+            </div>
+            <div class="col-1 pt-2 elementPeuResponsive">
+                <p:outputLabel styleClass="estiloGrande">
+                    <p:link outcome="/accessibilitat" value="#{labels['dict.accesibilidad']}" />
+                </p:outputLabel>
             </div>
             <div class="col-2 pt-2 elementPeuResponsive">
                 <p:outputLabel value="Build:" styleClass="estiloGrande" />

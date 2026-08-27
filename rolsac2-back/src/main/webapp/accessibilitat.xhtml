@@ -8,14 +8,106 @@ Pàgina amb informació d'accessibilitat
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 
-    <ui:define name="pageTitle">#{labels.accessibilitat_title}</ui:define>
+    <ui:define name="pageTitle">#{labels['dict.accesibilidad']}</ui:define>
 
     <ui:define name="content">
-        <p>Aquí ha d'anar la informació sobre accessibilitat</p>
+        <main id="main-content" role="main" class="row">
+            <h:panelGroup layout="block" styleClass="col-12 col-md-10 col-lg-9 px-3 mx-auto mb-5" 
+                          rendered="#{sessionBean.current.language == 'ca'}">
+                <div class="text-justify">
+                    <h1>DECLARACIÓ D'ACCESSIBILITAT</h1>
+                    <p>El Govern de les Illes Balears es compromet a fer accessible l'aplicació ROLSAC2, de conformitat amb el <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-12699" target="_blank" rel="noopener">Reial decret 1112/2018</a>, de 7 de setembre, sobre accessibilitat dels llocs web i aplicacions per a dispositius mòbils del sector públic.</p>
+                    <p>Aquesta declaració s'aplica a l'aplicació web ROLSAC2 i no inclou les pàgines o serveis que condueixen a enllaços externs.</p>
+
+                    <h2>Situació de compliment</h2>
+                    <p>Aquesta aplicació és <strong>parcialment conforme</strong> amb el Reial decret 1112/2018 a causa de les excepcions i de la falta de conformitat que s'indiquen a continuació.</p>
+
+                    <h2>Contingut no accessible</h2>
+                    <p>El contingut que es recull a continuació no és accessible pels motius següents:</p>
+                    <p>Manca de conformitat amb el <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-12699" target="_blank" rel="noopener">Reial decret 1112/2018</a>:</p>
+                    <ul>
+                        <li>Hi ha enllaços sense un nom discernible.</li>
+                        <li>Hi ha elements de text amb un contrast insuficient amb el fons. El contrast ha de ser d'almenys 4,5:1 per al text petit i 3:1 per al text gran.</li>
+                        <li>Algunes pàgines no disposen d'un contenidor per al contingut principal, fet que dificulta la navegació amb lectors de pantalla.</li>
+                        <li>Hi ha elements interactius amb altres elements interactius niats.</li>
+                        <li>Alguns atributs ARIA aplicats a files de taula requereixen que el contenidor pare utilitzi el rol <code>treegrid</code> en lloc de <code>table</code> o <code>grid</code>.</li>
+                        <li>Alguns elements amb un rol ARIA requereixen fills amb rols ARIA específics i alguns rols ARIA han d'estar continguts dins d'un element pare amb un rol determinat.</li>
+                    </ul>
+
+                    <h2>Preparació d'aquesta declaració</h2>
+                    <p>Aquesta declaració es va preparar l'agost de 2026. El mètode emprat ha estat una autoavaluació del projecte a partir de l'anàlisi d'accessibilitat realitzada sobre l'aplicació.</p>
+                    <p>Darrera revisió de la declaració: agost de 2026.</p>
+
+                    <h2>Observacions i dades de contacte</h2>
+                    <p>El Govern de les Illes Balears pretén continuar millorant l'accessibilitat de ROLSAC2. Podeu comunicar:</p>
+                    <ul>
+                        <li>qualsevol possible incompliment dels requisits d'accessibilitat;</li>
+                        <li>altres dificultats d'accés al contingut;</li>
+                        <li>qualsevol consulta o suggeriment de millora sobre l'accessibilitat.</li>
+                    </ul>
+                    <p>Per fer-ho, podeu utilitzar el <a href="https://www.caib.es/seucaib/ca/200/persones/tramites/servicio/4055206/" target="_blank" rel="noopener">formulari de contacte</a> o telefonar al 971 177 140.</p>
+                    <p>També podeu presentar una <a href="https://www.caib.es/seucaib/ca/200/personas/tramites/tramite/4055271/" target="_blank" rel="noopener">sol·licitud d'informació accessible o una queixa relativa a l'accessibilitat</a>.</p>
+
+                    <h2>Procediment d'aplicació</h2>
+                    <p>Si una sol·licitud d'informació accessible o una queixa ha estat desestimada, si no estau d'acord amb la decisió o si no heu rebut resposta dins el termini de vint dies hàbils, podeu presentar una <a href="https://www.caib.es/seucaib/ca/200/personas/tramites/tramite/4057494/" target="_blank" rel="noopener">reclamació relativa a l'accessibilitat</a>, d'acord amb l'article 13 del Reial decret 1112/2018.</p>
+
+                    <h2>Contingut opcional</h2>
+                    <p>La darrera revisió de l'accessibilitat s'ha fet l'agost de 2026. S'han revisat els criteris indicats en l'anàlisi d'accessibilitat del projecte mitjançant una autoavaluació de l'organisme responsable. No s'ha publicat cap puntuació global de l'aplicació.</p>
+                    <p>ROLSAC2 està dissenyat amb un enfocament responsive per facilitar-ne la visualització en ordinadors, tauletes i dispositius mòbils.</p>
+                    <!--p>El nivell de conformitat que es pretén assolir és el nivell AA de les <a href="https://www.w3.org/Translations/WCAG21-ca/" target="_blank" rel="noopener">pautes WCAG 2.1</a>.</p-->
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup layout="block" styleClass="col-12 col-md-10 col-lg-9 px-3 mx-auto mb-5"
+                          rendered="#{sessionBean.current.language != 'ca'}">
+                <div class="text-justify">
+                    <h1>DECLARACIÓN DE ACCESIBILIDAD</h1>
+                    <p>El Govern de les Illes Balears se compromete a hacer accesible la aplicación ROLSAC2, de conformidad con el <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-12699" target="_blank" rel="noopener">Real Decreto 1112/2018, de 7 de septiembre, sobre accesibilidad de los sitios web y aplicaciones para dispositivos móviles del sector público</a>.</p>
+                    <p>Esta declaración se aplica a la aplicación web ROLSAC2 y no incluye las páginas o servicios que conducen a enlaces externos.</p>
+
+                    <h2>Situación de cumplimiento</h2>
+                    <p>Esta aplicación es <strong>parcialmente conforme</strong> con el Real Decreto 1112/2018 debido a las excepciones y a la falta de conformidad que se indican a continuación.</p>
+
+                    <h2>Contenido no accesible</h2>
+                    <p>El contenido que se recoge a continuación no es accesible por los siguientes motivos:</p>
+                    <p>Falta de conformidad con el <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-12699" target="_blank" rel="noopener">Real Decreto 1112/2018</a>:</p>
+                    <ul>
+                        <li>Hay enlaces sin un nombre discernible.</li>
+                        <li>Hay elementos de texto con un contraste insuficiente con el fondo. El contraste debe ser de al menos 4,5:1 para el texto pequeño y 3:1 para el texto grande.</li>
+                        <li>Algunas páginas no disponen de un contenedor para el contenido principal, lo que dificulta la navegación con lectores de pantalla.</li>
+                        <li>Hay elementos interactivos con otros elementos interactivos anidados.</li>
+                        <li>Algunos atributos ARIA aplicados a filas de tabla requieren que el contenedor padre utilice el rol <code>treegrid</code> en lugar de <code>table</code> o <code>grid</code>.</li>
+                        <li>Algunos elementos con un rol ARIA requieren hijos con roles ARIA específicos y algunos roles ARIA deben estar contenidos dentro de un elemento padre con un rol determinado.</li>
+                    </ul>
+
+                    <h2>Preparación de la presente declaración</h2>
+                    <p>La presente declaración se preparó en agosto de 2026. El método empleado ha sido una autoevaluación del proyecto a partir del análisis de accesibilidad realizado sobre la aplicación.</p>
+                    <p>Última revisión de la declaración: agosto de 2026.</p>
+
+                    <h2>Observaciones y datos de contacto</h2>
+                    <p>El Govern de les Illes Balears pretende seguir mejorando la accesibilidad de ROLSAC2. Puede comunicar:</p>
+                    <ul>
+                        <li>cualquier posible incumplimiento de los requisitos de accesibilidad;</li>
+                        <li>otras dificultades de acceso al contenido;</li>
+                        <li>cualquier consulta o sugerencia de mejora relativa a la accesibilidad.</li>
+                    </ul>
+                    <p>Para ello, puede utilizar el <a href="https://www.caib.es/seucaib/es/200/persones/tramites/servicio/4055206/" target="_blank" rel="noopener">formulario de contacto</a> o llamar al 971 177 140.</p>
+                    <p>También puede presentar una <a href="https://www.caib.es/seucaib/es/200/personas/tramites/tramite/4055271/" target="_blank" rel="noopener">solicitud de información accesible o una queja relativa a la accesibilidad</a>.</p>
+
+                    <h2>Procedimiento de aplicación</h2>
+                    <p>Si una solicitud de información accesible o una queja ha sido desestimada, no está de acuerdo con la decisión o no ha recibido respuesta en el plazo de veinte días hábiles, puede presentar una <a href="https://www.caib.es/seucaib/es/200/personas/tramites/tramite/4057494/" target="_blank" rel="noopener">reclamación relativa a la accesibilidad</a>, de acuerdo con el artículo 13 del Real Decreto 1112/2018.</p>
+
+                    <h2>Contenido opcional</h2>
+                    <p>La última revisión de la accesibilidad se ha realizado en agosto de 2026. Se han revisado los criterios indicados en el análisis de accesibilidad del proyecto mediante una autoevaluación del organismo responsable. No se ha publicado ninguna puntuación global de la aplicación.</p>
+                    <p>ROLSAC2 está diseñado con un enfoque responsive para facilitar su visualización en ordenadores, tabletas y dispositivos móviles.</p>
+                    <!--p>El nivel de conformidad que se pretende alcanzar es el nivel AA de las <a href="https://www.w3.org/Translations/WCAG21-es/" target="_blank" rel="noopener">pautas WCAG 2.1</a>.</p-->
+                </div>
+            </h:panelGroup>
+        </main>
     </ui:define>
 
     <ui:define name="breadcrumb">
-        <p:menuitem value="#{labels.accessibilitat_link}" outcome="/accessibilitat"/>
+        <p:menuitem value="#{labels['dict.accesibilidad']}" outcome="/accessibilitat"/>
     </ui:define>
 
 </ui:composition>
