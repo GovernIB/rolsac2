@@ -37,13 +37,6 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax update="formDialog:documentosMulti" process="@this"/>
         </p:selectOneButton>
-        <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.traducir}"
-                         icon="pi pi-compass" iconPos="top"
-                         value="#{labels['dict.traducir']}"
-                         style="margin-left:10px;height:35px;"
-                         update="messagesDialog"
-                         process="@this"
-                         rendered="#{!dialogDocumentoProcedimientoLOPD.isModoConsulta() &amp;&amp; dialogDocumentoProcedimientoLOPD.tradExiste()}"/>
     </ui:define>
 
     <ui:define name="contentDialog">
