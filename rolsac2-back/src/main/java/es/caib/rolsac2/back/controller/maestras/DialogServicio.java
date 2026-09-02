@@ -1493,8 +1493,9 @@ public class DialogServicio extends AbstractController implements Serializable {
                 // Si es común, no mostrar botón
                 return false;
             }
-            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
-                // En caso de estar pendiente de cerrar, no mostrar botón
+            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_CERRAR ||
+                    this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+                // En caso de estar pendiente de cerrar o publicar, no mostrar botón
                 return false;
             }
             return true;

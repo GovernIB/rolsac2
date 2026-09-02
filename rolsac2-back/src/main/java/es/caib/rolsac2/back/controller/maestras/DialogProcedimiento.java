@@ -474,9 +474,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
 
-         if (data != null && data.getHabilitadoFuncionario() != null && "S".equals(data.getHabilitadoFuncionario())) {
+        if (data != null && data.getHabilitadoFuncionario() != null && "S".equals(data.getHabilitadoFuncionario())) {
             boolean tieneCiudadanosFuncionarioHabilitado = false;
-             if (data.getPublicosObjetivo() != null) {
+            if (data.getPublicosObjetivo() != null) {
                 for (TipoPublicoObjetivoEntidadGridDTO pObj : data.getPublicosObjetivo()) {
                     if (pObj != null && pObj.getCodigo() != null && pObj.getCodigo().intValue() == 200) {
                         tieneCiudadanosFuncionarioHabilitado = true;
@@ -1869,8 +1869,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 // Si es común, no mostrar botón
                 return false;
             }
-            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_CERRAR) {
-                // En caso de estar pendiente de cerrar, no mostrar botón
+            if (this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_CERRAR ||
+                    this.data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR) {
+                // En caso de estar pendiente de cerrar o publicar, no mostrar botón
                 return false;
             }
             return true;
