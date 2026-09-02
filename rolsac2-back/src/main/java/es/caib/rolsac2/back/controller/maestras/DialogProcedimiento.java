@@ -1864,6 +1864,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean isMostrarBtnFlujo() {
+        if (this.data.getEstado() == TypeProcedimientoEstado.PUBLICADO && this.estadoProcedimiento.equals(TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString())) {
+            //Si el estado es PUBLICADO y esta el procedimiento en PUBLICADO y PENDINETE PUBLICAR, es decir, no se puede mover el publicado
+            return false;
+        }
         if (this.isGestor()) {
             if (this.data.getComun() == 1) {
                 // Si es común, no mostrar botón
