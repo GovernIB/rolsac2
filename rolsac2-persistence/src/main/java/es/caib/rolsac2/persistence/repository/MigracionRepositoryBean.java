@@ -76,8 +76,8 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
         query.registerStoredProcedureParameter("codigoEntidad", String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter("resultado", String.class, ParameterMode.INOUT);
 
-        query.setParameter("codigoUA", param1);
-        query.setParameter("codigoEntidad", param2);
+        query.setParameter("codigoEntidad", param1);
+        query.setParameter("codigoUA", param2);
         query.setParameter("resultado", resultado);
 
         // call the stored procedure and get the result
@@ -268,29 +268,18 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
     public List<BigDecimal> getProcedimientosMensajes(Long idEntidad, Long uaRaiz) {
         /** Obtiene los procedimientos que tienen mensajes asociados, tabla R1_PROCEDIMIENTOS_MENSAJES, y que cuelgan de la UA raiz */
         Query query = this.entityManager.createNativeQuery("   SELECT DISTINCT PMN_PROCODI  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI IN  (SELECT PROC_CODIGO FROM RS2_PROC )  ");
-        return query.getResultList();
+        List<BigDecimal> resultados = query.getResultList();
+        Query query2 = this.entityManager.createNativeQuery("   SELECT DISTINCT SMN_SERCODI  FROM R1_SERVICIOS_MENSAJES WHERE SMN_SERCODI IN  (SELECT PROC_CODIGO FROM RS2_PROC )  ");
+        List<BigDecimal> resultados2 = query2.getResultList();
+        if (resultados2 != null && !resultados2.isEmpty()) {
+            resultados.addAll(resultados2);
+        }
+        return resultados;
     }
 
     @Override
     public String importarMensajes(long idProcMsg, Long entidad) {
-        /** Teniendo en cuenta que R1_PROCEDIMIENTOS_MENSAJES es :
-         * PMN_CODI	NUMBER(19,0)
-         * PMN_PROCODI	NUMBER(19,0)
-         * PMN_USUARIO	VARCHAR2(125 CHAR)
-         * PMN_GESTOR	NUMBER(1,0)
-         * PMN_TEXTO	VARCHAR2(256 CHAR)
-         * PMN_FECCRE	DATE
-         * PMN_FECLEC	DATE
-         * PMN_LEIDO	NUMBER(1,0)
-         * PMN_USULEC	VARCHAR2(100 CHAR)
-         *
-         * Hay que obtener todas las filas de R1_PROCEDIMIENTOS_MENSAJES  con PMN_PROCODI = idProcMsg ordenando por PMN_FECCRE  y migrarlas a la tabla de mensajes de JProcedimiento.mensajes (mensajes es un json de varios mensajes)
-         * **/
-        if (idProcMsg == 3963394L) {
-            String parar = "";
-        }
-        Query query = this.entityManager.createNativeQuery("   SELECT PMN_PROCODI, PMN_USUARIO, PMN_GESTOR, PMN_TEXTO, PMN_FECCRE, PMN_FECLEC, PMN_LEIDO, PMN_USULEC  FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI = " + idProcMsg);
-        List<Object[]> resultados = query.getResultList();
+        List<Object[]> resultados = obtenerMensajesRolsac1(idProcMsg);
         List<Mensaje> mensajes = new ArrayList<>();
         boolean pendienteAdmContenido = false;
         boolean pendienteGestor = false;
@@ -300,7 +289,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                 mensajeObj.setUsuario((String) resultado[1]);
                 mensajeObj.setUsuarioLeido((String) resultado[7]);
                 if (((BigDecimal) resultado[2]).intValue() == 1) {
-                    //Es gestor
+                    // Es gestor
                     mensajeObj.setAdmContenido(false);
                     mensajeObj.setPendienteMensajesSupervisor(true);
                     if (resultado[6] != null) {
@@ -311,7 +300,7 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                         }
                     }
                 } else {
-                    //Es adm contenido
+                    // Es adm. contenido
                     mensajeObj.setAdmContenido(true);
                     mensajeObj.setPendienteMensajesGestor(true);
                     if (resultado[6] != null) {
@@ -320,33 +309,54 @@ public class MigracionRepositoryBean extends AbstractCrudRepository<JProceso, Lo
                         if (0 == ((BigDecimal) resultado[6]).intValue()) {
                             pendienteGestor = true;
                         }
-                        ;
                     }
                 }
                 mensajeObj.setMensaje((String) resultado[3]);
-                //Resultado[4] es un Timestamp , hay que convertirlo a String
                 if (resultado[4] != null) {
-                    final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    //mensajeObj.setFecha(sdf.format((java.util.Date) resultado[4]));
                     mensajeObj.setFechaReal((java.util.Date) resultado[4]);
                 }
                 if (resultado[5] != null) {
                     final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     mensajeObj.setFechaLeido(sdf.format((java.util.Date) resultado[5]));
                 }
-                //mensajeObj.setFechaReal((java.util.Date) resultado[6]);
-                //mensajeObj.set(((BigDecimal) resultado[6]).intValue() == 1);
-                //mensajeObj.set((String) resultado[7]);
                 mensajes.add(mensajeObj);
-
             }
         }
         JProcedimiento procedimiento = this.entityManager.find(JProcedimiento.class, idProcMsg);
+        if (procedimiento == null) {
+            return "No se encuentra procedimiento/servicio RS2 para migrar mensajes: " + idProcMsg + "\n";
+        }
         procedimiento.setMensajes(UtilJSON.toJSON(mensajes));
         procedimiento.setMensajesPendienteGestor(pendienteGestor);
         procedimiento.setMensajesPendienteSupervisor(pendienteAdmContenido);
         entityManager.merge(procedimiento);
-        return "Migració missatges proc " + idProcMsg + " : " + mensajes.size() + " mensajes migrados. \n ";
+        String tipo = "P".equals(procedimiento.getTipo()) ? "proc" : "serv";
+        return "Migracio missatges " + tipo + " " + idProcMsg + " : " + mensajes.size() + " mensajes migrados. \n ";
+    }
+
+    private List<Object[]> obtenerMensajesRolsac1(long idProcMsg) {
+        String sqlProc = "SELECT PMN_PROCODI, PMN_USUARIO, PMN_GESTOR, PMN_TEXTO, PMN_FECCRE, PMN_FECLEC, PMN_LEIDO, PMN_USULEC " +
+                "FROM R1_PROCEDIMIENTOS_MENSAJES WHERE PMN_PROCODI = " + idProcMsg + " ORDER BY PMN_FECCRE";
+        List<Object[]> resultados = ejecutarQueryMensajes(sqlProc);
+        if (resultados != null && !resultados.isEmpty()) {
+            return resultados;
+        }
+
+        // Compatibilidad con entornos donde el prefijo de columnas en servicios es SMN_*.
+        String sqlServSmn = "SELECT SMN_SERCODI, SMN_USUARIO, SMN_GESTOR, SMN_TEXTO, SMN_FECCRE, SMN_FECLEC, SMN_LEIDO, SMN_USULEC " +
+                "FROM R1_SERVICIOS_MENSAJES WHERE SMN_SERCODI = " + idProcMsg + " ORDER BY SMN_FECCRE";
+        return ejecutarQueryMensajes(sqlServSmn);
+
+    }
+
+    private List<Object[]> ejecutarQueryMensajes(String sql) {
+        try {
+            Query query = this.entityManager.createNativeQuery(sql);
+            return query.getResultList();
+        } catch (Exception e) {
+            LOG.debug("No se han podido obtener mensajes con query [{}]", sql, e);
+            return new ArrayList<>();
+        }
     }
 
     @Override

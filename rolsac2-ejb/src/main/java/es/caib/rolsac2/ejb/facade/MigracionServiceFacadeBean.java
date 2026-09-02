@@ -283,6 +283,9 @@ public class MigracionServiceFacadeBean implements MigracionServiceFacade {
         StringBuilder resultado = new StringBuilder();
         if (idProcs != null) {
             for (BigDecimal idProcServ : idProcs) {
+                if (idProcServ.longValue() == 2908593L) {
+                    String parar = "";
+                }
                 String resultadoProc = migracionRepository.importarMensajes(idProcServ.longValue(), entidad);
                 resultado.append(resultadoProc);
             }

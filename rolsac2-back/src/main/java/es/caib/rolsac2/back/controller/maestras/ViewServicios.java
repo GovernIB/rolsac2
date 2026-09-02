@@ -21,10 +21,10 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.primefaces.event.ToggleEvent;
 
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -338,7 +338,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 consultarProcedimiento();
             } else if (mostrarEditar(datoSeleccionado)) {
                 editarProcedimiento();
-            } else{
+            } else {
                 return;
             }
         }
@@ -669,7 +669,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         } else {
             final Map<String, String> params = new HashMap<>();
             params.put(TypeParametroVentana.ID.toString(), datoSeleccionado.getCodigo().toString());
-            params.put(TypeParametroVentana.TIPO.toString(), "P");
+            params.put(TypeParametroVentana.TIPO.toString(), "S");
             UtilJSF.openDialog("dialogClonar", TypeModoAcceso.ALTA, params, true, 500, 340);
         }
     }
