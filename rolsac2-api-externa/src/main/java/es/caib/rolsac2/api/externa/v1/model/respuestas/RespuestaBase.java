@@ -1,6 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model.respuestas;
 
-import es.caib.rolsac2.api.externa.v1.model.Procediment;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -112,7 +111,7 @@ public class RespuestaBase {
         // Constructor por defecto
     }
 
-    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url, List<Procediment> lista, long tiempoMiliSegundos) {
+    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url, List<?> lista, long tiempoMiliSegundos) {
         this.totalCount = (long) total;
         this.itemsReturned = size;
         this.pageSize = paginaTamanyo;

@@ -442,6 +442,11 @@ public class Procediment implements Serializable {
             this.estatSIA = nodo.getEstadoSIA();
             this.dataSIA = toIso8601(nodo.getFechaSIA());
             this.uaResponsableNom = getTraduccion(nodo.getUaResponsableLiteral(), idioma, idiomaPorDefecto);
+            this.uaResponsableCodi = getLongProperty(nodo, "getUaResponsableCodigo", "getCodigoUaResponsable");
+            if (this.uaResponsableCodi == null) {
+                Object uaResponsable = invokeAny(nodo, "getUaResponsable", "getUnidadResponsable");
+                this.uaResponsableCodi = getLongProperty(uaResponsable, "getCodigo", "getId");
+            }
             if (nodo.getUaCompetente() != null) {
                 this.uaCompetenteCodi = nodo.getUaCompetente().getCodigo();
                 this.uaCompetenteNom = getDescripcionUA(nodo.getUaCompetente(), idioma, idiomaPorDefecto);
@@ -474,7 +479,7 @@ public class Procediment implements Serializable {
             this.habilitatApoderat = nodo.isHabilitadoApoderado();
             this.habilitatFuncionari = toBooleanFlag(nodo.getHabilitadoFuncionario());
             this.terminiResolucio = getTraduccion(nodo.getTerminoResolucion(), idioma, idiomaPorDefecto);
-            this.url = buildUrl(urlBase, this.codi);
+            this.url = resolveSeuUrl(nodo, urlBase, this.codi);
         } catch (Exception e) {
             LOG.error("Error generando procediment {}", this.codi, e);
         }
@@ -514,6 +519,56 @@ public class Procediment implements Serializable {
             return null;
         }
         return "S".equalsIgnoreCase(value) || "1".equals(value) || "true".equalsIgnoreCase(value);
+    }
+
+    /**
+     * Intenta obtener la URL pública de la Seu desde el DTO. El PDF exige que
+     * el campo url apunte a seucaib; no debe confundirse con el enlace HATEOAS
+     * del propio REST. Se prueban varios getters para mantener compatibilidad
+     * entre versiones del DTO.
+     */
+    private String resolveSeuUrl(Object nodo, String urlBase, Long codigoProcedimiento) {
+        Object valor = invokeAny(nodo,
+                "getUrlSede", "getUrlSEDE", "getUrlSeu", "getUrlPublica",
+                "getUrlProcedimiento", "getUrl");
+        if (valor != null) {
+            String urlSeu = String.valueOf(valor).trim();
+            if (!urlSeu.isEmpty()) {
+                return urlSeu;
+            }
+        }
+        // Fallback únicamente si el llamador proporciona explícitamente una base.
+        return buildUrl(urlBase, codigoProcedimiento);
+    }
+
+    private Object invokeAny(Object target, String... getters) {
+        if (target == null || getters == null) {
+            return null;
+        }
+        for (String getter : getters) {
+            try {
+                java.lang.reflect.Method method = target.getClass().getMethod(getter);
+                return method.invoke(target);
+            } catch (ReflectiveOperationException ignored) {
+                // Se intenta el siguiente nombre compatible.
+            }
+        }
+        return null;
+    }
+
+    private Long getLongProperty(Object target, String... getters) {
+        Object value = invokeAny(target, getters);
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        try {
+            return Long.valueOf(String.valueOf(value));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private String buildUrl(String urlBase, Long codigoProcedimiento) {

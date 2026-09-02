@@ -153,8 +153,8 @@
                         <configuration>
                             <application>es.caib.rolsac2.rest.api.externa.JAXRSConfiguration</application>
                             <endpointClasses>
-                               <!-- <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ServiciosResource</endpointClass> -->
-                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ProcedimientosResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ServicioResource</endpointClass>
+                                <endpointClass>es.caib.rolsac2.rest.api.externa.v1.services.ProcedimientoResource</endpointClass>
                             </endpointClasses>
                             <output>${project.build.directory}/openapi/openapi.json</output>
                             <info>

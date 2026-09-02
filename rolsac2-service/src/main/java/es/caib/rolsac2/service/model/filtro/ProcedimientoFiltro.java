@@ -250,6 +250,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.idUAResponsable = otro.idUAResponsable;
         this.idUAsResponsable = otro.idUAsResponsable;
         this.idUAInstructor = otro.idUAInstructor;
+        this.idUAInstructorOComun = otro.idUAInstructorOComun;
         this.idUAsInstructor = otro.idUAsInstructor;
         this.idsUAsHijasAux = otro.idsUAsHijasAux;
         this.todasUnidadesOrganicas = otro.todasUnidadesOrganicas;
@@ -373,6 +374,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.temaNombre = otro.temaNombre;
         this.documentoCodigo = otro.documentoCodigo;
         this.documentoTitulo = otro.documentoTitulo;
+        this.buscarEnDescendientesUA = otro.buscarEnDescendientesUA;
+        this.uAInterna = otro.uAInterna;
 
     }
 
