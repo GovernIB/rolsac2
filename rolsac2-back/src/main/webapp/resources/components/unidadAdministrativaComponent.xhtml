@@ -3,6 +3,7 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:cc="http://java.sun.com/jsf/composite"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 
     <cc:interface componentType="unidadAdministrativaComponent">
@@ -41,7 +42,7 @@
                              styleClass="w35px h30px iconoUAselector  #{cc.estiloInput}"
                              process="@this"
                              disabled="#{cc.isModoCrear()}"
-                             id="btnAbrir"
+                             id="btnAbrir" pt:aria-label=" "
             >
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
                              update="#{cc.updateElementos}" />

@@ -3,6 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -30,21 +32,21 @@
         <div class="ui-g-12 ui-md-8 pl-3 panel-container">
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionNormativaAfectacion.buscar}"
-                             update="dataTableAfectaciones messagesDialog"/>
+                             update="dataTableAfectaciones messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
             <p:panel id="panel" styleClass="panelSinBotonToggle mb-1" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <p:outputLabel value="#{labels['dict.filtro']}:" styleClass="mr-2" /> <p:inputText id="filtroBusqueda"
+                            <p:outputLabel value="#{labels['dict.filtro']}:" styleClass="mr-2" pt:aria-label="#{labels['dict.filtro']}:" /> <p:inputText id="filtroBusqueda"
                                                                                                                value="#{dialogSeleccionNormativaAfectacion.filtroTexto}"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                              update="dataTableAfectaciones messagesDialog" styleClass="ml-2"
                                              actionListener="#{dialogSeleccionNormativaAfectacion.buscar()}"
-                                             process="@form"/>
+                                             process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 ">
-                            <p:outputLabel value="#{labels['dialogNormativa.tipoAfectacion']}: " styleClass="ml-1 mr-1"></p:outputLabel>
+                            <p:outputLabel value="#{labels['dialogNormativa.tipoAfectacion']}: " styleClass="ml-1 mr-1" pt:aria-label="#{labels['dialogNormativa.tipoAfectacion']}: "></p:outputLabel>
                             <p:selectOneMenu value="#{dialogSeleccionNormativaAfectacion.tipoAfectacionSeleccionado}"
                                              styleClass="mr-1"
                                              requiredMessage="#{labels['dict.obligatorio.boletinOficial']}"
@@ -61,7 +63,7 @@
                                              actionListener="#{dialogSeleccionNormativaAfectacion.crearAfectacion()}"
                                              update="messagesDialog dataTableAfectaciones"
                                              disabled="#{dialogSeleccionNormativaAfectacion.esPosibleAnyadir()}"
-                                             icon="pi pi-plus"></p:commandButton>
+                                             icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}"></p:commandButton>
                         </div>
                     </div>
                 </f:facet> 
@@ -123,7 +125,7 @@
                              actionListener="#{dialogSeleccionNormativaAfectacion.crearAfectacion()}"
                              process="@this"
                              update="messagesDialog dataTableAfectaciones"
-                             style="display: none">
+                             style="display: none" pt:aria-label="btnEditarHidden">
                 <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
             </p:commandButton>
 
@@ -156,7 +158,7 @@
             <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center left-container">
                 <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
                                  action="#{dialogSeleccionNormativaAfectacion.borrarAfectacion()}"
-                                 process="@this" update="dataTableAfectaciones messagesDialog"/>
+                                 process="@this" update="dataTableAfectaciones messagesDialog" pt:aria-label="Eliminar"/>
             </div>
             </div>
         </div>
@@ -166,10 +168,10 @@
         <p:commandButton action="#{dialogSeleccionNormativaAfectacion.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionNormativaAfectacion.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
         <p:commandButton action="#{dialogSeleccionNormativaAfectacion.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

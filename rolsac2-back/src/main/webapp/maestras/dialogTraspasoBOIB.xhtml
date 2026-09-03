@@ -3,6 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -25,7 +27,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <p class="mb-0">
-                            <p:outputLabel for="filtroNumBoletin" value="#{labels['dialogTraspasoBOIB.numBoletin']}"/>:
+                            <p:outputLabel for="filtroNumBoletin" value="#{labels['dialogTraspasoBOIB.numBoletin']}" pt:aria-label="#{labels['dialogTraspasoBOIB.numBoletin']}"/>:
                         </p>
                         <p:inputText id="filtroNumBoletin" styleClass="mr-2 w90"
                                      value="#{dialogTraspasoBOIB.filtroNumBoletin}"
@@ -35,7 +37,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <p class="mb-0">
-                            <p:outputLabel value="#{labels['dialogTraspasoBOIB.fechaBoletin']}"/>:
+                            <p:outputLabel value="#{labels['dialogTraspasoBOIB.fechaBoletin']}" pt:aria-label="#{labels['dialogTraspasoBOIB.fechaBoletin']}"/>:
                         </p>
                         <p:datePicker showIcon="true"  id="filtroFechaBoletin" styleClass="fecha mr-2 w90"
                                       locale="#{sessionBean.lang}" value="#{dialogTraspasoBOIB.filtroFechaBoletin}" pattern="dd/MM/yyyy"
@@ -44,7 +46,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <p class="mb-0">
-                            <p:outputLabel for="filtroNumRegistro" value="#{labels['dialogTraspasoBOIB.numRegistro']}"/>:
+                            <p:outputLabel for="filtroNumRegistro" value="#{labels['dialogTraspasoBOIB.numRegistro']}" pt:aria-label="#{labels['dialogTraspasoBOIB.numRegistro']}"/>:
                         </p>
                         <p:inputText id="filtroNumRegistro" styleClass="mr-2 w90"
                                      value="#{dialogTraspasoBOIB.filtroNumRegistro}"
@@ -56,7 +58,7 @@
                         <p:commandButton id="btnBusqueda" value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                          update="dataTable messagesDialog panelCrear panelBusqueda panelNormas" styleClass="mt-4 btn-busqueda"
                                          actionListener="#{dialogTraspasoBOIB.buscar()}"
-                                         process="@form"/>
+                                         process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
                     </div>
                 </div>
                 <h:panelGroup id="panelNormas">
@@ -126,7 +128,7 @@
                 <p:commandButton id="btnCrear" value="#{labels['dict.crear']}"
                                  actionListener="#{dialogTraspasoBOIB.crearNormativa()}"
                                  update="messagesDialog dataTable"
-                                 icon="pi pi-plus" style="display:none"></p:commandButton>
+                                 icon="pi pi-plus" style="display:none" pt:aria-label="#{labels['dict.crear']}"></p:commandButton>
             </p:panel>
 
         </div>
@@ -135,14 +137,14 @@
         <h:panelGroup id="panelCrear">
            <!-- <p:commandButton action="#{dialogTraspasoBOIB.crearNormativa2}"
                              value="#{labels['dialogTraspasoBOIB.crearNormativa']}2" update="messagesDialog"
-                             process="@this"  />-->
+                             process="@this" pt:aria-label="#{labels['dialogTraspasoBOIB.crearNormativa']}2"  />-->
             <p:commandButton action="#{dialogTraspasoBOIB.crearNormativa}"
                              value="#{labels['dialogTraspasoBOIB.crearNormativa']}" update="messagesDialog"
-                             process="@this" rendered="#{dialogTraspasoBOIB.mostrarResultados}"/>
+                             process="@this" rendered="#{dialogTraspasoBOIB.mostrarResultados}" pt:aria-label="#{labels['dialogTraspasoBOIB.crearNormativa']}"/>
         </h:panelGroup>
         <p:commandButton action="#{dialogTraspasoBOIB.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

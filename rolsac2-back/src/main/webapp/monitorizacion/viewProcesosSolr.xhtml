@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de processos automàtics
 -->
@@ -34,7 +36,7 @@ Pàgina amb el llistat de processos automàtics
             <p:tab title="#{labels['viewProcesosSolr.tab.procedimientosEjecutados']}">
                 <p:commandButton value="#{labels['viewProcesosSolr.refrescarDatos']}" icon="pi pi-refresh" iconPos="top"
                                  actionListener="#{viewProcesosSolr.buscar()}" styleClass="mb5"
-                                 process="@this" update="dataTable dataTablePendientes messages">
+                                 process="@this" update="dataTable dataTablePendientes messages" pt:aria-label="#{labels['viewProcesosSolr.refrescarDatos']}">
                 </p:commandButton>
 
                 <p:dataTable id="dataTable" value="#{viewProcesosSolr.lazyModelLogs}" var="proceso"
@@ -90,7 +92,7 @@ Pàgina amb el llistat de processos automàtics
                     <p:column headerText="" styleClass="w50px">
                         <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
                                          actionListener="#{viewProcesosSolr.verErrores(proceso.codigo)}"
-                                         process="@this" update="messages" styleClass="h30px w30px">
+                                         process="@this" update="messages" styleClass="h30px w30px" pt:aria-label="">
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -98,7 +100,7 @@ Pàgina amb el llistat de processos automàtics
             <p:tab title="#{labels['viewProcesosSolr.tab.datosPendientes']}">
                 <p:commandButton value="#{labels['viewProcesosSolr.refrescarDatos']}" icon="pi pi-refresh" iconPos="top"
                                  actionListener="#{viewProcesosSolr.buscar()}" styleClass="mb5"
-                                 process="@this" update="dataTable dataTablePendientes messages">
+                                 process="@this" update="dataTable dataTablePendientes messages" pt:aria-label="#{labels['viewProcesosSolr.refrescarDatos']}">
                 </p:commandButton>
             <p:dataTable id="dataTablePendientes" value="#{viewProcesosSolr.lazyModel}" var="proceso"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTablePendientes"
@@ -163,23 +165,23 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                         <p:commandButton value="#{labels['viewProcesosSolr.indexarProcedimientos']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosSolr.indexarProcedimientos()}" styleClass="mr10"
-                                         process="@this" update="messages">
+                                         process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.indexarProcedimientos']}">
                         </p:commandButton>
                     <p:commandButton value="#{labels['viewProcesosSolr.indexarProcedimientos']} (NO DOCS)" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewProcesosSolr.indexarProcedimientosSinDocs()}" styleClass="mr10"
-                                     process="@this" update="messages">
+                                     process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.indexarProcedimientos']} (NO DOCS)">
                     </p:commandButton>
                         <p:commandButton value="#{labels['viewProcesosSolr.indexarServicios']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosSolr.indexarServicios()}" styleClass="mr10"
-                                         process="@this" update="messages">
+                                         process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.indexarServicios']}">
                         </p:commandButton>
                         <p:commandButton value="#{labels['viewProcesosSolr.indexarNormativas']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosSolr.indexarNormativas()}" styleClass="mr10"
-                                         process="@this" update="messages">
+                                         process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.indexarNormativas']}">
                         </p:commandButton>
                         <p:commandButton value="#{labels['viewProcesosSolr.indexarUAs']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosSolr.indexarUAs()}"
-                                         process="@this" update="messages">
+                                         process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.indexarUAs']}">
                         </p:commandButton>
                 </div>
             </div>
@@ -193,7 +195,7 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                     <p:commandButton value="#{labels['viewProcesosSolr.indexarPendientes']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewProcesosSolr.indexarPendientes()}"
-                                     process="@this" update="messages">
+                                     process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.indexarPendientes']}">
                     </p:commandButton>
                 </div>
             </div>
@@ -207,11 +209,11 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                     <p:commandButton value="#{labels['viewProcesosSolr.desindexarTodo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewProcesosSolr.desindexarTodo()}" styleClass="mr10"
-                                     process="@this" update="messages">
+                                     process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.desindexarTodo']}">
                     </p:commandButton>
                     <p:commandButton value="#{labels['viewProcesosSolr.desindexarCaducadas']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewProcesosSolr.desindexarCaducadas()}"
-                                     process="@this" update="messages">
+                                     process="@this" update="messages" pt:aria-label="#{labels['viewProcesosSolr.desindexarCaducadas']}">
                     </p:commandButton>
                 </div>
             </div>

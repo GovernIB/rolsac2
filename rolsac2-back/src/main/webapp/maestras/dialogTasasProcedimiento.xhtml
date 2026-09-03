@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
@@ -23,7 +25,7 @@
 
     <ui:define name="contentIdioma">
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTasasProcedimiento.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -37,7 +39,7 @@
                         style="margin-left:10px; font-size:1.2em; height:35px; margin-top:1px"
                         update="messagesDialog"
                         process="@this"
-                        rendered="#{!dialogTasasProcedimiento.isModoConsulta() and dialogTasasProcedimiento.tradExiste()}">
+                        rendered="#{!dialogTasasProcedimiento.isModoConsulta() and dialogTasasProcedimiento.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogTasasProcedimiento.returnDialogTraducir}" process="@this"
                     update="formDialog:txtIdentificador formDialog:txtDescripcion formDialog:txtFormaPago formDialog:txtUrl"/>
         </p:commandButton>
@@ -53,7 +55,7 @@
         <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.codigo']}:" for="txtIdentificador"/>
+                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.codigo']}:" for="txtIdentificador" pt:aria-label="#{labels['dialogTasasProcedimiento.codigo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-10">
                     <my:literalComponent id="txtIdentificador"
@@ -70,7 +72,7 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.descripcion']}:" for="txtDescripcion"/>
+                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.descripcion']}:" for="txtDescripcion" pt:aria-label="#{labels['dialogTasasProcedimiento.descripcion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-10">
                     <my:literalAreaComponent id="txtDescripcion"
@@ -85,7 +87,7 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.formaPago']}:" for="txtFormaPago"/>
+                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.formaPago']}:" for="txtFormaPago" pt:aria-label="#{labels['dialogTasasProcedimiento.formaPago']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-10">
                     <my:literalAreaComponent id="txtFormaPago"
@@ -102,7 +104,7 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.url']}:" for="txtUrl"/>
+                    <p:outputLabel value="#{labels['dialogTasasProcedimiento.url']}:" for="txtUrl" pt:aria-label="#{labels['dialogTasasProcedimiento.url']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-10">
                     <my:literalComponent id="txtUrl"
@@ -123,10 +125,10 @@
         <p:commandButton action="#{dialogTasasProcedimiento.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"
-                         disabled="#{dialogTasasProcedimiento.isModoConsulta()}"/>
+                         disabled="#{dialogTasasProcedimiento.isModoConsulta()}" pt:aria-label="#{labels['dict.aceptar']}"/>
         <p:commandButton action="#{dialogTasasProcedimiento.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 
 </ui:composition>

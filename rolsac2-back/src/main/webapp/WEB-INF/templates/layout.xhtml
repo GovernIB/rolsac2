@@ -5,7 +5,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      lang="#{sessionBean.current.toLanguageTag()}">
+      lang="#{sessionBean.current.toLanguageTag()}"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Plantilla.
 -->
@@ -49,7 +51,7 @@ Plantilla.
             </p:inputText>
             <p:inputText id="windowHeight" value="#{sessionBean.screenHeight}">
             </p:inputText>
-            <h:commandButton id="btnAspect" action="#{sessionBean.updateAspect()}">
+            <h:commandButton id="btnAspect" action="#{sessionBean.updateAspect()}" pt:aria-label="btnAspect">
                 <f:ajax execute="@this"  render="@this" />
             </h:commandButton>
         </h:form>
@@ -103,9 +105,9 @@ Plantilla.
         <h:form>
             <p:confirmDialog global="true">
                 <p:commandButton value="#{labels['dict.si']}" type="button" styleClass="ui-confirmdialog-yes"
-                                 icon="ui-icon-check"/>
+                                 icon="ui-icon-check" pt:aria-label="#{labels['dict.si']}"/>
                 <p:commandButton value="#{labels['dict.no']}" type="button" styleClass="ui-confirmdialog-no"
-                                 icon="ui-icon-close"/>
+                                 icon="ui-icon-close" pt:aria-label="#{labels['dict.no']}"/>
             </p:confirmDialog>
 
 

@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de normativas
 -->
@@ -39,7 +41,7 @@ Pàgina amb el llistat de normativas
                         <p:commandButton styleClass="btn btn-molla-icono btn-molla" process="@this @form"
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}">
                         </p:commandButton>
                         <c:if test="#{ TypePerfiles.ADMINISTRADOR_CONTENIDOS != sessionBean.getPerfil() }">
                             <button type="button"
@@ -54,7 +56,7 @@ Pàgina amb el llistat de normativas
                                     <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                      actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                      value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                                     update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                     update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                         <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
                                     </p:commandButton>
                                 </c:forEach>
@@ -69,7 +71,7 @@ Pàgina amb el llistat de normativas
                                 <p:commandButton styleClass="btn btn-molla-icono btn-molla" process="@this"
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                 </p:commandButton>
                                 <button type="button"
                                         class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
@@ -84,7 +86,7 @@ Pàgina amb el llistat de normativas
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                          value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                         update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                         </p:commandButton>
                                     </c:forEach>
                                 </div>
@@ -115,7 +117,7 @@ Pàgina amb el llistat de normativas
                                     <!--<ui:repeat rendered="#{sessionBean.renderPanelHijas}" value="#{sessionBean.getUnidadesHijasActiva()}" var="ua">
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" >
+                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" pt:aria-label="#{ua.nombre.getTraduccion(sessionBean.lang)}" >
                                         </p:commandButton>
                                     </ui:repeat>-->
                                     <c:choose>
@@ -126,7 +128,7 @@ Pàgina amb el llistat de normativas
                                                 <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                                 update="panelMolla" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                                 </p:commandButton>
                                             </c:forEach>
                                         </c:when>
@@ -174,7 +176,7 @@ Pàgina amb el llistat de normativas
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" pt:aria-label="#{labels['dict.filtro']}:" />
                             <p:inputText id="filtroBusqueda" value="#{viewNormativa.filtroTexto}"
                                          aria-label="#{labels['dict.filtro']}"
                                          styleClass="estiloGrande ml-2 mr-2" />
@@ -193,7 +195,7 @@ Pàgina amb el llistat de normativas
 
 
 
-                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none" >
+                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none" pt:aria-label="Download" >
                                 <p:fileDownload value="#{viewNormativa.file}" />
                             </p:commandButton>
 
@@ -244,7 +246,7 @@ Pàgina amb el llistat de normativas
                     <div class="row">
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                            <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo" pt:aria-label="#{labels['dict.titulo']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtTitulo" value="#{viewNormativa.filtro.nombre}"
@@ -252,7 +254,7 @@ Pàgina amb el llistat de normativas
                                          styleClass="w95" />
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
+                            <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion" pt:aria-label="#{labels['dialogNormativa.fechaAprobacion']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
@@ -260,7 +262,7 @@ Pàgina amb el llistat de normativas
                                         value="#{viewNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
+                            <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin" pt:aria-label="#{labels['dialogNormativa.fechaBoletin']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:calendar id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget"
@@ -270,7 +272,7 @@ Pàgina amb el llistat de normativas
 
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                            <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero" pt:aria-label="#{labels['dialogNormativa.numero']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtNumero" value="#{viewNormativa.filtro.numero}"
@@ -278,7 +280,7 @@ Pàgina amb el llistat de normativas
                                          styleClass="w95" />
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
+                            <p:outputLabel value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa" pt:aria-label="#{labels['viewNormativas.tipoNormativa']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtTipoNormativa" value="#{viewNormativa.filtro.tipoNormativa}"
@@ -289,7 +291,7 @@ Pàgina amb el llistat de normativas
                             </p:selectOneMenu>
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
+                            <p:outputLabel value="#{labels['viewNormativas.boletin']}:" for="txtBoletin" pt:aria-label="#{labels['viewNormativas.boletin']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtBoletin" value="#{viewNormativa.filtro.tipoBoletin}"
@@ -301,7 +303,7 @@ Pàgina amb el llistat de normativas
                         </div>
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigoNorm" pt:aria-label="#{labels['dict.codigo']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:inputText id="txtCodigoNorm" value="#{viewNormativa.filtro.codigo}"
@@ -311,7 +313,7 @@ Pàgina amb el llistat de normativas
                         </div>
 
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['viewNormativas.vigente']}:" for="txtVigente" />
+                            <p:outputLabel value="#{labels['viewNormativas.vigente']}:" for="txtVigente" pt:aria-label="#{labels['viewNormativas.vigente']}:" />
                         </div>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <p:selectBooleanCheckbox id="txtVigente" value="#{viewNormativa.filtro.vigente}"
@@ -343,7 +345,7 @@ Pàgina amb el llistat de normativas
                                              process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
                         </div>
                         <div class="ui-g-12 text-center">
-                            <p:outputLabel value="#{labels['viewNormativas.msg.noSeEncuentra']}" styleClass="ml-2 mr-2"/>
+                            <p:outputLabel value="#{labels['viewNormativas.msg.noSeEncuentra']}" styleClass="ml-2 mr-2" pt:aria-label="#{labels['viewNormativas.msg.noSeEncuentra']}"/>
 
                         </div>
                     </div>
@@ -429,7 +431,7 @@ Pàgina amb el llistat de normativas
                              process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewNormativa.consultarNormativa}"
-                             process="@this" update="messages" style="display: none">
+                             process="@this" update="messages" style="display: none" pt:aria-label="btnConsultaHidden">
                 <p:ajax event="dialogReturn" listener="#{viewNormativa.returnDialogo}"
                         update="messages dataTable"/>
             </p:commandButton>

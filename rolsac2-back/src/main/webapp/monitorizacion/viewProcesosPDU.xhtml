@@ -3,7 +3,9 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de processos automàtics
 -->
@@ -33,7 +35,7 @@ Pàgina amb el llistat de processos automàtics
             <p:tab title="#{labels['viewProcesosPDU.tab.procedimientosEjecutados']}">
                 <p:commandButton value="#{labels['viewProcesosSolr.refrescarDatos']}" icon="pi pi-refresh" iconPos="top"
                                  actionListener="#{viewProcesosPDU.buscar()}" styleClass="mb5"
-                                 process="@this" update="dataTable dataTablePendientes messages">
+                                 process="@this" update="dataTable dataTablePendientes messages" pt:aria-label="#{labels['viewProcesosSolr.refrescarDatos']}">
                 </p:commandButton>
                 <p:dataTable id="dataTable" value="#{viewProcesosPDU.lazyModelLogs}" var="proceso"
                              paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
@@ -88,7 +90,7 @@ Pàgina amb el llistat de processos automàtics
                     <p:column headerText="" styleClass="w50px">
                         <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
                                          actionListener="#{viewProcesosPDU.verErrores(proceso.codigo)}"
-                                         process="@this" update="messages" styleClass="h30px w30px">
+                                         process="@this" update="messages" styleClass="h30px w30px" pt:aria-label="">
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -96,7 +98,7 @@ Pàgina amb el llistat de processos automàtics
             <p:tab title="#{labels['viewProcesosPDU.tab.datosPendientes']}">
                 <p:commandButton value="#{labels['viewProcesosSolr.refrescarDatos']}" icon="pi pi-refresh" iconPos="top"
                                  actionListener="#{viewProcesosPDU.buscar()}" styleClass="mb5"
-                                 process="@this" update="dataTable dataTablePendientes messages">
+                                 process="@this" update="dataTable dataTablePendientes messages" pt:aria-label="#{labels['viewProcesosSolr.refrescarDatos']}">
                 </p:commandButton>
                  <p:dataTable id="dataTablePendientes" value="#{viewProcesosPDU.lazyModel}" var="proceso"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTablePendientes"
@@ -161,7 +163,7 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                         <p:commandButton value="#{labels['viewProcesosPDU.btn.indexar.todo']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosPDU.indexarTodo()}" styleClass="mr10"
-                                         process="@this" update="messages" />
+                                         process="@this" update="messages" pt:aria-label="#{labels['viewProcesosPDU.btn.indexar.todo']}" />
 
                 </div>
             </div>
@@ -174,7 +176,7 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-8 ui-md-8 ui-lg-8">
                     <p:commandButton value="#{labels['viewProcesosPDU.btn.indexar.pendientes']}" icon="pi pi-file-o" iconPos="top"
                                  actionListener="#{viewProcesosPDU.indexarPendientes()}"
-                                 process="@this" update="messages" />
+                                 process="@this" update="messages" pt:aria-label="#{labels['viewProcesosPDU.btn.indexar.pendientes']}" />
                 </div>
             </div>
 

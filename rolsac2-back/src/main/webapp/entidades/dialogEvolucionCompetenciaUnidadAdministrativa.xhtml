@@ -4,7 +4,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:my="http://java.sun.com/jsf/composite/components"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
 	<ui:define name="metadata">
 		<f:metadata>
@@ -78,7 +80,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel
 								value="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:"
-								for="txtOrigen" styleClass="mb-1 pt-0" />
+								for="txtOrigen" styleClass="mb-1 pt-0" pt:aria-label="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:" />
 							<p:inputText id="txtOrigen" styleClass="w95" readonly="true"
 								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 						</div>
@@ -90,7 +92,7 @@
 							<p class="mb-0">
 								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:"
-									for="txtFechaBaja" />
+									for="txtFechaBaja" pt:aria-label="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:" />
 							</p>
 							<p:calendar id="txtFechaBaja"
 								requiredMessage="#{labels['dict.obligatorio.fechaBaja']}"
@@ -104,7 +106,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 										   value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
-										   for="selectNormativa" />
+										   for="selectNormativa" pt:aria-label="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:" />
 							<p:autoComplete id="selectNormativa" var="normativa"
 											forceSelection="true" styleClass="w95"
 											value="#{dialogEvolucionCompetenciaUnidadAdministrativa.normativa}"
@@ -165,7 +167,7 @@
 									<p:commandButton title="#{labels['dict.anyadir']}"
 										icon="pi pi-plus" styleClass="text-success" process="@this"
 										actionListener="#{dialogEvolucionCompetenciaUnidadAdministrativa.anyadirUAs()}"
-										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}">
+										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.anyadir']}">
 										<p:ajax event="dialogReturn"
 											listener="#{dialogEvolucionCompetenciaUnidadAdministrativa.returnDialogo}"
 											process="@this"
@@ -175,7 +177,7 @@
 													 icon="pi pi-pencil" styleClass="text-success"
 													 action="#{dialogEvolucionCompetenciaUnidadAdministrativa.editarUA()}"
 													 process="@this"
-													 disabled="{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada.codigo > 0}"
+													 disabled="{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada.codigo pt:aria-label="#{labels['dict.editar']}" > 0}"
 													 update="messagesDialog txtCrear"
 													 rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" />
 									<p:commandButton title="#{labels['dict.eliminar']}"
@@ -183,14 +185,14 @@
 										action="#{dialogEvolucionCompetenciaUnidadAdministrativa.borrarUA()}"
 										process="@this"
 										update="messagesDialog txtCrear"
-										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" />
+										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}" />
 								</div>
 								<p:commandButton title="#{labels['dict.crearUA']}" value="#{labels['dict.crearUA']}"
 												 icon="pi pi-plus" styleClass="text-success ml-2"
 												 action="#{dialogEvolucionCompetenciaUnidadAdministrativa.crearUA()}"
 												 process="@this"
 												 update="messagesDialog txtCrear"
-												 rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" >
+												 rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.crearUA']}" >
 										<p:ajax event="dialogReturn"
 											listener="#{dialogEvolucionCompetenciaUnidadAdministrativa.returnDialogoCrearUA}"
 											process="@this"
@@ -258,7 +260,7 @@
 							</div>
 							<div class="mt-4">
 								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
-											   value="#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.asociarSeleccionadosA']}:" />
+											   value="#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.asociarSeleccionadosA']}:" pt:aria-label="#{labels['dialogEvolucionCompetenciaUnidadAdministrativa.asociarSeleccionadosA']}:" />
 								<p:selectOneMenu  value="#{dialogEvolucionCompetenciaUnidadAdministrativa.uaAsociar}"  autoWidth="false" styleClass="w130px">
 									<c:forEach items="#{dialogEvolucionCompetenciaUnidadAdministrativa.selectedUnidades}" var="uaDestino" varStatus="idx">
 										<f:selectItem itemValue="#{uaDestino.codigo}" itemLabel="##{idx.index+1} - #{uaDestino.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}"/>
@@ -270,7 +272,7 @@
 										styleClass="ml-2"
 										value="#{labels['dict.asociar']}" update="messagesDialog tabViewProcsNormsServs"
 										rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}"
-										process="@all" /> <!--  datatableProcs datatableNormativas datatableServs -->
+										process="@all" pt:aria-label="#{labels['dict.asociar']}" /> <!--  datatableProcs datatableNormativas datatableServs -->
 							</div>
 							<p:tabView id="tabViewProcsNormsServs">
 								<p:tab title="#{labels['dict.procedimientos']}">
@@ -386,7 +388,7 @@
 							<p class="mb-0">
 								<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 									value="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:*"
-									for="txtFechaBaja2" />
+									for="txtFechaBaja2" pt:aria-label="#{labels['dialogEvolucionUnidadAdministrativa.fechaBaja']}:*" />
 							</p>
 							<p:calendar id="txtFechaBaja2" showOn="button" disabled="true"
 								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.fechaBaja}"
@@ -397,7 +399,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 								value="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:"
-								for="selectNormativa2" />
+								for="selectNormativa2" pt:aria-label="#{labels['dialogEvolucionUnidadAdministrativa.normativa']}:" />
 							<p:autoComplete id="selectNormativa2" var="normativa"
 								forceSelection="true" styleClass="w95" disabled="true"
 								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.normativa}"
@@ -417,7 +419,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel
 								value="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:"
-								for="txtOrigen2" styleClass="mb-1 pt-0" />
+								for="txtOrigen2" styleClass="mb-1 pt-0" pt:aria-label="#{labels['dialogEvolucionUnidadAdministrativa.uaOrigen']}:" />
 							<p:inputText id="txtOrigen2" styleClass="w95" readonly="true"
 								value="#{dialogEvolucionCompetenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionCompetenciaUnidadAdministrativa.idioma)}" />
 						</div>
@@ -466,7 +468,7 @@
 					value="#{labels['dict.aceptar']}" update="messagesDialog "
 					rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}"
 					onclick="PF('saveButton').disable();" oncomplete="PF('saveButton').enable();"
-					process="@all" />
+					process="@all" pt:aria-label="#{labels['dict.aceptar']}" />
 			</p:tab>
 
 		</p:wizard>
@@ -479,7 +481,7 @@
 
 		<p:commandButton
 			action="#{dialogEvolucionUnidadAdministrativa.cerrar}"
-			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" />
+			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
 
 	</ui:define>
 </ui:composition>

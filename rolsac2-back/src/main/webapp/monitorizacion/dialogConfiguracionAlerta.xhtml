@@ -5,6 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -24,7 +26,7 @@
     </ui:define>
     <ui:define name="contentIdioma">
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogConfiguracionAlerta.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -37,7 +39,7 @@
                          style="margin-left:10px"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogConfiguracionAlerta.isModoConsulta() and dialogConfiguracionAlerta.tradExiste()}">
+                         rendered="#{!dialogConfiguracionAlerta.isModoConsulta() and dialogConfiguracionAlerta.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogConfiguracionAlerta.returnDialogTraducir}" process="@this"
                     update="formDialog:txtDescripcion"/>
         </p:commandButton>
@@ -51,7 +53,7 @@
                      escape="false"/>
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogConfiguracionAlerta.data.codigo}"
@@ -59,7 +61,7 @@
                 </div>
 
                     <div class="ui-g-12 ui-md-2 ui-lg-1">
-                        <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
+                        <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-10 ui-lg-5">
                         <my:literalComponent id="txtDescripcion" styleClass="w95"
@@ -77,7 +79,7 @@
                     </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.tipo']}:" for="txtTipo"/>
+                    <p:outputLabel value="#{labels['dict.tipo']}:" for="txtTipo" pt:aria-label="#{labels['dict.tipo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="txtTipo" requiredMessage="#{labels['dict.obligatorio.tipo']}"
@@ -96,7 +98,7 @@
 
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.fechaInicio']}:" for="txtFechaInicio"/>
+                    <p:outputLabel value="#{labels['dict.fechaInicio']}:" for="txtFechaInicio" pt:aria-label="#{labels['dict.fechaInicio']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:calendar id="txtFechaInicio" styleClass="fecha w40"
@@ -111,7 +113,7 @@
 
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.fechaFin']}:" for="txtFechaFin"/>
+                    <p:outputLabel value="#{labels['dict.fechaFin']}:" for="txtFechaFin" pt:aria-label="#{labels['dict.fechaFin']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:calendar id="txtFechaFin" styleClass="fecha w40"
@@ -124,7 +126,7 @@
 
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.ambito']}:" for="txtAmbito"/>
+                    <p:outputLabel value="#{labels['dict.ambito']}:" for="txtAmbito" pt:aria-label="#{labels['dict.ambito']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="txtAmbito" requiredMessage="#{labels['dict.obligatorio.ambito']}"
@@ -143,7 +145,7 @@
                 </div>
 
                 <div id="divPerfil" class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.perfil']}:" rendered="true" />
+                    <p:outputLabel value="#{labels['dict.perfil']}:" rendered="true" pt:aria-label="#{labels['dict.perfil']}:" />
                 </div>
                 <div id="divPerfil2"  class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="txtPerfiles" requiredMessage="#{labels['dict.obligatorio.perfil']}"
@@ -161,7 +163,7 @@
                 </div>
 
                 <div id="divUna" class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.unidadAdministrativa']}: *"   />
+                    <p:outputLabel value="#{labels['dict.unidadAdministrativa']}: *" pt:aria-label="#{labels['dict.unidadAdministrativa']}: *"   />
                 </div>
                 <div id="divUna2"  class="ui-g-12 ui-md-10 ui-lg-5">
                         <my:unidadAdministrativaComponent id="txtUA"
@@ -170,7 +172,7 @@
                                                           ocultarTexto="false" esCabecera="false"
                         />
                     <br />
-                        <p:outputLabel value="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" styleClass="mr-3" />
+                        <p:outputLabel value="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" styleClass="mr-3" pt:aria-label="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" />
                         <p:selectBooleanCheckbox id="txtUnaDescendiente" label="xefw"
                                              value="#{dialogConfiguracionAlerta.data.descendientes}" />
 
@@ -209,16 +211,16 @@
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogConfiguracionAlerta.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogConfiguracionAlerta.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          update="messagesDialog form" responsive="true" width="458px"
                          message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
             <p:commandButton value="Sí" process="@this" action="#{dialogConfiguracionAlerta.cerrarDefinitivo}"
-                             oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"/>
         </p:confirmDialog>
     </ui:define>
 </ui:composition>

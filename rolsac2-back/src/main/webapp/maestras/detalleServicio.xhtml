@@ -4,46 +4,48 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <h:body>
     <div class="ui-g-12 ui-md-9 ui-lg-9">
         <p:panel header="#{labels['dialogServicio.datos']}" styleClass="panel">
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.nombre.procedimiento']}:"/>
+                                   value="#{labels['dialogProcedimiento.nombre.procedimiento']}:" pt:aria-label="#{labels['dialogProcedimiento.nombre.procedimiento']}:"/>
                     <p:outputLabel styleClass="w99"
-                                   value="#{viewServicios.servicioSeleccionado.nombreProcedimientoWorkFlow.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.nombreProcedimientoWorkFlow.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.nombreProcedimientoWorkFlow.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.objeto']}:"/>
+                                   value="#{labels['dialogProcedimiento.objeto']}:" pt:aria-label="#{labels['dialogProcedimiento.objeto']}:"/>
                     <p:outputLabel styleClass="w99"
-                                   value="#{viewServicios.servicioSeleccionado.objeto.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.objeto.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.objeto.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.destinatarios']}:"/>
+                                   value="#{labels['dialogProcedimiento.destinatarios']}:" pt:aria-label="#{labels['dialogProcedimiento.destinatarios']}:"/>
                     <p:outputLabel styleClass="w99"
-                                   value="#{viewServicios.servicioSeleccionado.destinatarios.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.destinatarios.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.destinatarios.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.terminios']}:"/>
+                                   value="#{labels['dialogProcedimiento.terminios']}:" pt:aria-label="#{labels['dialogProcedimiento.terminios']}:"/>
                     <p:outputLabel styleClass="w99"
-                                   value="#{viewServicios.servicioSeleccionado.terminoResolucion.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.terminoResolucion.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.terminoResolucion.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.observaciones']}:"/>
+                                   value="#{labels['dialogProcedimiento.observaciones']}:" pt:aria-label="#{labels['dialogProcedimiento.observaciones']}:"/>
                     <p:outputLabel styleClass="w99"
-                                   value="#{viewServicios.servicioSeleccionado.observaciones.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.observaciones.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.observaciones.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.keywords']}:"/>
+                                   value="#{labels['dialogProcedimiento.keywords']}:" pt:aria-label="#{labels['dialogProcedimiento.keywords']}:"/>
                     <p:outputLabel styleClass="w99"
-                                   value="#{viewServicios.servicioSeleccionado.keywords.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.keywords.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.keywords.getTraduccion(viewServicios.idioma)}"/>
                 </div>
             </div>
         </p:panel>
@@ -51,12 +53,12 @@
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.organoInstructor']}:"/>
+                                   value="#{labels['dialogProcedimiento.organoInstructor']}:" pt:aria-label="#{labels['dialogProcedimiento.organoInstructor']}:"/>
                     <p:outputLabel
                             value="#{viewServicios.servicioSeleccionado.uaInstructor.nombre.getTraduccion(viewServicios.idioma)}"
-                            rendered="#{!viewServicios.servicioSeleccionado.esComun()}"/>
+                            rendered="#{!viewServicios.servicioSeleccionado.esComun()}" pt:aria-label="#{viewServicios.servicioSeleccionado.uaInstructor.nombre.getTraduccion(viewServicios.idioma)}"/>
                     <p:outputLabel value="#{viewServicios.comunUA.getTraduccion(viewServicios.idioma)}"
-                                   rendered="#{viewServicios.servicioSeleccionado.esComun()}"/>
+                                   rendered="#{viewServicios.servicioSeleccionado.esComun()}" pt:aria-label="#{viewServicios.comunUA.getTraduccion(viewServicios.idioma)}"/>
                 </div>
             </div>
         </p:panel>
@@ -77,9 +79,9 @@
                                   rendered="#{viewServicios.isOpcionTelematicaPlantilla() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
                         <div class="form-row">
                             <div class="form-group col-md-5">
-                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.plantilla']}:"/>
+                                <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.plantilla']}:" pt:aria-label="#{labels['dict.plantilla']}:"/>
                                 <p:outputLabel
-                                        value="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}"/>
+                                        value="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}"/>
                             </div>
                         </div>
                     </h:panelGroup>
@@ -88,27 +90,27 @@
                         <div class="form-row">
                             <div class="form-grup col-md-3 col-xs-12">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                               value="#{labels['dict.identificador']}:"/>
-                                <p:outputLabel value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}"/>
+                                               value="#{labels['dict.identificador']}:" pt:aria-label="#{labels['dict.identificador']}:"/>
+                                <p:outputLabel value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}"/>
                             </div>
                             <div class="form-grup col-md-3 col-xs-12">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                               value="#{labels['dialogServicio.version']}:"/>
+                                               value="#{labels['dialogServicio.version']}:" pt:aria-label="#{labels['dialogServicio.version']}:"/>
                                 <p:outputLabel
-                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}"/>
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}"/>
 
                             </div>
                             <div class="form-group col-md-3 col-xs-12">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                               value="#{labels['dialogServicio.plataforma']}:"/>
+                                               value="#{labels['dialogServicio.plataforma']}:" pt:aria-label="#{labels['dialogServicio.plataforma']}:"/>
                                 <p:outputLabel
-                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}"/>
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}"/>
                             </div>
                             <div class="form-grup col-md-3 col-xs-12">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                               value="#{labels['dialogServicio.parametros']}:"/>
+                                               value="#{labels['dialogServicio.parametros']}:" pt:aria-label="#{labels['dialogServicio.parametros']}:"/>
                                 <p:outputLabel
-                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}"/>
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}"/>
                             </div>
                         </div>
                     </h:panelGroup>
@@ -117,9 +119,9 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                               value="#{labels['dialogServicio.url']}:"/>
+                                               value="#{labels['dialogServicio.url']}:" pt:aria-label="#{labels['dialogServicio.url']}:"/>
                                 <p:outputLabel
-                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}"/>
+                                        value="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}"/>
                             </div>
                         </div>
                     </h:panelGroup>
@@ -130,19 +132,19 @@
         <p:panel header="#{labels['dialogProcedimiento.datosSIA']}">
             <div class="form-row">
                 <div class="form-group col-lg-6 col-md-12">
-                    <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:" styleClass="mb-1 pt-0 negrita"/>
-                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.getEstadoSIA()}"/>
+                    <p:outputLabel value="#{labels['dialogProcedimiento.estado.sia']}:" styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.estado.sia']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.getEstadoSIA()}" pt:aria-label="#{viewServicios.servicioSeleccionado.getEstadoSIA()}"/>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
-                    <p:outputLabel value="#{labels['dialogProcedimiento.codigo.sia']}:" styleClass="mb-1 pt-0 negrita"/>
-                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.codigoSIA}"/>
+                    <p:outputLabel value="#{labels['dialogProcedimiento.codigo.sia']}:" styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.codigo.sia']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.codigoSIA}" pt:aria-label="#{viewServicios.servicioSeleccionado.codigoSIA}"/>
 
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p>
                         <p:outputLabel value="#{labels['dialogProcedimiento.fecha.sia']}:"
-                                       styleClass="mb-1 pt-0 negrita"/>
-                        <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaSIA}">
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.fecha.sia']}:"/>
+                        <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaSIA}" pt:aria-label="#{viewServicios.servicioSeleccionado.fechaSIA}">
                             <f:convertDateTime pattern="dd-MM-yyyy"/>
                         </p:outputLabel>
                     </p>
@@ -150,9 +152,9 @@
                 <div class="form-group col-lg-6 col-md-12">
                     <p>
                         <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.sia.error']}:"/>
                         <p:outputLabel id="txtErrorSIA_#{paramName}"
-                                       value="#{viewServicios.servicioSeleccionado.errorSIA}"/>
+                                       value="#{viewServicios.servicioSeleccionado.errorSIA}" pt:aria-label="#{viewServicios.servicioSeleccionado.errorSIA}"/>
                         <p:tooltip id="toolTipFadeSIA_#{paramName}" for="txtErrorSIA_#{paramName}"
                                    value="#{viewServicios.servicioSeleccionado.errorSIA}" position="top"/>
                     </p>
@@ -162,30 +164,30 @@
         <p:panel header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}" styleClass="mt-3">
             <div class="form-row">
                 <div class="form-group col-lg-6 col-md-12">
-                    <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.codigo']}:"/>
-                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.codigo}"/>
+                    <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.codigo']}:" pt:aria-label="#{labels['dialogProcedimiento.codigo']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.codigo}" pt:aria-label="#{viewServicios.servicioSeleccionado.codigo}"/>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel value="#{labels['dialogProcedimiento.fecha.publicacion']}:"
-                                   styleClass="mb-1 pt-0 negrita"/>
-                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaPublicacion}">
+                                   styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.fecha.publicacion']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaPublicacion}" pt:aria-label="#{viewServicios.servicioSeleccionado.fechaPublicacion}">
                         <f:convertDateTime pattern="dd-MM-yyyy"/>
                     </p:outputLabel>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:"
-                                   styleClass="mb-1 pt-0 negrita"/>
-                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaCaducidad}">
+                                   styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.fecha.caducidad']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.fechaCaducidad}" pt:aria-label="#{viewServicios.servicioSeleccionado.fechaCaducidad}">
                         <f:convertDateTime pattern="dd-MM-yyyy"/>
                     </p:outputLabel>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
-                    <p:outputLabel value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita"/>
+                    <p:outputLabel value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" pt:aria-label="#{labels['dict.tipo']}:"/>
                     <c:if test="#{viewServicios.servicioSeleccionado.comun == 0}">
-                        <p:outputLabel value="#{labels['dict.especifico']}"/>
+                        <p:outputLabel value="#{labels['dict.especifico']}" pt:aria-label="#{labels['dict.especifico']}"/>
                     </c:if>
                     <c:if test="#{viewServicios.servicioSeleccionado.comun == 1}">
-                        <p:outputLabel value="#{labels['dict.comun']}"/>
+                        <p:outputLabel value="#{labels['dict.comun']}" pt:aria-label="#{labels['dict.comun']}"/>
                     </c:if>
                 </div>
             </div>
@@ -193,33 +195,33 @@
         <p:panel header="#{labels['dialogServicio.datos.contacto']}" styleClass="panel mt-3" id="formDatosContacto">
             <div class="form-row">
                 <div class="form-group col-lg-6 col-md-12">
-                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.servicio']}:"/>
+                    <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.servicio']}:" pt:aria-label="#{labels['dialogServicio.servicio']}:"/>
                     <p:outputLabel
                             value="#{viewServicios.servicioSeleccionado.uaResponsable}"
-                            styleClass="w99 mr-1"/>
+                            styleClass="w99 mr-1" pt:aria-label="#{viewServicios.servicioSeleccionado.uaResponsable}"/>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.nombreResponsable.sinSede']}:"/>
-                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsable}" styleClass="w99 mr-1"/>
+                                   value="#{labels['dialogProcedimiento.nombreResponsable.sinSede']}:" pt:aria-label="#{labels['dialogProcedimiento.nombreResponsable.sinSede']}:"/>
+                    <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsable}" styleClass="w99 mr-1" pt:aria-label="#{viewServicios.servicioSeleccionado.responsable}"/>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogServicio.correoElectronico']}:"/>
+                                   value="#{labels['dialogServicio.correoElectronico']}:" pt:aria-label="#{labels['dialogServicio.correoElectronico']}:"/>
                     <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsableEmail}"
-                                   styleClass="w99 mr-1"/>
+                                   styleClass="w99 mr-1" pt:aria-label="#{viewServicios.servicioSeleccionado.responsableEmail}"/>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogServicio.responsableTelefono']}:"/>
+                                   value="#{labels['dialogServicio.responsableTelefono']}:" pt:aria-label="#{labels['dialogServicio.responsableTelefono']}:"/>
                     <p:outputLabel value="#{viewServicios.servicioSeleccionado.responsableTelefono}"
-                                   styleClass="w99 mr-1"/>
+                                   styleClass="w99 mr-1" pt:aria-label="#{viewServicios.servicioSeleccionado.responsableTelefono}"/>
                 </div>
                 <div class="form-group col-lg-6 col-md-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.correoIncidencias.sinSede']}:"/>
+                                   value="#{labels['dialogProcedimiento.correoIncidencias.sinSede']}:" pt:aria-label="#{labels['dialogProcedimiento.correoIncidencias.sinSede']}:"/>
                     <p:outputLabel value="#{viewServicios.servicioSeleccionado.incidenciasEmail}"
-                                   styleClass="w99 mr-1"/>
+                                   styleClass="w99 mr-1" pt:aria-label="#{viewServicios.servicioSeleccionado.incidenciasEmail}"/>
                 </div>
 
 
@@ -245,9 +247,9 @@
                               rendered="#{viewServicios.isOpcionTelematicaPlantilla() and viewServicios.canalesSeleccionadosDetalle.contains('TEL')}">
                     <div class="form-row">
                         <div class="form-group col-md-5">
-                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.plantilla']}:"/>
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.plantilla']}:" pt:aria-label="#{labels['dict.plantilla']}:"/>
                             <p:outputLabel
-                                    value="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}"/>
+                                    value="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.plantillaSel.descripcion.getTraduccion(viewServicios.idioma)}"/>
                         </div>
                     </div>
                 </h:panelGroup>
@@ -256,27 +258,27 @@
                     <div class="form-row">
                         <div class="form-grup col-md-3 col-xs-12">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dict.identificador']}:"/>
-                            <p:outputLabel value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}"/>
+                                           value="#{labels['dict.identificador']}:" pt:aria-label="#{labels['dict.identificador']}:"/>
+                            <p:outputLabel value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteId}"/>
                         </div>
                         <div class="form-grup col-md-3 col-xs-12">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dialogServicio.version']}:"/>
+                                           value="#{labels['dialogServicio.version']}:" pt:aria-label="#{labels['dialogServicio.version']}:"/>
                             <p:outputLabel
-                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}"/>
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteVersion}"/>
 
                         </div>
                         <div class="form-group col-md-3 col-xs-12">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dialogServicio.plataforma']}:"/>
+                                           value="#{labels['dialogServicio.plataforma']}:" pt:aria-label="#{labels['dialogServicio.plataforma']}:"/>
                             <p:outputLabel
-                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}"/>
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.codPlatTramitacion.identificador}"/>
                         </div>
                         <div class="form-grup col-md-3 col-xs-12">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dialogServicio.parametros']}:"/>
+                                           value="#{labels['dialogServicio.parametros']}:" pt:aria-label="#{labels['dialogServicio.parametros']}:"/>
                             <p:outputLabel
-                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}"/>
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.tramiteParametros}"/>
                         </div>
                     </div>
                 </h:panelGroup>
@@ -285,9 +287,9 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                           value="#{labels['dialogServicio.url']}:"/>
+                                           value="#{labels['dialogServicio.url']}:" pt:aria-label="#{labels['dialogServicio.url']}:"/>
                             <p:outputLabel
-                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}"/>
+                                    value="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.tipoTramitacion.url.getTraduccion(viewServicios.idioma)}"/>
                         </div>
                     </div>
                 </h:panelGroup>
@@ -299,43 +301,43 @@
             <div class="form-row">
                 <div class="form-group col-xs-12 col-lg-12 col-xl-12">
                     <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogServicio.lopd.activo']}:"/>
+                                   value="#{labels['dialogServicio.lopd.activo']}:" pt:aria-label="#{labels['dialogServicio.lopd.activo']}:"/>
                     <c:if test="#{viewServicios.servicioSeleccionado.activoLOPD == true}">
-                        <p:outputLabel value=" #{labels['dict.si']}"/>
+                        <p:outputLabel value=" #{labels['dict.si']}" pt:aria-label=" #{labels['dict.si']}"/>
                     </c:if>
                     <c:if test="#{viewServicios.servicioSeleccionado.activoLOPD == false}">
-                        <p:outputLabel value=" #{labels['dict.no']}"/>
+                        <p:outputLabel value=" #{labels['dict.no']}" pt:aria-label=" #{labels['dict.no']}"/>
                     </c:if>
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mb-1 negrita"
-                                   value="#{labels['dialogProcedimiento.responsableTratamiento']}:"/>
+                                   value="#{labels['dialogProcedimiento.responsableTratamiento']}:" pt:aria-label="#{labels['dialogProcedimiento.responsableTratamiento']}:"/>
                     <p:outputLabel styleClass="mb-1"
-                                   value="#{viewServicios.lopdResponsable.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.lopdResponsable.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.lopdResponsable.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.legitimacion']}:"/>
+                                   value="#{labels['dialogProcedimiento.legitimacion']}:" pt:aria-label="#{labels['dialogProcedimiento.legitimacion']}:"/>
                     <p:outputLabel styleClass="mb-1"
-                                   value="#{viewServicios.servicioSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.datosPersonalesLegitimacion.descripcion.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.finalidad']}:"/>
+                                   value="#{labels['dialogProcedimiento.finalidad']}:" pt:aria-label="#{labels['dialogProcedimiento.finalidad']}:"/>
                     <p:outputLabel styleClass="mb-1"
-                                   value="#{viewServicios.servicioSeleccionado.lopdFinalidad.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.lopdFinalidad.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.lopdFinalidad.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.destinatario']}:"/>
+                                   value="#{labels['dialogProcedimiento.destinatario']}:" pt:aria-label="#{labels['dialogProcedimiento.destinatario']}:"/>
                     <p:outputLabel styleClass="mb-1"
-                                   value="#{viewServicios.servicioSeleccionado.lopdDestinatario.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.lopdDestinatario.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.lopdDestinatario.getTraduccion(viewServicios.idioma)}"/>
                 </div>
                 <div class="form-group col-xl-2 col-lg-3 col-md-6">
                     <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
-                                   value="#{labels['dialogProcedimiento.derechos']}:"/>
+                                   value="#{labels['dialogProcedimiento.derechos']}:" pt:aria-label="#{labels['dialogProcedimiento.derechos']}:"/>
                     <p:outputLabel styleClass="mb-1"
-                                   value="#{viewServicios.servicioSeleccionado.lopdDerechos.getTraduccion(viewServicios.idioma)}"/>
+                                   value="#{viewServicios.servicioSeleccionado.lopdDerechos.getTraduccion(viewServicios.idioma)}" pt:aria-label="#{viewServicios.servicioSeleccionado.lopdDerechos.getTraduccion(viewServicios.idioma)}"/>
                 </div>
             </div>
         </p:panel>
@@ -404,7 +406,7 @@
             <div class="col-2 p-0 pl-2">
                 <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                  disabled="#{empty viewServicios.normativaSeleccionada}"
-                                 action="#{viewServicios.consultarNormativa}"/>
+                                 action="#{viewServicios.consultarNormativa}" pt:aria-label="#{labels['dict.consultar']}"/>
             </div>
         </div>
     </div>
@@ -440,7 +442,7 @@
             <div class="col-2 p-0 pl-2">
                 <p:commandButton id="btnConsultarDocumento" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                  disabled="#{empty viewServicios.documentoSeleccionado}"
-                                 action="#{viewServicios.consultarDocumento}"/>
+                                 action="#{viewServicios.consultarDocumento}" pt:aria-label="#{labels['dict.consultar']}"/>
             </div>
         </div>
     </div>
@@ -480,7 +482,7 @@
             <div class="col-2 p-0 pl-2">
                 <p:commandButton id="btnConsultarDocumentoLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                  disabled="#{empty viewServicios.documentoLOPDSeleccionado}"
-                                 action="#{viewServicios.consultarDocumentoLOPD}"/>
+                                 action="#{viewServicios.consultarDocumentoLOPD}" pt:aria-label="#{labels['dict.consultar']}"/>
             </div>
         </h:panelGroup>
 

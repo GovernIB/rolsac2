@@ -3,6 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -25,7 +27,7 @@
             <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false"
                              action="#{dialogSeleccionUsuariosUnidadAdministrativa.buscar}"
-                             update="dataTable messagesDialog"/>
+                             update="dataTable messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
             <p:toolbar id="toolbar" styleClass="mb-2">
                 <f:facet name="left">
                     <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
@@ -34,14 +36,14 @@
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                      update="dataTable messagesDialog"
                                      actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.buscar()}"
-                                     process="@form"/>
+                                     process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
                                      actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.anyadirUsuario()}"
                                      update="messagesDialog dataTableUsuarios"
                                      disabled="#{empty dialogSeleccionUsuariosUnidadAdministrativa.datoSeleccionado}"
-                                     icon="pi pi-plus"></p:commandButton>
+                                     icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}"></p:commandButton>
                 </f:facet>
             </p:toolbar>
             <p:dataTable id="dataTable" value="#{dialogSeleccionUsuariosUnidadAdministrativa.lazyModel}" var="usuario"
@@ -67,15 +69,15 @@
                 </f:facet>
                 <p:column sortBy="#{usuario.identificador}">
                     <f:facet name="header">#{labels['dict.identificador']}</f:facet>
-                    <p:outputLabel value="#{usuario.identificador}"/>
+                    <p:outputLabel value="#{usuario.identificador}" pt:aria-label="#{usuario.identificador}"/>
                 </p:column>
                 <p:column sortBy="#{usuario.nombre}">
                     <f:facet name="header">#{labels['dict.nombre']}</f:facet>
-                    <p:outputLabel value="#{usuario.nombre}"/>
+                    <p:outputLabel value="#{usuario.nombre}" pt:aria-label="#{usuario.nombre}"/>
                 </p:column>
                 <p:column sortBy="#{usuario.email}">
                     <f:facet name="header">#{labels['dict.email']}</f:facet>
-                    <p:outputLabel value="#{usuario.email}"/>
+                    <p:outputLabel value="#{usuario.email}" pt:aria-label="#{usuario.email}"/>
                 </p:column>
             </p:dataTable>
 
@@ -90,7 +92,7 @@
                              actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.anyadirUsuario()}"
                              process="@this"
                              update="messagesDialog dataTableUsuarios"
-                             style="display: none">
+                             style="display: none" pt:aria-label="btnEditarHidden">
                 <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
             </p:commandButton>
         </div>
@@ -112,14 +114,14 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center">
-                        <p:outputLabel value="#{td.identificador}"/>
+                        <p:outputLabel value="#{td.identificador}" pt:aria-label="#{td.identificador}"/>
                     </p:column>
                 </p:dataTable>
             </div>
             <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                 <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
                                  action="#{dialogSeleccionUsuariosUnidadAdministrativa.borrarUsuario()}"
-                                 process="@this" update="dataTableUsuarios messagesDialog"/>
+                                 process="@this" update="dataTableUsuarios messagesDialog" pt:aria-label="Eliminar"/>
             </div>
         </div>
         </div>
@@ -128,17 +130,17 @@
             <p:commandButton value="#{labels['dict.anyadir']}"
                              actionListener="#{dialogSeleccionUsuariosUnidadAdministrativa.anyadirUsuario()}"
                              update="messagesDialog dataTableUsuarios"
-                             icon="pi pi-plus"></p:commandButton>
+                             icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}"></p:commandButton>
         </div>-->
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogSeleccionUsuariosUnidadAdministrativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionUsuariosUnidadAdministrativa.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogSeleccionUsuariosUnidadAdministrativa.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

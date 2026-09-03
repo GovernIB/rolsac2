@@ -3,7 +3,9 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -17,30 +19,30 @@
         <h:form>
             <p:commandButton value="#{labels['viewSeccion.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewSeccion.buscar}"
-                             update="dataTable"/>
+                             update="dataTable" pt:aria-label="#{labels['viewSeccion.actualizar']}"/>
             <p:toolbar id="toolbar">
                 <f:facet name="left">
                     <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
                                                                                      value="#{viewSeccion.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                     actionListener="#{viewSeccion.buscar()}" process="@form"/>
+                                     actionListener="#{viewSeccion.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"
                                      actionListener="#{viewSeccion.nuevaSeccion}"
-                                     process="@this">
+                                     process="@this" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{viewSeccion.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"
                                      actionListener="#{viewSeccion.editarSeccion}"
-                                     process="@form" update="messages">
+                                     process="@form" update="messages" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{viewSeccion.returnDialogo}"
                                 update="messages dataTable"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"
                                      action="#{viewSeccion.borrarSeccion}"
-                                     process="@form" update="messages dataTable">
+                                     process="@form" update="messages dataTable" pt:aria-label="#{labels['dict.borrar']}">
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>
                 </f:facet>
@@ -103,7 +105,7 @@
                              process="@this"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewSeccion.consultarSeccion}"
-                             process="@this" update="messages" style="display: none">
+                             process="@this" update="messages" style="display: none" pt:aria-label="btnConsultaHidden">
                 <p:ajax event="dialogReturn" listener="#{viewSeccion.returnDialogo}"
                         update="messages dataTable"/>
             </p:commandButton>

@@ -6,7 +6,9 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:t="http://back.rolsac2.caib.es/tags"
       xmlns:my="http://java.sun.com/jsf/composite/components"
-      >
+      
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
@@ -102,7 +104,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 var="tipoFichero" ></p:importConstants>
 
          <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
-                          update="messagesDialog form"/>
+                          update="messagesDialog form" pt:aria-label="growlMessage"/>
          <script>
              function validatePaste(event, regex) {
                  const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
@@ -114,7 +116,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
          </script>
 
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
-                             action="#{viewConfiguracionesGlobales.buscar}" update="dataTable"/>
+                             action="#{viewConfiguracionesGlobales.buscar}" update="dataTable" pt:aria-label="actualizarBusqueda"/>
 
                 <p:panel id="panel" >
                     <div class="row">
@@ -266,7 +268,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
-                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado." pt:aria-label="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                             </c:if>
                             <c:if test="#{!dialogEntidad.isModoAlta()}">
                                 <p:panel id="logo" styleClass="logo-form w95">
@@ -311,7 +313,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
-                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado." pt:aria-label="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                             </c:if>
                             <c:if test="#{!dialogEntidad.isModoAlta()}">
                                 <p:panel id="logo2" styleClass="logo-form w95">
@@ -355,7 +357,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         </div>
                         <div class="ui-g-12 ui-md-9 ui-lg-5" >
                             <c:if test="#{viewConfiguracionEntidad.isModoAlta()}">
-                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                                <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado." pt:aria-label="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                             </c:if>
                             <c:if test="#{!dialogEntidad.isModoAlta()}">
                                 <p:panel id="css" styleClass="logo-form w95">

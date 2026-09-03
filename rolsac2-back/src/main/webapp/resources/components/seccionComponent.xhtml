@@ -3,6 +3,7 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:cc="http://java.sun.com/jsf/composite"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 
     <cc:interface componentType="seccionComponent">
@@ -27,7 +28,7 @@
                              value=" "
                              styleClass="w45px h25px iconoUAselector"
                              process="@this"
-                             disabled="#{cc.isModoCrear()}"
+                             disabled="#{cc.isModoCrear()}" pt:aria-label=" "
             >
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
                              update="#{cc.updateElementos}"/>

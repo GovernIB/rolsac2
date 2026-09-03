@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -24,7 +26,7 @@
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag mt-2"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:3px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:3px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
                            styleClass="botoneraRed" unselectable="false" maxlength="50">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -38,7 +40,7 @@
                          style="margin-left:10px"
                          update="messagesDialog "
                          process="@this"
-                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta() and dialogUnidadAdministrativa.tradExiste()}">
+                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta() and dialogUnidadAdministrativa.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogUnidadAdministrativa.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtAbreviatura formDialog:txtUrl formDialog:txtPresentacion formDialog:txtResponsable formDialog:txtTipo formDialog:txtTipoSexo"/>
         </p:commandButton>
@@ -60,13 +62,13 @@
                     <div class="form-row" style="height: 110px">
                         <div class="form-group col-md-4">
                             <p class="mb-1">
-                                <p:outputLabel value=" " />
+                                <p:outputLabel value=" " pt:aria-label=" " />
                             </p>
-                            <p:outputLabel value="#{labels['dialogUnidadAdministrativa.bajaInfo']}"  styleClass="mt-1 pt-0 iconoRojo" />
+                            <p:outputLabel value="#{labels['dialogUnidadAdministrativa.bajaInfo']}"  styleClass="mt-1 pt-0 iconoRojo" pt:aria-label="#{labels['dialogUnidadAdministrativa.bajaInfo']}" />
                         </div>
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" />
+                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" pt:aria-label="#{labels['dict.fechaBaja']}:" />
                             </p>
                              <p:inputText value="#{dialogUnidadAdministrativa.data.fechaBaja}"  disabled="true"  styleClass="w95" >
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
@@ -74,12 +76,12 @@
                         </div>
                         <div class="form-group col-md-4">
                             <p class="mb-1">
-                                <p:outputLabel value=" " />
+                                <p:outputLabel value=" " pt:aria-label=" " />
                             </p>
                         </div>
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.normativaBaja']}:" />
+                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.normativaBaja']}:" pt:aria-label="#{labels['dict.normativaBaja']}:" />
                             </p>
                             <p:inputText id="txtNormativaBajaNoasociada" value="#{labels['dialogUnidadAdministrativa.bajaSinNormativa']}"
                                          styleClass="w95" disabled="true" rendered="#{empty dialogUnidadAdministrativa.normativaBaja}"/>
@@ -88,20 +90,20 @@
                             <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogUnidadAdministrativa.consultarNormativaBaja()}" styleClass="ml-1"
                                              rendered="#{!empty dialogUnidadAdministrativa.normativaBaja}"
-                                             process="@this"  update="messagesDialog" />
+                                             process="@this"  update="messagesDialog" pt:aria-label="#{labels['dict.consultar']}" />
                         </div>
                     </div>
                 </p:panel>
                 <p:panel header="#{labels['dialogUnidadAdministrativa.datos']}" id="formDatos">
                     <div class="form-row">
                         <div class="form-group col-md-3">
-                            <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                            <p:outputLabel styleClass="mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                             <p:inputText id="txtCodigo" value="#{dialogUnidadAdministrativa.data.codigo}"
                                          styleClass="w95" disabled="true"/>
                         </div>
                         <div class="form-group col-md-2 sinMarginBottom">
                             <p:outputLabel value="#{labels['dialogUnidadAdministrativa.version']}:" for="txtVersion"
-                                           styleClass="mb-1 pt-0"/>
+                                           styleClass="mb-1 pt-0" pt:aria-label="#{labels['dialogUnidadAdministrativa.version']}:"/>
                             <p:inputNumber id="txtVersion" value="#{dialogUnidadAdministrativa.data.version}"
                                            inputStyleClass="w85"
                                          required="#{empty param['formDialog:closeButton']}"
@@ -113,7 +115,7 @@
                         </div>
                         <div class="form-group col-md-2 sinMarginBottom">
                             <p:outputLabel value="#{labels['dialogUnidadAdministrativa.orden']}:" for="txtOrden"
-                                           styleClass="mb-1 pt-0"/>
+                                           styleClass="mb-1 pt-0" pt:aria-label="#{labels['dialogUnidadAdministrativa.orden']}:"/>
                             <p:inputNumber id="txtOrden"  value="#{dialogUnidadAdministrativa.data.orden}"
                                            inputStyleClass="w85"
                                          required="#{empty param['formDialog:closeButton']}"
@@ -126,7 +128,7 @@
                         </div>
                         <div class="form-group col-md-4 sinMarginBottom">
                             <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"
-                                           styleClass="mb-1 pt-0"/>
+                                           styleClass="mb-1 pt-0" pt:aria-label="#{labels['dict.identificador']}:"/>
                             <p:inputText id="txtIdentificador" value="#{dialogUnidadAdministrativa.data.identificador}"
                                          required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.identificador']}"
@@ -136,7 +138,7 @@
                         </div>
                         <div class="form-group col-md-12 sinMarginBottom">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.nombre']}:"
-                                           for="txtNombre"/>
+                                           for="txtNombre" pt:aria-label="#{labels['dict.nombre']}:"/>
                             <p>
                                 <my:literalComponent id="txtNombre"
                                                      literal="#{dialogUnidadAdministrativa.data.nombre}"
@@ -156,7 +158,7 @@
                             <p class="mb-1">
                             <p:outputLabel styleClass="mr-2 mb-1"
                                            value="#{labels['dialogUnidadAdministrativa.codigo.dir3']}:"
-                                           for="txtCodigoDIR3"/>
+                                           for="txtCodigoDIR3" pt:aria-label="#{labels['dialogUnidadAdministrativa.codigo.dir3']}:"/>
                             </p>
                             <p:inputText id="txtCodigoDIR3" value="#{dialogUnidadAdministrativa.data.codigoDIR3}"
                                          styleClass="w95" disabled="#{dialogUnidadAdministrativa.isModoConsulta()}"
@@ -167,7 +169,7 @@
                             <p class="mb-1">
                                 <p:outputLabel styleClass="mr-2 mb-1"
                                               value="#{labels['dialogUnidadAdministrativa.abreviatura']}:"
-                                              for="txtAbreviatura"/>
+                                              for="txtAbreviatura" pt:aria-label="#{labels['dialogUnidadAdministrativa.abreviatura']}:"/>
                             </p>
                             <my:literalComponent id="txtAbreviatura"
                                                  literal="#{dialogUnidadAdministrativa.data.abreviatura}"
@@ -183,7 +185,7 @@
                         </div>
                         <div class="form-group col-md-3 sinMarginBottom">
                             <p class="mb-1">
-                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo"/>
+                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dialogUnidadAdministrativa.tipo']}:" for="txtTipo" pt:aria-label="#{labels['dialogUnidadAdministrativa.tipo']}:"/>
                             </p>
                             <p:selectOneMenu id="txtTipo" value="#{dialogUnidadAdministrativa.data.tipo}"
                                              styleClass="w95" autoWidth="false"
@@ -200,7 +202,7 @@
                       <div class="form-group col-md-12 sinMarginBottom">
                             <p class="mb-1">
                                 <p:outputLabel styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.url']}:"
-                                              for="txtUrl"/>
+                                              for="txtUrl" pt:aria-label="#{labels['dialogUnidadAdministrativa.url']}:"/>
                             </p>
                             <p>
                                 <my:literalComponent id="txtUrl"
@@ -218,7 +220,7 @@
                             <p class="mb-1">
                                 <p:outputLabel styleClass="mr-2 mb-1"
                                               value="#{labels['dialogUnidadAdministrativa.presentacion']}:"
-                                              for="txtPresentacion"/>
+                                              for="txtPresentacion" pt:aria-label="#{labels['dialogUnidadAdministrativa.presentacion']}:"/>
                             </p>
                             <p>
                                 <my:literalComponent id="txtPresentacion"
@@ -245,7 +247,7 @@
                         <div class="form-group col-md-12">
                             <p class="mb-1">
                                 <p:outputLabel styleClass="mb-1" value="#{labels['dialogUnidadAdministrativa.padre']}:"
-                                              for="txtPadre"/>
+                                              for="txtPadre" pt:aria-label="#{labels['dialogUnidadAdministrativa.padre']}:"/>
                             </p>
                             <p>
                                 <my:unidadAdministrativaComponent id="txtPadre"
@@ -265,7 +267,7 @@
                         <div class="form-group col-md-8">
                             <p class="mb-1">
                                 <p:outputLabel value="#{labels['dialogUnidadAdministrativa.responsableNombre']}:"
-                                              for="txtResponsableNombre"/>
+                                              for="txtResponsableNombre" pt:aria-label="#{labels['dialogUnidadAdministrativa.responsableNombre']}:"/>
                             </p>
                             <p:inputText id="txtResponsableNombre"
                                          value="#{dialogUnidadAdministrativa.data.responsableNombre}"
@@ -277,7 +279,7 @@
                             <p class="mb-1">
                                 <p:outputLabel
                                            value="#{labels['dialogUnidadAdministrativa.tipoSexo']}:"
-                                           for="txtTipoSexo"/>
+                                           for="txtTipoSexo" pt:aria-label="#{labels['dialogUnidadAdministrativa.tipoSexo']}:"/>
                             </p>
                             <p:selectOneMenu id="txtTipoSexo"
                                              value="#{dialogUnidadAdministrativa.data.responsableSexo}"
@@ -297,7 +299,7 @@
                         <div class="form-group col-md-4">
                             <p class="mb-1">
                                 <p:outputLabel value="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"
-                                              for="txtResponsableEmail"/>
+                                              for="txtResponsableEmail" pt:aria-label="#{labels['dialogUnidadAdministrativa.responsableEmail']}:"/>
                             </p>
                             <p:inputText id="txtResponsableEmail"
                                          value="#{dialogUnidadAdministrativa.data.responsableEmail}"
@@ -312,7 +314,7 @@
                         <div class="form-group col-md-11">
                             <p class="mb-1">
                                 <p:outputLabel value="#{labels['dialogUnidadAdminsitrativa.responsableCV']}:"
-                                              for="txtResponsable"/>
+                                              for="txtResponsable" pt:aria-label="#{labels['dialogUnidadAdminsitrativa.responsableCV']}:"/>
                             </p>
                             <p>
                                 <my:literalComponent id="txtResponsable"
@@ -337,7 +339,7 @@
                         <div class="form-group col-md-2">
                             <p class="mb-1">
                                 <p:outputLabel value="#{labels['dialogUnidadAdministrativa.telefono']}:"
-                                              for="txtTelefono"/>
+                                              for="txtTelefono" pt:aria-label="#{labels['dialogUnidadAdministrativa.telefono']}:"/>
                             </p>
                             <p:inputText id="txtTelefono" value="#{dialogUnidadAdministrativa.data.telefono}"
                                          styleClass="w95"
@@ -346,7 +348,7 @@
                         </div>
                         <div class="form-group col-md-2">
                             <p class="mb-1">
-                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax"/>
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.fax']}:" for="txtFax" pt:aria-label="#{labels['dialogUnidadAdministrativa.fax']}:"/>
                             </p>
                             <p:inputText id="txtFax" value="#{dialogUnidadAdministrativa.data.fax}" styleClass="w95"
                                          maxlength="9"
@@ -355,7 +357,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <p class="mb-1">
-                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.email']}:" for="txtEmail"/>
+                                <p:outputLabel value="#{labels['dialogUnidadAdministrativa.email']}:" for="txtEmail" pt:aria-label="#{labels['dialogUnidadAdministrativa.email']}:"/>
                             </p>
                             <p:inputText id="txtEmail" value="#{dialogUnidadAdministrativa.data.email}"
                                          styleClass="w95"
@@ -369,7 +371,7 @@
                         <div class="form-group col-md-4">
                             <p class="mb-1">
                                 <p:outputLabel value="#{labels['dialogUnidadAdministrativa.dominio']}:"
-                                              for="txtDominio"/>
+                                              for="txtDominio" pt:aria-label="#{labels['dialogUnidadAdministrativa.dominio']}:"/>
                             </p>
                             <p:inputText id="txtDominio" value="#{dialogUnidadAdministrativa.data.dominio}"
                                          styleClass="w95"
@@ -387,8 +389,8 @@
                             <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.usuarios']}</p>
                         </div>
                         <div class="col-2">
-                            <p:commandButton id="btnUsuariosCol" onclick="colapsarModulo('#divUsuarios','btnUsuarios');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" />
-                            <p:commandButton id="btnUsuariosExp" onclick="expandirModulo('#divUsuarios','btnUsuarios');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" />
+                            <p:commandButton id="btnUsuariosCol" onclick="colapsarModulo('#divUsuarios','btnUsuarios');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                            <p:commandButton id="btnUsuariosExp" onclick="expandirModulo('#divUsuarios','btnUsuarios');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" pt:aria-label="#{labels['dict.expandir']}" />
                         </div>
                     </div>
                     <div id="divUsuarios" class="col-10 p-1">
@@ -414,17 +416,17 @@
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          process="@this"
                                          actionListener="#{dialogUnidadAdministrativa.anyadirUsuarios()}"
-                                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}">
+                                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                 <p:ajax event="dialogReturn" listener="#{dialogUnidadAdministrativa.returnDialogUsuarios}" process="@this"
                                     update="messagesDialog dataTableUsuarios"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          action="#{dialogUnidadAdministrativa.borrarUsuario()}"
                                          process="@this" update="dataTableUsuarios messagesDialog"
-                                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"/>
+                                         rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogUnidadAdministrativa.consultarUsuario()}"
-                                         process="@this" update="dataTableUsuarios messagesDialog"/>
+                                         process="@this" update="dataTableUsuarios messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                     </div>
                 </div>
 
@@ -438,8 +440,8 @@
                                         #{tema.data.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}</p>
                                 </div>
                                 <div class="col-2">
-                                    <p:commandButton id="btnTema#{tema.data.codigo}Col" onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px"  />
-                                    <p:commandButton id="btnTema#{tema.data.codigo}Exp" onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px"  />
+                                    <p:commandButton id="btnTema#{tema.data.codigo}Col" onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"  />
+                                    <p:commandButton id="btnTema#{tema.data.codigo}Exp" onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"  />
                                 </div>
                             </div>
                             <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
@@ -462,7 +464,7 @@
                                         <div class="ui-chkbox ui-widget ui-selection">
                                             <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
                                                 <p:outputLabel
-                                                        styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
+                                                        styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}" pt:aria-label="Etiqueta"></p:outputLabel>
                                             </div>
                                         </div>
                                         <h:outputText value="#{td.descripcion.getTraduccion(dialogUnidadAdministrativa.idioma)}" class="labelGrande" />
@@ -475,14 +477,14 @@
                                                  styleClass="text-success"
                                                  process="@this"
                                                  actionListener="#{dialogUnidadAdministrativa.altaTematicas(tema.data)}"
-                                                 rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}">
+                                                 rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                     <p:ajax event="dialogReturn"
                                             listener="#{dialogUnidadAdministrativa.returnDialogTemas}" process="@this"
                                             update="messagesDialog panelTemas"/>
                                 </p:commandButton>
                                 <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                                  action="#{dialogUnidadAdministrativa.consultarTema(status.index)}"
-                                                 process="@this" update="panelTemas messagesDialog"/>
+                                                 process="@this" update="panelTemas messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                             </div>
                         </div>
                     </c:forEach>
@@ -496,8 +498,8 @@
                                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.procedimientos']}</p>
                             </div>
                             <div class="col-2">
-                                <p:commandButton id="btnProcsCol" onclick="colapsarModulo('#divProcs','btnProcs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" />
-                                <p:commandButton id="btnProcsExp" onclick="expandirModulo('#divProcs','btnProcs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" />
+                                <p:commandButton id="btnProcsCol" onclick="colapsarModulo('#divProcs','btnProcs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                                <p:commandButton id="btnProcsExp" onclick="expandirModulo('#divProcs','btnProcs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" pt:aria-label="#{labels['dict.expandir']}" />
                             </div>
                         </div>
                         <div id="divProcs" class="col-10 p-1">
@@ -522,7 +524,7 @@
                         <div id="divProcsBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                             <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogUnidadAdministrativa.consultarProcedimiento(index)}"
-                                             process="@this" update="messagesDialog"/>
+                                             process="@this" update="messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                         </div>
                     </div>
                 </c:if>
@@ -534,8 +536,8 @@
                                 <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.normativas']}</p>
                             </div>
                             <div class="col-2">
-                                <p:commandButton id="btnNormsCol" onclick="colapsarModulo('#divNorms','btnNorms');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" />
-                                <p:commandButton id="btnNormsExp" onclick="expandirModulo('#divNorms','btnNorms');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" />
+                                <p:commandButton id="btnNormsCol" onclick="colapsarModulo('#divNorms','btnNorms');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:-10px;margin-bottom: 10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                                <p:commandButton id="btnNormsExp" onclick="expandirModulo('#divNorms','btnNorms');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:-10px;margin-bottom: 10px;" pt:aria-label="#{labels['dict.expandir']}" />
                             </div>
                         </div>
                         <div id="divNorms" class="col-10 p-1">
@@ -560,7 +562,7 @@
                         <div id="divNormsBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                             <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogUnidadAdministrativa.consultarNormativa(status.index)}"
-                                             process="@this" update="messagesDialog"/>
+                                             process="@this" update="messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                         </div>
                     </div>
                 </c:if>
@@ -600,7 +602,7 @@
                              icon="pi pi-inbox"
                              action="#{dialogUnidadAdministrativa.verAuditorias}"
                              styleClass="btn-footer"
-                             disabled="#{empty dialogUnidadAdministrativa.data.codigo}"
+                             disabled="#{empty dialogUnidadAdministrativa.data.codigo}" pt:aria-label="#{labels['dict.auditorias']}"
             />
         </div>
 
@@ -610,16 +612,16 @@
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog formDatos panel-ro formResponsable formContacto "
                          rendered="#{!dialogUnidadAdministrativa.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogUnidadAdministrativa.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          update="messagesDialog form" responsive="true" width="458px"
                          message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
             <p:commandButton value="Sí" process="@this" action="#{dialogUnidadAdministrativa.cerrarDefinitivo}"
-                             oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"/>
         </p:confirmDialog>
 
     </ui:define>

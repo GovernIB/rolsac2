@@ -5,6 +5,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -26,7 +28,7 @@
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag mt-2"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogUsuario.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -40,7 +42,7 @@
                              style="margin-left:10px"
                              update="messagesDialog"
                              process="@this"
-                             rendered="#{!dialogUsuario.isModoConsulta() and dialogUsuario.tradExiste()}">
+                             rendered="#{!dialogUsuario.isModoConsulta() and dialogUsuario.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
                 <p:ajax event="dialogReturn" listener="#{dialogUsuario.returnDialogTraducir}" process="@this"
                         update="formDialog:txtObservaciones"/>
             </p:commandButton>
@@ -64,7 +66,7 @@
             <div class="row">
                 <div class="ui-g-12 ui-md-8 pl-4 panel-container">
                     <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel styleClass="d-inline"  value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        <p:outputLabel styleClass="d-inline"  value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtCodigo" value="#{dialogUsuario.data.codigo}"
@@ -73,7 +75,7 @@
 
                     <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <p:outputLabel styleClass="d-inline" value="#{labels['dict.identificador']}:"
-                                       for="txtIdentificador"/>
+                                       for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtIdentificador" value="#{dialogUsuario.data.identificador}"
@@ -83,7 +85,7 @@
                     </div>
 
                     <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel styleClass="d-inline" value="#{labels['viewUsuario.nombre']}:" for="txtNombre"/>
+                        <p:outputLabel styleClass="d-inline" value="#{labels['viewUsuario.nombre']}:" for="txtNombre" pt:aria-label="#{labels['viewUsuario.nombre']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtNombre" value="#{dialogUsuario.data.nombre}"
@@ -93,7 +95,7 @@
                     </div>
 
                     <div class="ui-g-12 ui-md-3 ui-lg-2">
-                        <p:outputLabel styleClass="d-inline" value="#{labels['dict.email']}:" for="txtEmail"/>
+                        <p:outputLabel styleClass="d-inline" value="#{labels['dict.email']}:" for="txtEmail" pt:aria-label="#{labels['dict.email']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <p:inputText id="txtEmail" value="#{dialogUsuario.data.email}"
@@ -107,7 +109,7 @@
 
                     <div class="ui-g-12 ui-md-3 ui-lg-2">
                         <p:outputLabel styleClass="d-inline" value="#{labels['dialogUsuario.observaciones']}:"
-                                       for="txtObservaciones:texto"/>
+                                       for="txtObservaciones:texto" pt:aria-label="#{labels['dialogUsuario.observaciones']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-5">
                         <my:literalComponent id="txtObservaciones"
@@ -144,7 +146,7 @@
 
 
                                         <p:column headerText="#{labels['msg.tablaVacia']}" styleClass="text-center w75">
-                                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogUsuario.idioma)}"/>
+                                            <p:outputLabel value="#{td.nombre.getTraduccion(dialogUsuario.idioma)}" pt:aria-label="#{td.nombre.getTraduccion(dialogUsuario.idioma)}"/>
                                         </p:column>
 
                                     </p:dataTable>
@@ -152,7 +154,7 @@
                                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                                      process="@this" actionListener="#{dialogUsuario.anyadirUAs()}"
-                                                     rendered="#{!dialogUsuario.isModoConsulta()}">
+                                                     rendered="#{!dialogUsuario.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                         <p:ajax event="dialogReturn" listener="#{dialogUsuario.returnDialogo}" process="@this"
                                                 update="messagesDialog dataTableUAs"/>
                                     </p:commandButton>
@@ -160,10 +162,10 @@
                                                      styleClass="text-danger"
                                                      action="#{dialogUsuario.borrarUA()}"
                                                      process="@this" update="dataTableUAs messagesDialog"
-                                                     rendered="#{!dialogUsuario.isModoConsulta()}"/>
+                                                     rendered="#{!dialogUsuario.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}"/>
                                     <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                                      action="#{dialogUsuario.consultarUA()}"
-                                                     process="@this" update="dataTableUAs messagesDialog"/>
+                                                     process="@this" update="dataTableUAs messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                                 </div>
                             </div>
                         </c:when>
@@ -189,7 +191,7 @@
                                                 global="false"/>
 
                                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
-                                            <p:outputLabel value="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
+                                            <p:outputLabel value="#{td.descripcion.getTraduccion(sessionBean.lang)}" pt:aria-label="#{td.descripcion.getTraduccion(sessionBean.lang)}"/>
                                         </p:column>
 
                                     </p:dataTable>
@@ -197,7 +199,7 @@
                                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                                      process="@this" actionListener="#{dialogUsuario.anyadirEntidades()}"
-                                                     rendered="#{!dialogUsuario.isModoConsulta()}">
+                                                     rendered="#{!dialogUsuario.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                         <p:ajax event="dialogReturn" listener="#{dialogUsuario.returnDialogEntidad}" process="@this"
                                                 update="dataTableEnti"/>
                                     </p:commandButton>
@@ -205,10 +207,10 @@
                                                      styleClass="text-danger"
                                                      action="#{dialogUsuario.borrarEntidad()}"
                                                      process="@this" update="dataTableEnti messagesDialog"
-                                                     rendered="#{!dialogUsuario.isModoConsulta()}"/>
+                                                     rendered="#{!dialogUsuario.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}"/>
                                     <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                                      action="#{dialogUsuario.consultarEntidad()}"
-                                                     process="@this" update="dataTableEnti messagesDialog"/>
+                                                     process="@this" update="dataTableEnti messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                                 </div>
                             </div>
                         </c:otherwise>
@@ -223,24 +225,24 @@
                          escape="false"
                          widgetVar="usuarioAlta">
             <p:commandButton value="#{labels['dict.si']}" onclick="confirmation.hide()"
-                             action="#{dialogUsuario.altaUsuarioEntidad()}" update="messagesDialog">
+                             action="#{dialogUsuario.altaUsuarioEntidad()}" update="messagesDialog" pt:aria-label="#{labels['dict.si']}">
             </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogUsuario.checkUsuario}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
-                         process="@all" rendered="#{!dialogUsuario.isModoConsulta()}"/>
+                         process="@all" rendered="#{!dialogUsuario.isModoConsulta()}" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogUsuario.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@this" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          update="messagesDialog form" responsive="true" width="458px"
                          message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
             <p:commandButton value="Sí" process="@this" action="#{dialogUsuario.cerrarDefinitivo}"
-                             oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"/>
         </p:confirmDialog>
     </ui:define>
 </ui:composition>

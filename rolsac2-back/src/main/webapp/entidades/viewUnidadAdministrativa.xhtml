@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:my="http://java.sun.com/jsf/composite/components">
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -44,7 +46,7 @@
                         <p:commandButton styleClass="btn btn-molla-icono btn-molla" process="@this @form"
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                         update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" />
+                                         update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}" />
 
                         <c:if test="#{ sessionBean.obtenerUasEntidad().size() > 1 }">
                             <button type="button"
@@ -60,7 +62,7 @@
                                     <p:commandButton styleClass="dropdown-item btn-drop" process="@this @form"
                                                      actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                                      value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
-                                                     update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" >
+                                                     update="panelMolla :form:dataTable" oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" >
                                         <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
                                         <f:actionListener binding="#{viewUnidadAdministrativa.buscar()}"></f:actionListener>
                                     </p:commandButton>
@@ -76,7 +78,7 @@
                                 <p:commandButton styleClass="btn btn-molla-icono btn-molla" process="@this"
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" update="panelMolla"
-                                                 oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                 oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                 </p:commandButton>
                                 <button type="button"
                                         class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
@@ -91,7 +93,7 @@
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                          value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" update="panelMolla"
-                                                         oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                         oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                         </p:commandButton>
                                     </c:forEach>
                                 </div>
@@ -125,7 +127,7 @@
                                                 <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}" update="panelMolla"
-                                                                 oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                                 oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                                 </p:commandButton>
                                             </c:forEach>
                                         </c:when>
@@ -174,7 +176,7 @@
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" />
+                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="estiloGrande ml-3 mr-2" pt:aria-label="#{labels['dict.filtro']}:" />
                             <p:inputText id="filtroBusqueda" value="#{viewUnidadAdministrativa.filtroTexto}"
                                          aria-label="#{labels['dict.filtro']}"
                                          styleClass="estiloGrande ml-2 mr-2" />
@@ -191,7 +193,7 @@
                                 <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogoExportar}" update="messages"  oncomplete="$('#form\\:descargarDoc').click();" />
                             </p:commandButton>
 
-                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none">
+                            <p:commandButton id="descargarDoc" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down" style="display:none" pt:aria-label="Download">
                                 <p:fileDownload value="#{viewUnidadAdministrativa.file}" />
                             </p:commandButton>
                         </div>
@@ -207,7 +209,7 @@
 
                                 <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top" styleClass="mr-2"
                                                  actionListener="#{viewUnidadAdministrativa.nuevaUnidadAdministrativa}"
-                                                 process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos() and !viewUnidadAdministrativa.isModoConsulta()}"
+                                                 process="@this" rendered="#{!viewUnidadAdministrativa.isAdmContenidos() and !viewUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}"
                                                   >
                                     <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                             update="messages dataTable"/>
@@ -215,14 +217,14 @@
                                 <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
                                                  actionListener="#{viewUnidadAdministrativa.editarUnidadAdministrativa}"
                                                  process="@form" update="messages"  rendered="#{!viewUnidadAdministrativa.isModoConsulta()}"
-                                                 disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
+                                                 disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}" pt:aria-label="#{labels['dict.editar']}">
                                     <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                             update="messages dataTable"/>
                                 </p:commandButton>
                                 <p:commandButton id="btnConsultar" value="#{labels['dict.consultar']}" icon="pi pi-eye" iconPos="top" styleClass="mr-2"
                                                  actionListener="#{viewUnidadAdministrativa.consultarUnidadAdministrativa()}"
                                                  process="@form" update="messages" onstart="PF('blocker').show();"
-                                                 oncomplete="PF('blocker').hide()" rendered="#{viewUnidadAdministrativa.isModoConsulta()}">
+                                                 oncomplete="PF('blocker').hide()" rendered="#{viewUnidadAdministrativa.isModoConsulta()}" pt:aria-label="#{labels['dict.consultar']}">
                                     <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                             update="messages dataTable"/>
                                 </p:commandButton>
@@ -230,14 +232,14 @@
                                                  action="#{viewUnidadAdministrativa.borrarUnidadAdministrativa}"
                                                  process="@form" update="messages dataTable"
                                                  rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}"
-                                                 disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
+                                                 disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}" pt:aria-label="#{labels['dict.borrar']}">
                                     <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                                 </p:commandButton>
                                 <p:commandButton id="btnEvolucionar" value="#{labels['dict.evolucionar']}" icon="pi pi-directions" iconPos="top"
                                                  actionListener="#{viewUnidadAdministrativa.evolucionarUnidadAdministrativa}" styleClass="mr-2"
                                                  process="@form" update="messages"
                                                  rendered="#{!viewUnidadAdministrativa.isAdmContenidos()}"
-                                                 disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}">
+                                                 disabled="#{viewUnidadAdministrativa.datoSeleccionado == null}" pt:aria-label="#{labels['dict.evolucionar']}">
                                 <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                                             update="messages dataTable"/>
                                 </p:commandButton>
@@ -318,7 +320,7 @@
             <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                               actionListener="#{viewProcedimientos.dblClickProcedimiento()}" process="@this" update="messages"
                               style="display: none"
-                              onstart="startCargando()" oncomplete="stopCargando()" >
+                              onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="btnEditarHidden" >
                 <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>-->
             <p:blockUI block=":viewPage" widgetVar="blocker">
@@ -337,7 +339,7 @@
                              oncomplete="PF('blocker').hide()"/>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewUnidadAdministrativa.consultarUnidadAdministrativa}"
-                             process="@this" update="messages" style="display: none">
+                             process="@this" update="messages" style="display: none" pt:aria-label="btnConsultaHidden">
                 <p:ajax event="dialogReturn" listener="#{viewUnidadAdministrativa.returnDialogo}"
                         update="messages dataTable"/>
             </p:commandButton>

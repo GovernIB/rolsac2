@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de processos automàtics
 -->
@@ -33,7 +35,7 @@ Pàgina amb el llistat de processos automàtics
             <div class="m-10">
                  <p:commandButton value="#{labels['viewProcesosSolr.refrescarDatos']}" icon="pi pi-refresh" iconPos="top"
                                  actionListener="#{viewProcesosMigracion.buscar()}" styleClass="ml10 mt10 mb10"
-                                 process="@this" update="dataTable  messages">
+                                 process="@this" update="dataTable  messages" pt:aria-label="#{labels['viewProcesosSolr.refrescarDatos']}">
                 </p:commandButton>
                 <p:dataTable id="dataTable" value="#{viewProcesosMigracion.lazyModelLogs}" var="proceso"
                              paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
@@ -85,7 +87,7 @@ Pàgina amb el llistat de processos automàtics
                     <p:column headerText="" styleClass="w50px">
                         <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
                                          actionListener="#{viewProcesosMigracion.verErrores(proceso.codigo)}"
-                                         process="@this" update="messages" styleClass="h30px w30px">
+                                         process="@this" update="messages" styleClass="h30px w30px" pt:aria-label="">
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -137,17 +139,17 @@ Pàgina amb el llistat de processos automàtics
                                 <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                                  process="@this"
                                                  actionListener="#{viewProcesosMigracion.anyadirUsuarios()}"
-                                                 rendered="#{!viewProcesosMigracion.isModoConsulta()}">
+                                                 rendered="#{!viewProcesosMigracion.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                     <p:ajax event="dialogReturn" process="@this"
                                             update="messages dataTableUsuarios"/>
                                 </p:commandButton>
                                 <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                                  action="#{viewProcesosMigracion.borrarUsuario()}"
                                                  process="@this" update="dataTableUsuarios messages"
-                                                 rendered="#{!viewProcesosMigracion.isModoConsulta()}"/>
+                                                 rendered="#{!viewProcesosMigracion.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}"/>
                                 <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                                  action="#{viewProcesosMigracion.consultarUsuario()}"
-                                                 process="@this" update="dataTableUsuarios messages"/>
+                                                 process="@this" update="dataTableUsuarios messages" pt:aria-label="#{labels['dict.consultar']}"/>
                             </div>
                         </div>
                     </div>
@@ -213,7 +215,7 @@ Pàgina amb el llistat de processos automàtics
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ml10">
                         <p:commandButton value="#{labels['viewProcesosMigracion.ejecutar']}" icon="pi pi-file-o" iconPos="top"
                                          actionListener="#{viewProcesosMigracion.ejecutar()}" styleClass="mr10"
-                                         process="@this" update="messages">
+                                         process="@this" update="messages" pt:aria-label="#{labels['viewProcesosMigracion.ejecutar']}">
                         </p:commandButton>
 
                 </div>

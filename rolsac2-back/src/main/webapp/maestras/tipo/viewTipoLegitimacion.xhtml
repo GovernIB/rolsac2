@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -31,7 +33,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="content">
         <h:form id="form">
             <p:commandButton value="actualizarBusqueda" id="actualizarBusqueda" style="display:none" ajax="false"
-                             action="#{viewTipoLegitimacion.buscar}" update="dataTable"/>
+                             action="#{viewTipoLegitimacion.buscar}" update="dataTable" pt:aria-label="actualizarBusqueda"/>
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
                 <f:facet name="header">
@@ -40,24 +42,24 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <h:outputFormat value="#{labels['dict.filtro']}:"  styleClass="estiloGrande ml-3 mr-2" />
                             <p:inputText value="#{viewTipoLegitimacion.filtro.texto}" styleClass="estiloGrande ml-2 mr-2" />
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
-                                             actionListener="#{viewTipoLegitimacion.buscar}" process="@form" styleClass="mr-2"/>
+                                             actionListener="#{viewTipoLegitimacion.buscar}" process="@form" styleClass="mr-2" pt:aria-label="#{labels['dict.busqueda']}"/>
                         </div>
                         <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
                             <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" styleClass="mr-2" iconPos="top"
-                                             actionListener="#{viewTipoLegitimacion.nuevoTipoLegitimacion()}" process="@this">
+                                             actionListener="#{viewTipoLegitimacion.nuevoTipoLegitimacion()}" process="@this" pt:aria-label="#{labels['dict.nuevo']}">
                                 <p:ajax event="dialogReturn" listener="#{viewTipoLegitimacion.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil"
                                              styleClass="mr-2" iconPos="top"
                                              actionListener="#{viewTipoLegitimacion.editarTipoLegitimacion}" process="@form"
-                                             update="messages">
+                                             update="messages" pt:aria-label="#{labels['dict.editar']}">
                                 <p:ajax event="dialogReturn" listener="#{viewTipoLegitimacion.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" styleClass="mr-2" iconPos="top"
                                              action="#{viewTipoLegitimacion.borrarTipoLegitimacion}" process="@form"
-                                             update="messages dataTable">
+                                             update="messages dataTable" pt:aria-label="#{labels['dict.borrar']}">
                                 <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                         </div>
@@ -116,7 +118,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTipoLegitimacion.consultarTipoLegitimacion}" process="@this"
-                             update="messages" style="display: none">
+                             update="messages" style="display: none" pt:aria-label="btnConsultaHidden">
                 <p:ajax event="dialogReturn" listener="#{viewTipoLegitimacion.returnDialogo}"
                         update="messages dataTable"/>
             </p:commandButton>

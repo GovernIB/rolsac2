@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de procedimiento d'una unitat administrativa.
 -->
@@ -51,7 +53,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          actionListener="#{sessionBean.cambiarUaActiva(sessionBean.unidadActivaAux.codigo)}"
                                          value="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}"
                                          update="panelMolla :form:dataTable"
-                                         oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                         oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{sessionBean.unidadActivaAux.nombre.getTraduccionConValor(sessionBean.lang)}">
                         </p:commandButton>
 
                         <c:if test="#{ sessionBean.obtenerUasEntidad().size() > 1 }">
@@ -68,7 +70,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                      actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                      value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                      update="panelMolla :form:dataTable"
-                                                     oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                     oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                         <f:actionListener binding="#{sessionBean.cambiarUaActivaAux(ua)}"/>
                                     </p:commandButton>
                                 </c:forEach>
@@ -84,7 +86,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                  value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                  update="panelMolla :form:dataTable"
-                                                 oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                 oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                 </p:commandButton>
                                 <button type="button"
                                         class="btn btn-molla-icono drop-molla dropdown-toggle dropdown-toggle-split"
@@ -100,7 +102,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                          value="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}"
                                                          update="panelMolla :form:dataTable"
-                                                         oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                         oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccionConValor(sessionBean.lang)}">
                                         </p:commandButton>
                                     </c:forEach>
                                 </div>
@@ -131,7 +133,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     <!--<ui:repeat rendered="#{sessionBean.renderPanelHijas}" value="#{sessionBean.getUnidadesHijasActiva()}" var="ua">
                                         <p:commandButton styleClass="dropdown-item btn-drop" process="@this"
                                                          actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
-                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" >
+                                                         value="#{ua.nombre.getTraduccion(sessionBean.lang)}" pt:aria-label="#{ua.nombre.getTraduccion(sessionBean.lang)}" >
                                         </p:commandButton>
                                     </ui:repeat>-->
                                     <c:choose>
@@ -143,7 +145,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                                  actionListener="#{sessionBean.cambiarUaActiva(ua.codigo)}"
                                                                  value="#{ua.nombre.getTraduccion(sessionBean.lang)}"
                                                                  update="panelMolla :form:dataTable"
-                                                                 oncomplete="$('#form\\:btnBuscarEvt').click();">
+                                                                 oncomplete="$('#form\\:btnBuscarEvt').click();" pt:aria-label="#{ua.nombre.getTraduccion(sessionBean.lang)}">
                                                 </p:commandButton>
                                             </c:forEach>
                                         </c:when>
@@ -191,7 +193,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                              widgetVar="actualizarBusqueda"
                              oncomplete="$('#form\\:btnBuscar').click();"
                              style="display:none" ajax="false" action="#{viewServicios.buscar()}"
-                             update="dataTable"/>
+                             update="dataTable" pt:aria-label="#{labels['viewUnidadAdministrativa.actualizar']}"/>
             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeProcedimientoEstado"
                                var="typeEstados"></p:importConstants>
             <p:confirmDialog id="confirmBorrar" varWidget="confirmBorrar"
@@ -200,7 +202,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                              hideEffect="fade">
                 <p:commandButton value="#{labels['dict.si']}" type="button"
                                  styleClass="ui-confirmdialog-yes" icon="pi pi-check"
-                                 title="#{labels['dict.si']}"/>
+                                 title="#{labels['dict.si']}" pt:aria-label="#{labels['dict.si']}"/>
                 <p:commandButton value="#{labels['dict.no']}" type="button"
                                  styleClass="ui-confirmdialog-no" icon="pi pi-times"
                                  title="#{labels['dict.no']}"
@@ -367,14 +369,14 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                     </p:selectOneMenu>
                                 </div>
                                 <!--div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
-                                    <h:outputText value="#{labels['viewProcedimientos.servicioInstructor']}:" for="txtServicioInstructor"/>
+                                    <p:outputLabel value="#{labels['viewProcedimientos.servicioInstructor']}:" for="txtServicioInstructor" pt:aria-label="#{labels['viewProcedimientos.servicioInstructor']}:"/>
                                     <div class="filtroControl">
                                         <p:inputText id="txtServicioInstructor" value="#{viewServicios.filtro.uaInstructorNombre}"
                                                      styleClass="w70" disabled="true"/>
                                         <p:commandButton title="#{labels['dict.seleccionar']}" icon="pi pi-eye"
                                                          styleClass="text-success"
                                                          process="@this"
-                                                         actionListener="#{viewServicios.seleccionarUaInstructor()}">
+                                                         actionListener="#{viewServicios.seleccionarUaInstructor()}" pt:aria-label="#{labels['dict.seleccionar']}">
                                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogUaInstructor}"
                                                     process="@this" update="txtServicioInstructor"/>
                                         </p:commandButton>
@@ -542,7 +544,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         </p:commandButton>
                         <p:commandButton id="descargarDoc" value="Download" ajax="false"
                                          onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down"
-                                         style="display:none">
+                                         style="display:none" pt:aria-label="Download">
                             <p:fileDownload value="#{viewServicios.file}"/>
                         </p:commandButton>
                     </div>
@@ -638,7 +640,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton icon="pi pi-copy" title="#{labels['dict.clonar']}" styleClass="mr-1"
                                          rendered="#{viewServicios.mostrarClonar(servicio)}"
                                          actionListener="#{viewServicios.clonarServicio(servicio)}"
-                                         process="@this">
+                                         process="@this" pt:aria-label="#{labels['dict.clonar']}">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogoClonar}"
                                     update="messages dataTable"/>
                         </p:commandButton>
@@ -646,7 +648,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          rendered="#{viewServicios.mostrarConsultar(servicio)}"
                                          actionListener="#{viewServicios.consultarServicio(servicio)}"
                                          process="@this"
-                                         onstart="startCargando()" oncomplete="stopCargando()">
+                                         onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="#{labels['dict.consultar']}">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
@@ -654,7 +656,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                             rendered="#{viewServicios.mostrarEditar(servicio)}"
                                             actionListener="#{viewServicios.editarServicio(servicio)}"
                                             process="@this"
-                                            onstart="startCargando()" oncomplete="stopCargando()">
+                                            onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="#{labels['dict.editar']}">
                                <p:confirm header="#{labels['dict.aviso']}"
                                           message="#{labels['viewServicios.aviso.noExisteModif']}"
                                           icon="pi pi-exclamation-triangle"/>
@@ -667,7 +669,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          rendered="#{viewServicios.mostrarEditar(servicio) and servicio.codigoWFMod != null}"
                                          actionListener="#{viewServicios.editarServicio(servicio)}"
                                          process="@this"
-                                         onstart="startCargando()" oncomplete="stopCargando()">
+                                         onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                     update="messages dataTable"/>
                         </p:commandButton>
@@ -675,7 +677,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          rendered="#{viewServicios.mostrarEditar(servicio) and servicio.codigoWFMod == null}"
                                          actionListener="#{viewServicios.editarServicioSinPreguntar(servicio.codigo, null, servicio.codigoWFPub, servicio.comun)}"
                                          process="@this" update="messages"
-                                         onstart="startCargando()" oncomplete="stopCargando()">
+                                         onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="#{labels['dict.editar']}">
                             <p:confirm header="#{labels['dict.aviso']}"
                                        message="#{labels['viewServicios.aviso.noExisteModif']}"
                                        icon="pi pi-exclamation-triangle"/>
@@ -686,7 +688,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
                                          rendered="#{viewServicios.mostrarBorrar(servicio)}"
                                          actionListener="#{viewServicios.borrarServicio(servicio.codigo, servicio.codigoWFMod,servicio.codigoWFPub)}"
-                                         process="@this" update="messages dataTable">
+                                         process="@this" update="messages dataTable" pt:aria-label="#{labels['dict.borrar']}">
                             <p:confirm header="#{labels['msg.aviso']}"
                                        message="#{labels['msg.eliminarRegistro']}"
                                        icon="pi pi-exclamation-triangle"/>
@@ -694,7 +696,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton type="button" icon="pi pi-list" title="#{labels['dict.borrador']}"
                                          styleClass="ui-button-outlined mr-1"
                                          rendered="#{servicio.tieneBorrador()}"
-                                         onclick="toggleBorradorDesdeAcciones(this); return false;"/>
+                                         onclick="toggleBorradorDesdeAcciones(this); return false;" pt:aria-label="#{labels['dict.borrador']}"/>
 
                     </div>
                 </p:column>
@@ -726,7 +728,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              rendered="#{viewServicios.mostrarConsultarBorrador(servicio)}"
                                              actionListener="#{viewServicios.consultarServicio(servicio)}"
                                              process="@this" update="messages dataTable"
-                                             onstart="startCargando()" oncomplete="stopCargando()">
+                                             onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="#{labels['dict.consultar']}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
@@ -735,14 +737,14 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                              rendered="#{viewServicios.mostrarEditarBorrador(servicio)}"
                                              actionListener="#{viewServicios.editarServicio(servicio)}"
                                              process="@this" update="messages dataTable"
-                                             onstart="startCargando()" oncomplete="stopCargando()">
+                                             onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="#{labels['dict.editar']}">
                                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
                                              rendered="#{viewServicios.mostrarBorrarBorrador(servicio)}"
                                              actionListener="#{viewServicios.borrarServicio(servicio.codigo, servicio.codigoWFMod, servicio.codigoWFPub)}"
-                                             process="@this" update="messages dataTable">
+                                             process="@this" update="messages dataTable" pt:aria-label="#{labels['dict.borrar']}">
                                 <p:confirm header="#{labels['msg.aviso']}"
                                            message="#{labels['msg.eliminarRegistro']}"
                                            icon="pi pi-exclamation-triangle"/>
@@ -901,9 +903,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                 <p:commandButton value="#{labels['dict.si']}" onclick="PF('cdDeseaCrearEditar').hide()"
                                  styleClass="font15pxi"
                                  action="#{viewServicios.editarServicioSinPreguntar()}"
-                                 update="messages"/>
+                                 update="messages" pt:aria-label="#{labels['dict.si']}"/>
                 <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdDeseaCrearEditar').hide()"
-                                 styleClass="font15pxi"/>
+                                 styleClass="font15pxi" pt:aria-label="#{labels['dict.no']}"/>
             </p:confirmDialog>
 
 
@@ -911,7 +913,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                              actionListener="#{viewServicios.dblClickProcedimiento()}" process="@this"
                              update="messages"
                              style="display: none"
-                             onstart="startCargando()" oncomplete="stopCargando()">
+                             onstart="startCargando()" oncomplete="stopCargando()" pt:aria-label="btnEditarHidden">
                 <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
                         update="messages dataTable"/>
             </p:commandButton>

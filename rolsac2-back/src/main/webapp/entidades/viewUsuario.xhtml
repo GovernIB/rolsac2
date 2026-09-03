@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de Tipo de Público Objetivo.
@@ -25,7 +27,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
     <ui:define name="content">
         <h:form id="form">
-            <p:commandButton value="#{labels['viewUsuario.actualizar']}" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewUsuario.buscar}" update="dataTable" />
+            <p:commandButton value="#{labels['viewUsuario.actualizar']}" id="actualizarBusqueda"  style="display:none" ajax="false" action="#{viewUsuario.buscar}" update="dataTable" pt:aria-label="#{labels['viewUsuario.actualizar']}" />
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
                 <f:facet name="header">
@@ -103,7 +105,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 }
             </h:outputScript>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
-                             actionListener="#{viewUsuario.consultarUsuario}" process="@this" update="messages" style="display: none">
+                             actionListener="#{viewUsuario.consultarUsuario}" process="@this" update="messages" style="display: none" pt:aria-label="btnConsultaHidden">
                 <p:ajax event="dialogReturn" listener="#{viewUsuario.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>
         </h:form>

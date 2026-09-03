@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <p:importConstants type="es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow"
                        var="TypeProcedimientoWorkflow"/>
@@ -35,12 +37,12 @@
         <p:commandButton action="#{dialogServicio.ayuda('dialogServicio')}"
                          icon="pi pi-info-circle" iconPos="top"
                          value="#{labels['dict.ayuda']}"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.ayuda']}"/>
     </ui:define>
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:15px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogServicio.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -54,7 +56,7 @@
                          style="margin-left:10px;font-size:1.2em; height: 35px;margin-top:1px;"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogServicio.isModoConsulta() and dialogServicio.tradExiste()}">
+                         rendered="#{!dialogServicio.isModoConsulta() and dialogServicio.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos formDialog:txtObservaciones formDialog:txtKeywords formDialog:txtServResp formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtRespTrat formDialog:txtRespTratComun"/>
         </p:commandButton>
@@ -79,7 +81,7 @@
             <div class="form-row mb0">
                 <div class="form-group col-12 col-md-2 mb0">
                     <p:outputLabel value="#{labels['dialogServicio.estado.sia']}:" for="txtEstadoSIA"
-                                   styleClass="mb-1 pt-0 negrita"/>
+                                   styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogServicio.estado.sia']}:"/>
 
                     <br/>
 
@@ -89,7 +91,7 @@
                 </div>
                 <div class="form-group col-12 col-md-2 mb0">
                     <p:outputLabel value="#{labels['dialogServicio.codigo.sia']}:"
-                                  styleClass="mb-1 pt-0 negrita" for="txtCodigoSIA"/>
+                                  styleClass="mb-1 pt-0 negrita" for="txtCodigoSIA" pt:aria-label="#{labels['dialogServicio.codigo.sia']}:"/>
 
                     <p:inputText id="txtCodigoSIA" value="#{dialogServicio.data.codigoSIA}"
                                  styleClass="w95"
@@ -99,7 +101,7 @@
                 <div class="form-group col-12 col-md-2 mb0">
                     <p>
                         <p:outputLabel value="#{labels['dialogServicio.fecha.sia']}:" for="txtFechaSIA"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogServicio.fecha.sia']}:"/>
                         <p:inputText id="txtFechaSIA" value="#{dialogServicio.data.fechaSIA}"
                                      styleClass="w95"
                                      readonly="true">
@@ -110,7 +112,7 @@
                 <div class="form-group col-12 col-md-4 mb0">
                     <p>
                         <p:outputLabel value="#{labels['dialogProcedimiento.sia.error']}:" for="txtErrorSIA"
-                                       styleClass="mb-1 pt-0 negrita" />
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.sia.error']}:" />
                         <p:inputText id="txtErrorSIA" value="#{dialogServicio.data.errorSIA}"
                                      styleClass="w95" readonly="true"
                         />
@@ -126,12 +128,12 @@
                                              update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA"
                                              rendered="#{dialogServicio.mostrarBtnSIA()}"
                                              style="margin-top:19px"
-                                             process="@all"/>
+                                             process="@all" pt:aria-label="#{labels['dict.enviarSIA']}"/>
                             <p:commandButton id="btnRefrescarSIA" action="#{dialogServicio.refrescarSIA}"
                                              value="#{labels['dict.refrescarSIA']}" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA"
                                              rendered="#{dialogServicio.mostrarRefreshSIA}"
                                              style="margin-top:19px"
-                                             process="@all"/>
+                                             process="@all" pt:aria-label="#{labels['dict.refrescarSIA']}"/>
                         </p>
                     </p:outputPanel>
                 </div>
@@ -143,14 +145,14 @@
                 <div class="form-row mb0">
                     <div class="form-group col-md-2 col-12 mb0">
                         <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.codigo']}:"
-                                          for="txtCodigo"/>
+                                          for="txtCodigo" pt:aria-label="#{labels['dialogServicio.codigo']}:"/>
 
                         <p:inputText id="txtCodigo" value="#{dialogServicio.data.codigo}"
                                      styleClass="w85" readonly="true"/>
                     </div>
                     <div class="form-group col-md-4 col-12 mb0">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.publicacion']}:" for="txtFechaPublicacion"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogServicio.fecha.publicacion']}:"/>
                         <p>
                             <p:datePicker showIcon="#{dialogServicio.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaPublicacion" styleClass="fecha"
                                           locale="#{sessionBean.lang}" readonly="#{dialogServicio.isModoConsulta()}"
@@ -160,7 +162,7 @@
                     </div>
                     <div class="form-group col-md-4 col-12 mb0">
                         <p:outputLabel value="#{labels['dialogServicio.fecha.despublicacion']}:" for="txtFechaCaducidad"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogServicio.fecha.despublicacion']}:"/>
                         <p>
                             <p:datePicker showIcon="#{dialogServicio.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaCaducidad" styleClass="fecha"
                                           locale="#{sessionBean.lang}" readonly="#{dialogServicio.isModoConsulta()}"
@@ -169,7 +171,7 @@
                         </p>
                     </div>
                     <div class="form-group col-md-2 col-12 mb0">
-                        <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" />
+                        <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" pt:aria-label="#{labels['dict.tipo']}:" />
 
                         <p:selectOneMenu id="selectComun" value="#{dialogServicio.data.comun}"
                                          autoWidth="false" styleClass="w100px"
@@ -189,7 +191,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.nombre.procedimiento']}:"
-                                       for="txtNombre"/>
+                                       for="txtNombre" pt:aria-label="#{labels['dialogServicio.nombre.procedimiento']}:"/>
                             <my:literalAreaComponent id="txtNombre"
                                                  value="#{dialogServicio.data.nombreProcedimientoWorkFlow}"
                                                  readonly="#{dialogServicio.isModoConsulta()}"
@@ -206,7 +208,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.objeto']}:"
-                                       for="txtObjeto"/>
+                                       for="txtObjeto" pt:aria-label="#{labels['dialogServicio.objeto']}:"/>
                             <my:literalAreaComponent id="txtObjeto" styleClass="w95"
                                                  value="#{dialogServicio.data.objeto}"
                                                  readonly="#{dialogServicio.isModoConsulta()}"
@@ -221,7 +223,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.destinatarios']}:"
-                                       for="txtDestinatarios"/>
+                                       for="txtDestinatarios" pt:aria-label="#{labels['dialogServicio.destinatarios']}:"/>
                             <my:literalAreaComponent id="txtDestinatarios" styleClass="w95"
                                                  value="#{dialogServicio.data.destinatarios}"
                                                  readonly="#{dialogServicio.isModoConsulta()}"
@@ -236,7 +238,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.requisitos']}:"
-                                       for="txtrequisitos"/>
+                                       for="txtrequisitos" pt:aria-label="#{labels['dict.requisitos']}:"/>
                             <my:literalAreaComponent id="txtrequisitos" styleClass="w95"
                                                  value="#{dialogServicio.data.requisitos}"
                                                  readonly="#{dialogServicio.isModoConsulta()}"
@@ -251,7 +253,7 @@
 
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:"
-                                       for="txtKeywords"/>
+                                       for="txtKeywords" pt:aria-label="#{labels['dialogProcedimiento.keywords']}:"/>
                             <my:literalComponent id="txtKeywords" styleClass="w95"
                                                  value="#{dialogServicio.data.keywords}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -264,7 +266,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.observaciones']}:"
-                                       for="txtObservaciones"/>
+                                       for="txtObservaciones" pt:aria-label="#{labels['dialogServicio.observaciones']}:"/>
                             <my:literalAreaComponent id="txtObservaciones" styleClass="w95"
                                                  value="#{dialogServicio.data.observaciones}"
                                                  readonly="#{dialogServicio.isModoConsulta()}"
@@ -281,7 +283,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimiento.organoInstructor']}:"
-                                       for="txtOrgComp"/>
+                                       for="txtOrgComp" pt:aria-label="#{labels['dialogProcedimiento.organoInstructor']}:"/>
                         <p>
 
                             <h:panelGroup id="panelComun">
@@ -307,7 +309,7 @@
                                                                          process="@this"
                                                                          rendered="#{!dialogServicio.data.esComun()}"
                                                                          disabled="#{dialogServicio.isModoConsulta()}"
-                                                                         id="btnAbrirUA"
+                                                                         id="btnAbrirUA" pt:aria-label=" "
                                                         >
                                                             <p:ajax event="dialogReturn"
                                                                     listener="#{dialogServicio.returnDialogoUA}"
@@ -329,7 +331,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.servicio']}:"
-                                       for="txtServResp"/>
+                                       for="txtServResp" pt:aria-label="#{labels['dialogServicio.servicio']}:"/>
 
                         <my:literalComponent id="txtServResp"
                                              literal="#{dialogServicio.data.uaResponsableLiteral}"
@@ -348,7 +350,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.nombreResponsable']}:"
-                                       for="txtNombreResp"/>
+                                       for="txtNombreResp" pt:aria-label="#{labels['dialogServicio.nombreResponsable']}:"/>
                             <p:inputText id="txtNombreResp" value="#{dialogServicio.data.responsable}"
                                          readonly="#{dialogServicio.isModoConsulta()}"
                                          required="#{empty param['formDialog:closeButton']}"
@@ -358,7 +360,7 @@
                     </div>
                     <div class="form-group col-md-6">
                           <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.correoElectronico']}:"
-                                          for="txtEmailResp"/>
+                                          for="txtEmailResp" pt:aria-label="#{labels['dialogServicio.correoElectronico']}:"/>
 
                         <p:inputText id="txtEmailResp" value="#{dialogServicio.data.responsableEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
@@ -372,14 +374,14 @@
                     </div>
                     <div class="form-group col-md-6">
                          <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.responsableTelefono']}:"
-                                          for="textResponsableTelf"/>
+                                          for="textResponsableTelf" pt:aria-label="#{labels['dialogServicio.responsableTelefono']}:"/>
                         <p:inputText id="textResponsableTelf" value="#{dialogServicio.data.responsableTelefono}"
                                      readonly="#{dialogServicio.isModoConsulta()}" styleClass="w90" maxlength="25"/>
                     </div>
 
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
-                                       for="txtEmailIncidencias"/>
+                                       for="txtEmailIncidencias" pt:aria-label="#{labels['dialogProcedimiento.correoIncidencias']}:"/>
                         <p:inputText id="txtEmailIncidencias" value="#{dialogServicio.data.incidenciasEmail}"
                                      validatorMessage="#{labels['dict.emailNoValido']}"
                                      update="messagesDialog"
@@ -440,7 +442,7 @@
                         <div id="divDatosTelematico1" class="form-row">
                             <div class="form-grup col-md-4">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dict.identificador']}:"
-                                               for="txtTraId"/>
+                                               for="txtTraId" pt:aria-label="#{labels['dict.identificador']}:"/>
                                 <p:inputText id="txtTraId"
                                              readonly="#{dialogServicio.isModoConsulta() ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
@@ -457,7 +459,7 @@
                             </div>
                             <div class="form-grup col-md-2">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.version']}:"
-                                               for="txtTraVer"/>
+                                               for="txtTraVer" pt:aria-label="#{labels['dialogServicio.version']}:"/>
                                 <p:inputText id="txtTraVer" decimalPlaces="0"
                                              value="#{dialogServicio.data.tipoTramitacion.tramiteVersion}"
                                              readonly="#{dialogServicio.isModoConsulta() ||
@@ -473,7 +475,7 @@
                             <div class="form-group col-md-6">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogServicio.plataforma']}:"
-                                               for="txtTraPlat"/>
+                                               for="txtTraPlat" pt:aria-label="#{labels['dialogServicio.plataforma']}:"/>
                                 <p:selectOneMenu id="txtTraPlat"
                                                  value="#{dialogServicio.data.tipoTramitacion.codPlatTramitacion}"
                                                  styleClass="w95"
@@ -494,7 +496,7 @@
                             <div class="form-grup col-md-6">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogServicio.parametros']}:"
-                                               for="txtTraParam"/>
+                                               for="txtTraParam" pt:aria-label="#{labels['dialogServicio.parametros']}:"/>
                                 <p:inputText id="txtTraParam"
                                              readonly="#{dialogServicio.isModoConsulta()  ||
                                                         !dialogServicio.canalesSeleccionados.contains('TEL')}"
@@ -509,7 +511,7 @@
                         <div id="divUrlTelematico" class="form-row" style="height:100px !important;">
                             <div class="form-group col-md-6">
                                 <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.url']}:"
-                                               for="txtTraUrl"/>
+                                               for="txtTraUrl" pt:aria-label="#{labels['dialogServicio.url']}:"/>
                                 <my:literalComponent id="txtTraUrl" styleClass="w95"
                                                      value="#{dialogServicio.data.tipoTramitacion.url}"
                                                      required="#{dialogServicio.isOpcionTelematicaUrl()}"
@@ -536,7 +538,7 @@
                 <div class="mt-2">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.lopd.activo']}:"
-                                       for="txtActivoLOPD"/>
+                                       for="txtActivoLOPD" pt:aria-label="#{labels['dialogServicio.lopd.activo']}:"/>
                         <p:selectBooleanCheckbox id="txtActivoLOPD"
                                                  value="#{dialogServicio.data.activoLOPD}" readonly="#{dialogServicio.isModoConsulta()}">
                             <p:ajax event="change" oncomplete="checkActivoLOPD();"
@@ -548,7 +550,7 @@
                 <div id="filaLOPDTratamiento" class="form-row">
                     <div class="form-group col-md-12">
                          <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dialogServicio.responsableTratamiento']}:"
-                                          for="txtRespTrat"/>
+                                          for="txtRespTrat" pt:aria-label="#{labels['dialogServicio.responsableTratamiento']}:"/>
 
                         <my:literalComponent id="txtRespTrat"
                                              literal="#{dialogServicio.lopdResponsable}"
@@ -569,7 +571,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2  pt-0 negrita"
                                        value="#{labels['dialogServicio.finalidad']}:"
-                                       for="txtLopdFinalidad"/>
+                                       for="txtLopdFinalidad" pt:aria-label="#{labels['dialogServicio.finalidad']}:"/>
                         <my:literalAreaComponent id="txtLopdFinalidad"
                                                  literal="#{dialogServicio.data.lopdFinalidad}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -584,7 +586,7 @@
                 <div id="filaLOPDLegitimacion" class="form-row">
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogServicio.legitimacion']}:"
-                                       for="txtLegitimacion"/>
+                                       for="txtLegitimacion" pt:aria-label="#{labels['dialogServicio.legitimacion']}:"/>
                         <p:selectOneMenu id="txtLegitimacion" value="#{dialogServicio.data.datosPersonalesLegitimacion}"
                                          styleClass="w95" autoWidth="false"
                                          disabled="#{dialogServicio.isModoConsulta()}"
@@ -600,7 +602,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2  pt-0 negrita"
                                        value="#{labels['dialogServicio.destinatario']}:"
-                                       for="txtLopdDestinatario"/>
+                                       for="txtLopdDestinatario" pt:aria-label="#{labels['dialogServicio.destinatario']}:"/>
                             <my:literalAreaComponent id="txtLopdDestinatario" styleClass="w95"
                                                  literal="#{dialogServicio.data.lopdDestinatario}"
                                                  soloLecture="#{dialogServicio.isModoConsulta()}"
@@ -616,7 +618,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogServicio.derechos']}:"
-                                       for="txtLopdDerechos"/>
+                                       for="txtLopdDerechos" pt:aria-label="#{labels['dialogServicio.derechos']}:"/>
                             <my:literalAreaComponent id="txtLopdDerechos" styleClass="w95"
                                                  literal="#{dialogServicio.lopdDerechos}"
                                                  soloLecture="#{true}"
@@ -641,10 +643,10 @@
                     <div class="col-2 pb-2">
                         <p:commandButton id="btnPubObjCol" onclick="colapsarModulo('#divPublico','btnPubObj');"
                                          title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                         style="margin-left:-10px"/>
+                                         style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
                         <p:commandButton id="btnPubObjExp" onclick="expandirModulo('#divPublico','btnPubObj');"
                                          title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                         styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
+                                         styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
                     </div>
                 </div>
                 <div id="divPublico" class="col-10 p-1">
@@ -674,14 +676,14 @@
                 <div id="divPublicoBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogServicio.nuevoPubObjEnt()}">
+                                     actionListener="#{dialogServicio.nuevoPubObjEnt()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogPubObjEnt}" process="@this"
                                 update="dataTablePublico"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarPubObjEnt}"
-                                     process="@this" update="dataTablePublico messagesDialog"/>
+                                     process="@this" update="dataTablePublico messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                 </div>
             </div>
             <h:panelGroup id="panelTemas">
@@ -696,11 +698,11 @@
                                 <p:commandButton id="btnTema#{tema.data.codigo}Col"
                                                  onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
                                                  title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                                 style="margin-left:-10px"/>
+                                                 style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
                                 <p:commandButton id="btnTema#{tema.data.codigo}Exp"
                                                  onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
                                                  title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px"/>
+                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
                             </div>
                         </div>
                         <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
@@ -723,7 +725,7 @@
                                     <div class="ui-chkbox ui-widget ui-selection">
                                         <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
                                             <p:outputLabel
-                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}"></p:outputLabel>
+                                                    styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}" pt:aria-label="Etiqueta"></p:outputLabel>
                                         </div>
                                     </div>
                                     <i class="#{dialogServicio.getIcono(td)}"></i>
@@ -739,7 +741,7 @@
                                              styleClass="text-success"
                                              process="@this"
                                              actionListener="#{dialogServicio.altaTematicas(tema.data)}"
-                                             rendered="#{!dialogServicio.isModoConsulta()}">
+                                             rendered="#{!dialogServicio.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                 <p:ajax event="dialogReturn"
                                         listener="#{dialogServicio.returnDialogTemas}" process="@this"
                                         update="messagesDialog panelTemas"/>
@@ -758,11 +760,11 @@
                         <div class="col-2">
                             <p:commandButton id="btnNormativasCol"
                                              onclick="colapsarModulo('#divNormativas','btnNormativas');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"/>
+                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" pt:aria-label="#{labels['dict.colapsar']}"/>
                             <p:commandButton id="btnNormativasExp"
                                              onclick="expandirModulo('#divNormativas','btnNormativas');"
                                              title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar"/>
+                                             styleClass="mt-2 importantOcultar" pt:aria-label="#{labels['dict.expandir']}"/>
                         </div>
                     </div>
                 </div>
@@ -791,26 +793,26 @@
                      class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogServicio.nuevaNormativa()}">
+                                     actionListener="#{dialogServicio.nuevaNormativa()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogNormativa}" process="@this"
                                 update="dataNormativaProcedimiento"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarNormativa}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog"/>
+                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogServicio.consultarNormativa}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog"/>
+                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                     <p:commandButton id="btnSubirNormativa" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogServicio.subirNormativa}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog"/>
+                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarNormativa" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogServicio.bajarNormativa}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog"/>
+                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -839,7 +841,7 @@
                         <p:commandButton id="btnAnadirTasaServicio" title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                 disabled="#{dialogServicio.isModoConsulta() or dialogServicio.data.tasaServicio != null}"
                                 process="@this"
-                                actionListener="#{dialogServicio.nuevaTasaServicio()}">
+                                actionListener="#{dialogServicio.nuevaTasaServicio()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTasaServicio}"
                             process="@this"
                             update="dataTasaServicio btnAnadirTasaServicio"/>
@@ -847,13 +849,13 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                         disabled="#{dialogServicio.isModoConsulta()}"
                                         action="#{dialogServicio.borrarTasaServicio}"
-                                        process="@this" update="dataTasaServicio messagesDialog btnAnadirTasaServicio"/>
+                                        process="@this" update="dataTasaServicio messagesDialog btnAnadirTasaServicio" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                         id="btnEditarTasaServicio"
                                         action="#{dialogServicio.editarTasaServicio}"
                                         rendered="#{!dialogServicio.isModoConsulta()}"
                                         disabled="#{dialogServicio.isModoConsulta()}"
-                                        process="@this" update="dataTasaServicio messagesDialog">
+                                        process="@this" update="dataTasaServicio messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTasaServicio}"
                                 process="@this"
                                 update="dataTasaServicio"/>
@@ -862,7 +864,7 @@
                                         id="btnConsultarTasaServicio"
                                         action="#{dialogServicio.consultarTasaServicio}"
                                         rendered="#{dialogServicio.isModoConsulta()}"
-                                        process="@this" update="dataTasaServicio messagesDialog">
+                                        process="@this" update="dataTasaServicio messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                 </div>
             </div>
@@ -874,10 +876,10 @@
                         </div>
                         <div class="col-2">
                             <p:commandButton id="btnDocsRelCol" onclick="colapsarModulo('#divDocsRel','btnDocsRel');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"/>
+                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" pt:aria-label="#{labels['dict.colapsar']}"/>
                             <p:commandButton id="btnDocsRelExp" onclick="expandirModulo('#divDocsRel','btnDocsRel');"
                                              title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar"/>
+                                             styleClass="mt-2 importantOcultar" pt:aria-label="#{labels['dict.expandir']}"/>
                         </div>
                     </div>
                 </div>
@@ -904,35 +906,35 @@
                 <div id="divDocsRelBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogServicio.nuevoDocumento()}">
+                                     actionListener="#{dialogServicio.nuevoDocumento()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumento}" process="@this"
                                 update="dataDocumentosRelacionados"/>
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarDocumento}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogServicio.editarDocumento}"
                                      rendered="#{!dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog">
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumento}" process="@this"
                                 update="dataDocumentosRelacionados"/>
                     </p:commandButton>
                     <p:commandButton id="btnConsultarDoc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogServicio.consultarDocumento}"
                                      rendered="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog">
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogServicio.subirDocumento}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogServicio.bajarDocumento}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
                 </div>
             </div>
             <!--<div class="row left-container mx-0 mb-2">-->
@@ -944,10 +946,10 @@
                         </div>
                         <div class="col-2">
                             <p:commandButton id="btnDocsLopdCol" onclick="colapsarModulo('#divDocsLopd','btnDocsLopd');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"/>
+                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" pt:aria-label="#{labels['dict.colapsar']}"/>
                             <p:commandButton id="btnDocsLopdExp" onclick="expandirModulo('#divDocsLopd','btnDocsLopd');"
                                              title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar"/>
+                                             styleClass="mt-2 importantOcultar" pt:aria-label="#{labels['dict.expandir']}"/>
                         </div>
                     </div>
                 </div>
@@ -979,7 +981,7 @@
                                      styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta() or !empty dialogServicio.data.documentosLOPD}"
                                      process="@this"
-                                     actionListener="#{dialogServicio.nuevoDocumentoLOPD()}"
+                                     actionListener="#{dialogServicio.nuevoDocumentoLOPD()}" pt:aria-label="#{labels['dict.nuevo']}"
                     >
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumentoLOPD}"
                                 process="@this"
@@ -990,12 +992,12 @@
                                      disabled="#{dialogServicio.isModoConsulta() or empty dialogServicio.data.documentosLOPD}"
                                      action="#{dialogServicio.borrarDocumentoLOPD}"
                                      process="@this"
-                                     update="dataDocumentosLopd @form:btnNuevoDocLOPD  @form:btnEliminarDocLOPD  @form:btnEditarDocLOPD messagesDialog"/>
+                                     update="dataDocumentosLopd @form:btnNuevoDocLOPD  @form:btnEliminarDocLOPD  @form:btnEditarDocLOPD messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnEditarDocLOPD" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogServicio.editarDocumentoLOPD}" styleClass=" "
                                      process="@this" update="dataDocumentosLopd messagesDialog"
                                      rendered="#{!dialogServicio.isModoConsulta()}"
-                                     disabled="#{dialogServicio.isModoConsulta() or empty dialogServicio.data.documentosLOPD}">
+                                     disabled="#{dialogServicio.isModoConsulta() or empty dialogServicio.data.documentosLOPD}" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumentoLOPD}"
                                 process="@this"
                                 update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
@@ -1004,7 +1006,7 @@
                                      action="#{dialogServicio.consultarDocumentoLOPD}" styleClass=" "
                                      process="@this" update="dataDocumentosLopd messagesDialog"
                                      rendered="#{dialogServicio.isModoConsulta()}"
-                                     readonly="#{empty dialogServicio.data.documentosLOPD}">
+                                     readonly="#{empty dialogServicio.data.documentosLOPD}" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                 </div>
             </h:panelGroup>
@@ -1150,7 +1152,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogLeft">
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
-            <p:outputLabel value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow"/>
+            <p:outputLabel value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow" pt:aria-label="#{labels['dialogServicio.estado']}:"/>
             <p:inputText id="txtWorkFlow"
                          value="#{empty dialogServicio.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogServicio.estadoProcedimiento.toString()]}"
                          styleClass="wf-field"
@@ -1164,7 +1166,7 @@
                              process="@all"
                              readonly="#{empty dialogServicio.data.codigo}"
                              update="messagesDialog"
-                                rendered="#{dialogServicio.mostrarBtnFlujo}">
+                                rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}"
@@ -1174,7 +1176,7 @@
                              process="@this"
                              readonly="#{empty dialogServicio.data.codigo}"
                              update="messagesDialog"
-                                rendered="#{dialogServicio.mostrarBtnMensajes}">
+                                rendered="#{dialogServicio.mostrarBtnMensajes}" pt:aria-label="#{labels['dict.mensajes']}">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogMensajes}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.auditorias']}"
@@ -1182,7 +1184,7 @@
                              action="#{dialogServicio.verAuditorias}"
                              styleClass="btn-footer"
                              process="@this"
-                             readonly="#{empty dialogServicio.data.codigo}"
+                             readonly="#{empty dialogServicio.data.codigo}" pt:aria-label="#{labels['dict.auditorias']}"
             />
         </div>
 
@@ -1190,24 +1192,24 @@
                          header="#{labels['dict.aviso']}!"
                          widgetVar="cdSalirSinGuardar">
             <p:commandButton value="#{labels['dict.si']}" onclick="confirmation.hide()"
-                             action="#{dialogServicio.cerrarSinCheck()}" update="messagesDialog"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()"/>
+                             action="#{dialogServicio.cerrarSinCheck()}" update="messagesDialog" pt:aria-label="#{labels['dict.si']}"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogServicio.cerrarSinCheck()}" process="@this"
-                             update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardar').hide();"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();"/>
+                             update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.si']}"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardarSIA.mensaje']}"
                          widgetVar="cdSalirSinGuardarSIA">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogServicio.enviarSIAsincomprobar()}"
-                             process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardarSIA').hide();"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();"/>
+                             process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.si']}"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
     </ui:define>
@@ -1216,10 +1218,10 @@
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales"
                          rendered="#{dialogServicio.mostrarBotonGuardar()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogServicio.cerrar}"
                          value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 
     </ui:define>
 </ui:composition>

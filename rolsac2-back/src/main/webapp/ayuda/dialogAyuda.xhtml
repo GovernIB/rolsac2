@@ -4,7 +4,9 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:my="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:my="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -32,13 +34,13 @@
 	</h:form>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton value="#{labels['dict.editar']}" actionListener="#{dialogAyuda.editar()}" process="@form" update="@form dialogAyuda:growlDialog" rendered="#{sessionBean.tienePermisoSuperAdmin()}">
+        <p:commandButton value="#{labels['dict.editar']}" actionListener="#{dialogAyuda.editar()}" process="@form" update="@form dialogAyuda:growlDialog" rendered="#{sessionBean.tienePermisoSuperAdmin()}" pt:aria-label="#{labels['dict.editar']}">
 			<p:ajax event="dialogReturn"
 					listener="#{dialogAyuda.returnDialogo}"
 					process="@this"
 					update="formDialog:dialogAyuda:txtDescripcion" />
 		</p:commandButton>
-		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogAyuda.cerrar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()"/>
+		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogAyuda.cerrar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

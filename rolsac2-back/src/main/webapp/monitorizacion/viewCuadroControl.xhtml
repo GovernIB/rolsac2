@@ -5,6 +5,8 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:my="http://java.sun.com/jsf/composite/components"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -44,13 +46,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                      icon="pi pi-sitemap"
                                                      styleClass="w40px h25px iconoUAselector ml-2"
                                                      value=" "
-                                                     process="@this">
+                                                     process="@this" pt:aria-label=" ">
                                         <p:ajax event="dialogReturn" listener="#{viewCuadroControl.returnDialogoUA}"
                                                 process="@this"
                                                 update="uaSeleccionada contenidos statsSemana statsMensuales"/>
                                     </p:commandButton>
                                     <h:outputLabel value="#{labels['viewCuadroControl.seleccionUA']}"
-                                                   for="uaGeneral"></h:outputLabel>
+                                                   for="uaGeneral" pt:aria-label="#{labels['viewCuadroControl.seleccionUA']}"></h:outputLabel>
                                 </div>
                                 <div class="col-12 text-center">
                                     <p:selectBooleanCheckbox value="#{viewCuadroControl.buscarTodo}"
@@ -64,7 +66,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         <div class="col-12 col-md-8 my-auto">
                             <h:panelGroup id="panelSeleccionada">
                                 <h:outputLabel value="#{labels['viewCuadroControl.uaSeleccionada']}: "
-                                               for="uaSeleccionada"/>
+                                               for="uaSeleccionada" pt:aria-label="#{labels['viewCuadroControl.uaSeleccionada']}: "/>
                                 <p:inputText id="uaSeleccionada"
                                              value="#{viewCuadroControl.buscarTodo ? labels['viewCuadroControl.todas'] : viewCuadroControl.uaSeleccionada.nombre.getTraduccion(viewCuadroControl.idioma)}"
                                              disabled="true" styleClass="w-50 ml-2"></p:inputText>
@@ -100,7 +102,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:column styleClass="w10">
                                 <p:commandButton icon="pi pi-eye" styleClass="ml-2"
                                                  actionListener="#{viewCuadroControl.consultarProcedimiento(dto.idAuditado)}"
-                                                 process="@this"/>
+                                                 process="@this" pt:aria-label="Boton"/>
                             </p:column>
                         </p:dataTable>
 
@@ -129,7 +131,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                             <p:column styleClass="w10">
                                 <p:commandButton icon="pi pi-eye" styleClass="ml-2"
                                                  actionListener="#{viewCuadroControl.consultarServicio(dto.idAuditado)}"
-                                                 process="@this"/>
+                                                 process="@this" pt:aria-label="Boton"/>
                             </p:column>
                         </p:dataTable>
                     </p:panel>

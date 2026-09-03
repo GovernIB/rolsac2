@@ -5,6 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -31,7 +33,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogDocumentoProcedimientoLOPD.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -50,20 +52,20 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.plantilla']}:"  />
+                    <p:outputLabel value="#{labels['dict.plantilla']}:" pt:aria-label="#{labels['dict.plantilla']}:"  />
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <c:forEach items="#{sessionBean.getIdiomasPermitidosList()}" var="idioma">
                         <p:column rendered="#{!empty sessionBean.entidad.lopdPlantilla.getTraduccion(idioma)}">
                             <h:outputLink value="#{sessionBean.entidad.lopdPlantilla.getTraduccion(idioma)}" style="margin-right:15px;font-weight: bold; color: #177ff0;" target="_blank">
-                                <p:outputLabel value="#{labels['dict.' += idioma]}" />
+                                <p:outputLabel value="#{labels['dict.' += idioma]}" pt:aria-label="#{labels['dict.' += idioma]}" />
                             </h:outputLink>
                         </p:column>
                     </c:forEach>
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.documento']}*:"/>
+                    <p:outputLabel value="#{labels['dict.documento']}*:" pt:aria-label="#{labels['dict.documento']}*:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-4">
                     <p:panel id="documentosMulti">
@@ -90,13 +92,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         <p:commandButton id="logoDescarga"
                                                          value="#{dialogDocumentoProcedimientoLOPD.getFileName(idioma)}"
                                                          ajax="false" process="@this"
-                                                         icon="pi pi-arrow-down">
+                                                         icon="pi pi-arrow-down" pt:aria-label="#{dialogDocumentoProcedimientoLOPD.getFileName(idioma)}">
                                             <p:fileDownload
                                                     value="#{dialogDocumentoProcedimientoLOPD.obtenerDocumento(idioma)}"></p:fileDownload>
                                         </p:commandButton>
                                         <p:commandButton actionListener="#{dialogDocumentoProcedimientoLOPD.eliminarDocumento(idioma)}"
                                                          disabled="#{dialogDocumentoProcedimientoLOPD.isModoConsulta()}"
-                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
+                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}" pt:aria-label="Boton"
                                         ></p:commandButton>
                                     </c:otherwise>
                                 </c:choose>
@@ -114,10 +116,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"
-                         disabled="#{dialogDocumentoProcedimientoLOPD.isModoConsulta()}"/>
+                         disabled="#{dialogDocumentoProcedimientoLOPD.isModoConsulta()}" pt:aria-label="#{labels['dict.aceptar']}"/>
         <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 
     </ui:define>
 

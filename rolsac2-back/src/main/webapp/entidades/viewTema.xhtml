@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:my="http://java.sun.com/jsf/composite/components">
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -31,7 +33,7 @@
         <h:form id="form">
             <p:commandButton value="#{labels['viewTema.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewTema.buscar}"
-                             update="dataTable"/>
+                             update="dataTable" pt:aria-label="#{labels['viewTema.actualizar']}"/>
             <p:panel id="panel" styleClass="panelSinBotonToggle" toggleSpeed="500" toggleable="true" closeSpeed="500"
                      widgetVar="panel" collapsed="true">
                 <f:facet name="header">
@@ -41,19 +43,19 @@
                         <div class="ui-g-12 ui-md-11 ui-lg-11 text-right">
                             <p:commandButton value="#{labels['dict.nuevo']}" icon="pi pi-file-o" iconPos="top"  styleClass="mr-2"
                                              actionListener="#{viewTema.nuevoTema}"
-                                             process="@form">
+                                             process="@form" pt:aria-label="#{labels['dict.nuevo']}">
                                 <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top"  styleClass="mr-2"
                                              actionListener="#{viewTema.editarTema}"
-                                             process="@form" update="messages">
+                                             process="@form" update="messages" pt:aria-label="#{labels['dict.editar']}">
                                 <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
                                         update="messages dataTable"/>
                             </p:commandButton>
                             <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top"  styleClass="mr-2"
                                              action="#{viewTema.borrarTema}"
-                                             process="@form" update="messages dataTable">
+                                             process="@form" update="messages dataTable" pt:aria-label="#{labels['dict.borrar']}">
                                 <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                             </p:commandButton>
                         </div>
@@ -94,7 +96,7 @@
                         <p:panel rendered="#{viewTema.temaConsulta != null}" header="#{labels['dialogTema.consulta']}" styleClass="mx-2">
                             <div class="row">
                                 <div class="ui-g-12 ui-md-3">
-                                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                                 </div>
                                 <div class="ui-g-12 ui-md-9 ">
                                     <p:inputText id="txtCodigo" value="#{viewTema.temaConsulta.codigo}"
@@ -102,7 +104,7 @@
                                 </div>
 
                                 <div class="ui-g-12 ui-md-3">
-                                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"/>
                                 </div>
                                 <div class="ui-g-12 ui-md-9">
                                     <p:inputText id="txtIdentificador" value="#{viewTema.temaConsulta.identificador}"
@@ -112,7 +114,7 @@
                                     </p:inputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-3">
-                                    <h:outputText value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre"/>
+                                    <p:outputLabel value="#{labels['dialogTema.temaPadre']}:" for="txtTemaPadre" pt:aria-label="#{labels['dialogTema.temaPadre']}:"/>
                                 </div>
 
                                 <div class="ui-g-12 ui-md-9 ">
@@ -122,7 +124,7 @@
                                 </div>
 
                                 <div class="ui-g-12 ui-md-3">
-                                    <h:outputText value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"/>
                                 </div>
                                 <div class="ui-g-12 ui-md-9">
                                     <p:inputText id="inputDescripcion"
@@ -144,7 +146,7 @@
             </h:outputScript>
             <p:commandButton id="btnConsultaHidden" name="btnConsultaHidden" widgetVar="btnConsultarHidden"
                              actionListener="#{viewTema.consultarTema}"
-                             process="@this" update="messages" style="display: none">
+                             process="@this" update="messages" style="display: none" pt:aria-label="btnConsultaHidden">
                 <p:ajax event="dialogReturn" listener="#{viewTema.returnDialogo}"
                         update="messages dataTable"/>
             </p:commandButton>

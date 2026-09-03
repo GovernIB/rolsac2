@@ -6,6 +6,8 @@
 		xmlns:ui="http://java.sun.com/jsf/facelets"
 		xmlns:cc="http://java.sun.com/jsf/composite"
 		xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+		xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+
 >
 	<cc:interface componentType="literalComponent">
 		<cc:attribute name="value" type="es.caib.rolsac2.service.model.Literal" shortDescription="El literal."/>
@@ -109,7 +111,7 @@
 			 <p:commandButton id="textoHTMLprocess"
 							  action="#{cc.actualizarLiteral()}"
 							  process="@this textoHTML"
-							  style="display:none;">
+							  style="display:none;" pt:aria-label="textoHTMLprocess">
 			</p:commandButton>
 
             <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>

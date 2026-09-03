@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns="http://www.w3.org/1999/xhtml"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -41,7 +43,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      style="margin-left:10px"
                      update="messagesDialog"
                      process="@this"
-                     rendered="#{!dialogTipoMediaEdificio.isModoConsulta() and dialogTipoMediaEdificio.tradExiste()}"/>
+                     rendered="#{!dialogTipoMediaEdificio.isModoConsulta() and dialogTipoMediaEdificio.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}"/>
   </ui:define>
 
   <ui:define name="contentDialog">
@@ -55,7 +57,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
       <div class="row">
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo" />
+          <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:" />
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtCodigo" value="#{dialogTipoMediaEdificio.data.codigo}"
@@ -63,7 +65,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
 
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+          <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"/>
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <p:inputText id="txtIdentificador" value="#{dialogTipoMediaEdificio.data.identificador}"
@@ -77,7 +79,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
         </div>
         <div class="ui-g-12 ui-md-2 ui-lg-1">
-          <h:outputText value="#{labels['dict.descripcion']}:*" for="inputDescripcion"/>
+          <p:outputLabel value="#{labels['dict.descripcion']}:*" for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:*"/>
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
           <my:literalComponent id="inputDescripcion" literal="#{dialogTipoMediaEdificio.data.descripcion}"
@@ -93,7 +95,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </p:panel>
 
     <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
-                     update="messagesDialog form"/>
+                     update="messagesDialog form" pt:aria-label="growlMessage"/>
     <script>
       function validatePaste(event, regex) {
         const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
@@ -110,19 +112,19 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
   <ui:define name="contentFooterDialogRight">
     <p:commandButton action="#{dialogTipoMediaEdificio.guardar}" validateClient="true"
                      value="#{labels['dict.guardar']}" update="messagesDialog"
-                     process="@all"/>
+                     process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
     <p:commandButton action="#{dialogTipoMediaEdificio.cerrar}"
                      value="#{labels['dict.cerrar']}" update="messagesDialog"
-                     process="@this">
+                     process="@this" pt:aria-label="#{labels['dict.cerrar']}">
          <!-- <p:confirm header="Confirmation" message="Tienes cambios pendientes, ¿quieres guardarlos?" icon="pi pi-exclamation-triangle" disabled="#{!dialogTipoMediaEdificio.isActualizadoSinGuardar()}" />-->
 
     </p:commandButton>
     <!--<p:confirmDialog global="true" widgetVar="cd">
-      <p:commandButton value="Cancelar" onclick="PF('cd').hide();" type="button" />
+      <p:commandButton value="Cancelar" onclick="PF('cd').hide();" type="button" pt:aria-label="Cancelar" />
       <p:commandButton value="No" action="#{dialogTipoMediaEdificio.cerrar}" validateClient="false"
-                       update="messagesDialog" oncomplete="PF('cd').hide()"/>
+                       update="messagesDialog" oncomplete="PF('cd').hide()" pt:aria-label="No"/>
       <p:commandButton value="Sí" actionListener="#{dialogTipoMediaEdificio.guardar}"
-                       update="messagesDialog" oncomplete="PF('cd').hide()"/>
+                       update="messagesDialog" oncomplete="PF('cd').hide()" pt:aria-label="Sí"/>
     </p:confirmDialog> -->
   </ui:define>
 

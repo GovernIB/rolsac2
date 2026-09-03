@@ -6,6 +6,8 @@
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
 
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -32,7 +34,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:3px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:3px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogEntidad.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -44,7 +46,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          style="margin-left:10px"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogEntidad.isModoConsulta() and dialogEntidad.tradExiste()}">
+                         rendered="#{!dialogEntidad.isModoConsulta() and dialogEntidad.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogEntidad.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
         </p:commandButton>-->
@@ -67,7 +69,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogEntidad.data.codigo}"
@@ -78,7 +80,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.identificador']}:"
-                                   for="txtIdentificador"
+                                   for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -106,7 +108,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.descripcion']}:"
-                                   for="inputDescripcion"
+                                   for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"
                     />
                 </div>
 
@@ -128,7 +130,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dialogEntidad.rol.admin']}:"
-                                   for="txtRolAdmin"
+                                   for="txtRolAdmin" pt:aria-label="#{labels['dialogEntidad.rol.admin']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -141,7 +143,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dialogEntidad.rol.adminContenido']}:"
-                                   for="txtRolAdminContenido"
+                                   for="txtRolAdminContenido" pt:aria-label="#{labels['dialogEntidad.rol.adminContenido']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -154,7 +156,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dialogEntidad.rol.gestor']}:"
-                                   for="txtRolGestor"
+                                   for="txtRolGestor" pt:aria-label="#{labels['dialogEntidad.rol.gestor']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -167,7 +169,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dialogEntidad.rol.informador']}:"
-                                   for="txtRolInformador"
+                                   for="txtRolInformador" pt:aria-label="#{labels['dialogEntidad.rol.informador']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -183,7 +185,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.activa']}:" for="txtActiva"/>
+                    <p:outputLabel value="#{labels['dialogEntidad.activa']}:" for="txtActiva" pt:aria-label="#{labels['dialogEntidad.activa']}:"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -196,7 +198,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <!--<div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto"/>
+                    <p:outputLabel value="#{labels['dialogEntidad.idioma.defecto']}:" for="txtIdiomaDefecto" pt:aria-label="#{labels['dialogEntidad.idioma.defecto']}:"/>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectOneMenu id="txtIdiomaDefecto" value="#{dialogEntidad.data.idiomaDefectoRest}"
                                      styleClass="w96"
@@ -210,11 +212,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <!--<div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogEntidad.logo']}:" for=""/>
+                    <p:outputLabel value="#{labels['dialogEntidad.logo']}:" for="" pt:aria-label="#{labels['dialogEntidad.logo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4" >
                     <c:if test="#{dialogEntidad.isModoAlta()}">
-                        <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
+                        <p:outputLabel value="El componente de ficheros sólo está activo cuando el elemento haya sido creado." pt:aria-label="El componente de ficheros sólo está activo cuando el elemento haya sido creado."/>
                     </c:if>
                     <c:if test="#{!dialogEntidad.isModoAlta()}">
                         <p:panel id="logo" styleClass="logo-form w96">
@@ -236,11 +238,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                 <c:otherwise>
                                     <p:commandButton id="logoDescarga" value="#{dialogEntidad.data.logo.filename}"
                                                      ajax="false" process="@this"
-                                                     icon="pi pi-arrow-down">
+                                                     icon="pi pi-arrow-down" pt:aria-label="#{dialogEntidad.data.logo.filename}">
                                         <p:fileDownload value="#{dialogEntidad.obtenerLogo()}" ></p:fileDownload>
                                     </p:commandButton>
                                     <p:commandButton actionListener="#{dialogEntidad.eliminarLogo()}" icon="pi pi-times"
-                                                     update="formDialog:logo"></p:commandButton>
+                                                     update="formDialog:logo" pt:aria-label="Boton"></p:commandButton>
                                 </c:otherwise>
                             </c:choose>
                         </p:panel>
@@ -269,14 +271,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentFooterDialogRight">
 		<p:commandButton action="#{dialogEntidad.guardar}"
 			value="#{labels['dict.guardar']}" update="messagesDialog form"
-			process="@all" />
+			process="@all" pt:aria-label="#{labels['dict.guardar']}" />
 		<p:commandButton id="closeButton" action="#{dialogEntidad.cerrar}" update="messagesDialog" process="@all"
-		    value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()">
+		    value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}">
 		</p:commandButton>
 
 		<p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-			<p:commandButton value="#{labels['dict.si']}" action="#{dialogEntidad.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"  />
-			<p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"  />
+			<p:commandButton value="#{labels['dict.si']}" action="#{dialogEntidad.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.si']}"  />
+			<p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.no']}"  />
 		</p:confirmDialog>
 	</ui:define>
 

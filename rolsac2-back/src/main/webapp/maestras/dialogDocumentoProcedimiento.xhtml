@@ -5,6 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -34,7 +36,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogDocumentoProcedimiento.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -46,7 +48,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          style="margin-left:10px; height: 35px;"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogDocumentoProcedimiento.isModoConsulta() and dialogDocumentoProcedimiento.tradExiste()}"/>
+                         rendered="#{!dialogDocumentoProcedimiento.isModoConsulta() and dialogDocumentoProcedimiento.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}"/>
     </ui:define>
 
     <ui:define name="contentDialog">
@@ -60,7 +62,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                    <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo" pt:aria-label="#{labels['dict.titulo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="txtTitulo"
@@ -77,7 +79,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     </my:literalComponent>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}: " for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}: " for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}: "/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalAreaComponent id="inputDescripcion"
@@ -93,7 +95,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.documento']}: "/>
+                    <p:outputLabel value="#{labels['dict.documento']}: " pt:aria-label="#{labels['dict.documento']}: "/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-4">
                     <p:panel id="documentosMulti">
@@ -121,13 +123,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         <p:commandButton id="logoDescarga"
                                                          value="#{dialogDocumentoProcedimiento.getFileName(idioma)}"
                                                          ajax="false" process="@this"
-                                                         icon="pi pi-arrow-down">
+                                                         icon="pi pi-arrow-down" pt:aria-label="#{dialogDocumentoProcedimiento.getFileName(idioma)}">
                                             <p:fileDownload
                                                     value="#{dialogDocumentoProcedimiento.obtenerDocumento(idioma)}"></p:fileDownload>
                                         </p:commandButton>
                                         <p:commandButton actionListener="#{dialogDocumentoProcedimiento.eliminarDocumento(idioma)}"
                                                          disabled="#{dialogDocumentoProcedimiento.isModoConsulta()}"
-                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
+                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}" pt:aria-label="Boton"
                                         ></p:commandButton>
                                     </c:otherwise>
                                 </c:choose>
@@ -145,10 +147,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogDocumentoProcedimiento.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"
-                         disabled="#{dialogDocumentoProcedimiento.isModoConsulta()}"/>
+                         disabled="#{dialogDocumentoProcedimiento.isModoConsulta()}" pt:aria-label="#{labels['dict.aceptar']}"/>
         <p:commandButton action="#{dialogDocumentoProcedimiento.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 
     </ui:define>
     <style>

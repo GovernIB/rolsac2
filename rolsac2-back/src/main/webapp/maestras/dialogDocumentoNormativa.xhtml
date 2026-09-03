@@ -5,6 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -29,7 +31,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogDocumentoNormativa.idioma}" styleClass="botoneraRed">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -41,7 +43,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          style="margin-left:10px; height: 35px;"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogDocumentoNormativa.isModoConsulta() and dialogDocumentoNormativa.tradExiste()}">
+                         rendered="#{!dialogDocumentoNormativa.isModoConsulta() and dialogDocumentoNormativa.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogDocumentoNormativa.returnDialogTraducir}" process="@this"
                     update="formDialog:txtTitulo formDialog:inputDescripcion formDialog:txtUrl"/>
         </p:commandButton>
@@ -58,7 +60,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                    <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo" pt:aria-label="#{labels['dict.titulo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="txtTitulo"
@@ -74,7 +76,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalAreaComponent id="inputDescripcion" styleClass="w95"
@@ -91,7 +93,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.url']}:" for="txtUrl"/>
+                    <p:outputLabel value="#{labels['dict.url']}:" for="txtUrl" pt:aria-label="#{labels['dict.url']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="txtUrl" styleClass="w95"
@@ -107,7 +109,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogDocumentoNormativa.documento']}:"/>
+                    <p:outputLabel value="#{labels['dialogDocumentoNormativa.documento']}:" pt:aria-label="#{labels['dialogDocumentoNormativa.documento']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-4">
                     <p:panel id="documentosMulti">
@@ -133,12 +135,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                         <p:commandButton id="logoDescarga"
                                                          value="#{dialogDocumentoNormativa.getFileName(idioma)}"
                                                          ajax="false" process="@this"
-                                                         icon="pi pi-arrow-down">
+                                                         icon="pi pi-arrow-down" pt:aria-label="#{dialogDocumentoNormativa.getFileName(idioma)}">
                                             <p:fileDownload
                                                     value="#{dialogDocumentoNormativa.obtenerDocumento(idioma)}"></p:fileDownload>
                                         </p:commandButton>
                                         <p:commandButton actionListener="#{dialogDocumentoNormativa.eliminarDocumento(idioma)}"
-                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}"
+                                                         icon="pi pi-times" process="@this" update="formDialog:#{labels['dialog.doc.txt.' += idioma]}" pt:aria-label="Boton"
                                         ></p:commandButton>
                                     </c:otherwise>
                                 </c:choose>
@@ -156,10 +158,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogDocumentoNormativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          process="@all"
-                         disabled="#{dialogDocumentoNormativa.isModoConsulta()}"/>
+                         disabled="#{dialogDocumentoNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogDocumentoNormativa.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 
     </ui:define>
 

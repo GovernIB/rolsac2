@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Página con el detalle de un TipoPublicoObjetivoEntidad
@@ -29,7 +31,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoPublicoObjetivoEntidad.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -41,7 +43,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
                          style="margin-left:10px"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta() and dialogTipoPublicoObjetivoEntidad.tradExiste()}">
+                         rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta() and dialogTipoPublicoObjetivoEntidad.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoPublicoObjetivoEntidad.returnDialogTraducir}" process="@this" update="formDialog:inputDescripcion"/>
         </p:commandButton>
     </ui:define>
@@ -61,7 +63,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.identificador']}"
-                                   for="ident"
+                                   for="ident" pt:aria-label="#{labels['dict.identificador']}"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -79,7 +81,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
 
                 <div class="ui-g-12  ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:"
-                                  for="tipoPubObjetivo"
+                                  for="tipoPubObjetivo" pt:aria-label="#{labels['dialogPublicoObjetivoEntidad.tipoPublicoObjetivo']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -99,7 +101,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
                     <p:outputLabel value="#{labels['dict.descripcion']}:"
-                                   for="inputDescripcion"
+                                   for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"
                     />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -119,7 +121,7 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
         </p:panel>
 
         <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
-                         update="messagesDialog form"/>
+                         update="messagesDialog form" pt:aria-label="growlMessage"/>
         <script>
             function validatePaste(event, regex) {
                 const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
@@ -135,13 +137,13 @@ Página con el detalle de un TipoPublicoObjetivoEntidad
         <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoPublicoObjetivoEntidad.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogTipoPublicoObjetivoEntidad.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-            <p:commandButton value="Sí" process="@this" action="#{dialogTipoPublicoObjetivoEntidad.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="Sí" process="@this" action="#{dialogTipoPublicoObjetivoEntidad.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"  />
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"  />
         </p:confirmDialog>
 
     </ui:define>

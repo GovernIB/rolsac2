@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -24,7 +26,7 @@
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag mt-1" style="padding-top:5px" />
-        <p:outputLabel value="#{labels['dict.idioma']}:" styleClass="mr-1"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" styleClass="mr-1" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogNormativa.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -39,7 +41,7 @@
                          style="margin-left:10px; height:35px;"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogNormativa.isModoConsulta() and dialogNormativa.tradExiste()}">
+                         rendered="#{!dialogNormativa.isModoConsulta() and dialogNormativa.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtUrlBoletin formDialog:txtNombreResponsable" />
         </p:commandButton>
@@ -82,7 +84,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-10">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.titulo']}:"
-                                       for="txtNombre"/>
+                                       for="txtNombre" pt:aria-label="#{labels['dialogNormativa.titulo']}:"/>
                         <my:literalAreaComponent id="txtNombre"
                                              literal="#{dialogNormativa.data.titulo}"
                                              soloLecture="#{dialogNormativa.isModoConsulta()}"
@@ -96,13 +98,13 @@
                         </my:literalAreaComponent>
                     </div>
                     <div class="form-group col-md-2">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                         <p:inputText id="txtCodigo" value="#{dialogNormativa.data.codigo}"
                                      styleClass="w95" readonly="true" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.tipoNormativa']}:"
-                                       for="selectTipoNormativa"/>
+                                       for="selectTipoNormativa" pt:aria-label="#{labels['dialogNormativa.tipoNormativa']}:"/>
                         <p:selectOneMenu id="selectTipoNormativa" value="#{dialogNormativa.data.tipoNormativa}"
                                          styleClass="w95 custom-select-menu" required="#{empty param['formDialog:closeButton']}"
                                          requiredMessage="#{labels['dict.obligatorio.tipoNormativa']}"
@@ -119,7 +121,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p class="mb-0">
-                            <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                            <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.numero']}:" for="txtNumero" pt:aria-label="#{labels['dialogNormativa.numero']}:"/>
                         </p>
                         <p:inputText id="txtNumero" value="#{dialogNormativa.data.numero}"
                                      placeholder="NNNNN/YYYY"
@@ -132,7 +134,7 @@
                         <p class="mb-0">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                            value="#{labels['dialogNormativa.fechaAprobacion']}:"
-                                           for="txtFechaAprobacion"/>
+                                           for="txtFechaAprobacion" pt:aria-label="#{labels['dialogNormativa.fechaAprobacion']}:"/>
                         </p>
                         <p:datePicker showIcon="#{!dialogNormativa.isModoConsulta()}"  id="txtFechaAprobacion" readonly="#{dialogNormativa.isModoConsulta()}"
                                       locale="#{sessionBean.lang}" requiredMessage="#{labels['dict.obligatorio.fechaAprobacion']}"
@@ -147,7 +149,7 @@
 
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0"
                                        value="#{labels['dialogNormativa.boletinOficial']}:"
-                                       for="selectBoletinOficial"/>
+                                       for="selectBoletinOficial" pt:aria-label="#{labels['dialogNormativa.boletinOficial']}:"/>
 
                         <p:selectOneMenu id="selectBoletinOficial" value="#{dialogNormativa.data.boletinOficial}"
                                          styleClass="w95 custom-select-menu" required="#{empty param['formDialog:closeButton']}"
@@ -161,14 +163,14 @@
                         </p:selectOneMenu>
                     </div>
                     <div class="form-group col-md-4">
-                        <p:outputLabel value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin" styleClass="mr-2 mb-1 pt-0"/>
+                        <p:outputLabel value="#{labels['dialogNormativa.numeroBoletin']}:" for="txtNumeroBoletin" styleClass="mr-2 mb-1 pt-0" pt:aria-label="#{labels['dialogNormativa.numeroBoletin']}:"/>
                         <p:inputText id="txtNumeroBoletin" value="#{dialogNormativa.data.numeroBoletin}"
                                      styleClass="w95" placeholder="XXX/YYYY"
                                      readonly="#{dialogNormativa.isModoConsulta()}" maxlength="50"/>
                     </div>
                     <div class="form-group col-md-4">
                             <p:outputLabel  value="#{labels['dialogNormativa.fechaBoletin']}:" styleClass="mb-1 pt-0 mt-0"
-                                          for="txtFechaBoletin"/>
+                                          for="txtFechaBoletin" pt:aria-label="#{labels['dialogNormativa.fechaBoletin']}:"/>
                         <p>
                             <p:datePicker showIcon="#{!dialogNormativa.isModoConsulta()}"  id="txtFechaBoletin" readonly="#{dialogNormativa.isModoConsulta()}"
                                           locale="#{sessionBean.lang}" value="#{dialogNormativa.data.fechaBoletin}" pattern="dd/MM/yyyy" showOn="button"/>
@@ -179,7 +181,7 @@
                     <div class="form-group col-md-12">
 
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0" value="#{labels['dialogNormativa.urlBoletin']}:"
-                                       for="txtUrlBoletin"/>
+                                       for="txtUrlBoletin" pt:aria-label="#{labels['dialogNormativa.urlBoletin']}:"/>
 
                         <my:literalAreaComponent id="txtUrlBoletin"
                                              literal="#{dialogNormativa.data.urlBoletin}"
@@ -196,7 +198,7 @@
                     <div class="form-group col-md-12">
                         <p class="mb-1">
                             <p:outputLabel value="#{labels['dialogNormativa.nombreResponsable']}:"
-                                          for="txtNombreResponsable"/>
+                                          for="txtNombreResponsable" pt:aria-label="#{labels['dialogNormativa.nombreResponsable']}:"/>
                         </p>
                         <my:literalComponent id="txtNombreResponsable"
                                              literal="#{dialogNormativa.data.nombreResponsable}"
@@ -218,8 +220,8 @@
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.documentos']}</p>
                     </div>
                     <div class="col-2">
-                        <p:commandButton id="btnDocsCol" onclick="colapsarModulo('#divDocs','btnDocs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
-                        <p:commandButton id="btnDocsExp" onclick="expandirModulo('#divDocs','btnDocs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnDocsCol" onclick="colapsarModulo('#divDocs','btnDocs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                        <p:commandButton id="btnDocsExp" onclick="expandirModulo('#divDocs','btnDocs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.expandir']}" />
                     </div>
                 </div>
                 <div id="divDocs" class="col-10 p-1">
@@ -253,7 +255,7 @@
                 <div id="divDocsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" process="@this"
                                      actionListener="#{dialogNormativa.abrirDocumentoRelacionado()}" icon="pi pi-plus"
-                                     styleClass="text-success" rendered="#{!dialogNormativa.isModoConsulta()}">
+                                     styleClass="text-success" rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <!--Ajax para coger el return del dialog-->
                         <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoDocumento}"
                                 update="formDialog:dataDocumentosRelacionados"/>
@@ -261,17 +263,17 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" process="@this"
                                      actionListener="#{dialogNormativa.borrarDocumentoRelacionado()}" icon="pi pi-minus"
                                      styleClass="text-danger" rendered="#{!dialogNormativa.isModoConsulta()}"
-                                     update="formDialog:dataDocumentosRelacionados">
+                                     update="formDialog:dataDocumentosRelacionados" pt:aria-label="#{labels['dict.eliminar']}">
                     </p:commandButton>
                     <p:commandButton title="#{labels['dict.consultar']}" process="@this"
                                      actionListener="#{dialogNormativa.consultarDocumentoRelacionado()}"
-                                     icon="pi pi-eye" rendered="#{dialogNormativa.isModoConsulta()}">
+                                     icon="pi pi-eye" rendered="#{dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.consultar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoDocumento}"
                                 update="formDialog:dataDocumentosRelacionados"/>
                     </p:commandButton>
                     <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" process="@this"
                                      actionListener="#{dialogNormativa.editarDocumentoRelacionado()}"
-                                     icon="pi pi-pencil" rendered="#{!dialogNormativa.isModoConsulta()}">
+                                     icon="pi pi-pencil" rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoDocumento}"
                                 update="formDialog:dataDocumentosRelacionados"/>
                     </p:commandButton>
@@ -285,8 +287,8 @@
                             <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.uaRelacionadas']}</p>
                         </div>
                         <div class="col-2">
-                            <p:commandButton id="btnUAsCol" onclick="colapsarModulo('#divUAs','btnUAs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
-                            <p:commandButton id="btnUAsExp" onclick="expandirModulo('#divUAs','btnUAs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                            <p:commandButton id="btnUAsCol" onclick="colapsarModulo('#divUAs','btnUAs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                            <p:commandButton id="btnUAsExp" onclick="expandirModulo('#divUAs','btnUAs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.expandir']}" />
                         </div>
                     </div>
                     <div id="divUAs" class="col-10 p-1">
@@ -315,17 +317,17 @@
                     <div id="divUAsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          process="@this" actionListener="#{dialogNormativa.anyadirUAs()}"
-                                         rendered="#{!dialogNormativa.isModoConsulta()}">
+                                         rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoUAs}" process="@this"
                                     update="messagesDialog dataTableUAs"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          action="#{dialogNormativa.borrarUA()}"
                                          process="@this" update="dataTableUAs messagesDialog"
-                                         rendered="#{!dialogNormativa.isModoConsulta()}"/>
+                                         rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnConsultarUA" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogNormativa.consultarUA()}"
-                                         process="@this" update="dataTableUAs messagesDialog"/>
+                                         process="@this" update="dataTableUAs messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                     </div>
                 </div>
             </c:if>
@@ -335,8 +337,8 @@
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.procedimientos']}</p>
                     </div>
                     <div class="col-2">
-                        <p:commandButton id="btnProcsCol" onclick="colapsarModulo('#divProcs','btnProcs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
-                        <p:commandButton id="btnProcsExp" onclick="expandirModulo('#divProcs','btnProcs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnProcsCol" onclick="colapsarModulo('#divProcs','btnProcs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                        <p:commandButton id="btnProcsExp" onclick="expandirModulo('#divProcs','btnProcs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.expandir']}" />
                     </div>
                 </div>
                 <div id="divProcs" class="col-10 p-1">
@@ -366,7 +368,7 @@
                 <div id="divProcsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton id="btnConsultarProc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogNormativa.consultarProcs()}"
-                                     process="@this" update="dataProcedimientosRelacionados messagesDialog"/>
+                                     process="@this" update="dataProcedimientosRelacionados messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -375,8 +377,8 @@
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.servicios']}</p>
                     </div>
                     <div class="col-2">
-                        <p:commandButton id="btnServsCol" onclick="colapsarModulo('#divServs','btnServs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
-                        <p:commandButton id="btnServsExp" onclick="expandirModulo('#divServs','btnServs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnServsCol" onclick="colapsarModulo('#divServs','btnServs');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                        <p:commandButton id="btnServsExp" onclick="expandirModulo('#divServs','btnServs');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.expandir']}" />
                     </div>
                 </div>
                 <div id="divServs" class="col-10 p-1">
@@ -406,7 +408,7 @@
                 <div id="divServsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton id="btnConsultarServ" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogNormativa.consultarServicio()}"
-                                     process="@this" update="dataServiciosRelacionados messagesDialog"/>
+                                     process="@this" update="dataServiciosRelacionados messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -415,8 +417,8 @@
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
                     </div>
                     <div class="col-2">
-                        <p:commandButton id="btnAfectsCol" onclick="colapsarModulo('#divAfects','btnAfects');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" />
-                        <p:commandButton id="btnAfectsExp" onclick="expandirModulo('#divAfects','btnAfects');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" />
+                        <p:commandButton id="btnAfectsCol" onclick="colapsarModulo('#divAfects','btnAfects');" title="#{labels['dict.colapsar']}" icon="pi pi-minus"  styleClass="mt-2" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.colapsar']}" />
+                        <p:commandButton id="btnAfectsExp" onclick="expandirModulo('#divAfects','btnAfects');" title="#{labels['dict.expandir']}" icon="pi pi-plus"  styleClass="mt-2 importantOcultar" style="margin-left:14px;margin-bottom:10px;" pt:aria-label="#{labels['dict.expandir']}" />
                     </div>
                 </div>
                 <div id="divAfects" class="col-10 p-1">
@@ -447,7 +449,7 @@
                     <p:commandButton id="btnAbrirAfect" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                      styleClass="text-success"
                                      process="@this" actionListener="#{dialogNormativa.abrirAfectacion}"
-                                     rendered="#{!dialogNormativa.isModoConsulta()}">
+                                     rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogNormativa.returnDialogoAfectacion}"
                                 process="@this"
                                 update="messagesDialog dataAfectacionesRelacionadas"/>
@@ -455,10 +457,10 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogNormativa.borrarAfectacion()}"
                                      process="@this" update="dataAfectacionesRelacionadas messagesDialog"
-                                     rendered="#{!dialogNormativa.isModoConsulta()}"/>
+                                     rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnConsultarAfect" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogNormativa.consultarAfectacion()}"
-                                     process="@this" update="dataAfectacionesRelacionadas messagesDialog"/>
+                                     process="@this" update="dataAfectacionesRelacionadas messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                 </div>
             </div>
         </div>
@@ -565,16 +567,16 @@
         <p:commandButton action="#{dialogNormativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog formPublicacion formDatos"
                          rendered="#{!dialogNormativa.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogNormativa.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          update="messagesDialog form" responsive="true" width="458px"
                          message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
             <p:commandButton value="Sí" process="@this" action="#{dialogNormativa.cerrarDefinitivo}"
-                             oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"/>
         </p:confirmDialog>
     </ui:define>
 </ui:composition>

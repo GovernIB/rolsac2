@@ -3,7 +3,9 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -27,10 +29,10 @@
 				<p:focus />
 				<h:panelGrid rowClasses=", ui-datatable-odd" columnClasses="padding-left-18 wpx25,padding-right-18" columns = "2" cellpadding = "5" cellspacing = "0" style="width:100%;">
 
-					<p:outputLabel for="codigo" value="#{labels['dialogPropiedades.codigo']}" style="max-width:20px; padding-left: 0.5em;"/>
+					<p:outputLabel for="codigo" value="#{labels['dialogPropiedades.codigo']}" style="max-width:20px; padding-left: 0.5em;" pt:aria-label="#{labels['dialogPropiedades.codigo']}"/>
 				 	<p:inputText id="codigo" value="#{dialogPropiedad.data.codigo}" disabled="#{dialogPropiedad.isModoConsulta()}" required="#{empty param['formDialog:closeButton']}" style="width:90%;" />
 
-					<p:outputLabel for="valor" value="#{labels['dialogPropiedades.valor']}" rendered="#{dialogPropiedad.mostrarValor}" style="padding-left: 0.5em;"/>
+					<p:outputLabel for="valor" value="#{labels['dialogPropiedades.valor']}" rendered="#{dialogPropiedad.mostrarValor}" style="padding-left: 0.5em;" pt:aria-label="#{labels['dialogPropiedades.valor']}"/>
 				 	<p:inputText id="valor" value="#{dialogPropiedad.data.valor}" disabled="#{dialogPropiedad.isModoConsulta()}" required="#{dialogPropiedad.mostrarValor}" style="width:90%;" rendered="#{dialogPropiedad.mostrarValor}" />
 
 				</h:panelGrid>
@@ -38,12 +40,12 @@
 	</h:form>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton value="#{labels['dict.guardar']}" actionListener="#{dialogPropiedad.aceptar()}" process="@form" update="@form dialogPropiedad:growlDialog"/>
-		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogPropiedad.cancelar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()"/>
+        <p:commandButton value="#{labels['dict.guardar']}" actionListener="#{dialogPropiedad.aceptar()}" process="@form" update="@form dialogPropiedad:growlDialog" pt:aria-label="#{labels['dict.guardar']}"/>
+		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogPropiedad.cancelar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
 
 <!-- 		<p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar"> -->
-<!-- 			<p:commandButton value="Sí" action="#{dialogPropiedad.cancelarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();"  /> -->
-<!-- 			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  /> -->
+<!-- 			<p:commandButton value="Sí" action="#{dialogPropiedad.cancelarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"  /> -->
+<!-- 			<p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"  /> -->
 <!-- 		</p:confirmDialog> -->
 
 

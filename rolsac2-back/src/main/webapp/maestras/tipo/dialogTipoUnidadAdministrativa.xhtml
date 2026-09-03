@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -29,7 +31,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoUnidadAdministrativa.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -42,7 +44,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          style="margin-left:10px"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta() and dialogTipoUnidadAdministrativa.tradExiste()}">
+                         rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta() and dialogTipoUnidadAdministrativa.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogTipoUnidadAdministrativa.returnDialogTraducir}"
                     process="@this"
                     update="formDialog:inputDescripcion formDialog:inputCargoMasc formDialog:inputCargoFem formDialog:inputTratMasc formDialog:inputTratFem"/>
@@ -60,7 +62,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
             <div class="row">
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogTipoUnidadAdministrativa.data.codigo}"
@@ -68,7 +70,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogTipoUnidadAdministrativa.data.identificador}"
@@ -84,7 +86,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion"
@@ -102,7 +104,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}:"
-                                  for="inputCargoMasc"/>
+                                  for="inputCargoMasc" pt:aria-label="#{labels['viewTipoUnidadAdministrativa.cargo.masculino']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputCargoMasc"
@@ -119,7 +121,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}:"
-                                  for="inputCargoFem"/>
+                                  for="inputCargoFem" pt:aria-label="#{labels['viewTipoUnidadAdministrativa.cargo.femenino']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputCargoFem"
@@ -136,7 +138,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}:"
-                                  for="inputTratMasc"/>
+                                  for="inputTratMasc" pt:aria-label="#{labels['viewTipoUnidadAdministrativa.tratamiento.masculino']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputTratMasc"
@@ -153,7 +155,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
                     <p:outputLabel value="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}:"
-                                  for="inputTratFem"/>
+                                  for="inputTratFem" pt:aria-label="#{labels['viewTipoUnidadAdministrativa.tratamiento.femenino']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputTratFem"
@@ -171,7 +173,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </p:panel>
 
         <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
-                         update="messagesDialog form"/>
+                         update="messagesDialog form" pt:aria-label="growlMessage"/>
         <script>
             function validatePaste(event, regex) {
                 const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
@@ -189,16 +191,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogTipoUnidadAdministrativa.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoUnidadAdministrativa.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogTipoUnidadAdministrativa.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="confirmCerrar">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoUnidadAdministrativa.cerrarDefinitivo}"
-                             process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"/>
+                             process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.si']}"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
     </ui:define>
 

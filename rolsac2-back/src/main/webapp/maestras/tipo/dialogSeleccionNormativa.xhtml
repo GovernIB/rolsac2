@@ -3,6 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -28,19 +30,19 @@
         <div class="ui-g-12 ui-md-9 pl-3 panel-container">
                         <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{dialogSeleccionNormativa.buscar}"
-                             update="dataTable messagesDialog"/>
+                             update="dataTable messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
                      <p:panel id="panel" styleClass="panelSinBotonToggle mb-1" toggleSpeed="500" toggleable="true" closeSpeed="500"
                                  widgetVar="panel" collapsed="true">
                         <f:facet name="header">
                             <div class="row">
                                 <div class="ui-g-12 ui-md-9 ui-lg-9">
-                                    <p:outputLabel value="#{labels['dict.filtro']}"/>:
+                                    <p:outputLabel value="#{labels['dict.filtro']}" pt:aria-label="#{labels['dict.filtro']}"/>:
                                     <p:inputText id="filtroBusqueda"
                                                                                                      value="#{dialogSeleccionNormativa.filtro.texto}"/>
                                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" styleClass="ml-2"
                                                      update="dataTable messagesDialog"
-                                                     actionListener="#{dialogSeleccionNormativa.buscar()}" process="@form"/>
-                                    <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" styleClass="ml-2" />
+                                                     actionListener="#{dialogSeleccionNormativa.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
+                                    <p:commandButton id="btnBusquedaAvanzada" icon="pi pi-plus" onclick="PF('panel').toggle();cambiarBoton()" styleClass="ml-2" pt:aria-label="btnBusquedaAvanzada" />
                                     <h:outputScript>
                                         function cambiarBoton() {
                                             if ($('#formDialog\\:btnBusquedaAvanzada span').hasClass('pi-plus')) {
@@ -58,7 +60,7 @@
                                                      actionListener="#{dialogSeleccionNormativa.anadirNormativaLista()}"
                                                      update="messagesDialog dataTableNormativa"
                                                      disabled="#{empty dialogSeleccionNormativa.datoSeleccionado}"
-                                                     icon="pi pi-plus"></p:commandButton>
+                                                     icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}"></p:commandButton>
                                 </div>
                             </div>
                         </f:facet>
@@ -67,14 +69,14 @@
                              <div class="row">
 
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo"/>
+                                     <p:outputLabel value="#{labels['dict.titulo']}:" for="txtTitulo" pt:aria-label="#{labels['dict.titulo']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:inputText id="txtTitulo" value="#{dialogSeleccionNormativa.filtro.nombre}"
                                                   styleClass="w95" />
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion"/>
+                                     <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion" pt:aria-label="#{labels['dialogNormativa.fechaAprobacion']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:datePicker showIcon="true"  id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
@@ -82,7 +84,7 @@
                                                  value="#{dialogSeleccionNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin"/>
+                                     <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin" pt:aria-label="#{labels['dialogNormativa.fechaBoletin']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:datePicker showIcon="true"  id="txtFechaBoletin" showOn="button" widgetVar="fechaAprobacionWidget" size="18"
@@ -92,14 +94,14 @@
 
 
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero"/>
+                                     <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero" pt:aria-label="#{labels['dialogNormativa.numero']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:inputText id="txtNumero" value="#{dialogSeleccionNormativa.filtro.numero}"
                                                   styleClass="w95" />
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa"/>
+                                     <p:outputLabel value="#{labels['viewNormativas.tipoNormativa']}:" for="txtTipoNormativa" pt:aria-label="#{labels['viewNormativas.tipoNormativa']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:selectOneMenu id="txtTipoNormativa" value="#{dialogSeleccionNormativa.filtro.tipoNormativa}"
@@ -110,7 +112,7 @@
                                      </p:selectOneMenu>
                                  </div>
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['viewNormativas.boletin']}:" for="txtBoletin"/>
+                                     <p:outputLabel value="#{labels['viewNormativas.boletin']}:" for="txtBoletin" pt:aria-label="#{labels['viewNormativas.boletin']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:selectOneMenu id="txtBoletin" value="#{dialogSeleccionNormativa.filtro.tipoBoletin}"
@@ -122,7 +124,7 @@
                                  </div>
 
                                  <div class="ui-g-12 ui-md-2 ui-lg-2">
-                                     <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigoNorm"/>
+                                     <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigoNorm" pt:aria-label="#{labels['dict.codigo']}:"/>
                                  </div>
                                  <div class="ui-g-12 ui-md-4 ui-lg-4">
                                      <p:inputText id="txtCodigoNorm" value="#{dialogSeleccionNormativa.filtro.codigo}"
@@ -133,13 +135,13 @@
                                  <div class="ui-g-12 text-center">
                                      <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                                       iconPos="top" action="#{dialogSeleccionNormativa.limpiarFiltro()}"
-                                                      process="@form" update="panel"/>
+                                                      process="@form" update="panel" pt:aria-label="#{labels['dict.limpiarFiltro']}"/>
                                      <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                                       actionListener="#{dialogSeleccionNormativa.buscar()}" update="dataTable"
-                                                      process="@form" /> <!-- oncomplete="PF('panel').toggle()" -->
+                                                      process="@form" pt:aria-label="#{labels['dict.busqueda']}" /> <!-- oncomplete="PF('panel').toggle()" -->
                                  </div>
                                  <div class="ui-g-12 text-center">
-                                     <p:outputLabel value="#{labels['viewNormativas.msg.noSeEncuentra']}" styleClass="ml-2 mr-2"/>
+                                     <p:outputLabel value="#{labels['viewNormativas.msg.noSeEncuentra']}" styleClass="ml-2 mr-2" pt:aria-label="#{labels['viewNormativas.msg.noSeEncuentra']}"/>
 
                                  </div>
                              </div>
@@ -202,7 +204,7 @@
             <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                               actionListener="#{dialogSeleccionNormativa.anadirNormativaLista()}" process="@this"
                               update="messagesDialog dataTableNormativa"
-                              style="display: none">
+                              style="display: none" pt:aria-label="btnEditarHidden">
                 <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
             </p:commandButton>
 
@@ -224,14 +226,14 @@
                     <p:ajax event="rowSelect" global="false"/>
                     <p:ajax event="rowUnselect"/>
                     <p:column headerText="#{labels['dict.titulo']}" styleClass="text-center">
-                        <p:outputLabel value="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
+                        <p:outputLabel value="#{td.titulo.getTraduccion(sessionBean.lang)}" pt:aria-label="#{td.titulo.getTraduccion(sessionBean.lang)}"/>
                     </p:column>
                 </p:dataTable>
             </div>
             <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center left-container">
                 <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
                                  action="#{dialogSeleccionNormativa.borrarNormativa}"
-                                 process="@this" update="dataTableNormativa messagesDialog"/>
+                                 process="@this" update="dataTableNormativa messagesDialog" pt:aria-label="Eliminar"/>
             </div>
             </div>
         </div>
@@ -241,10 +243,10 @@
         <p:commandButton action="#{dialogSeleccionNormativa.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
         <p:commandButton action="#{dialogSeleccionNormativa.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

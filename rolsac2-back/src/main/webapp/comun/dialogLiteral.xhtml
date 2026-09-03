@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
 -->
@@ -45,7 +47,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         />
 
             <div class="d-flex justify-content-center align-content-center h25px">
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 "/>
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 " pt:aria-label="#{labels['dialogTraduccion.idiomaOrigen']}"/>
                 <p:selectOneMenu id="selectId1" value="#{dialogLiteral.idiomaOrigen}"
                                  required="false" styleClass="p-0">
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
@@ -55,7 +57,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </p:selectOneMenu>
                 <p:commandButton action="#{dialogLiteral.cambioValores}"
                                  icon="pi pi-refresh" update="selectId1 selectId2"
-                                 process="@this" styleClass="mx-1"/>
+                                 process="@this" styleClass="mx-1" pt:aria-label="Boton"/>
                 <p:selectOneMenu id="selectId2" value="#{dialogLiteral.idiomaDestino}"
                                  required="false" styleClass="p-0">
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}"
@@ -64,7 +66,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                    itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
                     <p:ajax process="@this" listener="#{dialogLiteral.cambiarIdiomaDestinoAux}" update="selectId1 selectId2"  />
                 </p:selectOneMenu>
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2"/>
+                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2" pt:aria-label="#{labels['dialogTraduccion.idiomaDestino']}"/>
 
             </div>
 
@@ -72,7 +74,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                  <c:forEach var="idioma" items="#{dialogLiteral.idiomasAMostrar}">
                     <div class="ui-g-12 ui-md-2 ui-lg-2">
                         <p:outputLabel value="#{labels['dict.texto.' += idioma]}:"
-                                      for="#{labels['dialog.literal.txt.' += idioma]}"/>
+                                      for="#{labels['dialog.literal.txt.' += idioma]}" pt:aria-label="#{labels['dict.texto.' += idioma]}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-10 ui-lg-10">
                         <p:inputTextarea id="#{labels['dialog.literal.txt.' += idioma]}"
@@ -96,14 +98,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          action="#{dialogLiteral.traducirLiterales}"
                          value="#{labels['dict.traducir']}" update="messagesDialog "
                          rendered="#{!dialogLiteral.isModoConsulta()}"
-                         process="@all" />
+                         process="@all" pt:aria-label="#{labels['dict.traducir']}" />
         <p:commandButton action="#{dialogLiteral.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogLiteral.isModoConsulta()}"
-                         process="@all" />
+                         process="@all" pt:aria-label="#{labels['dict.aceptar']}" />
         <p:commandButton action="#{dialogLiteral.cerrar}"
                          value="#{labels['dict.cancelar']}"
-                         process="@this" />
+                         process="@this" pt:aria-label="#{labels['dict.cancelar']}" />
 
     </ui:define>
 

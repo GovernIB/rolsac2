@@ -3,7 +3,9 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
         <f:metadata>
@@ -29,14 +31,14 @@
                      escape="false"/>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" />
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogEntidadRaiz.data.codigo}"
                                  styleClass="w96" disabled="true" maxlength="50"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.unidadAdministrativa']}:" for="txtUa" />
+                    <p:outputLabel value="#{labels['dict.unidadAdministrativa']}:" for="txtUa" pt:aria-label="#{labels['dict.unidadAdministrativa']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <my:unidadAdministrativaComponent id="txtUa"
@@ -47,7 +49,7 @@
                     />
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.usuario']}:" for="txtUser" />
+                    <p:outputLabel value="#{labels['dict.usuario']}:" for="txtUser" pt:aria-label="#{labels['dict.usuario']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <p:inputText id="txtUser" value="#{dialogEntidadRaiz.data.user}"
@@ -57,7 +59,7 @@
                     </p:inputText>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-1">
-                    <p:outputLabel value="#{labels['dialogEntidadRaiz.pwd']}:" for="txtPwd" />
+                    <p:outputLabel value="#{labels['dialogEntidadRaiz.pwd']}:" for="txtPwd" pt:aria-label="#{labels['dialogEntidadRaiz.pwd']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-5">
                     <p:password id="txtPwd" value="#{dialogEntidadRaiz.data.pwd}"
@@ -70,16 +72,16 @@
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogEntidadRaiz.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogEntidadRaiz.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          update="messagesDialog form" responsive="true" width="458px"
                          message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
             <p:commandButton value="Sí" process="@this" action="#{dialogEntidadRaiz.cerrarDefinitivo}"
-                             oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"/>
+                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"/>
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"/>
         </p:confirmDialog>
     </ui:define>
 </ui:composition>

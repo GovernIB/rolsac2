@@ -5,6 +5,8 @@
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition>
 
@@ -31,15 +33,15 @@
                                         value=" "
                                         styleClass="w45px h25px iconoAlertaLeido botonBordeado"
                                         process="@this"
-                                        update="@parent"
+                                        update="@parent" pt:aria-label=" "
                                 />
-                                <p:outputLabel value="#{alerta.fechaIni}">
+                                <p:outputLabel value="#{alerta.fechaIni}" pt:aria-label="#{alerta.fechaIni}">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
-                                <p:outputLabel value="- #{alerta.fechaFin}" rendered=" #{!empty alerta.fechaFin}">
+                                <p:outputLabel value="- #{alerta.fechaFin}" rendered=" #{!empty alerta.fechaFin}" pt:aria-label="- #{alerta.fechaFin}">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
-                                <p:outputLabel value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" styleClass="ml-2" />
+                                <p:outputLabel value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" styleClass="ml-2" pt:aria-label=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" />
                             </div>
                         </div>
                     </c:forEach>

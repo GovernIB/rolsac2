@@ -5,7 +5,9 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -47,12 +49,12 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-12 ui-lg-12">
-                   <p:outputLabel value="#{labels['dialogExportar.cabecera']}" />
+                   <p:outputLabel value="#{labels['dialogExportar.cabecera']}" pt:aria-label="#{labels['dialogExportar.cabecera']}" />
                 </div>
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-3">
-                   <p:outputLabel value="#{labels['dict.formato']}:" />
+                   <p:outputLabel value="#{labels['dict.formato']}:" pt:aria-label="#{labels['dict.formato']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-9">
                     <p:selectOneButton value="#{dialogExportar.datos.formato}"
@@ -66,7 +68,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <c:if test="#{dialogExportar.isProcServ()}">
                 <div class="row">
                     <div class="ui-g-12 ui-md-3 ui-lg-3">
-                        <p:outputLabel value="#{labels['dict.estados']}:" />
+                        <p:outputLabel value="#{labels['dict.estados']}:" pt:aria-label="#{labels['dict.estados']}:" />
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-9">
                         <p:selectOneButton value="#{dialogExportar.datos.estados}"
@@ -80,7 +82,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             </c:if>
             <div class="row mb-5">
                 <div class="ui-g-12 ui-md-3 ui-lg-3">
-                    <p:outputLabel value="#{labels['dict.cantidad']}:" />
+                    <p:outputLabel value="#{labels['dict.cantidad']}:" pt:aria-label="#{labels['dict.cantidad']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-9">
                     <p:selectOneButton value="#{dialogExportar.datos.todosLosDatos}"
@@ -124,9 +126,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogExportar.guardar}"
                          value="#{labels['dict.exportar']}" update="messagesDialog form"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.exportar']}"/>
         <p:commandButton action="#{dialogExportar.cerrar}" update="messagesDialog"
-                         value="#{labels['dict.cerrar']}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" id="closeButton" pt:aria-label="#{labels['dict.cerrar']}"
                           />
     </ui:define>
 

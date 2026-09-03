@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns="http://www.w3.org/1999/xhtml"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -29,7 +31,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogCategoriaPDU.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -42,7 +44,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          style="margin-left:10px"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogCategoriaPDU.isModoConsulta() and dialogCategoriaPDU.tradExiste()}">
+                         rendered="#{!dialogCategoriaPDU.isModoConsulta() and dialogCategoriaPDU.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogCategoriaPDU.returnDialogTraducir}" process="@this"
                     update="formDialog:inputDescripcion"/>
         </p:commandButton>
@@ -59,7 +61,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
             <div class="row">
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtCodigo" value="#{dialogCategoriaPDU.data.codigo}"
@@ -67,7 +69,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtIdentificador" value="#{dialogCategoriaPDU.data.identificador}"
@@ -82,7 +84,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="inputDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <my:literalComponent id="inputDescripcion" literal="#{dialogCategoriaPDU.data.descripcion}"
@@ -100,7 +102,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </p:panel>
 
         <p:commandButton id="growlMessage" action="#{messageUtils.showInvalidCharacterMessage}" style="display:none;"
-                         update="messagesDialog form"/>
+                         update="messagesDialog form" pt:aria-label="growlMessage"/>
         <script>
             function validatePaste(event, regex) {
                 const clipboardData = (event.clipboardData || window.clipboardData).getData('text');
@@ -116,16 +118,16 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:commandButton action="#{dialogCategoriaPDU.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogCategoriaPDU.isModoConsulta()}"
-                         process="@all" />
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}" />
         <p:commandButton action="#{dialogCategoriaPDU.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="confirmCerrar">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogCategoriaPDU.cerrarDefinitivo}" process="@this"
-                             update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();"/>
+                             update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.si']}"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
     </ui:define>
 

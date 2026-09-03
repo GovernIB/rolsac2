@@ -3,6 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -34,7 +36,7 @@
                 <c:choose>
                     <c:when test="#{dialogProceso.isModoAlta()}">
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtOpcion"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtOpcion" pt:aria-label="#{labels['dict.codigo']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-10 ui-lg-5">
                             <p:selectOneMenu id="txtOpcion" value="#{dialogProceso.data.identificadorProceso}">
@@ -45,7 +47,7 @@
                     </c:when>
                     <c:otherwise>
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
-                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                            <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-10 ui-lg-5">
                             <p:inputText id="txtCodigo" value="#{dialogProceso.data.identificadorProceso}"
@@ -54,7 +56,7 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion"/>
+                    <p:outputLabel value="#{labels['dict.descripcion']}:" for="txtDescripcion" pt:aria-label="#{labels['dict.descripcion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputTextarea id="txtDescripcion" value="#{dialogProceso.data.descripcion}"
@@ -63,7 +65,7 @@
                                  disabled="#{dialogProceso.isModoConsulta()}" maxlength="100"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['viewProcesos.cron']}:" for="txtClassname"/>
+                    <p:outputLabel value="#{labels['viewProcesos.cron']}:" for="txtClassname" pt:aria-label="#{labels['viewProcesos.cron']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:inputText id="txtClassname" value="#{dialogProceso.data.cron}"
@@ -71,7 +73,7 @@
                                  styleClass="w95" disabled="#{dialogProceso.isModoConsulta()}" maxlength="100"/>
                 </div>
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.activo']}:" for="txtActivo"/>
+                    <p:outputLabel value="#{labels['dict.activo']}:" for="txtActivo" pt:aria-label="#{labels['dict.activo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectBooleanCheckbox id="txtActivo" value="#{dialogProceso.data.activo}"
@@ -79,7 +81,7 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dialogProceso.parametrosInvocacion']}:" for="dataTablePropiedades"/>
+                    <p:outputLabel value="#{labels['dialogProceso.parametrosInvocacion']}:" for="dataTablePropiedades" pt:aria-label="#{labels['dialogProceso.parametrosInvocacion']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5 d-flex">
                     <p:dataTable id="dataTablePropiedades" var="td" value="#{dialogProceso.data.parametrosInvocacion}"
@@ -97,11 +99,11 @@
 
                         <!-- Columnas -->
                         <p:column headerText="#{labels['dialogPropiedades.codigo']}" class="ui-panelgrid-cell">
-                            <p:outputLabel value="#{td.codigo}"/>
+                            <p:outputLabel value="#{td.codigo}" pt:aria-label="#{td.codigo}"/>
                         </p:column>
 
                         <p:column headerText="#{labels['dialogPropiedades.valor']}" class="ui-panelgrid-cell">
-                            <p:outputLabel value="#{td.valor}"/>
+                            <p:outputLabel value="#{td.valor}" pt:aria-label="#{td.valor}"/>
                         </p:column>
 
                     </p:dataTable>
@@ -111,7 +113,7 @@
                                          actionListener="#{dialogProceso.nuevaPropiedad()}" process="@this"
                                          update="messagesDialog"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2">
+                                         styleClass="p-2" pt:aria-label="#{msg['botones.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
@@ -120,7 +122,7 @@
                                          actionListener="#{dialogProceso.editarPropiedad()}" process="@this"
                                          update="messagesDialog"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2">
+                                         styleClass="p-2" pt:aria-label="#{msg['botones.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
@@ -129,17 +131,17 @@
                                          actionListener="#{dialogProceso.quitarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2"/>
+                                         styleClass="p-2" pt:aria-label="#{msg['botones.eliminar']}"/>
                         <p:commandButton icon="pi pi-arrow-up" title="#{msg['botones.subir']}"
                                          actionListener="#{dialogProceso.subirPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2"/>
+                                         styleClass="p-2" pt:aria-label="#{msg['botones.subir']}"/>
                         <p:commandButton icon="pi pi-arrow-down" title="#{msg['botones.bajar']}"
                                          actionListener="#{dialogProceso.bajarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2"/>
+                                         styleClass="p-2" pt:aria-label="#{msg['botones.bajar']}"/>
 
                     </div>
                 </div>
@@ -158,13 +160,13 @@
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogProceso.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form  "
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogProceso.cerrar}" id="closeButton"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()"/>
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-            <p:commandButton value="Sí" process="@this" action="#{dialogProceso.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();"  />
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();"  />
+            <p:commandButton value="Sí" process="@this" action="#{dialogProceso.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"  />
+            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"  />
         </p:confirmDialog>
     </ui:define>
 </ui:composition>

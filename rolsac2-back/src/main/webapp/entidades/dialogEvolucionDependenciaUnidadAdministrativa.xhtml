@@ -4,7 +4,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:my="http://java.sun.com/jsf/composite/components"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
 	<ui:define name="metadata">
 		<f:metadata>
@@ -54,7 +56,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel
 								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambioDependencia']}:"
-								for="txtOrigen" styleClass="mb-1 pt-0" />
+								for="txtOrigen" styleClass="mb-1 pt-0" pt:aria-label="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambioDependencia']}:" />
 							<p:inputText id="txtOrigen" styleClass="w95" readonly="true"
 								value="#{dialogEvolucionDependenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
 						</div>
@@ -71,7 +73,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.padre']}:"
-								for="txtPadre" />
+								for="txtPadre" pt:aria-label="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.padre']}:" />
 
 						</div>
 						<div class="form-group col-md-12">
@@ -84,7 +86,7 @@
 									value=" " update="messagesDialog " icon="pi pi-sitemap"
 									rendered="#{!dialogEvolucionDependenciaUnidadAdministrativa.isModoConsulta()}"
 									style="height:28px;margin-left:4px"
-									process="@all">
+									process="@all" pt:aria-label=" ">
 								<p:ajax event="dialogReturn" listener="#{dialogEvolucionDependenciaUnidadAdministrativa.returnDialogo}" process="@this" update="formDialog:txtPadre txtPadre" />
 							</p:commandButton>
 						</div>
@@ -93,7 +95,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-2 mt-3 pt-0"
 										   value="#{labels['dict.version']}:"
-										   for="txtVersion" />
+										   for="txtVersion" pt:aria-label="#{labels['dict.version']}:" />
 							<p>
 								<p:inputNumber id="txtVersion" value="#{dialogEvolucionDependenciaUnidadAdministrativa.version}"
 											   styleClass="w96"
@@ -120,7 +122,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel
 								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambioDependencia']}:"
-								for="txtOrigen2" styleClass="mb-1 pt-0" />
+								for="txtOrigen2" styleClass="mb-1 pt-0" pt:aria-label="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.cambioDependencia']}:" />
 							<p:inputText id="txtOrigen2" styleClass="w95" readonly="true"
 								value="#{dialogEvolucionDependenciaUnidadAdministrativa.data.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
 						</div>
@@ -130,7 +132,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 										   value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.antiguoPadre']}:"
-										   for="txtPadreAntiguo" />
+										   for="txtPadreAntiguo" pt:aria-label="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.antiguoPadre']}:" />
 							<p:inputText id="txtPadreAntiguo" styleClass="w95" readonly="true"
 										 value="#{dialogEvolucionDependenciaUnidadAdministrativa.padreAntiguo.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
 						</div>
@@ -140,7 +142,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 								value="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.nuevoPadre']}:"
-								for="txtPadreNuevo" />
+								for="txtPadreNuevo" pt:aria-label="#{labels['dialogEvolucionDependenciaUnidadAdministrativa.nuevoPadre']}:" />
 							<p:inputText id="txtPadreNuevo" styleClass="w95" readonly="true"
 										 value="#{dialogEvolucionDependenciaUnidadAdministrativa.padre.nombre.getTraduccion(dialogEvolucionDependenciaUnidadAdministrativa.idioma)}" />
 						</div>
@@ -150,7 +152,7 @@
 						<div class="form-group col-md-12">
 							<p:outputLabel styleClass="mr-2 mb-1 pt-0"
 										   value="#{labels['dict.version']}:"
-										   for="txtVersion2" />
+										   for="txtVersion2" pt:aria-label="#{labels['dict.version']}:" />
 							<p>
 							<p:inputNumber id="txtVersion2" value="#{dialogEvolucionDependenciaUnidadAdministrativa.version}"
 										   styleClass="w96" disabled="true"
@@ -168,7 +170,7 @@
 					value="#{labels['dict.aceptar']}" update="messagesDialog "
 					rendered="#{!dialogEvolucionDependenciaUnidadAdministrativa.isModoConsulta()}"
 					onclick="PF('saveButton').disable();" oncomplete="PF('saveButton').enable();"
-					process="@all" />
+					process="@all" pt:aria-label="#{labels['dict.aceptar']}" />
 			</p:tab>
 
 		</p:wizard>
@@ -180,7 +182,7 @@
 	<ui:define name="contentFooterDialogRight">
 		<p:commandButton
 			action="#{dialogEvolucionUnidadAdministrativa.cerrar}"
-			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" />
+			id="closeButton" value="#{labels['dict.cerrar']}" process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
 
 	</ui:define>
 </ui:composition>

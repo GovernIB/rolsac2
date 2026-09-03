@@ -3,6 +3,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -23,21 +25,21 @@
         <div class="ui-g-12 ui-md-8 pl-4 panel-container">
                 <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
                                  style="display:none" ajax="false" action="#{dialogSeleccionMateriaSIA.buscar}"
-                                 update="dataTable messagesDialog"/>
+                                 update="dataTable messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
                 <p:toolbar id="toolbar">
                     <f:facet name="left">
                         <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
                                                                                          value="#{dialogSeleccionMateriaSIA.filtroTexto}"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                          update="dataTable messagesDialog"
-                                         actionListener="#{dialogSeleccionMateriaSIA.buscar()}" process="@form"/>
+                                         actionListener="#{dialogSeleccionMateriaSIA.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
                     </f:facet>
                     <f:facet name="right">
                         <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
                                          actionListener="#{dialogSeleccionMateriaSIA.anadirMateriaLista()}"
                                          update="messagesDialog dataTableMaterias"
                                          disabled="#{empty dialogSeleccionMateriaSIA.datoSeleccionado}"
-                                         icon="pi pi-plus"></p:commandButton>
+                                         icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}"></p:commandButton>
                     </f:facet>
                 </p:toolbar>
                 <p:dataTable id="dataTable" value="#{dialogSeleccionMateriaSIA.lazyModel}" var="materiaSIA"
@@ -78,7 +80,7 @@
                 <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                                   actionListener="#{dialogSeleccionMateriaSIA.anadirMateriaLista()}" process="@this"
                                   update="messagesDialog dataTableMaterias"
-                                  style="display: none">
+                                  style="display: none" pt:aria-label="btnEditarHidden">
                     <!--<p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>-->
                 </p:commandButton>
 
@@ -107,7 +109,7 @@
             <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                 <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
                                  action="#{dialogSeleccionMateriaSIA.borrarMateriaSIA}"
-                                 process="@this" update="dataTableMaterias messagesDialog"/>
+                                 process="@this" update="dataTableMaterias messagesDialog" pt:aria-label="Eliminar"/>
             </div>
             </div>
         </div>
@@ -117,10 +119,10 @@
         <p:commandButton action="#{dialogSeleccionMateriaSIA.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
         <p:commandButton action="#{dialogSeleccionMateriaSIA.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

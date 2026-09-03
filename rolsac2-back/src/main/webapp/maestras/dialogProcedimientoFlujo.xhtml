@@ -4,7 +4,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 >
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -45,12 +47,12 @@
                     <p:commandButton action="#{dialogProcedimientoFlujo.abrirAyuda()}"
                                      icon="pi pi-info-circle" iconPos="top"
                                      value="#{labels['dict.ayuda']}"
-                                     process="@this"/>
+                                     process="@this" pt:aria-label="#{labels['dict.ayuda']}"/>
                 </div>
             </f:facet>
             <div class="row">
                     <div class="ui-g-12 ui-md-1 ui-lg-1">
-                        <p:outputLabel value="#{labels['dict.estadoActual']}:"  style="margin-right: 20px" />
+                        <p:outputLabel value="#{labels['dict.estadoActual']}:"  style="margin-right: 20px" pt:aria-label="#{labels['dict.estadoActual']}:" />
                     </div>
                     <div class="ui-g-12 ui-md-11 ui-lg-11">
                         <h:outputText value="#{empty dialogProcedimientoFlujo.estadoProcedimiento ? '': labels['TypeProcedimientoEstado.'.concat(dialogProcedimientoFlujo.estadoProcedimiento)]}" style="font-weight: bold;font-size: 1.2em !important;" />
@@ -59,7 +61,7 @@
                 <c:if test="#{!empty dialogProcedimientoFlujo.estados}">
 
                     <div class="ui-g-12 ui-md-1 ui-lg-1">
-                        <p:outputLabel value="#{labels['dict.estadoDestino']}:" for="datatableEstado" rendered="#{!empty dialogProcedimientoFlujo.estados }"/>
+                        <p:outputLabel value="#{labels['dict.estadoDestino']}:" for="datatableEstado" rendered="#{!empty dialogProcedimientoFlujo.estados }" pt:aria-label="#{labels['dict.estadoDestino']}:"/>
                     </div>
                     <div class="ui-g-12 ui-md-5 ui-lg-5">
                         <p:dataTable id="datatableEstado" var="td" value="#{dialogProcedimientoFlujo.estados}"
@@ -84,7 +86,7 @@
                     </div>
                 </c:if>
                 <div class="ui-g-12 ui-md-1 ui-lg-1">
-                    <h:outputText value="#{labels['dict.mensaje']}:" for="datatableEstado"/>
+                    <p:outputLabel value="#{labels['dict.mensaje']}:" for="datatableEstado" pt:aria-label="#{labels['dict.mensaje']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-11 ui-lg-11">
                     <p:inputTextarea value="#{dialogProcedimientoFlujo.mensajeNuevo}" rows="5"   autoResize="false" style="width:100%" id="txtMensajeNuevo"  maxlength="2000">
@@ -123,7 +125,7 @@
                                                          value="#{labels['dict.marcarComoLeido']}"
                                                          icon="pi pi-check" update="@form:formDatos2"
                                                          rendered="#{dialogProcedimientoFlujo.isAdministradorContenidos() and mensaje.isPendienteMensajesSupervisor()}"
-                                                         process="@this"/>
+                                                         process="@this" pt:aria-label="#{labels['dict.marcarComoLeido']}"/>
                                     </td>
                                     <td class="backgroundAdmContenido borderIzqArribaAbajo" style="padding: 10px;">#{dialogProcedimientoFlujo.getUsuario(mensaje.usuario)}</td>
                                     <td class="backgroundAdmContenido borderArribaAbajo" style="padding: 20px;">
@@ -164,7 +166,7 @@
                                                              value="#{labels['dict.marcarComoLeido']}"
                                                              icon="pi pi-check" update="@form:formDatos2"
                                                              rendered="#{dialogProcedimientoFlujo.isGestor() and mensaje.isPendienteMensajesGestor()}"
-                                                             process="@this"/>
+                                                             process="@this" pt:aria-label="#{labels['dict.marcarComoLeido']}"/>
                                     </td>
                                 </ui:fragment>
                                 <ui:fragment rendered="#{!dialogProcedimientoFlujo.esAdministradorContenido(mensaje)}">
@@ -173,7 +175,7 @@
                                                              value="#{labels['dict.marcarComoLeido']}"
                                                              icon="pi pi-check" update="@form:formDatos2"
                                                              rendered="#{dialogProcedimientoFlujo.isAdministradorContenidos() and mensaje.isPendienteMensajesSupervisor()}"
-                                                             process="@this"/>
+                                                             process="@this" pt:aria-label="#{labels['dict.marcarComoLeido']}"/>
 
                                     </td>
                                     <td style="border-top:none !important;"></td>
@@ -215,7 +217,7 @@
                                                              value="#{labels['dict.marcarComoLeido']}"
                                                              icon="pi pi-check" update="@form:formDatos2"
                                                              rendered="#{dialogProcedimientoFlujo.isGestor() and mensaje.isPendienteMensajesGestor()}"
-                                                             process="@this"/>
+                                                             process="@this" pt:aria-label="#{labels['dict.marcarComoLeido']}"/>
                                     </td>
                                 </ui:fragment>
 
@@ -234,17 +236,17 @@
     <ui:define name="contentFooterDialogLeft">
         <p:selectBooleanCheckbox id="checkMail" value="#{dialogProcedimientoFlujo.checkMail}" itemLabel="#{labels['dialogProcedimientoFlujo.enviarCorreo']}"
                                  rendered="#{dialogProcedimientoFlujo.administradorContenidos}"/>
-        <p:commandButton id="btnCopy"  icon="pi pi-clipboard" value="#{labels['dialogProcedimientoFlujo.copiarXat']}"/>
+        <p:commandButton id="btnCopy"  icon="pi pi-clipboard" value="#{labels['dialogProcedimientoFlujo.copiarXat']}" pt:aria-label="#{labels['dialogProcedimientoFlujo.copiarXat']}"/>
         <pe:clipboard id="clipboard" text="#{dialogProcedimientoFlujo.estructurarCopiaChat()}" action="copy"
                       trigger="btnCopy" successMessage="Copiado" errorMessage="Error al copiar"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
                          value="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}" update="messagesDialog formDatos"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"
                          value="#{labels['dict.cerrar']}"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

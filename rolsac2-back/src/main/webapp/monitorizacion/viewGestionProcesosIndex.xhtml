@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de Tipo de Público Objetivo.
@@ -24,7 +26,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
     <ui:define name="content">
         <h:form>
-            <p:commandButton actionListener="#{viewGestionProcesosIndex.process()}" value="Procesar"></p:commandButton>
+            <p:commandButton actionListener="#{viewGestionProcesosIndex.process()}" value="Procesar" pt:aria-label="Procesar"></p:commandButton>
         </h:form>
 
     </ui:define>

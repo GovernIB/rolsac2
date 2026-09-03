@@ -5,7 +5,9 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:t="http://back.rolsac2.caib.es/tags">
+      xmlns:t="http://back.rolsac2.caib.es/tags"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 
 <!--
 Pàgina amb el llistat de personal d'una unitat administrativa.
@@ -47,26 +49,26 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <p:panel id="form">
             <div class="row">
                 <div class="ui-g-12 ui-md-12 ui-lg-12">
-                   <p:outputLabel value="#{labels['dialogClonar.cabecera']}" />
+                   <p:outputLabel value="#{labels['dialogClonar.cabecera']}" pt:aria-label="#{labels['dialogClonar.cabecera']}" />
                 </div>
             </div>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-3">
-                   <p:outputLabel value="#{labels['dialogClonar.tipo']}:" />
+                   <p:outputLabel value="#{labels['dialogClonar.tipo']}:" pt:aria-label="#{labels['dialogClonar.tipo']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-9">
                     <p:commandButton action="#{dialogClonar.clonarDef}"
                                      value="#{labels['dict.wf.0']}"
                                      update="messagesDialog"
                                      disabled="#{!dialogClonar.tieneWFDefinitivo}"
-                                     process="@this"/>
+                                     process="@this" pt:aria-label="#{labels['dict.wf.0']}"/>
 
                     <p:commandButton action="#{dialogClonar.clonarMod}"
                                      value="#{labels['dict.wf.1']}"
                                      update="messagesDialog"
                                      styleClass="ml-3"
                                      disabled="#{!dialogClonar.tieneWFEnModificacion}"
-                                     process="@this"/>
+                                     process="@this" pt:aria-label="#{labels['dict.wf.1']}"/>
                     <!--
                     <p:selectOneButton value="#{dialogClonar.estadoWF}"
                                        converter="javax.faces.Boolean"
@@ -84,9 +86,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         <!--<p:commandButton action="#{dialogClonar.guardar}"
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog"
-                         process="@this"/> -->
+                         process="@this" pt:aria-label="#{labels['dict.guardar']}"/> -->
         <p:commandButton action="#{dialogClonar.cerrar}" update="messagesDialog"
-                         value="#{labels['dict.cerrar']}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" id="closeButton" pt:aria-label="#{labels['dict.cerrar']}"
                           />
     </ui:define>
 

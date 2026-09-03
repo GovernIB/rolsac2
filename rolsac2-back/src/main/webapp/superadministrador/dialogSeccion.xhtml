@@ -3,7 +3,9 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:my="http://java.sun.com/jsf/composite/components">
+      xmlns:my="http://java.sun.com/jsf/composite/components"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -30,14 +32,14 @@
         <p:panel>
             <div class="row">
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                    <p:outputLabel value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtCodigo" value="#{dialogSeccion.data.codigo}"
                                  styleClass="w95" disabled="true"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.nombre']}:" for="txtNombre"/>
+                    <p:outputLabel value="#{labels['dict.nombre']}:" for="txtNombre" pt:aria-label="#{labels['dict.nombre']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <my:literalComponent id="txtNombre" styleClass="w95"
@@ -47,7 +49,7 @@
                                          idioma="#{dialogSeccion.idioma}"/>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dict.entidad']}*:" for="selectEntidad"/>
+                    <p:outputLabel value="#{labels['dict.entidad']}*:" for="selectEntidad" pt:aria-label="#{labels['dict.entidad']}*:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:selectOneMenu id="selectEntidad" value="#{dialogSeccion.data.entidad}"
@@ -60,7 +62,7 @@
                     </p:selectOneMenu>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <h:outputText value="#{labels['dialogSeccion.padre']}:" for="txtPadre"/>
+                    <p:outputLabel value="#{labels['dialogSeccion.padre']}:" for="txtPadre" pt:aria-label="#{labels['dialogSeccion.padre']}:"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -70,7 +72,7 @@
                     />
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dialogSeccion.titulo']}:" for="txtSec"/>
+                    <p:outputLabel value="#{labels['dialogSeccion.titulo']}:" for="txtSec" pt:aria-label="#{labels['dialogSeccion.titulo']}:"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
@@ -82,13 +84,13 @@
                                      value=" "
                                      styleClass="w45px h25px iconoUAselector"
                                      process="@this"
-                                     disabled="false">
+                                     disabled="false" pt:aria-label=" ">
                         <p:ajax event="dialogReturn" listener="#{dialogSeccion.returnDialogo}" process="@this"
                                 update="txtSec"/>
                     </p:commandButton>
                 </div>
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
-                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador"/>
+                    <p:outputLabel value="#{labels['dict.identificador']}:" for="txtIdentificador" pt:aria-label="#{labels['dict.identificador']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
                     <p:inputText id="txtIdentificador" value="#{dialogSeccion.data.identificador}"
@@ -102,10 +104,10 @@
         <p:commandButton action="#{dialogSeccion.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogSeccion.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogSeccion.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

@@ -2,7 +2,9 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <!--
 Pàgina d'error 403 NO AUTORITZAT
 Els atributs disponibles defnits al request són els definits a 10.9.1 de l'especificació del Servlets
@@ -15,7 +17,7 @@ Els atributs disponibles defnits al request són els definits a 10.9.1 de l'espe
                 <f:param value="#{request.remoteUser}" />
             </h:outputFormat>
             <br />
-            <p:commandButton action="#{logout.logout}" value="#{labels['dict.salir']}" />
+            <p:commandButton action="#{logout.logout}" value="#{labels['dict.salir']}" pt:aria-label="#{labels['dict.salir']}" />
         </p>
     </ui:define>
 </ui:composition>

@@ -2,7 +2,8 @@
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:p="http://primefaces.org/ui"
         xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:cc="http://java.sun.com/jsf/composite">
+        xmlns:cc="http://java.sun.com/jsf/composite"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <cc:interface componentType="temaComponent">
         <cc:attribute name="value" type="es.caib.rolsac2.service.model.TemaDTO"
@@ -29,7 +30,7 @@
                              value=""
                              styleClass="w45px h25px iconoUAselector"
                              process="@this"
-                             disabled="#{cc.isModoCrear()}"
+                             disabled="#{cc.isModoCrear()}" pt:aria-label=""
             >
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
                              update="#{cc.updateElementos}"/>
@@ -40,7 +41,7 @@
                              styleClass="w45px h25px iconoUAselector"
                              process="@this"
                              update="#{cc.updateElementos}"
-                             disabled="#{cc.attrs.deshabilitarLimpiar}"
+                             disabled="#{cc.attrs.deshabilitarLimpiar}" pt:aria-label=""
             />
         </span>
     </cc:implementation>

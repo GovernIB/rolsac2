@@ -6,6 +6,7 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:cc="http://java.sun.com/jsf/composite"
         xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
     <cc:interface componentType="ficheroComponent">
         <cc:attribute name="value" type="es.caib.rolsac2.service.model.FicheroDTO" shortDescription="El fichero."/>
@@ -58,11 +59,11 @@
                             <c:otherwise>
                                 <p:commandButton id="logoDescarga" value="#{cc.fichero.filename}"
                                                  ajax="false" process="@this"
-                                                 icon="pi pi-arrow-down">
+                                                 icon="pi pi-arrow-down" pt:aria-label="#{cc.fichero.filename}">
                                      <p:fileDownload value="#{cc.obtenerFichero()}" ></p:fileDownload>
                                 </p:commandButton>
                                 <p:commandButton actionListener="#{cc.eliminarFichero()}" icon="pi pi-times"
-                                                 update="logo"></p:commandButton>
+                                                 update="logo" pt:aria-label="Boton"></p:commandButton>
                             </c:otherwise>
                         </c:choose>
 

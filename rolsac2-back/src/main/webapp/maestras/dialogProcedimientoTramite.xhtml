@@ -5,6 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:my="http://java.sun.com/jsf/composite/components"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
@@ -33,12 +35,12 @@
         <p:commandButton action="#{dialogProcedimientoTramite.ayuda('dialogProcedimientoTramite')}"
                          icon="pi pi-info-circle" iconPos="top" style="margin-top:10px"
                          value="#{labels['dict.ayuda']}"
-                         process="@this"/>
+                         process="@this" pt:aria-label="#{labels['dict.ayuda']}"/>
     </ui:define>
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;"/>
+        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimientoTramite.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -52,7 +54,7 @@
                          style="margin-left:10px"
                          update="messagesDialog"
                          process="@this"
-                         rendered="#{!dialogProcedimientoTramite.isModoConsulta() and dialogProcedimientoTramite.tradExiste()}">
+                         rendered="#{!dialogProcedimientoTramite.isModoConsulta() and dialogProcedimientoTramite.tradExiste()}" pt:aria-label="#{labels['dict.traducir']}">
             <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTraducir}" process="@this"
                     update="formDialog:txtNombre formDialog:txtRequisitos  formDialog:txtDocum formDialog:txtTermMax formDialog:txtObservaciones"/>
         </p:commandButton>
@@ -83,14 +85,14 @@
             <p:panel id="panelDatosPublicacion" header="#{labels['dialogProcedimientoTramite.datosDePublicacion']}">
                 <div class="form-row">
                     <div class="form-group col-md-3" style="margin-top:-5px">
-                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigo']}:" for="txtCodigo"/>
+                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigo']}:" for="txtCodigo" pt:aria-label="#{labels['dict.codigo']}:"/>
                         <p:inputText id="txtCodigoTramite" value="#{dialogProcedimientoTramite.data.codigoTramite}"
                                      styleClass="w95" readonly="true"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaPublicacion']}:"
                                        for="txtFechaPublicacion"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimientoTramite.fechaPublicacion']}:"/>
                         <p>
                             <p:datePicker showIcon="#{dialogProcedimientoTramite.isModoConsulta() ? 'false' : 'true'}" id="txtFechaPublicacion" styleClass="fecha"
                                           locale="#{sessionBean.lang}" readonly="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -103,7 +105,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['viewTipoTramitacion.fasePro.titulo']}:" for="faseProc"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['viewTipoTramitacion.fasePro.titulo']}:"/>
                         <p:selectOneMenu id="faseProc"
                                              required="#{empty param['formDialog:closeButton']}"
                                              requiredMessage="#{labels['dict.obligatorio.fase']}"
@@ -130,13 +132,13 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3" style="margin-top:-5px">
-                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigoWF']}:" for="txtCodigoTramite"/>
+                        <p:outputLabel styleClass="mb-1 negrita" value="#{labels['dict.codigoWF']}:" for="txtCodigoTramite" pt:aria-label="#{labels['dict.codigoWF']}:"/>
                         <p:inputText id="txtCodigo" value="#{dialogProcedimientoTramite.data.codigo}"
                                      styleClass="w95" readonly="true"/>
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaInicio']}:" for="txtFechaInicio"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimientoTramite.fechaInicio']}:"/>
                         <p>
                             <p:datePicker showIcon="#{dialogProcedimientoTramite.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaInicio" styleClass="fecha"
                                         locale="#{sessionBean.lang}" readonly="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -148,7 +150,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <p:outputLabel value="#{labels['dialogProcedimientoTramite.fechaCierre']}:" for="txtFechaCierre"
-                                       styleClass="mb-1 pt-0 negrita"/>
+                                       styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimientoTramite.fechaCierre']}:"/>
                         <p>
                             <p:datePicker showIcon="#{dialogProcedimientoTramite.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaCierre" styleClass="fecha"
                                 locale="#{sessionBean.lang}" readonly="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -165,7 +167,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.nombreTramite']}:"
-                                       for="txtNombre"/>
+                                       for="txtNombre" pt:aria-label="#{labels['dialogProcedimientoTramite.nombreTramite']}:"/>
                         <my:literalAreaComponent id="txtNombre"
                                              value="#{dialogProcedimientoTramite.data.nombre}"
                                              soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -182,7 +184,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.requisitos']}:"
-                                       for="txtRequisitos"/>
+                                       for="txtRequisitos" pt:aria-label="#{labels['dialogProcedimientoTramite.requisitos']}:"/>
                             <my:literalAreaComponent id="txtRequisitos"
                                                  value="#{dialogProcedimientoTramite.data.requisitos}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -198,7 +200,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.documentacion']}:"
-                                       for="txtDocum"/>
+                                       for="txtDocum" pt:aria-label="#{labels['dialogProcedimientoTramite.documentacion']}:"/>
                             <my:literalAreaComponent id="txtDocum" styleClass="w95"
                                                  value="#{dialogProcedimientoTramite.data.documentacion}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -213,7 +215,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.terminoMaximo']}:"
-                                       for="txtTermMax"/>
+                                       for="txtTermMax" pt:aria-label="#{labels['dialogProcedimientoTramite.terminoMaximo']}:"/>
                             <my:literalAreaComponent id="txtTermMax"
                                                  value="#{dialogProcedimientoTramite.data.terminoMaximo}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -232,7 +234,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.observaciones']}:"
-                                       for="txtObservaciones"/>
+                                       for="txtObservaciones" pt:aria-label="#{labels['dialogProcedimientoTramite.observaciones']}:"/>
                             <my:literalAreaComponent id="txtObservaciones"
                                                  value="#{dialogProcedimientoTramite.data.observacion}"
                                                  soloLecture="#{dialogProcedimientoTramite.isModoConsulta()}"
@@ -251,7 +253,7 @@
                     <div class="form-group col-md-12">
                         <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                        value="#{labels['dialogProcedimientoTramite.organoCompetente']}:"
-                                       for="txtOrgInstr"/>
+                                       for="txtOrgInstr" pt:aria-label="#{labels['dialogProcedimientoTramite.organoCompetente']}:"/>
                         <p>
 
                             <p:inputText id="labelComun"
@@ -274,7 +276,7 @@
                                     style="position:relative; top:10px;"
                                     rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                    id="btnAbrirUAInstr"
+                                    id="btnAbrirUAInstr" pt:aria-label=" "
                             >
                                 <p:ajax event="dialogReturn"
                                         listener="#{dialogProcedimientoTramite.returnDialogoUA}"
@@ -341,7 +343,7 @@
                             <div class="form-group col-md-5">
                                 <p:outputLabel id="lbltxtTraPlantilla" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.seleccionPlantilla']}:"
-                                               for="txtTraPlantilla"/>
+                                               for="txtTraPlantilla" pt:aria-label="#{labels['dialogProcedimientoTramite.seleccionPlantilla']}:"/>
 
                                 <p:selectOneMenu id="txtTraPlantilla"
                                                  value="#{dialogProcedimientoTramite.data.plantillaSel}"
@@ -371,7 +373,7 @@
                             <div class="form-grup col-md-4">
                                 <p:outputLabel id="lbltxtTraId" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dict.identificador']}:"
-                                               for="txtTraId"/>
+                                               for="txtTraId" pt:aria-label="#{labels['dict.identificador']}:"/>
                                 <p:inputText id="txtTraId"
                                              readonly="#{dialogProcedimientoTramite.isModoConsulta() || 
                                                  !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
@@ -388,7 +390,7 @@
                             <div class="form-grup col-md-2">
                                 <p:outputLabel id="lbltxtTraVer" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.version']}:"
-                                               for="txtTraVer"/>
+                                               for="txtTraVer" pt:aria-label="#{labels['dialogProcedimientoTramite.version']}:"/>
                                     <p:inputText id="txtTraVer" decimalPlaces="0"
                                              readonly="#{dialogProcedimientoTramite.isModoConsulta() ||
                                                  !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
@@ -403,7 +405,7 @@
                             <div class="form-group col-md-6">
                                 <p:outputLabel id="lbltxtTraPlat" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.plataforma']}:"
-                                               for="txtTraPlat"/>
+                                               for="txtTraPlat" pt:aria-label="#{labels['dialogProcedimientoTramite.plataforma']}:"/>
                                 <p:selectOneMenu id="txtTraPlat"
                                                  value="#{dialogProcedimientoTramite.data.tipoTramitacion.codPlatTramitacion}"
                                                  styleClass="w95"
@@ -426,7 +428,7 @@
                             <div class="form-grup col-md-6">
                                 <p:outputLabel id="lbltxtTraParam" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.parametros']}:"
-                                               for="txtTraParam"/>
+                                               for="txtTraParam" pt:aria-label="#{labels['dialogProcedimientoTramite.parametros']}:"/>
                                 <p:inputText id="txtTraParam"
                                              readonly="#{dialogProcedimientoTramite.isModoConsulta() ||
                                              !dialogProcedimientoTramite.canalesSeleccionados.contains('TEL')}"
@@ -442,7 +444,7 @@
                             <div class="form-group col-md-6">
                                 <p:outputLabel id="lbltxtTraUrl" styleClass="mr-2 mb-1 pt-0 negrita"
                                                value="#{labels['dialogProcedimientoTramite.url']}:"
-                                               for="txtTraUrl"/>
+                                               for="txtTraUrl" pt:aria-label="#{labels['dialogProcedimientoTramite.url']}:"/>
                                 <my:literalComponent id="txtTraUrl" styleClass="w95"
                                                      value="#{dialogProcedimientoTramite.data.tipoTramitacion.url}"
                                                      required="#{dialogProcedimientoTramite.isOpcionTelematicaUrl()}"
@@ -496,7 +498,7 @@
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogProcedimientoTramite.nuevoModelo()}">
+                                     actionListener="#{dialogProcedimientoTramite.nuevoModelo()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}"
                                 process="@this"
                                 update="dataDocumentosModelo"/>
@@ -504,12 +506,12 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.borrarModelo}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarModelo"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
                                      rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog">
+                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}"
                                 process="@this"
                                 update="dataDocumentosModelo"/>
@@ -519,16 +521,16 @@
                                      id="btnConsultarModelo"
                                      action="#{dialogProcedimientoTramite.consultarModelo}"
                                      rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog">
+                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                     <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirModelo}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarModelo" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimientoTramite.bajarModelo}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog"/>
+                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -558,7 +560,7 @@
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogProcedimientoTramite.nuevoDocumento()}">
+                                     actionListener="#{dialogProcedimientoTramite.nuevoDocumento()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogDocumento}"
                                 process="@this"
                                 update="dataDocumentosRelacionados"/>
@@ -566,12 +568,12 @@
                     <p:commandButton disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimientoTramite.borrarDocumento}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarDocumento"
                                      rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.editarDocumento}"
-                                     process="@this" update="messagesDialog"
+                                     process="@this" update="messagesDialog" pt:aria-label="#{labels['dict.editar']}"
                                         >
                     <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogDocumento}"
                             process="@this"
@@ -581,17 +583,17 @@
                                      id="btnConsultarDocumento"
                                      rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.consultarDocumento}"
-                                     process="@this" update="messagesDialog"
+                                     process="@this" update="messagesDialog" pt:aria-label="#{labels['dict.consultar']}"
                     />
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirDocumento}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimientoTramite.bajarDocumento}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog"/>
+                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
                 </div>
             </div>
             <div class="row left-container mx-0 mb-2">
@@ -624,7 +626,7 @@
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
-                                     actionListener="#{dialogProcedimientoTramite.nuevaTasa()}">
+                                     actionListener="#{dialogProcedimientoTramite.nuevaTasa()}" pt:aria-label="#{labels['dict.nuevo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTasa}"
                                 process="@this"
                                 update="dataTasas"/>
@@ -632,12 +634,12 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.borrarTasa}"
-                                     process="@this" update="dataTasas messagesDialog"/>
+                                     process="@this" update="dataTasas messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarTasa"
                                      action="#{dialogProcedimientoTramite.editarTasa}"
                                      rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataTasas messagesDialog">
+                                     process="@this" update="dataTasas messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTasa}"
                                 process="@this"
                                 update="dataTasas"/>
@@ -646,7 +648,7 @@
                                      id="btnConsultarTasa"
                                      action="#{dialogProcedimientoTramite.consultarTasa}"
                                      rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataTasas messagesDialog">
+                                     process="@this" update="dataTasas messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                 </div>
             </div>
@@ -726,8 +728,8 @@
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimientoTramite.cerrarSinCheck()}"
-                             process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardar').hide();"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();"/>
+                             process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.si']}"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
     </ui:define>
 
@@ -735,11 +737,11 @@
         <p:commandButton action="#{dialogProcedimientoTramite.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelDatosPublicacion panelOrganos panelCanales "
                          rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
 
         <p:commandButton id="closeButton" action="#{dialogProcedimientoTramite.cerrar}"
                          value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all"/>
+                         process="@all" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

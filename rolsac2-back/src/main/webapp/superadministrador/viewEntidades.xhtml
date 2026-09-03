@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
 Pàgina amb el llistat de Tipo de Público Objetivo.
@@ -142,7 +144,7 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
 
             <p:commandButton  id="btnEditarHidden" name="btnEditarHidden" widgetVar="btnEditarHidden"
                              actionListener="#{viewEntidades.editarEntidad()}" process="@this" update="messages"
-                             style="display: none">
+                             style="display: none" pt:aria-label="btnEditarHidden">
                 <p:ajax event="dialogReturn" listener="#{viewEntidades.returnDialogo}" update="messages dataTable"/>
             </p:commandButton>
         </h:form>

@@ -3,7 +3,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
 <ui:composition>
 
     <!--<div id="lateralDerecho" style="display: flex; flex-direction: column; align-items: flex-end;width: 100%;">-->
@@ -83,7 +85,7 @@
                         <p:link id="linkAvisos"
                                 outcome="/maestras/viewMisAlertas.xhtml"
                                 title="#{labels['dict.avisosYalertas']}">
-                                        <h:outputLabel class="mb-0 float-right botoCurt" style="cursor: pointer;" outcome="/configuracio">#{sessionBean.getNotificacionAvisos()} #{labels['dict.avisosYalertas']}</h:outputLabel>
+                                        <h:outputLabel class="mb-0 float-right botoCurt" style="cursor: pointer;" outcome="/configuracio" pt:aria-label="Etiqueta">#{sessionBean.getNotificacionAvisos()} #{labels['dict.avisosYalertas']}</h:outputLabel>
                                         <span class="oi oi oi-bell" title="#{labels['dict.avisosYalertas']}" aria-hidden="true"></span>
 
                         </p:link>
@@ -91,7 +93,7 @@
                         <a class="nav-link dropdown mobil" title="#{labels['dict.avisosYalertas']}" href="#" id="alertas"
                            onclick='window.location =$("#linkAvisos").attr("href");'
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <h:outputLabel class="mb-0 float-right botoCurt" style="cursor: pointer;" outcome="/configuracio">#{sessionBean.getNotificacionAvisos()} #{labels['dict.avisosYalertas']}</h:outputLabel>
+                            <h:outputLabel class="mb-0 float-right botoCurt" style="cursor: pointer;" outcome="/configuracio" pt:aria-label="Etiqueta">#{sessionBean.getNotificacionAvisos()} #{labels['dict.avisosYalertas']}</h:outputLabel>
                             <span class="oi oi oi-bell" title="#{labels['dict.avisosYalertas']}" aria-hidden="true"></span>
                             <p:link id="linkAvisos" outcome="/maestras/viewMisAlertas.xhtml" style="display:none" />
                         </a> -->
@@ -167,7 +169,7 @@
                                     </p:link>
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil mb-0 dropdown-label"
-                                            value="#{labels['menu.label.superadm.normativas']}"></p:outputLabel>
+                                            value="#{labels['menu.label.superadm.normativas']}" pt:aria-label="#{labels['menu.label.superadm.normativas']}"></p:outputLabel>
                                     <p:link id="viewTipoAfectacion" styleClass="pb-4 dropdown-item mobil"
                                             outcome="/maestras/tipo/viewTipoAfectacion.xhtml"
                                             title="#{labels['viewTipoAfectacion.titulo']}">
@@ -186,7 +188,7 @@
 
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.superadm.procserv']}"></p:outputLabel>
+                                            value="#{labels['menu.label.superadm.procserv']}" pt:aria-label="#{labels['menu.label.superadm.procserv']}"></p:outputLabel>
                                     <p:link id="viewTipoSilencioAdministrativo"
                                             styleClass="pb-4  dropdown-item mobil"
                                             outcome="/maestras/tipo/viewTipoSilencioAdministrativo.xhtml"
@@ -251,7 +253,7 @@
                                 <div class="menuTipos mt-4" id="menuPersonalizacion">
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil mb-0 dropdown-label"
-                                            value="#{labels['menu.label.pers.entidad.uas']}"></p:outputLabel>
+                                            value="#{labels['menu.label.pers.entidad.uas']}" pt:aria-label="#{labels['menu.label.pers.entidad.uas']}"></p:outputLabel>
                                     <p:link id="viewTipoUnidadAdministrativa"
                                             styleClass=" dropdown-item mobil"
                                             outcome="/maestras/tipo/viewTipoUnidadAdministrativa.xhtml"
@@ -272,7 +274,7 @@
                                     </p:link>-->
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.pers.entidad.proc']}"></p:outputLabel>
+                                            value="#{labels['menu.label.pers.entidad.proc']}" pt:aria-label="#{labels['menu.label.pers.entidad.proc']}"></p:outputLabel>
                                     <p:link id="viewPlatTramitElectronica"
                                             styleClass="  dropdown-item mobil"
                                             outcome="/entidades/viewPlatTramitElectronica.xhtml"
@@ -336,7 +338,7 @@
                                     </p:link>
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.mon.entidad.procesos']}"></p:outputLabel>
+                                            value="#{labels['menu.label.mon.entidad.procesos']}" pt:aria-label="#{labels['menu.label.mon.entidad.procesos']}"></p:outputLabel>
                                     <p:link id="viewProcesos"
                                             styleClass=" dropdown-item mobil"
                                             outcome="/monitorizacion/viewProcesos.xhtml"
@@ -351,7 +353,7 @@
                                     </p:link>
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.mon.entidad.reiniciarIndices']}"></p:outputLabel>
+                                            value="#{labels['menu.label.mon.entidad.reiniciarIndices']}" pt:aria-label="#{labels['menu.label.mon.entidad.reiniciarIndices']}"></p:outputLabel>
                                     <p:link id="viewProcesosSolr"
                                             styleClass="pb-4  dropdown-item mobil"
                                             outcome="/monitorizacion/viewProcesosSolr.xhtml"
@@ -361,7 +363,7 @@
 
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.mon.entidad.pdu']}"></p:outputLabel>
+                                            value="#{labels['menu.label.mon.entidad.pdu']}" pt:aria-label="#{labels['menu.label.mon.entidad.pdu']}"></p:outputLabel>
 
                                     <p:link id="viewCategoriasPDU"
                                             styleClass=" dropdown-item mobil"
@@ -378,7 +380,7 @@
 
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.mon.entidad.sia']}"></p:outputLabel>
+                                            value="#{labels['menu.label.mon.entidad.sia']}" pt:aria-label="#{labels['menu.label.mon.entidad.sia']}"></p:outputLabel>
 
                                     <p:link id="viewProcesosSIA"
                                             styleClass=" dropdown-item mobil"
@@ -395,7 +397,7 @@
 
                                     <p:outputLabel
                                             styleClass="font-weight-bold dropdown-item mobil bg-white mb-0 dropdown-label"
-                                            value="#{labels['menu.label.mon.entidad.migracion']}"></p:outputLabel>
+                                            value="#{labels['menu.label.mon.entidad.migracion']}" pt:aria-label="#{labels['menu.label.mon.entidad.migracion']}"></p:outputLabel>
 
                                     <p:link id="viewProcesosMigracion"
                                             styleClass="pb-4 dropdown-item mobil"
