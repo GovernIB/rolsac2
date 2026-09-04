@@ -7,7 +7,7 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
-<ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
+<ui:composition template="/WEB-INF/templates/layoutDialogSinBotonCerrar.xhtml">
     <p:importConstants type="es.caib.rolsac2.service.model.types.TypeProcedimientoWorkflow"
                        var="TypeProcedimientoWorkflow"/>
     <ui:define name="metadata">
@@ -1219,7 +1219,7 @@
                          update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales"
                          rendered="#{dialogServicio.mostrarBotonGuardar()}"
                          process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
-        <p:commandButton action="#{dialogServicio.cerrar}"
+        <p:commandButton id="closeButton" action="#{dialogServicio.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 

@@ -79,9 +79,14 @@ public class UtilJSF {
         options.put("styleClass", "max-width");
         options.put("contentWidth", "100%");
         options.put("contentHeight", "100%");
-        options.put("headerElement", "customheader");
         options.put("MODO_ACCESO", modoAcceso.toString());
         options.put("maximizable", true);
+        if (isDialogConCierrePersonalizado(dialog)) {
+            options.put("headerElement", "customheader");
+            options.put("closable", false);
+        } else {
+            options.put("closable", true);
+        }
 
         // Parametros
         String idParam = "";
@@ -103,6 +108,14 @@ public class UtilJSF {
 
         // Abre dialogo
         PrimeFaces.current().dialog().openDynamic(dialog, options, paramsDialog);
+    }
+
+    private static boolean isDialogConCierrePersonalizado(final String dialog) {
+        return dialog != null
+                && (dialog.endsWith("dialogProcedimiento")
+                || dialog.endsWith("dialogProcedimiento.xhtml")
+                || dialog.endsWith("dialogServicio")
+                || dialog.endsWith("dialogServicio.xhtml"));
     }
 
     /**
