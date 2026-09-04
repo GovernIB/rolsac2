@@ -41,7 +41,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText
+                            <p:outputLabel value="#{labels['dict.filtro']}:" for="filtroBusqueda" /><p:inputText id="filtroBusqueda"
                                 value="#{viewEdificios.filtro.texto}" styleClass="mr-2"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                              update="messages dataTable" actionListener="#{viewEdificios.buscar}"

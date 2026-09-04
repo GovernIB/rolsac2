@@ -22,7 +22,7 @@
                              update="dataTable" pt:aria-label="#{labels['viewSeccion.actualizar']}"/>
             <p:toolbar id="toolbar">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                    <p:outputLabel value="#{labels['dict.filtro']}:" for="filtroBusqueda" /><p:inputText id="filtroBusqueda"
                                                                                      value="#{viewSeccion.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewSeccion.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>

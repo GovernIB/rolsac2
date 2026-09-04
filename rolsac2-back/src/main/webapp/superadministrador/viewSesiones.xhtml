@@ -22,7 +22,7 @@
                              update="dataTable" pt:aria-label="#{labels['viewSesiones.actualizar']}"/>
             <p:toolbar id="toolbar"  style="padding-top: 10px; padding-bottom: 10px;">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                    <p:outputLabel value="#{labels['dict.filtro']}:" for="filtroBusqueda" /><p:inputText id="filtroBusqueda"
                                                                                      value="#{viewSesiones.filtroIdentificador}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{viewSesiones.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
