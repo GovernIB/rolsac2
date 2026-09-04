@@ -76,12 +76,13 @@ public class UtilJSF {
         options.put("width", width);
         options.put("height", heigth);
         options.put("responsive", "true");
-        options.put("styleClass", "max-width");
+        final boolean dialogConCierrePersonalizado = isDialogConCierrePersonalizado(dialog);
+        options.put("styleClass", dialogConCierrePersonalizado ? "max-width dialog-con-cierre-personalizado" : "max-width");
         options.put("contentWidth", "100%");
         options.put("contentHeight", "100%");
         options.put("MODO_ACCESO", modoAcceso.toString());
         options.put("maximizable", true);
-        if (isDialogConCierrePersonalizado(dialog)) {
+        if (dialogConCierrePersonalizado) {
             options.put("headerElement", "customheader");
             options.put("closable", false);
         } else {

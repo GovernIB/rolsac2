@@ -89,14 +89,12 @@ Plantilla.
         <h:form id="formDialog" enctype="multipart/form-data" >
             <div id="customheader">
                 <style type="text/css">
-                     .ui-dialog-titlebar > .ui-dialog-titlebar-maximize {
-                        width: 20px;
-                        height: 20px;
-                        margin: 0;
+                    .ui-dialog-titlebar:has(.custom-dialog-close) .ui-dialog-titlebar-maximize {
                         position: absolute;
-                        top: 4px;
-                        right: 33px;
-                        transform: none;
+                        top: calc(50% - 2px);
+                        right: 42px;
+                        margin: 0 !important;
+                        transform: translateY(-50%);
                     }
 
                     #customheader .custom-dialog-close {
@@ -108,7 +106,8 @@ Plantilla.
                     }
                 </style>
                 <ui:insert name="pageTitleDialog"/>
-                <a href="#"
+                <a id="nuevoCloseButton"
+                        href="#"
                         class="ui-dialog-titlebar-icon ui-dialog-titlebar-close ui-corner-all custom-dialog-close"
                         role="button"
                         aria-label="#{labels['dict.cerrar']}"
