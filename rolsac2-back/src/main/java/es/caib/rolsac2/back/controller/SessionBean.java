@@ -150,7 +150,6 @@ public class SessionBean implements Serializable {
         String idUsuario = seguridad.getIdentificadorUsuario();
         usuario = administracionEntServiceFacade.findUsuarioSimpleByIdentificador(idUsuario);
         SesionDTO sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-        boolean esPrimerAcceso = sesion == null;
 
         current = Locale.forLanguageTag(lang);
         // inicializamos mochila
@@ -158,25 +157,13 @@ public class SessionBean implements Serializable {
 
         cargarDatos();
 
-        if (esPrimerAcceso) {
-            if ((TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil) || TypePerfiles.GESTOR.equals(perfil)
-                 || TypePerfiles.INFORMADOR.equals(perfil)) && entidad != null) {
-                lang = entidad.getAdmContenidoSeleccionIdioma();
-            } else{
-                String backendIdiomas = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.BACKEND_IDIOMAS);
-                String[] idiomas = backendIdiomas.split(",");
-                String idioma = idiomas[0].trim();
-                if (!idioma.isEmpty()) {
-                    lang = idioma;
-                }
-            }
+        lang = getIdiomaByPerfil(perfil);
+        current = Locale.forLanguageTag(lang);
 
-            current = Locale.forLanguageTag(lang);
-            sesion = systemServiceBean.findSesionById(usuario.getCodigo());
-            if (sesion != null) {
-                sesion.setIdioma(lang);
-                systemServiceBean.updateSesion(sesion);
-            }
+        sesion = systemServiceBean.findSesionById(usuario.getCodigo());
+        if (sesion != null) {
+            sesion.setIdioma(lang);
+            systemServiceBean.updateSesion(sesion);
         }
 
         // Comprobar si tiene perfil de acceso en rosalc y si no redirigir a página de error
@@ -207,6 +194,26 @@ public class SessionBean implements Serializable {
         if (forzarRefresh) {
             redirectDefaultUrl();
         }
+    }
+
+    private String getIdiomaByPerfil(TypePerfiles perfil) {
+        String valor = "ca"; //Por defecto el catalán por si hay algun problema
+        if ((TypePerfiles.ADMINISTRADOR_CONTENIDOS.equals(perfil) || TypePerfiles.GESTOR.equals(perfil)
+                || TypePerfiles.INFORMADOR.equals(perfil)) && entidad != null) {
+            valor = systemServiceBean.getIdiomaContenidoByEntidad(entidad.getCodigo());
+
+            if (valor == null) {
+                valor = "ca";
+            }
+        } else {
+            String backendIdiomas = systemServiceBean.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.BACKEND_IDIOMAS);
+            String[] idiomas = backendIdiomas.split(",");
+            String idioma = idiomas[0].trim();
+            if (!idioma.isEmpty()) {
+                valor = idioma;
+            }
+        }
+        return valor;
     }
 
     public void cargarAlertas() {
@@ -388,16 +395,20 @@ public class SessionBean implements Serializable {
         sesionDTO.setFechaUltimaSesion(new Date());
         TypePerfiles perfilAntiguo = this.perfil;
 
+        /*
         //Actualizamos la seleccion de idioma está seteado a nivel de adm contenido seleccion idioma y es Adm. contenido
         if ((perfil == TypePerfiles.GESTOR || perfil == TypePerfiles.ADMINISTRADOR_CONTENIDOS || perfil == TypePerfiles.INFORMADOR) && entidad != null && entidad.getAdmContenidoSeleccionIdioma() != null) {
             lang = entidad.getAdmContenidoSeleccionIdioma();
             sesionDTO.setIdioma(lang); //Forzamos el idioma de sesion
             current = Locale.forLanguageTag(lang); //Forzamos el idioma/locale de la aplicación
-        }
+        }*/
 
 
         if (!perfil.equals(TypePerfiles.SUPER_ADMINISTRADOR)) {
             Boolean permiso = checkPermisosPerfil(perfil);
+            lang = getIdiomaByPerfil(perfil);
+            current = Locale.forLanguageTag(lang);
+
             if (permiso) {
                 actualizarUnidadAdministrativa(usuarioPerfil, perfil, sesionDTO);
                 if (perfil.equals(TypePerfiles.GESTOR) || perfil.equals(TypePerfiles.INFORMADOR)) {
@@ -414,6 +425,9 @@ public class SessionBean implements Serializable {
                 throw new PerfilException();
             }
         } else {
+            lang = getIdiomaByPerfil(perfil);
+            current = Locale.forLanguageTag(lang);
+
             entidad = null;
             unidadActiva = null;
             setPerfil(perfil);

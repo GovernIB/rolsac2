@@ -4,6 +4,7 @@ import es.caib.rolsac2.ejb.util.PropiedadUtil;
 import es.caib.rolsac2.persistence.converter.SesionConverter;
 import es.caib.rolsac2.persistence.model.JSesion;
 import es.caib.rolsac2.persistence.repository.ConfiguracionGlobalRepository;
+import es.caib.rolsac2.persistence.repository.EntidadRepository;
 import es.caib.rolsac2.persistence.repository.SesionRepository;
 import es.caib.rolsac2.service.exception.PluginErrorException;
 import es.caib.rolsac2.service.facade.AdministracionEntServiceFacade;
@@ -58,6 +59,9 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
 
     @Inject
     ConfiguracionGlobalRepository configGlobal;
+
+    @Inject
+    EntidadRepository entidadRepository;
 
     @Inject
     private Config config;
@@ -214,6 +218,12 @@ public class SystemServiceFacadeBean implements SystemServiceFacade {
     @RolesAllowed({TypePerfiles.SUPER_ADMINISTRADOR_VALOR})
     public void deleteAllSesion() {
         sesionRepository.deleteAllSesiones();
+    }
+
+    @Override
+    @PermitAll
+    public String getIdiomaContenidoByEntidad(Long codigo) {
+        return entidadRepository.getIdiomaContenidoByEntidad(codigo);
     }
 
     //********************************************************************************************************************************************

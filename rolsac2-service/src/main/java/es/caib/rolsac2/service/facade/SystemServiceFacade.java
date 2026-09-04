@@ -58,4 +58,11 @@ public interface SystemServiceFacade {
 
     void deleteAllSesion();
 
+    /**
+     * Devuelve el idioma contenido de la entidad (para los perfiles adm. contenido, gestor e informador)
+     *
+     * @param codigo
+     * @return
+     */
+    String getIdiomaContenidoByEntidad(Long codigo);
 }

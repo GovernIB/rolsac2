@@ -110,4 +110,12 @@ public interface EntidadRepository extends CrudRepository<JEntidad, Long> {
      * @return
      */
     Literal getUAComun(Long codigoUA);
+
+    /**
+     * Devuelve el idioma para los perfiles de gestores, adm. contenido e informadores.
+     *
+     * @param codigo
+     * @return
+     */
+    String getIdiomaContenidoByEntidad(Long codigo);
 }

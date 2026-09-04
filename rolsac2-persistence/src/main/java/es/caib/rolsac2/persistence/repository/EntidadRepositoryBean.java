@@ -233,17 +233,17 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
                 entidadGridDTO.setCodigo(jEntidad.getCodigo());
                 entidadGridDTO.setIdentificador(jEntidad.getIdentificador());
                 entidadGridDTO.setActiva(jEntidad.getActiva());
-                entidadGridDTO.setRolAdmin( jEntidad.getRolAdmin());
+                entidadGridDTO.setRolAdmin(jEntidad.getRolAdmin());
                 entidadGridDTO.setRolAdminContenido(jEntidad.getRolAdminContenido());
                 entidadGridDTO.setRolGestor(jEntidad.getRolGestor());
                 entidadGridDTO.setRolInformador(jEntidad.getRolInformador());
 
                 Literal descripcion = new Literal();
-                if(jEntidad.getDescripcion()!=null){
-                   for (JEntidadTraduccion jEntidadTraduccion : jEntidad.getDescripcion()) {
-                       Traduccion trad = new Traduccion(jEntidadTraduccion.getIdioma(), jEntidadTraduccion.getDescripcion());
-                       descripcion.add(trad);
-                   }
+                if (jEntidad.getDescripcion() != null) {
+                    for (JEntidadTraduccion jEntidadTraduccion : jEntidad.getDescripcion()) {
+                        Traduccion trad = new Traduccion(jEntidadTraduccion.getIdioma(), jEntidadTraduccion.getDescripcion());
+                        descripcion.add(trad);
+                    }
                 }
                 entidadGridDTO.setDescripcion(descripcion);
 
@@ -266,5 +266,14 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
             literalComun.add(traduccion);
         }
         return literalComun;
+    }
+
+    @Override
+    public String getIdiomaContenidoByEntidad(Long codigo) {
+        JEntidad jEntidad = entityManager.find(JEntidad.class, codigo);
+        if (jEntidad != null) {
+            return jEntidad.getAdmContenidoSeleccionIdioma();
+        }
+        return null;
     }
 }
