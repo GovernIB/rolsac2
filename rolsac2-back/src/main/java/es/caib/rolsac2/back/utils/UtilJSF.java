@@ -114,6 +114,8 @@ public class UtilJSF {
         return dialog != null
                 && (dialog.endsWith("dialogProcedimiento")
                 || dialog.endsWith("dialogProcedimiento.xhtml")
+                || dialog.endsWith("dialogProcedimientoTramite")
+                || dialog.endsWith("dialogProcedimientoTramite.xhtml")
                 || dialog.endsWith("dialogServicio")
                 || dialog.endsWith("dialogServicio.xhtml"));
     }
