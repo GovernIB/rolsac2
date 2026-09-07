@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -177,7 +177,8 @@
 													 icon="pi pi-pencil" styleClass="text-success"
 													 action="#{dialogEvolucionCompetenciaUnidadAdministrativa.editarUA()}"
 													 process="@this"
-													 disabled="{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada.codigo pt:aria-label="#{labels['dict.editar']}" > 0}"
+													 disabled="#{dialogEvolucionCompetenciaUnidadAdministrativa.uaSeleccionada.codigo > 0}"
+                                                                                                     pt:aria-label="#{labels['dict.editar']}"
 													 update="messagesDialog txtCrear"
 													 rendered="#{!dialogEvolucionCompetenciaUnidadAdministrativa.isModoConsulta()}" />
 									<p:commandButton title="#{labels['dict.eliminar']}"
@@ -225,7 +226,7 @@
 										scrollHeight="120" paginator="false" selectionMode="single"
 										rowKey="#{td.codigo}">
 
-										<!-- Número -->
+										<!-- NÃºmero -->
 										<p:column style="width: 30px;"
 											headerText="#{labels['dict.numero']}">
 											<f:facet name="header" />
