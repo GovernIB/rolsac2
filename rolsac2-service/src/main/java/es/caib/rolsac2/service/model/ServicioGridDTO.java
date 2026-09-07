@@ -71,8 +71,8 @@ public class ServicioGridDTO extends ModelApi {
         retorno.setNombre(serv.getNombre());
         //retorno.setFecha(serv.getFecha());
         //retorno.setComun(serv.isComun());
-        //retorno.setMensajesPendienteGestor(serv.isMensajesPendienteGestor());
-        //retorno.setMensajesPendienteSupervisor(serv.isMensajesPendienteSupervisor());
+        retorno.setMensajesPendienteGestor(serv.isPendienteMensajesGestor());
+        retorno.setMensajesPendienteSupervisor(serv.isPendienteMensajesSupervisor());
         retorno.setFechaPublicacion(serv.getFechaPublicacion());
         //retorno.setFechaDespublicacion(serv.getFechaDespublicacion());
         retorno.setFechaActualizacion(serv.getFechaActualizacion());

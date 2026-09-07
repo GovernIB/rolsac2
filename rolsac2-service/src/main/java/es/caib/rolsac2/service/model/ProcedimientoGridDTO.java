@@ -128,8 +128,8 @@ public class ProcedimientoGridDTO extends ModelApi {
             //procedimientoGridDTO.setTramiteInicioCodigo(proc.getTramiteInicioCodigo());
             //procedimientoGridDTO.setTramiteInicioFechaPublicacion(proc.getTramiteInicioFechaPublicacion());
             //procedimientoGridDTO.setTramiteIniciofechaCierre(proc.getTramiteIniciofechaCierre());
-            //procedimientoGridDTO.setMensajesPendienteGestor(proc.isMensajesPendienteGestor());
-            //procedimientoGridDTO.setMensajesPendienteSupervisor(proc.isMensajesPendienteSupervisor());
+            procedimientoGridDTO.setMensajesPendienteGestor(proc.isPendienteMensajesGestor());
+            procedimientoGridDTO.setMensajesPendienteSupervisor(proc.isPendienteMensajesSupervisor());
 
             procedimientoGridDTO.setUaInstructor(proc.getUaInstructor().getNombre().getTraduccion("es"));
         }

@@ -591,8 +591,10 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         mensaje.setPendienteMensajesSupervisor(!esAdministradorContenido);
         mensajes.add(0, mensaje);
 
-        ValidacionTipoUtils.sanitizarMensajes(mensajes);
-        procedimientoService.actualizarMensajes(codigoProcedimiento, UtilJSON.toJSON(mensajes), !esAdministradorContenido, esAdministradorContenido);
+        ValidacionTipoUtils.normalizarMensajes(mensajes);
+        boolean pendienteSupervisor = mensajes.stream().anyMatch(Mensaje::isPendienteMensajesSupervisor);
+        boolean pendienteGestor = mensajes.stream().anyMatch(Mensaje::isPendienteMensajesGestor);
+        procedimientoService.actualizarMensajes(codigoProcedimiento, UtilJSON.toJSON(mensajes), pendienteSupervisor, pendienteGestor);
     }
 
 
