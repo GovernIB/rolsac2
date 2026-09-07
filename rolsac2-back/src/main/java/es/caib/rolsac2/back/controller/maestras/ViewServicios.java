@@ -1020,7 +1020,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void seleccionarPubObjetivos() {
-        UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", filtro.getMaterias());
+        UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", filtro.getPublicoObjetivos());
         UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
     }
 
