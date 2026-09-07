@@ -265,7 +265,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
             <h:panelGroup id="panelFiltrosBasicos" layout="block">
                 <div class="filtroProcedimientosBasico">
                     <div class="row filtroBasicoGrid">
-                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-1 align-content-center">
+                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
                             <p:outputLabel value="#{labels['viewServicios.codigoServ']}:" for="txtCodigoProc"
                                            aria-label="#{labels['viewServicios.codigoServ']}"/>
                             <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}"
@@ -274,7 +274,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:keyFilter mask="num"/>
                             </p:inputText>
                         </div>
-                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-1 align-content-center">
+                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
                             <p:outputLabel value="#{labels['viewServicios.codigoSIA']}:" for="txtCodigoSIA"
                                            aria-label="#{labels['viewServicios.codigoSIA']}"/>
                             <p:inputText id="txtCodigoSIA" value="#{viewServicios.filtro.codigoSIA}"
@@ -283,7 +283,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:keyFilter mask="num"/>
                             </p:inputText>
                         </div>
-                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 align-content-center">
+                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
                             <p:outputLabel value="#{labels['viewServicios.estado']}:" for="txtTipoEstado"
                                            aria-label="#{labels['viewServicios.estado']}"/>
                             <p:selectOneMenu id="txtTipoEstado"
@@ -296,7 +296,7 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                                itemLabel="#{labels['TypeProcedimientoEstado.' += estado]}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 align-content-center">
+                        <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
                             <p:outputLabel value="#{labels['viewProcedimientos.mensajesPorLeer']}:"
                                            for="txtMensajesPorLeer"
                                            aria-label="#{labels['viewProcedimientos.mensajesPorLeer']}"/>
