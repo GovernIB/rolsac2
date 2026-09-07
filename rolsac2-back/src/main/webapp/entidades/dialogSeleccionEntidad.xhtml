@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -77,7 +77,12 @@
                     </p:column>
                     <p:column sortBy="#{enti.empleadoPublico}">
                         <f:facet name="header">#{labels['viewEntidades.activa']}</f:facet>
-                        <p:selectBooleanCheckbox value="#{enti.activa}" disabled="true"  />
+                        <h:outputLabel for="chkActiva" styleClass="sr-only"
+                                       value="#{enti.codigo} #{labels['viewEntidades.activa']} #{enti.activa}"/>
+                        <p:selectBooleanCheckbox id="chkActiva"
+                                                 value="#{enti.activa}"
+                                                 pt:aria-label="#{enti.codigo} #{labels['viewEntidades.activa']} #{enti.activa}"
+                                                 disabled="true"/>
                     </p:column>
                 </p:dataTable>
 

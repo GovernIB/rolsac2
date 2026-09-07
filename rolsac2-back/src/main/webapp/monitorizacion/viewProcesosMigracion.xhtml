@@ -178,8 +178,11 @@ PÃ gina amb el llistat de processos automÃ tics
                     </div>
 
                 <div class="ui-md-12 text-align-left ml10">
-                        <p:selectBooleanCheckbox value="#{viewProcesosMigracion.cargarNormativas}" styleClass="ml-2"
-                                                 itemLabel="#{labels['viewProcesosMigracion.cargarNormativas']}">
+                        <p:selectBooleanCheckbox id="chkCargarNormativas"
+                                                 value="#{viewProcesosMigracion.cargarNormativas}"
+                                                 styleClass="ml-2"
+                                                 itemLabel="#{labels['viewProcesosMigracion.cargarNormativas']}"
+                                                 pt:aria-label="#{labels['viewProcesosMigracion.cargarNormativas']}">
                             <p:ajax process="@this" event="change" partialSubmit="true" />
                         </p:selectBooleanCheckbox>
 
@@ -228,5 +231,6 @@ PÃ gina amb el llistat de processos automÃ tics
     </ui:define>
 </ui:composition>
 </html>
+
 
 

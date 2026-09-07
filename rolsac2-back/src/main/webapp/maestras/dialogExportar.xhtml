@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -10,7 +10,7 @@
 >
 
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+PÃ gina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
     <ui:define name="metadata">
@@ -104,7 +104,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         update="datatable" process="@this" />
 
                 <p:column headerText="#{labels['dict.mostrar']}" styleClass="text-center w90px">
-                    <p:selectBooleanCheckbox value="#{td.seleccionado}">
+                    <h:outputLabel for="chkSeleccionado" styleClass="sr-only"
+                                   value="#{td.nombre} #{td.seleccionado}"/>
+                    <p:selectBooleanCheckbox id="chkSeleccionado"
+                                             value="#{td.seleccionado}"
+                                             pt:aria-label="#{td.nombre} #{td.seleccionado}">
                         <p:ajax event="change" />
                     </p:selectBooleanCheckbox>
                 </p:column>
@@ -134,3 +138,4 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 </ui:composition>
 </html>
+

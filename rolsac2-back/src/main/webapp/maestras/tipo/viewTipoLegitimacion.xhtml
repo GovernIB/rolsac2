@@ -1,4 +1,4 @@
-<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+﻿<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -8,7 +8,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+PÃ gina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -103,7 +103,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                 </p:column>
                 <p:column sortBy="#{tipoLegitimacion.porDefecto}" styleClass="overflow-datagrid-cell">
                     <f:facet name="header">#{labels['dict.opcionPorDefecto']}</f:facet>
-                    <p:selectBooleanCheckbox value="#{tipoLegitimacion.porDefecto}"
+                    <h:outputLabel for="chkPorDefecto" styleClass="sr-only"
+                                   value="#{tipoLegitimacion.codigo} #{labels['dict.opcionPorDefecto']} #{tipoLegitimacion.porDefecto}"/>
+                    <p:selectBooleanCheckbox id="chkPorDefecto"
+                                             value="#{tipoLegitimacion.porDefecto}"
+                                             pt:aria-label="#{tipoLegitimacion.codigo} #{labels['dict.opcionPorDefecto']} #{tipoLegitimacion.porDefecto}"
                                              styleClass="w95"
                                              disabled="true"  />
                 </p:column>
@@ -126,3 +130,4 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 </ui:composition>
 </html>
+

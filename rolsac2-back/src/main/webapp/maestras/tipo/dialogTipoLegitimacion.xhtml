@@ -1,4 +1,4 @@
-<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+﻿<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:my="http://java.sun.com/jsf/composite/components"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -8,7 +8,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+PÃ gina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layoutDialog.xhtml">
   <ui:define name="metadata">
@@ -106,7 +106,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
         </div>
         <div class="ui-g-12 ui-md-10 ui-lg-5">
 
-          <p:selectBooleanCheckbox value="#{dialogTipoLegitimacion.data.porDefecto}"
+          <p:selectBooleanCheckbox id="chkPorDefecto" value="#{dialogTipoLegitimacion.data.porDefecto}"
                                    disabled="#{dialogTipoLegitimacion.isModoConsulta()}"
                                    styleClass="w96"  />
 
@@ -135,10 +135,11 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      value="#{labels['dict.cerrar']}" update="messagesDialog"
                      process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
     <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" update="messagesDialog form" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-      <p:commandButton value="Sí" process="@this" action="#{dialogTipoLegitimacion.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"  />
+      <p:commandButton value="Sí" process="@this" action="#{dialogTipoLegitimacion.cerrarDefinitivo}" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="SÃ­"  />
       <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"  />
     </p:confirmDialog>
   </ui:define>
 
 </ui:composition>
 </html>
+

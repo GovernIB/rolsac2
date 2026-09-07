@@ -1,4 +1,4 @@
-<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+﻿<html xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -9,7 +9,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-Pàgina amb el llistat de personal d'una unitat administrativa.
+PÃ gina amb el llistat de personal d'una unitat administrativa.
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -55,8 +55,10 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                                    for="uaGeneral" pt:aria-label="#{labels['viewCuadroControl.seleccionUA']}"></h:outputLabel>
                                 </div>
                                 <div class="col-12 text-center">
-                                    <p:selectBooleanCheckbox value="#{viewCuadroControl.buscarTodo}"
-                                                             itemLabel="Seleccionar totes les unitats">
+                                    <p:selectBooleanCheckbox id="chkBuscarTodo"
+                                                             value="#{viewCuadroControl.buscarTodo}"
+                                                             itemLabel="Seleccionar totes les unitats"
+                                                             pt:aria-label="Seleccionar totes les unitats">
                                         <p:ajax listener="#{viewCuadroControl.cambioCheckTodasUa}"
                                                 update="uaSeleccionada contenidos statsSemana statsMensuales"/>
                                     </p:selectBooleanCheckbox>
@@ -199,3 +201,4 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 </ui:composition>
 </html>
+

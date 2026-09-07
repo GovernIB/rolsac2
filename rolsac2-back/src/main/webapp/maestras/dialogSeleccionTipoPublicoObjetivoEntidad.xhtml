@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -74,7 +74,12 @@
                 </p:column>
                 <p:column sortBy="#{pubobjent.empleadoPublico}">
                     <f:facet name="header">#{labels['dict.esEmpleadoPublico']}</f:facet>
-                    <p:selectBooleanCheckbox value="#{pubobjent.empleadoPublico}" disabled="true"  />
+                    <h:outputLabel for="chkEmpleadoPublico" styleClass="sr-only"
+                                   value="#{pubobjent.codigo} #{labels['dict.esEmpleadoPublico']} #{pubobjent.empleadoPublico}"/>
+                    <p:selectBooleanCheckbox id="chkEmpleadoPublico"
+                                             value="#{pubobjent.empleadoPublico}"
+                                             pt:aria-label="#{pubobjent.codigo} #{labels['dict.esEmpleadoPublico']} #{pubobjent.empleadoPublico}"
+                                             disabled="true"/>
                 </p:column>
             </p:dataTable>
 

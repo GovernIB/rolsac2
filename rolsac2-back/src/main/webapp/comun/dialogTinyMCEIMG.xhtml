@@ -47,12 +47,12 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 
 					<!-- Columna de Número -->
 					<p:column headerText="#{labels['dialogTinyMCEIMG.usadoEnAyuda']}" style="width:15%; text-align:center" selectionMode="single">
-						<p:selectBooleanCheckbox disabled="true" value="#{item.total > 0 ? true : false}" />
+						<p:selectBooleanCheckbox disabled="true" value="#{item.total > 0 ? true : false}" itemLabel="#{labels['dialogTinyMCEIMG.usadoEnAyuda']}" />
 					</p:column>
 
 					<!-- Columna de Número -->
 					<p:column headerText="#{labels['dialogTinyMCEIMG.existeFichero']}" style="width:15%; text-align:center" selectionMode="single">
-						<p:selectBooleanCheckbox disabled="true" value="#{item.existeFicheroFisico}" />
+						<p:selectBooleanCheckbox disabled="true" value="#{item.existeFicheroFisico}" itemLabel="#{labels['dialogTinyMCEIMG.existeFichero']}" />
 					</p:column>
 
 					<!-- Nueva columna para previsualizar la imagen -->

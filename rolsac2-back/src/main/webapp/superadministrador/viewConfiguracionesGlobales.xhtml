@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -8,7 +8,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-Pàgina amb el llistat de Tipo de Público Objetivo.
+PÃ gina amb el llistat de Tipo de PÃºblico Objetivo.
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -83,7 +83,12 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
                 <p:column sortBy="#{configuracionGlobal.noModificable}"
                           headerText="#{labels['viewConfiguacionesGlobales.noModificable']}">
                     <f:facet name="header"/>
-                    <h:selectBooleanCheckbox value="#{configuracionGlobal.noModificable}" disabled="true"/>
+                    <h:outputLabel for="chkNoModificable" styleClass="sr-only"
+                                   value="#{configuracionGlobal.propiedad} #{labels['viewConfiguacionesGlobales.noModificable']} #{configuracionGlobal.noModificable}"/>
+                    <h:selectBooleanCheckbox id="chkNoModificable"
+                                             value="#{configuracionGlobal.noModificable}"
+                                             pt:aria-label="#{configuracionGlobal.propiedad} #{labels['viewConfiguacionesGlobales.noModificable']} #{configuracionGlobal.noModificable}"
+                                             disabled="true"/>
                 </p:column>
                 <p:column sortBy="#{configuracionGlobal.valor}" headerText="#{labels['dict.valor']}">
                     <f:facet name="header"/>
@@ -120,3 +125,4 @@ Pàgina amb el llistat de Tipo de Público Objetivo.
     </ui:define>
 </ui:composition>
 </html>
+
