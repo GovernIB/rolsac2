@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -8,7 +8,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-Pàgina amb el llistat de processos automàtics
+PÃ gina amb el llistat de processos automÃ tics
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -83,7 +83,8 @@ Pàgina amb el llistat de processos automàtics
                     </p:column>
                     <p:column headerText="#{labels['dict.activo']}" styleClass="w130px">
                         <f:facet name="header"/>
-                        <p:selectBooleanCheckbox value="#{proceso.proceso.activo}" disabled="true"></p:selectBooleanCheckbox>
+                        <h:outputLabel for="chkActivo" styleClass="sr-only"                   value="#{proceso.proceso.descripcion} #{proceso.proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"/>
+                        <h:selectBooleanCheckbox id="chkActivo"                             value="#{proceso.proceso.activo}"                             pt:aria-label="#{proceso.proceso.descripcion} #{proceso.proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"                             disabled="true"/>
                     </p:column>
                     <p:column headerText="#{labels['dict.resultado']}">
                         <f:facet name="header"/>
@@ -92,7 +93,7 @@ Pàgina amb el llistat de processos automàtics
                     <p:column headerText="" styleClass="w50px">
                         <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
                                          actionListener="#{viewProcesosSolr.verErrores(proceso.codigo)}"
-                                         process="@this" update="messages" styleClass="h30px w30px" pt:aria-label="">
+                                         process="@this" update="messages" styleClass="h30px w30px" pt:aria-label="Ver errores">
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -223,3 +224,5 @@ Pàgina amb el llistat de processos automàtics
     </ui:define>
 </ui:composition>
 </html>
+
+

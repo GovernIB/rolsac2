@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
+﻿<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -8,7 +8,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-Pàgina amb el llistat de processos automàtics
+PÃ gina amb el llistat de processos automÃ tics
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -112,8 +112,12 @@ Pàgina amb el llistat de processos automàtics
                 </p:column>
                 <p:column sortBy="#{proceso.activo}" headerText="#{labels['dict.activo']}">
                     <f:facet name="header"/>
-                    <p:selectBooleanCheckbox value="#{proceso.activo}" aria-label="#{proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"
-                                             disabled="true"></p:selectBooleanCheckbox>
+                    <h:outputLabel for="chkActivo" styleClass="sr-only"
+                                   value="#{proceso.identificadorProceso} #{proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"/>
+                    <h:selectBooleanCheckbox id="chkActivo"
+                                             value="#{proceso.activo}"
+                                             pt:aria-label="#{proceso.identificadorProceso} #{proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"
+                                             disabled="true"/>
                 </p:column>
             </p:dataTable>
             <h:outputScript>
@@ -131,3 +135,4 @@ Pàgina amb el llistat de processos automàtics
     </ui:define>
 </ui:composition>
 </html>
+

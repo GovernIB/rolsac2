@@ -118,6 +118,7 @@ public class JTipoTramitacion extends BaseEntity {
             tipoTramitacion.setPlantilla(otro.isPlantilla());
             tipoTramitacion.setEntidad(otro.getEntidad());
             tipoTramitacion.setTraducciones(JTipoTramitacionTraduccion.clonar(otro.getTraducciones(), tipoTramitacion));
+            tipoTramitacion.setTramitTelefonica(otro.isTramitTelefonica());
         }
         return tipoTramitacion;
     }
