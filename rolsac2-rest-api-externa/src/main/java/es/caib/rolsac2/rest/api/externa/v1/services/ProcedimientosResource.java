@@ -57,11 +57,11 @@ public class ProcedimientosResource {
     /**
      * Llistat de procediments.
      * <p>
-     * Retorna els procediments disponibles en funció dels filtres indicats
-     * com a paràmetres de consulta.
+     * Retorna els procediments disponibles en funciÃ³ dels filtres indicats
+     * com a parÃ metres de consulta.
      *
      * @return Llistat de procediments.
-     * @throws ValidationException Gestió d'excepcions.
+     * @throws ValidationException GestiÃ³ d'excepcions.
      */
     @Produces({MediaType.APPLICATION_JSON})
     @GET
@@ -69,7 +69,7 @@ public class ProcedimientosResource {
     @Operation(
             operationId = "listarProcedimientos",
             summary = "Llista els procediments",
-            description = "Llista els procediments disponibles en funció dels filtres indicats."
+            description = "Llista els procediments disponibles en funciÃ³ dels filtres indicats."
     )
     @APIResponse(
             responseCode = "200",
@@ -90,7 +90,7 @@ public class ProcedimientosResource {
     public Response listarProcedimientos(
 
             @Parameter(
-                    description = "Idioma de la informació retornada. Per defecte, català.",
+                    description = "Idioma de la informaciÃ³ retornada. Per defecte, catalÃ .",
                     name = "idioma",
                     in = ParameterIn.QUERY,
                     schema = @Schema(defaultValue = "ca")
@@ -122,14 +122,14 @@ public class ProcedimientosResource {
             @QueryParam("nom") final String nom,
 
             @Parameter(
-                    description = "Data inicial del rang de data d'actualització, en format ISO8601.",
+                    description = "Data inicial del rang de data d'actualitzaciÃ³, en format ISO8601.",
                     name = "iniciDataActualitzacio",
                     in = ParameterIn.QUERY
             )
             @QueryParam("iniciDataActualitzacio") final String iniciDataActualitzacio,
 
             @Parameter(
-                    description = "Data final del rang de data d'actualització, en format ISO8601.",
+                    description = "Data final del rang de data d'actualitzaciÃ³, en format ISO8601.",
                     name = "fiDataActualitzacio",
                     in = ParameterIn.QUERY
             )
@@ -164,6 +164,18 @@ public class ProcedimientosResource {
             @QueryParam("estatSIA") final String estatSIA,
 
             @Parameter(
+                    description = "Data inicial del rang de data SIA, en format ISO8601.",
+                    name = "iniciDataSia",
+                    in = ParameterIn.QUERY
+            )
+            @QueryParam("iniciDataSia") final String iniciDataSia,
+            @Parameter(
+                    description = "Data final del rang de data SIA, en format ISO8601.",
+                    name = "fiDataSia",
+                    in = ParameterIn.QUERY
+            )
+            @QueryParam("fiDataSia") final String fiDataSia,
+            @Parameter(
                     description = "Codi de la unitat administrativa competent responsable.",
                     name = "uaCompetentCodi",
                     in = ParameterIn.QUERY
@@ -192,7 +204,7 @@ public class ProcedimientosResource {
             @QueryParam("uaInstructorNom") final String uaInstructorNom,
 
             @Parameter(
-                    description = "Indica si el procediment és comú a diverses unitats.",
+                    description = "Indica si el procediment Ã©s comÃº a diverses unitats.",
                     name = "comu",
                     in = ParameterIn.QUERY
             )
@@ -220,35 +232,35 @@ public class ProcedimientosResource {
             @QueryParam("estat") final String estat,
 
             @Parameter(
-                    description = "Indica si es permet la tramitació mitjançant apoderat.",
+                    description = "Indica si es permet la tramitaciÃ³ mitjanÃ§ant apoderat.",
                     name = "habilitatApoderat",
                     in = ParameterIn.QUERY
             )
             @QueryParam("habilitatApoderat") final Boolean habilitatApoderat,
 
             @Parameter(
-                    description = "Indica si està habilitada la tramitació mitjançant funcionari.",
+                    description = "Indica si estÃ  habilitada la tramitaciÃ³ mitjanÃ§ant funcionari.",
                     name = "habilitatFuncionari",
                     in = ParameterIn.QUERY
             )
             @QueryParam("habilitatFuncionari") final Boolean habilitatFuncionari,
 
             @Parameter(
-                    description = "Termini de resolució del procediment.",
+                    description = "Termini de resoluciÃ³ del procediment.",
                     name = "terminiResolucio",
                     in = ParameterIn.QUERY
             )
             @QueryParam("terminiResolucio") final String terminiResolucio,
 
             @Parameter(
-                    description = "Mida de la pàgina.",
+                    description = "Mida de la pÃ gina.",
                     name = "page-size",
                     in = ParameterIn.QUERY
             )
             @QueryParam("page-size") final Integer pageSize,
 
             @Parameter(
-                    description = "Número de la pàgina.",
+                    description = "NÃºmero de la pÃ gina.",
                     name = "page",
                     in = ParameterIn.QUERY
             )
@@ -274,7 +286,7 @@ public class ProcedimientosResource {
             @QueryParam("ordenCampo") final String ordenCampo,
 
             @Parameter(
-                    description = "Sentit de l'ordenació. Valors possibles: asc o desc.",
+                    description = "Sentit de l'ordenaciÃ³. Valors possibles: asc o desc.",
                     name = "ordenAscendente",
                     in = ParameterIn.QUERY,
                     schema = @Schema(
@@ -332,7 +344,7 @@ public class ProcedimientosResource {
             try {
                 fg.setCodigoSIA(Integer.valueOf(codiSIACodi.trim()));
             } catch (NumberFormatException e) {
-                LOG.warn("El parámetro codiSIACodi no es válido: {}", codiSIACodi);
+                LOG.warn("El parÃ¡metro codiSIACodi no es vÃ¡lido: {}", codiSIACodi);
             }
         }
 
@@ -340,6 +352,12 @@ public class ProcedimientosResource {
             fg.setEstadoSIA(estatSIA.trim());
         }
 
+        if (iniciDataSia != null && !iniciDataSia.trim().isEmpty()) {
+            fg.setInicioFechaSIA(convertirFechaISO8601("iniciDataSia", iniciDataSia));
+        }
+        if (fiDataSia != null && !fiDataSia.trim().isEmpty()) {
+            fg.setFinFechaSIA(convertirFechaISO8601("fiDataSia", fiDataSia));
+        }
         if (uaCompetentCodi != null) {
             fg.setCodigoUACompetente(uaCompetentCodi);
         }
@@ -389,7 +407,7 @@ public class ProcedimientosResource {
         fg.setPaginaTamanyo(tamanyoPaginaSolicitado);
         final long paginationOffset = (long) paginaActual * tamanyoPaginaSolicitado;
         if (paginationOffset > Integer.MAX_VALUE) {
-            throw new ValidationException("La combinació de page i page-size és massa gran.");
+            throw new ValidationException("La combinaciÃ³ de page i page-size Ã©s massa gran.");
         }
         fg.setPaginaFirst((int) paginationOffset);
 
@@ -405,7 +423,7 @@ public class ProcedimientosResource {
                 fg.setOrder("DESCENDING");
                 fg.setAscendente(false);
             } else {
-                LOG.warn("El parámetro ordenAscendente no es válido: {}", ordenAscendente);
+                LOG.warn("El parÃ¡metro ordenAscendente no es vÃ¡lido: {}", ordenAscendente);
             }
         }
 
@@ -428,7 +446,7 @@ public class ProcedimientosResource {
         }
 
 
-        // Limitar el número total de elementos según API_MAX_LIMIT
+        // Limitar el nÃºmero total de elementos segÃºn API_MAX_LIMIT
         Integer apiMaxLimit = null;
         try {
             String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
@@ -489,10 +507,10 @@ public class ProcedimientosResource {
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
             elemento = new Procediment((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
-            if (debugActivo) LOG.error(" getRespuesta: añadido procedimiento a la lista: {}", elemento);
+            if (debugActivo) LOG.error(" getRespuesta: aÃ±adido procedimiento a la lista: {}", elemento);
         }
 
-        // Limitar el total de elementos reportado según API_MAX_LIMIT
+        // Limitar el total de elementos reportado segÃºn API_MAX_LIMIT
         int total = (int) resultadoBusqueda.getTotal();
         if (apiMaxLimit != null && total > apiMaxLimit) {
             total = apiMaxLimit;
@@ -513,3 +531,4 @@ public class ProcedimientosResource {
     }
 
 }
+

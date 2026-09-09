@@ -185,7 +185,11 @@ public class EntidadRepositoryBean extends AbstractCrudRepository<JEntidad, Long
     public String getIdiomaPorDefecto(Long idEntidad) {
         Query query = entityManager.createQuery("SELECT j.idiomaDefectoRest FROM JEntidad j where j.codigo = :idEntidad");
         query.setParameter("idEntidad", idEntidad);
-        return (String) query.getSingleResult();
+        List<String> idiomas = query.getResultList();
+        if (idiomas != null && !idiomas.isEmpty()) {
+            return idiomas.get(0);
+        }
+        return "ca";
     }
 
     @Override
