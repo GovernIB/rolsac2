@@ -1,5 +1,6 @@
 package es.caib.rolsac2.rest.api.externa.testclient;
 
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -7,459 +8,788 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Cliente de prueba standalone para la API REST externa de ROLSAC2.
+ * Cliente REST standalone para la API externa de ROLSAC2.
  * <p>
+ * Requisitos:
  * - JDK 11+
- * - Sin Jackson
- * - Sin dependencias externas
- * - Procedimientos: /procediments/
- * - Servicios: /serveis/
+ * - Procediment.java y Servei.java en este mismo paquete.
  * <p>
- * Interpreta el JSON recibido y lo presenta por consola de forma legible.
+ * No utiliza Jackson, RESTEasy, JAX-RS, SLF4J ni ninguna otra dependencia externa.
+ * <p>
+ * Los métodos getProcediments() y getServeis() devuelven objetos Java tipados.
  */
 public class Rolsac2RestClient {
 
-    private final HttpClient http = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(10))
-            .build();
+    private static final String DEFAULT_BASE_URL =
+            "http://localhost:8080/rolsac2api/externa/services/v1";
 
+    private final HttpClient http;
     private final String baseUrl;
 
-    public Rolsac2RestClient(final String baseUrl) {
-        this.baseUrl = normalizarBaseUrl(baseUrl);
+    public Rolsac2RestClient(String baseUrl) {
+        this.baseUrl = normalizeBaseUrl(baseUrl);
+        this.http = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-        final String baseUrl = args.length > 0
-                ? args[0]
-                : "http://localhost:8080/rolsac2api/externa/services/v1";
+        String baseUrl = args.length > 0 ? args[0] : DEFAULT_BASE_URL;
+        Rolsac2RestClient client = new Rolsac2RestClient(baseUrl);
 
-        final Rolsac2RestClient client = new Rolsac2RestClient(baseUrl);
+        printHeader("ROLSAC2 - CLIENTE REST EXTERNO");
+        System.out.println("Base URL: " + baseUrl);
 
-        imprimirCabecera("ROLSAC2 - CLIENTE REST EXTERNO");
-        System.out.println("Base URL : " + baseUrl);
+        Map<String, String> procParams = new LinkedHashMap<>();
+        procParams.put("idioma", "ca");
+        procParams.put("entitat", "1");
+        procParams.put("page-size", "5");
+        procParams.put("page", "0");
+        procParams.put("ordenCampo", "codi");
+        procParams.put("ordenAscendente", "asc");
 
-        final Map<String, String> procediments = new LinkedHashMap<>();
-        procediments.put("idioma", "ca");
-        procediments.put("entitat", "1");
-        procediments.put("page-size", "5");
-        procediments.put("page", "0");
-        procediments.put("ordenCampo", "codi");
-        procediments.put("ordenAscendente", "asc");
+        ApiResponse<Procediment> procediments = client.getProcediments(procParams);
+        printProcediments(procediments);
 
-        client.getAndPrint("/procediments/", procediments, "PROCEDIMENTS");
+        Map<String, String> serveiParams = new LinkedHashMap<>();
+        serveiParams.put("idioma", "ca");
+        serveiParams.put("entitat", "1");
+        serveiParams.put("page-size", "5");
+        serveiParams.put("page", "0");
+        serveiParams.put("ordenCampo", "codi");
+        serveiParams.put("ordenAscendente", "asc");
 
-        final Map<String, String> serveis = new LinkedHashMap<>();
-        serveis.put("idioma", "ca");
-        serveis.put("entitat", "1");
-        serveis.put("tramitElectronica", "true");
-        serveis.put("page-size", "5");
-        serveis.put("page", "0");
-        serveis.put("ordenCampo", "codi");
-        serveis.put("ordenAscendente", "asc");
+        ApiResponse<Servei> serveis = client.getServeis(serveiParams);
+        printServeis(serveis);
 
-        client.getAndPrint("/serveis/", serveis, "SERVEIS");
+        // Ejemplo de uso real de los objetos:
+        if (!procediments.getItems().isEmpty()) {
+            Procediment primer = procediments.getItems().get(0);
+            System.out.println();
+            System.out.println("Ejemplo objeto Procediment -> codi="
+                    + primer.getCodi() + ", nom=" + primer.getNom());
+        }
+
+        if (!serveis.getItems().isEmpty()) {
+            Servei primer = serveis.getItems().get(0);
+            System.out.println("Ejemplo objeto Servei      -> codi="
+                    + primer.getCodi() + ", nom=" + primer.getNom());
+        }
     }
 
-    private void getAndPrint(final String path,
-                             final Map<String, String> query,
-                             final String tipo) throws Exception {
+    /**
+     * Llama a /procediments/ y devuelve una respuesta tipada.
+     */
+    public ApiResponse<Procediment> getProcediments(Map<String, String> query)
+            throws Exception {
 
-        final String url = baseUrl + normalizarPath(path) + toQuery(query);
+        Map<String, Object> root = executeGet("/procediments/", query);
+
+        return mapApiResponse(root, new ItemMapper<Procediment>() {
+            @Override
+            public Procediment map(Map<String, Object> json) {
+                return mapProcediment(json);
+            }
+        });
+    }
+
+    /**
+     * Llama a /serveis/ y devuelve una respuesta tipada.
+     */
+    public ApiResponse<Servei> getServeis(Map<String, String> query)
+            throws Exception {
+
+        Map<String, Object> root = executeGet("/serveis/", query);
+
+        return mapApiResponse(root, new ItemMapper<Servei>() {
+            @Override
+            public Servei map(Map<String, Object> json) {
+                return mapServei(json);
+            }
+        });
+    }
+
+    /**
+     * Ejecuta el GET y devuelve el objeto JSON raíz ya parseado.
+     */
+    private Map<String, Object> executeGet(String path,
+                                           Map<String, String> query)
+            throws Exception {
+
+        String url = baseUrl + normalizePath(path) + toQuery(query);
 
         System.out.println();
-        imprimirCabecera(tipo);
-        System.out.println("GET  : " + url);
-        System.out.println();
+        System.out.println("GET " + url);
 
-        final HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(url))
                 .timeout(Duration.ofSeconds(30))
                 .header("Accept", "application/json")
                 .GET()
                 .build();
 
-        final HttpResponse<String> response =
-                http.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response =
+                http.send(request,
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
-        System.out.println("HTTP : " + response.statusCode());
+        System.out.println("HTTP " + response.statusCode());
 
-        final String body = response.body();
+        String body = response.body();
 
-        if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            System.err.println();
-            System.err.println("ERROR DEVUELTO POR EL SERVIDOR");
-            System.err.println("-----------------------------");
-            imprimirJsonOTexto(body, true);
-            throw new IllegalStateException(
-                    "La llamada ha fallado con HTTP " + response.statusCode()
+        Object parsed;
+        try {
+            parsed = new JsonParser(body).parse();
+        } catch (RuntimeException e) {
+            throw new RestClientException(
+                    "La respuesta no es un JSON válido. HTTP "
+                            + response.statusCode()
+                            + "\nRespuesta:\n"
+                            + body,
+                    response.statusCode(),
+                    body,
+                    e
             );
         }
 
-        try {
-            final Object parsed = new JsonParser(body).parse();
-
-            if (!(parsed instanceof Map)) {
-                System.out.println();
-                System.out.println("La respuesta JSON no es un objeto.");
-                System.out.println(JsonPrinter.pretty(parsed));
-                return;
-            }
-
-            @SuppressWarnings("unchecked") final Map<String, Object> root = (Map<String, Object>) parsed;
-
-            imprimirRespuesta(root, tipo);
-
-        } catch (RuntimeException ex) {
-            System.out.println();
-            System.out.println("No se ha podido interpretar el JSON recibido.");
-            System.out.println("Se muestra la respuesta original:");
-            System.out.println();
-            imprimirJsonOTexto(body, false);
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new RestClientException(
+                    "La llamada ha fallado con HTTP "
+                            + response.statusCode()
+                            + "\n"
+                            + JsonPrinter.pretty(parsed),
+                    response.statusCode(),
+                    body
+            );
         }
+
+        return asObject(parsed, "respuesta raíz");
     }
 
-    private void imprimirRespuesta(final Map<String, Object> root, final String tipo) {
+    /**
+     * Mapea la envoltura común de RespuestaBase y sus items.
+     */
+    private <T> ApiResponse<T> mapApiResponse(
+            Map<String, Object> root,
+            ItemMapper<T> mapper) {
 
-        imprimirResumen(root);
+        ApiResponse<T> response = new ApiResponse<>();
 
-        final Object itemsObject = root.get("items");
+        response.setTitle(asString(root.get("title")));
+        response.setDescription(asString(root.get("description")));
+        response.setSpatial(asString(root.get("spatial")));
+        response.setCreator(asString(root.get("creator")));
+        response.setDateDownload(asString(root.get("dateDownload")));
 
-        if (!(itemsObject instanceof List)) {
-            System.out.println();
-            System.out.println("La respuesta no contiene un array 'items'.");
-            System.out.println(JsonPrinter.pretty(root));
-            return;
+        response.setTotalCount(asLong(root.get("totalCount")));
+        response.setItemsReturned(asInteger(root.get("itemsReturned")));
+        response.setPageSize(asInteger(root.get("pageSize")));
+        response.setTotalPages(asInteger(root.get("totalPages")));
+        response.setPage(asInteger(root.get("page")));
+
+        response.setNextUrl(asString(root.get("nextUrl")));
+        response.setPreviousUrl(asString(root.get("previousUrl")));
+        response.setTiempo(asLong(root.get("tiempo")));
+
+        Object itemsValue = root.get("items");
+
+        if (itemsValue == null) {
+            response.setItems(Collections.emptyList());
+            return response;
         }
 
-        @SuppressWarnings("unchecked") final List<Object> items = (List<Object>) itemsObject;
+        if (!(itemsValue instanceof List)) {
+            throw new IllegalArgumentException(
+                    "El campo 'items' debería ser un array JSON, pero se recibió: "
+                            + typeName(itemsValue)
+            );
+        }
 
-        System.out.println();
-        System.out.println("ELEMENTOS");
-        System.out.println("---------");
+        @SuppressWarnings("unchecked")
+        List<Object> jsonItems = (List<Object>) itemsValue;
 
-        if (items.isEmpty()) {
+        List<T> items = new ArrayList<>(jsonItems.size());
+
+        for (int i = 0; i < jsonItems.size(); i++) {
+            Object value = jsonItems.get(i);
+            Map<String, Object> item =
+                    asObject(value, "items[" + i + "]");
+            items.add(mapper.map(item));
+        }
+
+        response.setItems(items);
+        return response;
+    }
+
+    /**
+     * Mapeo completo de los campos actualmente presentes en Procediment.
+     */
+    private Procediment mapProcediment(Map<String, Object> json) {
+
+        Procediment p = new Procediment();
+
+        p.setUrl(asString(json.get("url")));
+        p.setCodi(asLong(json.get("codi")));
+        p.setNom(asString(json.get("nom")));
+        p.setDataActualizacio(asString(json.get("dataActualizacio")));
+        p.setDataCaducitat(asString(json.get("dataCaducitat")));
+        p.setDataPublicacio(asString(json.get("dataPublicacio")));
+        p.setDestinataris(asString(json.get("destinataris")));
+        p.setCodiSIA(asString(json.get("codiSIA")));
+        p.setEstatSIA(asString(json.get("estatSIA")));
+        p.setDataSIA(asString(json.get("dataSIA")));
+
+        p.setUaResponsableCodi(asLong(json.get("uaResponsableCodi")));
+        p.setUaResponsableNom(asString(json.get("uaResponsableNom")));
+
+        p.setUaCompetenteCodi(asLong(json.get("uaCompetenteCodi")));
+        p.setUaCompetenteNom(asString(json.get("uaCompetenteNom")));
+
+        p.setUaInstructor(asLong(json.get("uaInstructor")));
+        p.setUaInstructorNom(asString(json.get("uaInstructorNom")));
+
+        p.setComu(asBoolean(json.get("comu")));
+        p.setObjecte(asString(json.get("objecte")));
+
+        p.setTipusCodi(asLong(json.get("tipusCodi")));
+        p.setTipusNom(asString(json.get("tipusNom")));
+
+        p.setEstat(asString(json.get("estat")));
+
+        p.setIniciacionCodi(asLong(json.get("iniciacionCodi")));
+        p.setIniciacionNom(asString(json.get("iniciacionNom")));
+
+        p.setSilenciCodi(asLong(json.get("silenciCodi")));
+        p.setSilenciNom(asString(json.get("silenciNom")));
+
+        p.setTipusViaCodi(asLong(json.get("tipusViaCodi")));
+        p.setTipusViaNom(asString(json.get("tipusViaNom")));
+
+        p.setHabilitatApoderat(asBoolean(json.get("habilitatApoderat")));
+        p.setHabilitatFuncionari(asBoolean(json.get("habilitatFuncionari")));
+        p.setTerminiResolucio(asString(json.get("terminiResolucio")));
+
+        return p;
+    }
+
+    /**
+     * Mapeo completo de los campos de Servei.
+     * <p>
+     * También acepta tipusTramitacio* y plantillaTramit* si el servidor
+     * empieza a devolverlos en una versión posterior.
+     */
+    private Servei mapServei(Map<String, Object> json) {
+
+        Servei s = new Servei();
+
+        s.setUrl(asString(json.get("url")));
+        s.setCodi(asLong(json.get("codi")));
+        s.setNom(asString(json.get("nom")));
+
+        s.setDataActualizacio(asString(json.get("dataActualizacio")));
+        s.setDataPublicacio(asString(json.get("dataPublicacio")));
+        s.setDataCaducitat(asString(json.get("dataCaducitat")));
+
+        s.setCodiSIA(asString(json.get("codiSIA")));
+        s.setEstatSIA(asString(json.get("estatSIA")));
+        s.setDataSIA(asString(json.get("dataSIA")));
+
+        s.setUaResponsableCodi(asLong(json.get("uaResponsableCodi")));
+        s.setUaResponsableNom(asString(json.get("uaResponsableNom")));
+
+        s.setUaInstructorCodi(asLong(json.get("uaInstructorCodi")));
+        s.setUaInstructorNom(asString(json.get("uaInstructorNom")));
+
+        s.setComu(asBoolean(json.get("comu")));
+        s.setObjecte(asString(json.get("objecte")));
+        s.setDestinataris(asString(json.get("destinataris")));
+        s.setEstat(asString(json.get("estat")));
+
+        s.setHabilitatApoderat(asBoolean(json.get("habilitatApoderat")));
+        s.setHabilitatFuncionari(asBoolean(json.get("habilitatFuncionari")));
+        s.setTerminiResolucio(asString(json.get("terminiResolucio")));
+
+        s.setIntern(asString(json.get("intern")));
+        s.setPublicat(asString(json.get("publicat")));
+        s.setActiuLOPD(asBoolean(json.get("actiuLOPD")));
+
+
+        s.setTramitPresencial(asBoolean(json.get("tramitPresencial")));
+        s.setTramitElectronica(asBoolean(json.get("tramitElectronica")));
+        s.setTramitTelefonica(asBoolean(json.get("tramitTelefonica")));
+
+        s.setUrlTramitacio(asString(json.get("urlTramitacio")));
+
+        s.setPlataformaTramitCodi(asLong(json.get("plataformaTramitCodi")));
+        s.setPlataformaTramitNom(asString(json.get("plataformaTramitNom")));
+
+
+        s.setPublicsObjectius(mapPublicsObjectius(json.get("publicsObjectius")));
+
+        return s;
+    }
+
+    private List<Servei.PublicObjectiu> mapPublicsObjectius(Object value) {
+
+        if (value == null) {
+            return Collections.emptyList();
+        }
+
+        if (!(value instanceof List)) {
+            throw new IllegalArgumentException(
+                    "'publicsObjectius' debería ser un array JSON, pero se recibió: "
+                            + typeName(value)
+            );
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object> source = (List<Object>) value;
+
+        List<Servei.PublicObjectiu> result =
+                new ArrayList<>(source.size());
+
+        for (int i = 0; i < source.size(); i++) {
+            Map<String, Object> json =
+                    asObject(source.get(i), "publicsObjectius[" + i + "]");
+
+            Servei.PublicObjectiu item = new Servei.PublicObjectiu();
+            item.setCodi(asLong(json.get("codi")));
+            item.setNom(asString(json.get("nom")));
+
+            result.add(item);
+        }
+
+        return result;
+    }
+
+    // ---------------------------------------------------------------------
+    // PRESENTACIÓN POR CONSOLA
+    // ---------------------------------------------------------------------
+
+    private static void printProcediments(ApiResponse<Procediment> response) {
+
+        printHeader("PROCEDIMENTS");
+        printResponseSummary(response);
+
+        if (response.getItems().isEmpty()) {
             System.out.println("(sin resultados)");
             return;
         }
 
-        int posicion = 1;
+        int index = 1;
+        for (Procediment p : response.getItems()) {
 
-        for (Object itemObject : items) {
-            if (!(itemObject instanceof Map)) {
-                System.out.println();
-                System.out.println("[" + posicion + "] " + JsonPrinter.pretty(itemObject));
-                posicion++;
-                continue;
-            }
+            System.out.println();
+            System.out.println("[" + index + "] "
+                    + nullSafe(p.getCodi())
+                    + " - "
+                    + nullSafe(p.getNom()));
 
-            @SuppressWarnings("unchecked") final Map<String, Object> item = (Map<String, Object>) itemObject;
+            System.out.println(repeat('-', 100));
 
-            if ("PROCEDIMENTS".equalsIgnoreCase(tipo)) {
-                imprimirProcediment(posicion, item);
-            } else if ("SERVEIS".equalsIgnoreCase(tipo)) {
-                imprimirServei(posicion, item);
-            } else {
-                imprimirItemGenerico(posicion, item);
-            }
+            printField("Estat", p.getEstat());
+            printField("Codi SIA", p.getCodiSIA());
+            printField("Estat SIA", p.getEstatSIA());
+            printField("Data SIA", p.getDataSIA());
 
-            posicion++;
-        }
-    }
+            printField("Data actualització", p.getDataActualizacio());
+            printField("Data publicació", p.getDataPublicacio());
+            printField("Data caducitat", p.getDataCaducitat());
 
-    private void imprimirResumen(final Map<String, Object> root) {
-
-        System.out.println();
-        System.out.println("RESUMEN");
-        System.out.println("-------");
-
-        imprimirCampo("Título", root, "title");
-        imprimirCampo("Descripción", root, "description");
-        imprimirCampo("Entidad / spatial", root, "spatial");
-        imprimirCampo("Creator", root, "creator");
-        imprimirCampo("Fecha descarga", root, "dateDownload");
-
-        System.out.println();
-
-        imprimirCampo("Total", root, "totalCount");
-        imprimirCampo("Devueltos", root, "itemsReturned");
-        imprimirCampo("Página", root, "page");
-        imprimirCampo("Tamaño página", root, "pageSize");
-        imprimirCampo("Total páginas", root, "totalPages");
-        imprimirCampo("Tiempo", root, "tiempo", " ms");
-
-        System.out.println();
-
-        imprimirCampo("Anterior", root, "previousUrl");
-        imprimirCampo("Siguiente", root, "nextUrl");
-    }
-
-    private void imprimirProcediment(final int posicion, final Map<String, Object> item) {
-
-        System.out.println();
-        System.out.println("┌────────────────────────────────────────────────────────────────────────────");
-        System.out.println("│ [" + posicion + "] PROCEDIMENT");
-        System.out.println("├────────────────────────────────────────────────────────────────────────────");
-
-        fila("Codi", valor(item, "codi"));
-        fila("Nom", valor(item, "nom"));
-        fila("Estat", valor(item, "estat"));
-        fila("Codi SIA", valor(item, "codiSIA"));
-        fila("Estat SIA", valor(item, "estatSIA"));
-        fila("Data actualització", valor(item, "dataActualizacio"));
-        fila("Data publicació", valor(item, "dataPublicacio"));
-        fila("Data caducitat", valor(item, "dataCaducitat"));
-
-        filaCodiNom("UA responsable",
-                item, "uaResponsableCodi", "uaResponsableNom");
-
-        filaCodiNom("UA competent",
-                item, "uaCompetenteCodi", "uaCompetenteNom");
-
-        filaCodiNom("UA instructora",
-                item, "uaInstructor", "uaInstructorNom");
-
-        filaCodiNom("Tipus",
-                item, "tipusCodi", "tipusNom");
-
-        filaCodiNom("Iniciació",
-                item, "iniciacionCodi", "iniciacionNom");
-
-        filaCodiNom("Silenci",
-                item, "silenciCodi", "silenciNom");
-
-        filaCodiNom("Tipus via",
-                item, "tipusViaCodi", "tipusViaNom");
-
-        fila("Comú", valor(item, "comu"));
-        fila("Apoderat", valor(item, "habilitatApoderat"));
-        fila("Funcionari", valor(item, "habilitatFuncionari"));
-        fila("Termini resolució", valor(item, "terminiResolucio"));
-
-        filaTextoLargo("Objecte", valor(item, "objecte"));
-        filaTextoLargo("Destinataris", valor(item, "destinataris"));
-
-        fila("URL", valor(item, "url"));
-
-        System.out.println("└────────────────────────────────────────────────────────────────────────────");
-    }
-
-    private void imprimirServei(final int posicion, final Map<String, Object> item) {
-
-        System.out.println();
-        System.out.println("┌────────────────────────────────────────────────────────────────────────────");
-        System.out.println("│ [" + posicion + "] SERVEI");
-        System.out.println("├────────────────────────────────────────────────────────────────────────────");
-
-        fila("Codi", valor(item, "codi"));
-        fila("Nom", valor(item, "nom"));
-        fila("Estat", valor(item, "estat"));
-        fila("Codi SIA", valor(item, "codiSIA"));
-        fila("Estat SIA", valor(item, "estatSIA"));
-        fila("Data actualització", valor(item, "dataActualizacio"));
-        fila("Data publicació", valor(item, "dataPublicacio"));
-        fila("Data caducitat", valor(item, "dataCaducitat"));
-
-        filaCodiNom("UA responsable",
-                item, "uaResponsableCodi", "uaResponsableNom");
-
-        filaCodiNom("UA instructora",
-                item, "uaInstructorCodi", "uaInstructorNom");
-
-        filaCodiNom("Tipus tramitació",
-                item, "tipusTramitacioCodi", "tipusTramitacioNom");
-
-        filaCodiNom("Plataforma",
-                item, "plataformaTramitCodi", "plataformaTramitNom");
-
-        filaCodiNom("Plantilla",
-                item, "plantillaTramitCodi", "plantillaTramitNom");
-
-        fila("Comú", valor(item, "comu"));
-        fila("Apoderat", valor(item, "habilitatApoderat"));
-        fila("Funcionari", valor(item, "habilitatFuncionari"));
-        fila("Termini resolució", valor(item, "terminiResolucio"));
-
-        fila("Presencial", valor(item, "tramitPresencial"));
-        fila("Telefònica", valor(item, "tramitTelefonica"));
-        fila("Electrònica", valor(item, "tramitElectronica"));
-
-        filaTextoLargo("Objecte", valor(item, "objecte"));
-        filaTextoLargo("Destinataris", valor(item, "destinataris"));
-
-        fila("URL", valor(item, "url"));
-        fila("URL tramitació", valor(item, "urlTramitacio"));
-
-        imprimirPublicsObjectius(item.get("publicsObjectius"));
-
-        System.out.println("└────────────────────────────────────────────────────────────────────────────");
-    }
-
-    private void imprimirPublicsObjectius(final Object value) {
-
-        if (!(value instanceof List)) {
-            return;
-        }
-
-        @SuppressWarnings("unchecked") final List<Object> list = (List<Object>) value;
-
-        if (list.isEmpty()) {
-            return;
-        }
-
-        System.out.println("│");
-        System.out.println("│ Públics objectiu:");
-
-        for (Object entry : list) {
-            if (entry instanceof Map) {
-                @SuppressWarnings("unchecked") final Map<String, Object> publicObjectiu = (Map<String, Object>) entry;
-
-                System.out.println(
-                        "│   • "
-                                + valor(publicObjectiu, "codi")
-                                + " | "
-                                + valor(publicObjectiu, "nom")
-                );
-            } else {
-                System.out.println("│   • " + texto(entry));
-            }
-        }
-    }
-
-    private void imprimirItemGenerico(final int posicion, final Map<String, Object> item) {
-
-        System.out.println();
-        System.out.println("[" + posicion + "]");
-
-        for (Map.Entry<String, Object> entry : item.entrySet()) {
-            System.out.println(
-                    "    "
-                            + rellenarDerecha(entry.getKey(), 24)
-                            + ": "
-                            + texto(entry.getValue())
+            printCodeName(
+                    "UA responsable",
+                    p.getUaResponsableCodi(),
+                    p.getUaResponsableNom()
             );
+
+            printCodeName(
+                    "UA competent",
+                    p.getUaCompetenteCodi(),
+                    p.getUaCompetenteNom()
+            );
+
+            printCodeName(
+                    "UA instructora",
+                    p.getUaInstructor(),
+                    p.getUaInstructorNom()
+            );
+
+            printCodeName(
+                    "Tipus",
+                    p.getTipusCodi(),
+                    p.getTipusNom()
+            );
+
+            printCodeName(
+                    "Iniciació",
+                    p.getIniciacionCodi(),
+                    p.getIniciacionNom()
+            );
+
+            printCodeName(
+                    "Silenci",
+                    p.getSilenciCodi(),
+                    p.getSilenciNom()
+            );
+
+            printCodeName(
+                    "Tipus via",
+                    p.getTipusViaCodi(),
+                    p.getTipusViaNom()
+            );
+
+            printField("Comú", p.getComu());
+            printField("Habilitat apoderat", p.getHabilitatApoderat());
+            printField("Habilitat funcionari", p.getHabilitatFuncionari());
+            printField("Termini resolució", p.getTerminiResolucio());
+
+            printLongField("Objecte", p.getObjecte());
+            printLongField("Destinataris", p.getDestinataris());
+
+            printField("URL", p.getUrl());
+
+            index++;
         }
     }
 
-    private void imprimirCampo(final String etiqueta,
-                               final Map<String, Object> root,
-                               final String campo) {
-        imprimirCampo(etiqueta, root, campo, "");
-    }
+    private static void printServeis(ApiResponse<Servei> response) {
 
-    private void imprimirCampo(final String etiqueta,
-                               final Map<String, Object> root,
-                               final String campo,
-                               final String sufijo) {
+        printHeader("SERVEIS");
+        printResponseSummary(response);
 
-        final String value = valor(root, campo);
-
-        System.out.println(
-                rellenarDerecha(etiqueta, 20)
-                        + ": "
-                        + value
-                        + ("-".equals(value) ? "" : sufijo)
-        );
-    }
-
-    private void fila(final String etiqueta, final String value) {
-        System.out.println(
-                "│ "
-                        + rellenarDerecha(etiqueta, 20)
-                        + ": "
-                        + value
-        );
-    }
-
-    private void filaCodiNom(final String etiqueta,
-                             final Map<String, Object> item,
-                             final String campoCodi,
-                             final String campoNom) {
-
-        final String codi = valor(item, campoCodi);
-        final String nom = valor(item, campoNom);
-
-        if ("-".equals(codi) && "-".equals(nom)) {
+        if (response.getItems().isEmpty()) {
+            System.out.println("(sin resultados)");
             return;
         }
 
-        fila(etiqueta, codi + " | " + nom);
-    }
+        int index = 1;
+        for (Servei s : response.getItems()) {
 
-    private void filaTextoLargo(final String etiqueta, final String value) {
+            System.out.println();
+            System.out.println("[" + index + "] "
+                    + nullSafe(s.getCodi())
+                    + " - "
+                    + nullSafe(s.getNom()));
 
-        if (value == null || "-".equals(value)) {
-            fila(etiqueta, "-");
-            return;
-        }
+            System.out.println(repeat('-', 100));
 
-        final int ancho = 86;
+            printField("Estat", s.getEstat());
+            printField("Codi SIA", s.getCodiSIA());
+            printField("Estat SIA", s.getEstatSIA());
+            printField("Data SIA", s.getDataSIA());
 
-        if (value.length() <= ancho) {
-            fila(etiqueta, value);
-            return;
-        }
+            printField("Data actualització", s.getDataActualizacio());
+            printField("Data publicació", s.getDataPublicacio());
+            printField("Data caducitat", s.getDataCaducitat());
 
-        System.out.println(
-                "│ "
-                        + rellenarDerecha(etiqueta, 20)
-                        + ":"
-        );
+            printCodeName(
+                    "UA responsable",
+                    s.getUaResponsableCodi(),
+                    s.getUaResponsableNom()
+            );
 
-        int inicio = 0;
+            printCodeName(
+                    "UA instructora",
+                    s.getUaInstructorCodi(),
+                    s.getUaInstructorNom()
+            );
 
-        while (inicio < value.length()) {
+            printField("Comú", s.getComu());
+            printField("Intern", s.getIntern());
+            printField("Publicat", s.getPublicat());
+            printField("Actiu LOPD", s.getActiuLOPD());
 
-            int fin = Math.min(inicio + ancho, value.length());
+            printField("Habilitat apoderat", s.getHabilitatApoderat());
+            printField("Habilitat funcionari", s.getHabilitatFuncionari());
+            printField("Termini resolució", s.getTerminiResolucio());
 
-            if (fin < value.length()) {
-                final int espacio = value.lastIndexOf(' ', fin);
 
-                if (espacio > inicio) {
-                    fin = espacio;
+            printField("Tràmit presencial", s.getTramitPresencial());
+            printField("Tràmit electrònic", s.getTramitElectronica());
+            printField("Tràmit telefònic", s.getTramitTelefonica());
+
+            printCodeName(
+                    "Plataforma",
+                    s.getPlataformaTramitCodi(),
+                    s.getPlataformaTramitNom()
+            );
+
+
+            printLongField("Objecte", s.getObjecte());
+            printLongField("Destinataris", s.getDestinataris());
+
+            printField("URL", s.getUrl());
+            printField("URL tramitació", s.getUrlTramitacio());
+
+            if (s.getPublicsObjectius() != null
+                    && !s.getPublicsObjectius().isEmpty()) {
+
+                System.out.println("Públics objectiu:");
+
+                for (Servei.PublicObjectiu po : s.getPublicsObjectius()) {
+                    System.out.println("    - "
+                            + nullSafe(po.getCodi())
+                            + " | "
+                            + nullSafe(po.getNom()));
                 }
             }
 
-            System.out.println("│     " + value.substring(inicio, fin).trim());
+            index++;
+        }
+    }
 
-            inicio = fin;
+    private static void printResponseSummary(ApiResponse<?> response) {
 
-            while (inicio < value.length() && value.charAt(inicio) == ' ') {
-                inicio++;
+        System.out.println();
+        System.out.println("RESUMEN");
+        System.out.println(repeat('-', 100));
+
+        printField("Título", response.getTitle());
+        printField("Descripción", response.getDescription());
+        printField("Spatial", response.getSpatial());
+        printField("Creator", response.getCreator());
+        printField("Fecha descarga", response.getDateDownload());
+
+        System.out.println();
+
+        printField("Total", response.getTotalCount());
+        printField("Items devueltos", response.getItemsReturned());
+        printField("Página", response.getPage());
+        printField("Tamaño página", response.getPageSize());
+        printField("Total páginas", response.getTotalPages());
+        printField("Tiempo (ms)", response.getTiempo());
+
+        printField("Anterior", response.getPreviousUrl());
+        printField("Siguiente", response.getNextUrl());
+
+        System.out.println();
+        System.out.println("ELEMENTOS");
+        System.out.println(repeat('-', 100));
+    }
+
+    private static void printField(String label, Object value) {
+        System.out.println(padRight(label, 24) + ": " + nullSafe(value));
+    }
+
+    private static void printCodeName(
+            String label,
+            Long code,
+            String name) {
+
+        if (code == null && isBlank(name)) {
+            return;
+        }
+
+        printField(
+                label,
+                nullSafe(code) + " | " + nullSafe(name)
+        );
+    }
+
+    private static void printLongField(String label, String value) {
+
+        if (isBlank(value)) {
+            printField(label, "-");
+            return;
+        }
+
+        final int lineLength = 100;
+
+        if (value.length() <= lineLength) {
+            printField(label, value);
+            return;
+        }
+
+        System.out.println(padRight(label, 24) + ":");
+
+        int start = 0;
+
+        while (start < value.length()) {
+
+            int end = Math.min(start + lineLength, value.length());
+
+            if (end < value.length()) {
+                int lastSpace = value.lastIndexOf(' ', end);
+
+                if (lastSpace > start) {
+                    end = lastSpace;
+                }
+            }
+
+            System.out.println("    " + value.substring(start, end).trim());
+
+            start = end;
+
+            while (start < value.length()
+                    && Character.isWhitespace(value.charAt(start))) {
+                start++;
             }
         }
     }
 
-    private void imprimirJsonOTexto(final String body, final boolean error) {
+    private static void printHeader(String title) {
 
-        try {
-            final Object parsed = new JsonParser(body).parse();
-            final String pretty = JsonPrinter.pretty(parsed);
+        String line = repeat('=', Math.max(60, title.length() + 8));
 
-            if (error) {
-                System.err.println(pretty);
-            } else {
-                System.out.println(pretty);
-            }
-
-        } catch (RuntimeException ex) {
-            if (error) {
-                System.err.println(body);
-            } else {
-                System.out.println(body);
-            }
-        }
+        System.out.println();
+        System.out.println(line);
+        System.out.println("  " + title);
+        System.out.println(line);
     }
 
-    private String toQuery(final Map<String, String> query) {
+    // ---------------------------------------------------------------------
+    // CONVERSIONES TOLERANTES
+    // ---------------------------------------------------------------------
 
-        final StringBuilder sb = new StringBuilder();
+    private static String asString(Object value) {
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String) {
+            return (String) value;
+        }
+
+        if (value instanceof Number
+                || value instanceof Boolean) {
+            return String.valueOf(value);
+        }
+
+        return JsonPrinter.compact(value);
+    }
+
+    private static Long asLong(Object value) {
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+
+        if (value instanceof String) {
+
+            String text = ((String) value).trim();
+
+            if (text.isEmpty()) {
+                return null;
+            }
+
+            try {
+                return Long.valueOf(text);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                        "No se puede convertir a Long: '" + text + "'",
+                        e
+                );
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "No se puede convertir a Long el tipo "
+                        + typeName(value)
+        );
+    }
+
+    private static Integer asInteger(Object value) {
+
+        Long result = asLong(value);
+
+        if (result == null) {
+            return null;
+        }
+
+        if (result > Integer.MAX_VALUE
+                || result < Integer.MIN_VALUE) {
+            throw new IllegalArgumentException(
+                    "Valor fuera de rango Integer: " + result
+            );
+        }
+
+        return result.intValue();
+    }
+
+    private static Boolean asBoolean(Object value) {
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).intValue() != 0;
+        }
+
+        if (value instanceof String) {
+
+            String text = ((String) value).trim();
+
+            if (text.isEmpty()) {
+                return null;
+            }
+
+            if ("true".equalsIgnoreCase(text)
+                    || "s".equalsIgnoreCase(text)
+                    || "si".equalsIgnoreCase(text)
+                    || "sí".equalsIgnoreCase(text)
+                    || "1".equals(text)) {
+                return Boolean.TRUE;
+            }
+
+            if ("false".equalsIgnoreCase(text)
+                    || "n".equalsIgnoreCase(text)
+                    || "no".equalsIgnoreCase(text)
+                    || "0".equals(text)) {
+                return Boolean.FALSE;
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "No se puede convertir a Boolean: "
+                        + String.valueOf(value)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> asObject(
+            Object value,
+            String context) {
+
+        if (!(value instanceof Map)) {
+            throw new IllegalArgumentException(
+                    context
+                            + " debería ser un objeto JSON, pero se recibió: "
+                            + typeName(value)
+            );
+        }
+
+        return (Map<String, Object>) value;
+    }
+
+    private static String typeName(Object value) {
+        return value == null
+                ? "null"
+                : value.getClass().getName();
+    }
+
+    // ---------------------------------------------------------------------
+    // URL / QUERY
+    // ---------------------------------------------------------------------
+
+    private String toQuery(Map<String, String> query) {
+
+        if (query == null || query.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, String> entry : query.entrySet()) {
 
@@ -468,102 +798,289 @@ public class Rolsac2RestClient {
             }
 
             sb.append(sb.length() == 0 ? '?' : '&')
-                    .append(enc(entry.getKey()))
+                    .append(encode(entry.getKey()))
                     .append('=')
-                    .append(enc(entry.getValue()));
+                    .append(encode(entry.getValue()));
         }
 
         return sb.toString();
     }
 
-    private static String enc(final String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    private static String encode(String value) {
+        return URLEncoder.encode(
+                value,
+                StandardCharsets.UTF_8
+        );
     }
 
-    private static String valor(final Map<String, Object> map, final String key) {
-        if (map == null || !map.containsKey(key)) {
-            return "-";
+    private static String normalizeBaseUrl(String value) {
+
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La URL base no puede estar vacía."
+            );
         }
-        return texto(map.get(key));
+
+        String result = value.trim();
+
+        while (result.endsWith("/")) {
+            result = result.substring(
+                    0,
+                    result.length() - 1
+            );
+        }
+
+        return result;
     }
 
-    private static String texto(final Object value) {
-
-        if (value == null) {
-            return "-";
-        }
-
-        if (value instanceof String) {
-            final String text = (String) value;
-            return text.trim().isEmpty() ? "-" : text;
-        }
-
-        if (value instanceof Map || value instanceof List) {
-            return JsonPrinter.compact(value);
-        }
-
-        return String.valueOf(value);
-    }
-
-    private static String normalizarBaseUrl(final String url) {
-
-        if (url == null || url.trim().isEmpty()) {
-            throw new IllegalArgumentException("La URL base no puede estar vacía.");
-        }
-
-        return url.endsWith("/")
-                ? url.substring(0, url.length() - 1)
-                : url;
-    }
-
-    private static String normalizarPath(final String path) {
+    private static String normalizePath(String path) {
 
         if (path == null || path.trim().isEmpty()) {
             return "";
         }
 
-        return path.startsWith("/") ? path : "/" + path;
-    }
+        String result = path.trim();
 
-    private static void imprimirCabecera(final String titulo) {
-
-        final int longitud = Math.max(60, titulo.length() + 8);
-        final String linea = repetir('=', longitud);
-
-        System.out.println(linea);
-        System.out.println("  " + titulo);
-        System.out.println(linea);
-    }
-
-    private static String rellenarDerecha(final String texto, final int longitud) {
-
-        if (texto.length() >= longitud) {
-            return texto;
+        if (!result.startsWith("/")) {
+            result = "/" + result;
         }
 
-        return texto + repetir(' ', longitud - texto.length());
+        return result;
     }
 
-    private static String repetir(final char caracter, final int veces) {
+    // ---------------------------------------------------------------------
+    // UTILIDADES
+    // ---------------------------------------------------------------------
 
-        final StringBuilder sb = new StringBuilder(veces);
+    private static String nullSafe(Object value) {
 
-        for (int i = 0; i < veces; i++) {
-            sb.append(caracter);
+        if (value == null) {
+            return "-";
+        }
+
+        String result = String.valueOf(value);
+
+        return result.trim().isEmpty()
+                ? "-"
+                : result;
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private static String padRight(String value, int length) {
+
+        if (value.length() >= length) {
+            return value;
+        }
+
+        return value + repeat(' ', length - value.length());
+    }
+
+    private static String repeat(char value, int count) {
+
+        StringBuilder sb = new StringBuilder(count);
+
+        for (int i = 0; i < count; i++) {
+            sb.append(value);
         }
 
         return sb.toString();
     }
 
-    /**
-     * Parser JSON mínimo, autocontenido y suficiente para las respuestas REST.
-     */
+    private interface ItemMapper<T> {
+        T map(Map<String, Object> json);
+    }
+
+    // ---------------------------------------------------------------------
+    // RESPUESTA TIPADA
+    // ---------------------------------------------------------------------
+
+    public static class ApiResponse<T> {
+
+        private String title;
+        private String description;
+        private String spatial;
+        private String creator;
+        private String dateDownload;
+
+        private Long totalCount;
+        private Integer itemsReturned;
+        private Integer pageSize;
+        private Integer totalPages;
+        private Integer page;
+
+        private String nextUrl;
+        private String previousUrl;
+
+        private List<T> items = Collections.emptyList();
+
+        private Long tiempo;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getSpatial() {
+            return spatial;
+        }
+
+        public void setSpatial(String spatial) {
+            this.spatial = spatial;
+        }
+
+        public String getCreator() {
+            return creator;
+        }
+
+        public void setCreator(String creator) {
+            this.creator = creator;
+        }
+
+        public String getDateDownload() {
+            return dateDownload;
+        }
+
+        public void setDateDownload(String dateDownload) {
+            this.dateDownload = dateDownload;
+        }
+
+        public Long getTotalCount() {
+            return totalCount;
+        }
+
+        public void setTotalCount(Long totalCount) {
+            this.totalCount = totalCount;
+        }
+
+        public Integer getItemsReturned() {
+            return itemsReturned;
+        }
+
+        public void setItemsReturned(Integer itemsReturned) {
+            this.itemsReturned = itemsReturned;
+        }
+
+        public Integer getPageSize() {
+            return pageSize;
+        }
+
+        public void setPageSize(Integer pageSize) {
+            this.pageSize = pageSize;
+        }
+
+        public Integer getTotalPages() {
+            return totalPages;
+        }
+
+        public void setTotalPages(Integer totalPages) {
+            this.totalPages = totalPages;
+        }
+
+        public Integer getPage() {
+            return page;
+        }
+
+        public void setPage(Integer page) {
+            this.page = page;
+        }
+
+        public String getNextUrl() {
+            return nextUrl;
+        }
+
+        public void setNextUrl(String nextUrl) {
+            this.nextUrl = nextUrl;
+        }
+
+        public String getPreviousUrl() {
+            return previousUrl;
+        }
+
+        public void setPreviousUrl(String previousUrl) {
+            this.previousUrl = previousUrl;
+        }
+
+        public List<T> getItems() {
+            return items;
+        }
+
+        public void setItems(List<T> items) {
+            this.items = items == null
+                    ? Collections.<T>emptyList()
+                    : items;
+        }
+
+        public Long getTiempo() {
+            return tiempo;
+        }
+
+        public void setTiempo(Long tiempo) {
+            this.tiempo = tiempo;
+        }
+    }
+
+    public static class RestClientException
+            extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        private final int statusCode;
+        private final String responseBody;
+
+        public RestClientException(
+                String message,
+                int statusCode,
+                String responseBody) {
+
+            super(message);
+            this.statusCode = statusCode;
+            this.responseBody = responseBody;
+        }
+
+        public RestClientException(
+                String message,
+                int statusCode,
+                String responseBody,
+                Throwable cause) {
+
+            super(message, cause);
+            this.statusCode = statusCode;
+            this.responseBody = responseBody;
+        }
+
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        public String getResponseBody() {
+            return responseBody;
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // PARSER JSON AUTOCONTENIDO
+    // ---------------------------------------------------------------------
+
     private static final class JsonParser {
 
         private final String input;
         private int pos;
 
-        private JsonParser(final String input) {
+        private JsonParser(String input) {
             this.input = input == null ? "" : input;
         }
 
@@ -571,15 +1088,17 @@ public class Rolsac2RestClient {
 
             skipWhitespace();
 
-            final Object value = parseValue();
+            Object result = parseValue();
 
             skipWhitespace();
 
             if (pos != input.length()) {
-                throw error("Hay contenido adicional después del JSON");
+                throw error(
+                        "Hay contenido adicional después del JSON"
+                );
             }
 
-            return value;
+            return result;
         }
 
         private Object parseValue() {
@@ -590,45 +1109,46 @@ public class Rolsac2RestClient {
                 throw error("Fin inesperado del JSON");
             }
 
-            final char c = input.charAt(pos);
+            char current = input.charAt(pos);
 
-            if (c == '{') {
-                return parseObject();
+            switch (current) {
+                case '{':
+                    return parseObject();
+
+                case '[':
+                    return parseArray();
+
+                case '"':
+                    return parseString();
+
+                case 't':
+                    expectLiteral("true");
+                    return Boolean.TRUE;
+
+                case 'f':
+                    expectLiteral("false");
+                    return Boolean.FALSE;
+
+                case 'n':
+                    expectLiteral("null");
+                    return null;
+
+                default:
+                    if (current == '-'
+                            || Character.isDigit(current)) {
+                        return parseNumber();
+                    }
+
+                    throw error(
+                            "Valor JSON no válido"
+                    );
             }
-
-            if (c == '[') {
-                return parseArray();
-            }
-
-            if (c == '"') {
-                return parseString();
-            }
-
-            if (c == 't') {
-                expect("true");
-                return Boolean.TRUE;
-            }
-
-            if (c == 'f') {
-                expect("false");
-                return Boolean.FALSE;
-            }
-
-            if (c == 'n') {
-                expect("null");
-                return null;
-            }
-
-            if (c == '-' || Character.isDigit(c)) {
-                return parseNumber();
-            }
-
-            throw error("Valor JSON no válido");
         }
 
         private Map<String, Object> parseObject() {
 
-            final Map<String, Object> result = new LinkedHashMap<>();
+            Map<String, Object> result =
+                    new LinkedHashMap<>();
 
             expect('{');
             skipWhitespace();
@@ -643,15 +1163,17 @@ public class Rolsac2RestClient {
                 skipWhitespace();
 
                 if (!peek('"')) {
-                    throw error("Se esperaba una clave de objeto JSON");
+                    throw error(
+                            "Se esperaba una clave JSON"
+                    );
                 }
 
-                final String key = parseString();
+                String key = parseString();
 
                 skipWhitespace();
                 expect(':');
 
-                final Object value = parseValue();
+                Object value = parseValue();
                 result.put(key, value);
 
                 skipWhitespace();
@@ -667,7 +1189,8 @@ public class Rolsac2RestClient {
 
         private List<Object> parseArray() {
 
-            final List<Object> result = new ArrayList<>();
+            List<Object> result =
+                    new ArrayList<>();
 
             expect('[');
             skipWhitespace();
@@ -696,83 +1219,140 @@ public class Rolsac2RestClient {
 
             expect('"');
 
-            final StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             while (pos < input.length()) {
 
-                final char c = input.charAt(pos++);
+                char current = input.charAt(pos++);
 
-                if (c == '"') {
+                if (current == '"') {
                     return sb.toString();
                 }
 
-                if (c == '\\') {
+                if (current == '\\') {
 
                     if (pos >= input.length()) {
-                        throw error("Escape JSON incompleto");
+                        throw error(
+                                "Escape JSON incompleto"
+                        );
                     }
 
-                    final char esc = input.charAt(pos++);
+                    char escaped = input.charAt(pos++);
 
-                    switch (esc) {
+                    switch (escaped) {
                         case '"':
                             sb.append('"');
                             break;
+
                         case '\\':
                             sb.append('\\');
                             break;
+
                         case '/':
                             sb.append('/');
                             break;
+
                         case 'b':
                             sb.append('\b');
                             break;
+
                         case 'f':
                             sb.append('\f');
                             break;
+
                         case 'n':
                             sb.append('\n');
                             break;
+
                         case 'r':
                             sb.append('\r');
                             break;
+
                         case 't':
                             sb.append('\t');
                             break;
+
                         case 'u':
-                            sb.append(parseUnicode());
+                            appendUnicode(sb);
                             break;
+
                         default:
-                            throw error("Escape JSON no válido: \\" + esc);
+                            throw error(
+                                    "Escape JSON no válido: \\"
+                                            + escaped
+                            );
                     }
 
                 } else {
-                    sb.append(c);
+                    sb.append(current);
                 }
             }
 
-            throw error("Cadena JSON sin cerrar");
+            throw error(
+                    "Cadena JSON sin cerrar"
+            );
         }
 
-        private char parseUnicode() {
+        private void appendUnicode(StringBuilder sb) {
 
-            if (pos + 4 > input.length()) {
-                throw error("Escape Unicode incompleto");
+            int first = parseUnicodeCodeUnit();
+
+            if (Character.isHighSurrogate((char) first)
+                    && pos + 6 <= input.length()
+                    && input.charAt(pos) == '\\'
+                    && input.charAt(pos + 1) == 'u') {
+
+                pos += 2;
+                int second = parseUnicodeCodeUnit();
+
+                if (Character.isLowSurrogate((char) second)) {
+                    sb.append(
+                            Character.toChars(
+                                    Character.toCodePoint(
+                                            (char) first,
+                                            (char) second
+                                    )
+                            )
+                    );
+                    return;
+                }
+
+                sb.append((char) first);
+                sb.append((char) second);
+                return;
             }
 
-            final String hex = input.substring(pos, pos + 4);
+            sb.append((char) first);
+        }
+
+        private int parseUnicodeCodeUnit() {
+
+            if (pos + 4 > input.length()) {
+                throw error(
+                        "Escape Unicode incompleto"
+                );
+            }
+
+            String hex = input.substring(
+                    pos,
+                    pos + 4
+            );
+
             pos += 4;
 
             try {
-                return (char) Integer.parseInt(hex, 16);
-            } catch (NumberFormatException ex) {
-                throw error("Escape Unicode no válido: " + hex);
+                return Integer.parseInt(hex, 16);
+            } catch (NumberFormatException e) {
+                throw error(
+                        "Escape Unicode no válido: "
+                                + hex
+                );
             }
         }
 
         private Number parseNumber() {
 
-            final int start = pos;
+            int start = pos;
 
             if (peek('-')) {
                 pos++;
@@ -789,6 +1369,7 @@ public class Rolsac2RestClient {
             }
 
             if (peek('e') || peek('E')) {
+
                 decimal = true;
                 pos++;
 
@@ -799,7 +1380,8 @@ public class Rolsac2RestClient {
                 consumeDigits();
             }
 
-            final String raw = input.substring(start, pos);
+            String raw =
+                    input.substring(start, pos);
 
             try {
                 if (decimal) {
@@ -808,55 +1390,71 @@ public class Rolsac2RestClient {
 
                 return Long.valueOf(raw);
 
-            } catch (NumberFormatException ex) {
-                throw error("Número JSON no válido: " + raw);
+            } catch (NumberFormatException e) {
+                throw error(
+                        "Número JSON no válido: "
+                                + raw
+                );
             }
         }
 
         private void consumeDigits() {
 
-            final int start = pos;
+            int start = pos;
 
-            while (pos < input.length() && Character.isDigit(input.charAt(pos))) {
+            while (pos < input.length()
+                    && Character.isDigit(input.charAt(pos))) {
                 pos++;
             }
 
             if (start == pos) {
-                throw error("Se esperaba un dígito");
+                throw error(
+                        "Se esperaba un dígito"
+                );
             }
         }
 
-        private void expect(final String value) {
+        private void expectLiteral(String literal) {
 
-            if (!input.startsWith(value, pos)) {
-                throw error("Se esperaba '" + value + "'");
+            if (!input.startsWith(literal, pos)) {
+                throw error(
+                        "Se esperaba '" + literal + "'"
+                );
             }
 
-            pos += value.length();
+            pos += literal.length();
         }
 
-        private void expect(final char value) {
+        private void expect(char expected) {
 
             skipWhitespace();
 
-            if (pos >= input.length() || input.charAt(pos) != value) {
-                throw error("Se esperaba '" + value + "'");
+            if (pos >= input.length()
+                    || input.charAt(pos) != expected) {
+
+                throw error(
+                        "Se esperaba '" + expected + "'"
+                );
             }
 
             pos++;
         }
 
-        private boolean peek(final char value) {
-            return pos < input.length() && input.charAt(pos) == value;
+        private boolean peek(char value) {
+            return pos < input.length()
+                    && input.charAt(pos) == value;
         }
 
         private void skipWhitespace() {
 
             while (pos < input.length()) {
 
-                final char c = input.charAt(pos);
+                char current = input.charAt(pos);
 
-                if (c == ' ' || c == '\n' || c == '\r' || c == '\t') {
+                if (current == ' '
+                        || current == '\n'
+                        || current == '\r'
+                        || current == '\t') {
                     pos++;
                 } else {
                     break;
@@ -864,56 +1462,83 @@ public class Rolsac2RestClient {
             }
         }
 
-        private IllegalArgumentException error(final String message) {
+        private IllegalArgumentException error(
+                String message) {
+
             return new IllegalArgumentException(
-                    message + " en la posición " + pos
+                    message
+                            + " en la posición "
+                            + pos
             );
         }
     }
 
-    /**
-     * Formateador JSON para mostrar respuestas desconocidas o errores.
-     */
     private static final class JsonPrinter {
 
         private JsonPrinter() {
         }
 
-        private static String pretty(final Object value) {
-            final StringBuilder sb = new StringBuilder();
-            appendPretty(sb, value, 0);
+        private static String pretty(Object value) {
+
+            StringBuilder sb = new StringBuilder();
+
+            appendPretty(
+                    sb,
+                    value,
+                    0
+            );
+
             return sb.toString();
         }
 
-        private static String compact(final Object value) {
-            final StringBuilder sb = new StringBuilder();
-            appendCompact(sb, value);
+        private static String compact(Object value) {
+
+            StringBuilder sb = new StringBuilder();
+
+            appendCompact(
+                    sb,
+                    value
+            );
+
             return sb.toString();
         }
 
         @SuppressWarnings("unchecked")
-        private static void appendPretty(final StringBuilder sb,
-                                         final Object value,
-                                         final int indent) {
+        private static void appendPretty(
+                StringBuilder sb,
+                Object value,
+                int indent) {
 
             if (value instanceof Map) {
 
-                final Map<String, Object> map = (Map<String, Object>) value;
+                Map<String, Object> map =
+                        (Map<String, Object>) value;
 
                 sb.append('{');
 
                 if (!map.isEmpty()) {
+
                     sb.append('\n');
 
                     int index = 0;
 
-                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    for (Map.Entry<String, Object> entry
+                            : map.entrySet()) {
 
                         indent(sb, indent + 2);
-                        appendString(sb, entry.getKey());
+
+                        appendString(
+                                sb,
+                                entry.getKey()
+                        );
+
                         sb.append(": ");
 
-                        appendPretty(sb, entry.getValue(), indent + 2);
+                        appendPretty(
+                                sb,
+                                entry.getValue(),
+                                indent + 2
+                        );
 
                         if (++index < map.size()) {
                             sb.append(',');
@@ -931,17 +1556,26 @@ public class Rolsac2RestClient {
 
             if (value instanceof List) {
 
-                final List<Object> list = (List<Object>) value;
+                List<Object> list =
+                        (List<Object>) value;
 
                 sb.append('[');
 
                 if (!list.isEmpty()) {
+
                     sb.append('\n');
 
-                    for (int i = 0; i < list.size(); i++) {
+                    for (int i = 0;
+                         i < list.size();
+                         i++) {
 
                         indent(sb, indent + 2);
-                        appendPretty(sb, list.get(i), indent + 2);
+
+                        appendPretty(
+                                sb,
+                                list.get(i),
+                                indent + 2
+                        );
 
                         if (i + 1 < list.size()) {
                             sb.append(',');
@@ -961,25 +1595,37 @@ public class Rolsac2RestClient {
         }
 
         @SuppressWarnings("unchecked")
-        private static void appendCompact(final StringBuilder sb, final Object value) {
+        private static void appendCompact(
+                StringBuilder sb,
+                Object value) {
 
             if (value instanceof Map) {
 
-                final Map<String, Object> map = (Map<String, Object>) value;
+                Map<String, Object> map =
+                        (Map<String, Object>) value;
 
                 sb.append('{');
 
                 int index = 0;
 
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                for (Map.Entry<String, Object> entry
+                        : map.entrySet()) {
 
                     if (index++ > 0) {
                         sb.append(',');
                     }
 
-                    appendString(sb, entry.getKey());
+                    appendString(
+                            sb,
+                            entry.getKey()
+                    );
+
                     sb.append(':');
-                    appendCompact(sb, entry.getValue());
+
+                    appendCompact(
+                            sb,
+                            entry.getValue()
+                    );
                 }
 
                 sb.append('}');
@@ -988,17 +1634,23 @@ public class Rolsac2RestClient {
 
             if (value instanceof List) {
 
-                final List<Object> list = (List<Object>) value;
+                List<Object> list =
+                        (List<Object>) value;
 
                 sb.append('[');
 
-                for (int i = 0; i < list.size(); i++) {
+                for (int i = 0;
+                     i < list.size();
+                     i++) {
 
                     if (i > 0) {
                         sb.append(',');
                     }
 
-                    appendCompact(sb, list.get(i));
+                    appendCompact(
+                            sb,
+                            list.get(i)
+                    );
                 }
 
                 sb.append(']');
@@ -1008,51 +1660,74 @@ public class Rolsac2RestClient {
             appendPrimitive(sb, value);
         }
 
-        private static void appendPrimitive(final StringBuilder sb, final Object value) {
+        private static void appendPrimitive(
+                StringBuilder sb,
+                Object value) {
 
             if (value == null) {
                 sb.append("null");
-            } else if (value instanceof String) {
-                appendString(sb, (String) value);
-            } else {
-                sb.append(String.valueOf(value));
+                return;
             }
+
+            if (value instanceof String) {
+                appendString(
+                        sb,
+                        (String) value
+                );
+                return;
+            }
+
+            sb.append(String.valueOf(value));
         }
 
-        private static void appendString(final StringBuilder sb, final String value) {
+        private static void appendString(
+                StringBuilder sb,
+                String value) {
 
             sb.append('"');
 
-            for (int i = 0; i < value.length(); i++) {
+            for (int i = 0;
+                 i < value.length();
+                 i++) {
 
-                final char c = value.charAt(i);
+                char current = value.charAt(i);
 
-                switch (c) {
+                switch (current) {
                     case '"':
                         sb.append("\\\"");
                         break;
+
                     case '\\':
                         sb.append("\\\\");
                         break;
+
                     case '\n':
                         sb.append("\\n");
                         break;
+
                     case '\r':
                         sb.append("\\r");
                         break;
+
                     case '\t':
                         sb.append("\\t");
                         break;
+
                     default:
-                        sb.append(c);
+                        sb.append(current);
                 }
             }
 
             sb.append('"');
         }
 
-        private static void indent(final StringBuilder sb, final int count) {
-            for (int i = 0; i < count; i++) {
+        private static void indent(
+                StringBuilder sb,
+                int count) {
+
+            for (int i = 0;
+                 i < count;
+                 i++) {
                 sb.append(' ');
             }
         }
