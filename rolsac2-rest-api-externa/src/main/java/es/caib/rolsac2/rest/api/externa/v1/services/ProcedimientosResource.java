@@ -32,6 +32,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Path(Constantes.API_VERSION_BARRA + Constantes.ENTIDAD_PROCEDIMIENTO)
@@ -307,6 +308,8 @@ public class ProcedimientosResource {
 
         final ProcedimientoFiltro fg = new ProcedimientoFiltro();
         fg.setTipo("P");
+        List<String> estados = Arrays.asList("P", "T", "PT");
+        fg.setEstados(estados);
         fg.setIdEntidad(entitat);
         if (fg.getIdEntidad() == null) {
             fg.setIdEntidad(1L);
@@ -500,6 +503,7 @@ public class ProcedimientosResource {
                 return null;
         }
     }
+
     private String convertirFechaISO8601(final String nombreParametro, final String valor) {
         if (!Utiles.isISO8601(valor)) {
             throw new ValidationException(nombreParametro
@@ -545,7 +549,7 @@ public class ProcedimientosResource {
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
         if (debugActivo) LOG.error(" getRespuesta: tiempoMiliSegundos: {}", tiempoMiliSegundos);
 
-        return new RespuestaBase(
+        RespuestaBase respuesta = new RespuestaBase(
                 total,
                 lista.size(),
                 tamanyoPaginaSolicitado,
@@ -553,6 +557,9 @@ public class ProcedimientosResource {
                 requestUri,
                 lista,
                 tiempoMiliSegundos);
+        respuesta.setTitle("Procediments");
+        respuesta.setDescription("Retorna els procediments disponibles en funció dels filtres indicats com a paràmetres de consulta.");
+        return respuesta;
     }
 
 }

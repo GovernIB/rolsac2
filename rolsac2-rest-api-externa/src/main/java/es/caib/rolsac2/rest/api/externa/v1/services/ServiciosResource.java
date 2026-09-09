@@ -32,6 +32,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Path(Constantes.API_VERSION_BARRA + "serveis")
@@ -137,6 +138,8 @@ public class ServiciosResource {
         Instant start = Instant.now();
         final ProcedimientoFiltro fg = new ProcedimientoFiltro();
         fg.setTipo("S");
+        List<String> estados = Arrays.asList("P", "T", "PT");
+        fg.setEstados(estados);
         fg.setIdEntidad(entitat == null ? 1L : entitat);
 
         if (codi != null) fg.setCodigo(codi);
@@ -226,8 +229,11 @@ public class ServiciosResource {
         fg.setIdioma(idioma != null ? idioma : idiomaPorDefecto);
         Integer apiMaxLimit = aplicarApiMaxLimit(fg);
         URI uriCompleta = uriInfo.getRequestUri();
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, uriCompleta, apiMaxLimit,
-                paginaActual, tamanyoPaginaSolicitado), MediaType.APPLICATION_JSON).build();
+        RespuestaBase respuesta = getRespuesta(fg, idiomaPorDefecto, start, uriCompleta, apiMaxLimit,
+                paginaActual, tamanyoPaginaSolicitado);
+        respuesta.setTitle("Serveis");
+        respuesta.setDescription("Retorna els serveis disponibles en funció dels filtres indicats com a paràmetres de consulta.");
+        return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
     }
 
     private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
