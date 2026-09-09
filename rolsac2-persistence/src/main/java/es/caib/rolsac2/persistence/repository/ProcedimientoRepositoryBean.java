@@ -3572,34 +3572,42 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         if (filtro.isRellenoCanales()) {
+            boolean primerCanal = true;
+            sql.append(" AND (");
             for (String canal : filtro.getCanales()) {
+                if (!primerCanal) {
+                    sql.append(" OR ");
+                }
                 switch (canal) {
                     case "P":
                         if (ambosWf) {
-                            sql.append(" AND WF.tramitPresencial is true OR WF2.tramitPresencial is true ");
+                            sql.append("(EXISTS (SELECT 1 FROM JProcedimientoTramite tr WHERE (tr.procedimiento.codigo = WF.codigo OR tr.procedimiento.codigo = WF2.codigo) AND (tr.tramitPresencial is true OR tr.tipoTramitacion.tramitPresencial is true)) OR WF.tramitPresencial is true OR WF2.tramitPresencial is true)");
                         } else {
-                            sql.append(" AND WF.tramitPresencial is true");
+                            sql.append("(EXISTS (SELECT 1 FROM JProcedimientoTramite tr WHERE tr.procedimiento.codigo = WF.codigo AND (tr.tramitPresencial is true OR tr.tipoTramitacion.tramitPresencial is true)) OR WF.tramitPresencial is true)");
                         }
                         break;
                     case "T":
                         if (ambosWf) {
-                            sql.append(" AND WF.tramitElectronica is true OR WF2.tramitElectronica is true ");
+                            sql.append("(EXISTS (SELECT 1 FROM JProcedimientoTramite tr WHERE (tr.procedimiento.codigo = WF.codigo OR tr.procedimiento.codigo = WF2.codigo) AND (tr.tramitElectronica is true OR tr.tipoTramitacion.tramitElectronica is true)) OR WF.tramitElectronica is true OR WF2.tramitElectronica is true)");
                         } else {
-                            sql.append(" AND WF.tramitElectronica is true ");
+                            sql.append("(EXISTS (SELECT 1 FROM JProcedimientoTramite tr WHERE tr.procedimiento.codigo = WF.codigo AND (tr.tramitElectronica is true OR tr.tipoTramitacion.tramitElectronica is true)) OR WF.tramitElectronica is true)");
                         }
                         break;
                     case "F":
                         if (ambosWf) {
-                            sql.append(" AND WF.tramitTelefonica is true OR WF2.tramitTelefonica is true ");
+                            sql.append("(EXISTS (SELECT 1 FROM JProcedimientoTramite tr WHERE (tr.procedimiento.codigo = WF.codigo OR tr.procedimiento.codigo = WF2.codigo) AND (tr.tramitTelefonica is true OR tr.tipoTramitacion.tramitTelefonica is true)) OR WF.tramitTelefonica is true OR WF2.tramitTelefonica is true)");
                         } else {
-                            sql.append(" AND WF.tramitTelefonica is true ");
+                            sql.append("(EXISTS (SELECT 1 FROM JProcedimientoTramite tr WHERE tr.procedimiento.codigo = WF.codigo AND (tr.tramitTelefonica is true OR tr.tipoTramitacion.tramitTelefonica is true)) OR WF.tramitTelefonica is true)");
                         }
                         break;
                     default:
                         break;
                 }
+                primerCanal = false;
             }
+            sql.append(")");
         }
+
         if (filtro.isRellenoPlantilla()) {
             if (filtro.getEsProcedimiento()) {
                 if (ambosWf) {

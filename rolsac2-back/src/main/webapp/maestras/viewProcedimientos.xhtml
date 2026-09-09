@@ -630,17 +630,16 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                     <p:outputLabel value="#{labels['viewProcedimientos.canalPresentacion']}:"
                                                    for="txtTtramiteTelem"
                                                    aria-label="#{labels['viewProcedimientos.canalPresentacion']}"/>
-                                    <p:selectOneMenu id="txtTtramiteTelem"
-                                                     value="#{viewProcedimientos.filtro.tramiteTelematico}"
-                                                     styleClass="w95" autoWidth="false">
-                                        <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
-                                                      itemValue="#{null}"/>
+                                    <p:selectCheckboxMenu id="txtTtramiteTelem"
+                                                          value="#{viewProcedimientos.filtro.canales}"
+                                                          styleClass="w95" autoWidth="false"
+                                                          multiple="true" scrollHeight="250"
+                                                          label="#{labels['viewServicios.seleccioneCanales']}">
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.presencial']}"
                                                       itemValue="P"/>
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.telematico']}"
                                                       itemValue="T"/>
-                                        <f:selectItem itemLabel="#{labels['viewProcedimientos.ambos']}" itemValue="A"/>
-                                    </p:selectOneMenu>
+                                    </p:selectCheckboxMenu>
                                 </div>
                                 <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-3 bloque">
                                     <p:outputLabel value="#{labels['viewProcedimientos.plataformaTramitacion']}:"
