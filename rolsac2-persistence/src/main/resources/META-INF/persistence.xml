@@ -5,6 +5,114 @@
              version="2.2">
     <persistence-unit name="rolsac2PU" transaction-type="JTA">
         <jta-data-source>java:/es.caib.rolsac2.db</jta-data-source>
+        <class>es.caib.rolsac2.persistence.model.JAfectacion</class>
+        <class>es.caib.rolsac2.persistence.model.JAlerta</class>
+        <class>es.caib.rolsac2.persistence.model.JAlertaUsuario</class>
+        <class>es.caib.rolsac2.persistence.model.JAyuda</class>
+        <class>es.caib.rolsac2.persistence.model.JCategoriaPDU</class>
+        <class>es.caib.rolsac2.persistence.model.JConfiguracionGlobal</class>
+        <class>es.caib.rolsac2.persistence.model.JDocumentoNormativa</class>
+        <class>es.caib.rolsac2.persistence.model.JDocumentoNormativaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.JEdificio</class>
+        <class>es.caib.rolsac2.persistence.model.JEdificioMultimedia</class>
+        <class>es.caib.rolsac2.persistence.model.JEdificioUnidadAdministrativa</class>
+        <class>es.caib.rolsac2.persistence.model.JEntidad</class>
+        <class>es.caib.rolsac2.persistence.model.JEntidadRaiz</class>
+        <class>es.caib.rolsac2.persistence.model.JEstadistica</class>
+        <class>es.caib.rolsac2.persistence.model.JEstadisticaAcceso</class>
+        <class>es.caib.rolsac2.persistence.model.JFicha</class>
+        <class>es.caib.rolsac2.persistence.model.JFichaDocumento</class>
+        <class>es.caib.rolsac2.persistence.model.JFichaEnlace</class>
+        <class>es.caib.rolsac2.persistence.model.JFichaMedia</class>
+        <class>es.caib.rolsac2.persistence.model.JFichaPublicoObjectivo</class>
+        <class>es.caib.rolsac2.persistence.model.JFichaTema</class>
+        <class>es.caib.rolsac2.persistence.model.JFicheroAuditoria</class>
+        <class>es.caib.rolsac2.persistence.model.JFicheroExterno</class>
+        <class>es.caib.rolsac2.persistence.model.JIndexacion</class>
+        <class>es.caib.rolsac2.persistence.model.JIndexacionPdu</class>
+        <class>es.caib.rolsac2.persistence.model.JIndexacionSIA</class>
+        <class>es.caib.rolsac2.persistence.model.JListaDocumentos</class>
+        <class>es.caib.rolsac2.persistence.model.JNormativa</class>
+        <class>es.caib.rolsac2.persistence.model.JNormativaUnidadAdministrativa</class>
+        <class>es.caib.rolsac2.persistence.model.JPersonaAuditoria</class>
+        <class>es.caib.rolsac2.persistence.model.JPersonal</class>
+        <class>es.caib.rolsac2.persistence.model.JPlatTramitElectronica</class>
+        <class>es.caib.rolsac2.persistence.model.JPlugin</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimiento</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoAuditoria</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoCategoriaPDU</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoDocumento</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoNormativa</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoPublicoObjectivo</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoTasa</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoTema</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoTramite</class>
+        <class>es.caib.rolsac2.persistence.model.JProcedimientoWorkflow</class>
+        <class>es.caib.rolsac2.persistence.model.JProceso</class>
+        <class>es.caib.rolsac2.persistence.model.JProcesoControl</class>
+        <class>es.caib.rolsac2.persistence.model.JProcesoLog</class>
+        <class>es.caib.rolsac2.persistence.model.JSeccion</class>
+        <class>es.caib.rolsac2.persistence.model.JSesion</class>
+        <class>es.caib.rolsac2.persistence.model.JTema</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoAfectacion</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoBoletin</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoFormaInicio</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoLegitimacion</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoMateriaSIA</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoMediaEdificio</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoNormativa</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoProcedimiento</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoPublicoObjetivo</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoPublicoObjetivoEntidad</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoSexo</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoSilencioAdministrativo</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoTramitacion</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoUnidadAdministrativa</class>
+        <class>es.caib.rolsac2.persistence.model.JTipoVia</class>
+        <class>es.caib.rolsac2.persistence.model.JTramiteModeloSolicitud</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativa</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativaAuditoria</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativaEvolucion</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativaFichero</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativaHistorico</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativaLite</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadAdministrativaSeccion</class>
+        <class>es.caib.rolsac2.persistence.model.JUnidadOrganica</class>
+        <class>es.caib.rolsac2.persistence.model.JUsuario</class>
+        <class>es.caib.rolsac2.persistence.model.JUsuarioEntidad</class>
+        <class>es.caib.rolsac2.persistence.model.JUsuarioUnidadAdministrativa</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JAlertaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JAyudaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JCategoriaPDUTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JEdificioTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JEntidadTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JFichaDocumentoTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JFichaEnlaceTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JFichaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JNormativaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JPlatTramitElectronicaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JProcedimientoDocumentoTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTasaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JProcedimientoTramiteTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JProcedimientoWorkflowTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JSeccionTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTemaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoAfectacionTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoFormaInicioTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoLegitimacionTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoMateriaSIATraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoMediaEdificioTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoNormativaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoProcedimientoTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoEntidadTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoPublicoObjetivoTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoSexoTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoSilencioAdministrativoTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoTramitacionTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoUnidadAdministrativaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JTipoViaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JUnidadAdministrativaTraduccion</class>
+        <class>es.caib.rolsac2.persistence.model.traduccion.JUsuarioTraduccion</class>
 
         <!-- Activar cache només per aquelles entitats on volguem expressament -->
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
@@ -21,7 +129,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
 
             <!-- Afecta molt al rendiment. A entorn de producció, sempre a false -->
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
