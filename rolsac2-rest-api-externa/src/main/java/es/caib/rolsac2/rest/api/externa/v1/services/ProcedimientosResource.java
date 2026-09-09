@@ -57,11 +57,11 @@ public class ProcedimientosResource {
     /**
      * Llistat de procediments.
      * <p>
-     * Retorna els procediments disponibles en funciÃƒÂ³ dels filtres indicats
-     * com a parÃƒÂ metres de consulta.
+     * Retorna els procediments disponibles en funció dels filtres indicats
+     * com a paràmetres de consulta.
      *
      * @return Llistat de procediments.
-     * @throws ValidationException GestiÃƒÂ³ d'excepcions.
+     * @throws ValidationException Gestió d'excepcions.
      */
     @Produces({MediaType.APPLICATION_JSON})
     @GET
@@ -69,7 +69,7 @@ public class ProcedimientosResource {
     @Operation(
             operationId = "listarProcedimientos",
             summary = "Llista els procediments",
-            description = "Llista els procediments disponibles en funciÃƒÂ³ dels filtres indicats."
+            description = "Llista els procediments disponibles en funció dels filtres indicats."
     )
     @APIResponse(
             responseCode = "200",
@@ -90,7 +90,7 @@ public class ProcedimientosResource {
     public Response listarProcedimientos(
 
             @Parameter(
-                    description = "Idioma de la informaciÃƒÂ³ retornada. Per defecte, catalÃƒÂ .",
+                    description = "Idioma de la informació retornada. Per defecte, català.",
                     name = "idioma",
                     in = ParameterIn.QUERY,
                     schema = @Schema(defaultValue = "ca")
@@ -122,14 +122,14 @@ public class ProcedimientosResource {
             @QueryParam("nom") final String nom,
 
             @Parameter(
-                    description = "Data inicial del rang de data d'actualitzaciÃƒÂ³, en format ISO8601.",
+                    description = "Data inicial del rang de data d'actualització, en format ISO8601.",
                     name = "iniciDataActualitzacio",
                     in = ParameterIn.QUERY
             )
             @QueryParam("iniciDataActualitzacio") final String iniciDataActualitzacio,
 
             @Parameter(
-                    description = "Data final del rang de data d'actualitzaciÃƒÂ³, en format ISO8601.",
+                    description = "Data final del rang de data d'actualització, en format ISO8601.",
                     name = "fiDataActualitzacio",
                     in = ParameterIn.QUERY
             )
@@ -204,7 +204,7 @@ public class ProcedimientosResource {
             @QueryParam("uaInstructorNom") final String uaInstructorNom,
 
             @Parameter(
-                    description = "Indica si el procediment ÃƒÂ©s comÃƒÂº a diverses unitats.",
+                    description = "Indica si el procediment és comú a diverses unitats.",
                     name = "comu",
                     in = ParameterIn.QUERY
             )
@@ -232,35 +232,35 @@ public class ProcedimientosResource {
             @QueryParam("estat") final String estat,
 
             @Parameter(
-                    description = "Indica si es permet la tramitaciÃƒÂ³ mitjanÃƒÂ§ant apoderat.",
+                    description = "Indica si es permet la tramitació mitjançant apoderat.",
                     name = "habilitatApoderat",
                     in = ParameterIn.QUERY
             )
             @QueryParam("habilitatApoderat") final Boolean habilitatApoderat,
 
             @Parameter(
-                    description = "Indica si estÃƒÂ  habilitada la tramitaciÃƒÂ³ mitjanÃƒÂ§ant funcionari.",
+                    description = "Indica si està habilitada la tramitació mitjançant funcionari.",
                     name = "habilitatFuncionari",
                     in = ParameterIn.QUERY
             )
             @QueryParam("habilitatFuncionari") final Boolean habilitatFuncionari,
 
             @Parameter(
-                    description = "Termini de resoluciÃƒÂ³ del procediment.",
+                    description = "Termini de resolució del procediment.",
                     name = "terminiResolucio",
                     in = ParameterIn.QUERY
             )
             @QueryParam("terminiResolucio") final String terminiResolucio,
 
             @Parameter(
-                    description = "Mida de la pÃƒÂ gina.",
+                    description = "Mida de la pàgina.",
                     name = "page-size",
                     in = ParameterIn.QUERY
             )
             @QueryParam("page-size") final Integer pageSize,
 
             @Parameter(
-                    description = "NÃƒÂºmero de la pÃƒÂ gina.",
+                    description = "Número de la pàgina.",
                     name = "page",
                     in = ParameterIn.QUERY
             )
@@ -286,7 +286,7 @@ public class ProcedimientosResource {
             @QueryParam("ordenCampo") final String ordenCampo,
 
             @Parameter(
-                    description = "Sentit de l'ordenaciÃƒÂ³. Valors possibles: asc o desc.",
+                    description = "Sentit de l'ordenació. Valors possibles: asc o desc.",
                     name = "ordenAscendente",
                     in = ParameterIn.QUERY,
                     schema = @Schema(
@@ -344,7 +344,7 @@ public class ProcedimientosResource {
             try {
                 fg.setCodigoSIA(Integer.valueOf(codiSIACodi.trim()));
             } catch (NumberFormatException e) {
-                LOG.warn("El parÃƒÂ¡metro codiSIACodi no es vÃƒÂ¡lido: {}", codiSIACodi);
+                LOG.warn("El parámetro codiSIACodi no es válido: {}", codiSIACodi);
             }
         }
 
@@ -392,10 +392,12 @@ public class ProcedimientosResource {
 
         if (habilitatApoderat != null) {
             fg.setHabilitadoApoderado(habilitatApoderat);
+            fg.setTramitacionPersonaApoderada(habilitatApoderat ? "S" : "N");
         }
 
         if (habilitatFuncionari != null) {
             fg.setHabilitadoFuncionario(habilitatFuncionari);
+            fg.setDisponibleFuncionarioHabilitado(habilitatFuncionari ? "S" : "N");
         }
 
         if (terminiResolucio != null && !terminiResolucio.trim().isEmpty()) {
@@ -407,14 +409,14 @@ public class ProcedimientosResource {
         fg.setPaginaTamanyo(tamanyoPaginaSolicitado);
         final long paginationOffset = (long) paginaActual * tamanyoPaginaSolicitado;
         if (paginationOffset > Integer.MAX_VALUE) {
-            throw new ValidationException("La combinaciÃƒÂ³ de page i page-size ÃƒÂ©s massa gran.");
+            throw new ValidationException("La combinació de page i page-size és massa gran.");
         }
         fg.setPaginaFirst((int) paginationOffset);
 
         if (ordenCampo != null && !ordenCampo.trim().isEmpty()) {
             String mapped = mapOrdenCampo(ordenCampo.trim());
             if (mapped == null) {
-                throw new ValidationException("ordenCampo no es valid.");
+                throw new ValidationException("ordenCampo no és vàlid.");
             }
             fg.setOrderBy(mapped);
         }
@@ -427,7 +429,7 @@ public class ProcedimientosResource {
                 fg.setOrder("DESCENDING");
                 fg.setAscendente(false);
             } else {
-                LOG.warn("El parÃƒÂ¡metro ordenAscendente no es vÃƒÂ¡lido: {}", ordenAscendente);
+                LOG.warn("El parámetro ordenAscendente no es válido: {}", ordenAscendente);
             }
         }
 
@@ -450,7 +452,7 @@ public class ProcedimientosResource {
         }
 
 
-        // Limitar el nÃƒÂºmero total de elementos segÃƒÂºn API_MAX_LIMIT
+        // Limitar el número total de elementos según API_MAX_LIMIT
         Integer apiMaxLimit = null;
         try {
             String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
@@ -530,10 +532,10 @@ public class ProcedimientosResource {
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
             elemento = new Procediment((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
-            if (debugActivo) LOG.error(" getRespuesta: aÃƒÂ±adido procedimiento a la lista: {}", elemento);
+            if (debugActivo) LOG.error(" getRespuesta: añadido procedimiento a la lista: {}", elemento);
         }
 
-        // Limitar el total de elementos reportado segÃƒÂºn API_MAX_LIMIT
+        // Limitar el total de elementos reportado según API_MAX_LIMIT
         int total = (int) resultadoBusqueda.getTotal();
         if (apiMaxLimit != null && total > apiMaxLimit) {
             total = apiMaxLimit;
