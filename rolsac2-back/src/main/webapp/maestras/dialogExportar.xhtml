@@ -105,10 +105,10 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 
                 <p:column headerText="#{labels['dict.mostrar']}" styleClass="text-center w90px">
                     <h:outputLabel for="chkSeleccionado" styleClass="sr-only"
-                                   value="#{td.nombre} #{td.seleccionado}"/>
+                                   value="#{td.nombreCampo} #{td.seleccionado}"/>
                     <p:selectBooleanCheckbox id="chkSeleccionado"
                                              value="#{td.seleccionado}"
-                                             pt:aria-label="#{td.nombre} #{td.seleccionado}">
+                                             pt:aria-label="#{td.nombreCampo} #{td.seleccionado}">
                         <p:ajax event="change" />
                     </p:selectBooleanCheckbox>
                 </p:column>
