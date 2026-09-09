@@ -3960,15 +3960,19 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 sql.append(" AND (wf.habilitadoApoderado = :tramitacionPersonaApoderada) ");
             }
         }
-
-        if (filtro.isRellenoDisponibleFuncionarioHabilitado()) {
+        boolean rellenoDisponibleFuncionarioHabilitado = filtro.isRellenoDisponibleFuncionarioHabilitado() || filtro.isRellenoHabilitadoFuncionario();
+        if (rellenoDisponibleFuncionarioHabilitado) {
             if (ambosWf) {
                 sql.append(" AND (wf.habilitadoFuncionario = :disponibleFuncionarioHabilitado or wf2.habilitadoFuncionario = :disponibleFuncionarioHabilitado) ");
             } else {
                 sql.append(" AND (wf.habilitadoFuncionario = :disponibleFuncionarioHabilitado) ");
             }
         }
-
+        if (filtro.isRellenoTerminoResolucion() && ambosWf) {
+            sql.append(" AND (LOWER(TRIM(t.terminoResolucion)) LIKE :terminoResolucion OR LOWER(TRIM(t2.terminoResolucion)) LIKE :terminoResolucion) ");
+        } else if (filtro.isRellenoTerminoResolucion()) {
+            sql.append(" AND LOWER(TRIM(t.terminoResolucion)) LIKE :terminoResolucion ");
+        }
         if (filtro.isRellenoUAInterna()) {
             if (ambosWf) {
                 if (filtro.getuAInterna()) {
@@ -4343,12 +4347,15 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoTramitacionPersonaApoderada()) {
             query.setParameter("tramitacionPersonaApoderada", "S".equals(filtro.getTramitacionPersonaApoderada()));
         }
-
-        if (filtro.isRellenoDisponibleFuncionarioHabilitado()) {
-            query.setParameter("disponibleFuncionarioHabilitado", "S".equals(filtro.getDisponibleFuncionarioHabilitado()) ? true : false);
+        if (filtro.isRellenoDisponibleFuncionarioHabilitado() || filtro.isRellenoHabilitadoFuncionario()) {
+            String disponibleFuncionarioHabilitado = filtro.isRellenoDisponibleFuncionarioHabilitado()
+                    ? filtro.getDisponibleFuncionarioHabilitado().trim().toUpperCase()
+                    : (Boolean.TRUE.equals(filtro.getHabilitadoFuncionario()) ? "S" : "N");
+            query.setParameter("disponibleFuncionarioHabilitado", disponibleFuncionarioHabilitado);
         }
-
-
+        if (filtro.isRellenoTerminoResolucion()) {
+            query.setParameter("terminoResolucion", "%" + filtro.getTerminoResolucion().trim().toLowerCase() + "%");
+        }
         if (filtro.isRellenoNombre()) {
             query.setParameter("nombre", "%" + filtro.getNombre().toLowerCase() + "%");
         }
