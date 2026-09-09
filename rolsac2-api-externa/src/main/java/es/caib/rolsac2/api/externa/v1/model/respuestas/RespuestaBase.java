@@ -2,7 +2,9 @@ package es.caib.rolsac2.api.externa.v1.model.respuestas;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -19,6 +21,9 @@ public class RespuestaBase {
 
 
     private static final long serialVersionUID = 1L;
+
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     @Schema(
             description = "Nom del conjunt de dades.",
@@ -111,7 +116,8 @@ public class RespuestaBase {
         // Constructor por defecto
     }
 
-    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url, List<?> lista, long tiempoMiliSegundos) {
+    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url,
+                         List<?> lista, long tiempoMiliSegundos) {
         this.totalCount = (long) total;
         this.itemsReturned = size;
         this.pageSize = paginaTamanyo;
@@ -119,6 +125,54 @@ public class RespuestaBase {
         this.nextUrl = url;
         this.items = lista;
         this.tiempo = tiempoMiliSegundos;
+    }
+
+    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer pagina, URI requestUri,
+                         List<?> lista, long tiempoMiliSegundos) {
+        this.totalCount = (long) total;
+        this.itemsReturned = size;
+        this.pageSize = paginaTamanyo != null ? paginaTamanyo : DEFAULT_PAGE_SIZE;
+        this.page = pagina != null && pagina >= 0 ? pagina : DEFAULT_PAGE;
+        this.totalPages = calcularTotalPaginas(total, this.pageSize);
+        this.items = lista;
+        this.tiempo = tiempoMiliSegundos;
+
+        completarUrlsPaginacion(total, this.pageSize, this.page, requestUri);
+    }
+
+    private Integer calcularTotalPaginas(final int total, final Integer paginaTamanyo) {
+        if (paginaTamanyo == null || paginaTamanyo <= 0) {
+            return 0;
+        }
+        return (int) Math.ceil((double) total / paginaTamanyo);
+    }
+
+    private void completarUrlsPaginacion(final int total, final Integer paginaTamanyo,
+                                         final Integer paginaActual, final URI requestUri) {
+        if (requestUri == null || paginaTamanyo == null || paginaTamanyo <= 0) {
+            return;
+        }
+
+        final int pagina = paginaActual != null && paginaActual > 0 ? paginaActual : 0;
+
+        if (pagina > 0) {
+            this.previousUrl = construirUrlPaginacion(requestUri, pagina - 1, paginaTamanyo);
+        }
+
+        final long primerElementoPaginaSiguiente = ((long) pagina + 1) * paginaTamanyo;
+        if (primerElementoPaginaSiguiente < total) {
+            this.nextUrl = construirUrlPaginacion(requestUri, pagina + 1, paginaTamanyo);
+        }
+    }
+
+    private String construirUrlPaginacion(final URI requestUri, final int pagina, final int paginaTamanyo) {
+        return UriBuilder.fromUri(requestUri)
+                .replaceQueryParam("page")
+                .replaceQueryParam("page-size")
+                .queryParam("page", pagina)
+                .queryParam("page-size", paginaTamanyo)
+                .build()
+                .toString();
     }
 
     public RespuestaBase(String status, String msg, long tiempo) {

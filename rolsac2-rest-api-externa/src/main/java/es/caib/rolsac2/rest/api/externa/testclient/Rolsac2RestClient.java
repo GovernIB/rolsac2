@@ -16,7 +16,7 @@ import java.util.Map;
  * <p>
  * Uso:
  * javac Rolsac2RestClient.java
- * java Rolsac2RestClient http://localhost:8080/mi-app/api/v1
+ * java Rolsac2RestClient http://localhost:8080/rolsac2api/externa/services/v1/serveis
  * <p>
  * BASE_URL debe ser el prefijo anterior a /procediments/ y /serveis/.
  */
@@ -32,21 +32,17 @@ public class Rolsac2RestClient {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.err.println("Uso: java Rolsac2RestClient <BASE_URL>");
-            System.err.println("Ejemplo: java Rolsac2RestClient http://localhost:8080/rolsac2/api/v1");
-            System.exit(2);
-        }
-        Rolsac2RestClient client = new Rolsac2RestClient(args[0]);
+        String url = "http://localhost:8080/rolsac2api/externa/services/v1";
+        Rolsac2RestClient client = new Rolsac2RestClient(url);
 
         Map<String, String> proc = new LinkedHashMap<>();
         proc.put("idioma", "ca");
         proc.put("entitat", "1");
         proc.put("page-size", "5");
         proc.put("page", "0");
-        proc.put("ordenCampo", "codi");
-        proc.put("ordenAscendente", "asc");
-        client.get("/procediments/", proc);
+        // proc.put("ordenCampo", "codi");
+        // proc.put("ordenAscendente", "asc");
+        client.get("/procedimientos/", proc);
 
         Map<String, String> serveis = new LinkedHashMap<>();
         serveis.put("idioma", "ca");

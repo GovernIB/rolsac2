@@ -309,19 +309,23 @@ public class ProcedimientosResource {
         }
 
         if (iniciDataActualitzacio != null && !iniciDataActualitzacio.trim().isEmpty()) {
-            fg.setInicioFechaActualizacion(iniciDataActualitzacio.trim());
+            String fechaRepositorio = convertirFechaISO8601("iniciDataActualitzacio", iniciDataActualitzacio);
+            fg.setInicioFechaActualizacion(fechaRepositorio);
+            fg.setInicioFechaActualitzacion(fechaRepositorio);
         }
 
         if (fiDataActualitzacio != null && !fiDataActualitzacio.trim().isEmpty()) {
-            fg.setFinFechaActualizacion(fiDataActualitzacio.trim());
+            String fechaRepositorio = convertirFechaISO8601("fiDataActualitzacio", fiDataActualitzacio);
+            fg.setFinFechaActualizacion(fechaRepositorio);
+            fg.setFinFechaActualitzacion(fechaRepositorio);
         }
 
         if (iniciDataCaducitat != null && !iniciDataCaducitat.trim().isEmpty()) {
-            fg.setInicioFechaCaducidad(iniciDataCaducitat.trim());
+            fg.setInicioFechaCaducidad(convertirFechaISO8601("iniciDataCaducitat", iniciDataCaducitat));
         }
 
         if (fiDataCaducitat != null && !fiDataCaducitat.trim().isEmpty()) {
-            fg.setFinFechaCaducidad(fiDataCaducitat.trim());
+            fg.setFinFechaCaducidad(convertirFechaISO8601("fiDataCaducitat", fiDataCaducitat));
         }
 
         if (codiSIACodi != null && !codiSIACodi.trim().isEmpty()) {
@@ -380,13 +384,14 @@ public class ProcedimientosResource {
             fg.setTerminoResolucion(terminiResolucio.trim());
         }
 
-        if (pageSize != null && pageSize >= 0) {
-            fg.setPaginaTamanyo(pageSize);
+        final int paginaActual = page != null && page >= 0 ? page : 0;
+        final int tamanyoPaginaSolicitado = pageSize != null && pageSize >= 0 ? pageSize : 10;
+        fg.setPaginaTamanyo(tamanyoPaginaSolicitado);
+        final long paginationOffset = (long) paginaActual * tamanyoPaginaSolicitado;
+        if (paginationOffset > Integer.MAX_VALUE) {
+            throw new ValidationException("La combinació de page i page-size és massa gran.");
         }
-
-        if (page != null && page >= 0) {
-            fg.setPaginaFirst(page);
-        }
+        fg.setPaginaFirst((int) paginationOffset);
 
         if (ordenCampo != null && !ordenCampo.trim().isEmpty()) {
             fg.setOrderBy(ordenCampo.trim());
@@ -447,9 +452,17 @@ public class ProcedimientosResource {
 
 
         URI uriCompleta = uriInfo.getRequestUri();
-        String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, idiomaPorDefecto, start, uriCompleta, apiMaxLimit,
+                paginaActual, tamanyoPaginaSolicitado), MediaType.APPLICATION_JSON).build();
+    }
+
+    private String convertirFechaISO8601(final String nombreParametro, final String valor) {
+        if (!Utiles.isISO8601(valor)) {
+            throw new ValidationException(nombreParametro
+                    + " ha de tenir format ISO8601 amb offset, per exemple 2026-09-01T00:00:00+02:00.");
+        }
+        return Utiles.iso8601ToRepositoryDate(valor);
     }
 
     private void checkDebug() {
@@ -464,7 +477,9 @@ public class ProcedimientosResource {
     }
 
 
-    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto, final Instant start, String url, Integer apiMaxLimit) {
+    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
+                                       final Instant start, final URI requestUri, final Integer apiMaxLimit,
+                                       final int paginaActual, final int tamanyoPaginaSolicitado) {
         if (debugActivo) LOG.error(" getRespuesta: filtro: {}", filtro);
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
         if (debugActivo) LOG.error(" getRespuesta: resultadoBusqueda: {}", resultadoBusqueda);
@@ -490,9 +505,9 @@ public class ProcedimientosResource {
         return new RespuestaBase(
                 total,
                 lista.size(),
-                filtro.getPaginaTamanyo(),
-                filtro.getPaginaFirst(),
-                url,
+                tamanyoPaginaSolicitado,
+                paginaActual,
+                requestUri,
                 lista,
                 tiempoMiliSegundos);
     }

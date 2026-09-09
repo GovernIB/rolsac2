@@ -20,7 +20,7 @@ public class MapeadorExcepcionesGenericas implements ExceptionMapper<Exception> 
 
         int status = getHttpStatus(ex);
         String mensaje = StringUtils.isEmpty(ex.getMessage()) ? Response.Status.fromStatusCode(status).getReasonPhrase() : ex.getMessage();
-        RespuestaError respuesta = new RespuestaError(status + "", mensaje, null);
+        RespuestaError respuesta = new RespuestaError(status + "", mensaje, 0L);
         LOG.error("", ex);
         return Response.status(status).entity(respuesta).type(MediaType.APPLICATION_JSON).build();
     }
