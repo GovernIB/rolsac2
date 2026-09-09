@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ImplementaciÃ³n del repositorio de Personal.
+ * ImplementaciÃƒÂ³n del repositorio de Personal.
  *
  * @author Indra
  */
@@ -1937,8 +1937,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     /**
-     * Convierte los trÃ¡mites directamente desde la relaciÃ³n de la entidad JProcedimientoWorkflow,
-     * evitando una query adicional. El resultado es idÃ©ntico a getTramitesByWF.
+     * Convierte los trÃƒÂ¡mites directamente desde la relaciÃƒÂ³n de la entidad JProcedimientoWorkflow,
+     * evitando una query adicional. El resultado es idÃƒÂ©ntico a getTramitesByWF.
      */
     private List<ProcedimientoTramiteDTO> convertTramitesFromEntity(JProcedimientoWorkflow jprocWF) {
         List<ProcedimientoTramiteDTO> tramites = new ArrayList<>();
@@ -2098,7 +2098,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         "WHERE p.codigo = :codigo"
         );
 
-        query.setParameter("mensajes", mensajes); // <-- aquÃ­ pasa el CLOB correctamente
+        query.setParameter("mensajes", mensajes); // <-- aquÃƒÂ­ pasa el CLOB correctamente
         query.setParameter("pendienteGestor", pendienteMensajesGestor);
         query.setParameter("pendienteSupervisor", pendienteMensajeSupervisor);
         query.setParameter("codigo", codigo);
@@ -2139,13 +2139,13 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     private void mergearDocumentos(Long codigoWF, Long codigoTramite, Long idListaDocumentos, List<ProcedimientoDocumentoDTO> docs, String ruta) {
         //Mantenimiento de ficheros
-        //Se recuperan los que habÃ­an y se comparan con los que se pasan.
+        //Se recuperan los que habÃƒÂ­an y se comparan con los que se pasan.
 
-        ///////////// COMPARACION CON LOS QUE HABÃAN EN BBDD RESPECTO A LOS QUE SE PASAN
-        ////// Los que ya habÃ­an en BBDD y ya no estÃ¡n en los que se pasan, se marcan para borrar.
-        ////// Los que ya habÃ­an en BBDD Y ya estÃ¡n pero cambian fichero, se actualizan y se marcan el fichero como para borrar.
+        ///////////// COMPARACION CON LOS QUE HABÃƒÂAN EN BBDD RESPECTO A LOS QUE SE PASAN
+        ////// Los que ya habÃƒÂ­an en BBDD y ya no estÃƒÂ¡n en los que se pasan, se marcan para borrar.
+        ////// Los que ya habÃƒÂ­an en BBDD Y ya estÃƒÂ¡n pero cambian fichero, se actualizan y se marcan el fichero como para borrar.
 
-        ///////////// COMPARACION CON LOS QUE SE PASAN RESPECTO A LOS QUE HABÃAN EN BBDD
+        ///////////// COMPARACION CON LOS QUE SE PASAN RESPECTO A LOS QUE HABÃƒÂAN EN BBDD
         ///// Con los que se pasan, si no existen, se crean.
         entityManager.flush();
         List<JProcedimientoDocumento> jlista = getDocumentos(idListaDocumentos);
@@ -2220,25 +2220,25 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     /**
-     * MÃ©todo que actualiza todo respecto a la traduccion.
+     * MÃƒÂ©todo que actualiza todo respecto a la traduccion.
      */
     private void actualizarTraduccionDocumento(JProcedimientoDocumento jprocDoc, ProcedimientoDocumentoDTO elemento, Long idProcWF, String ruta) {
 
-        //Primero actualizamos los que estÃ©n
+        //Primero actualizamos los que estÃƒÂ©n
         List<String> idiomas = new ArrayList<>();
         for (JProcedimientoDocumentoTraduccion traduccion : jprocDoc.getTraducciones()) {
             idiomas.add(traduccion.getIdioma());
             traduccion.setDocumento(jprocDoc);
             Long fichero = elemento.getDocumentos().getTraduccion(traduccion.getIdioma()) == null ? null : elemento.getDocumentos().getTraduccion(traduccion.getIdioma()).getCodigo();
-            //CASO 1. Si antes habÃ­a y ahora no, se ha borrado (hay que marcar para borrar)
+            //CASO 1. Si antes habÃƒÂ­a y ahora no, se ha borrado (hay que marcar para borrar)
             if (fichero == null && traduccion.getFichero() != null) {
                 ficheroExternoRepository.deleteFicheroExterno(traduccion.getFichero());
             }
-            //CASO 2. Se ha aÃ±adido un fichero, hay que persistirlo
+            //CASO 2. Se ha aÃƒÂ±adido un fichero, hay que persistirlo
             if (fichero != null && traduccion.getFichero() == null) {
                 ficheroExternoRepository.persistFicheroExterno(fichero, idProcWF, ruta);
             }
-            //CASO 3. Se ha cambiado el fichero antiguo por uno nuevo, entonces uno se marca para borrar y otro para aÃ±adir.
+            //CASO 3. Se ha cambiado el fichero antiguo por uno nuevo, entonces uno se marca para borrar y otro para aÃƒÂ±adir.
             if (fichero != null && traduccion.getFichero() != null && fichero.compareTo(traduccion.getFichero()) != 0) {
                 ficheroExternoRepository.deleteFicheroExterno(traduccion.getFichero());
                 ficheroExternoRepository.persistFicheroExterno(fichero, idProcWF, ruta);
@@ -2271,7 +2271,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     /**
-     * MÃ©todo complejo ya que hay que comprobar multiples casos:
+     * MÃƒÂ©todo complejo ya que hay que comprobar multiples casos:
      * Traduccion tiene fichero:
      * <ul>
      *     <li>Traduccion tiene fichero</li>
@@ -2288,18 +2288,18 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             ficheroExternoRepository.persistFicheroExterno(ficheroDTO.getCodigo(), idProcWF, ruta);
         }
 
-        //Los Ãºnicos casos raros es si ya existÃ­a un jfichero
+        //Los ÃƒÂºnicos casos raros es si ya existÃƒÂ­a un jfichero
         if (traduccion.getFichero() != null) {
             if (ficheroDTO == null) {
-                //Caso 1. ExistÃ­a fichero pero ahora no existe, entonces hay que borrar
+                //Caso 1. ExistÃƒÂ­a fichero pero ahora no existe, entonces hay que borrar
                 ficheroExternoRepository.deleteFicheroExterno(traduccion.getFichero());
             }
 
             if (ficheroDTO != null && ficheroDTO.getCodigo().compareTo(traduccion.getFichero()) != 0) {
-                //Caso 2. Ha cambiado el fichero, hay que borrar el que habÃ­a
+                //Caso 2. Ha cambiado el fichero, hay que borrar el que habÃƒÂ­a
                 ficheroExternoRepository.deleteFicheroExterno(traduccion.getFichero());
 
-                //Como ha cambiado el fichero, hay que cambiarlo en la traducciÃ³n
+                //Como ha cambiado el fichero, hay que cambiarlo en la traducciÃƒÂ³n
                 traduccion.setFichero(ficheroDTO.getCodigo());
                 entityManager.merge(traduccion);
             }
@@ -2322,7 +2322,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     /**
      * Convierte una lista de JProcedimientoTasa directamente a DTOs sin hacer query adicional.
-     * Resultado idÃ©ntico a getTasasByListaTasas.
+     * Resultado idÃƒÂ©ntico a getTasasByListaTasas.
      */
     private List<TasaProcedimientoDTO> convertTasasFromEntity(List<JProcedimientoTasa> jlista) {
         List<TasaProcedimientoDTO> tasas = new ArrayList<>();
@@ -2381,7 +2381,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         List<JProcedimientoTasa> jlista = getTasas(codigoTramite);
         JProcedimientoTramite jtramite = entityManager.find(JProcedimientoTramite.class, codigoTramite);
 
-        // Borrar las que ya no estÃ¡n
+        // Borrar las que ya no estÃƒÂ¡n
         List<JProcedimientoTasa> borrar = new ArrayList<>();
         if (jlista != null && !jlista.isEmpty()) {
             for (JProcedimientoTasa jelemento : jlista) {
@@ -2437,7 +2437,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     private void actualizarTraduccionesTasa(JProcedimientoTasa jtasa, TasaProcedimientoDTO dto, Long codigoWF) {
-        // Primero actualizamos los que estÃ©n
+        // Primero actualizamos los que estÃƒÂ©n
         List<String> idiomas = new ArrayList<>();
         if (jtasa.getTraducciones() != null) {
             for (JProcedimientoTasaTraduccion trad : jtasa.getTraducciones()) {
@@ -2464,7 +2464,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             trad.setFormaPago(formaPago != null ? formaPago : null);
             trad.setUrl(dto.getUrl() != null ? dto.getUrl().getTraduccion(idioma) : null);
             if ((identi == null || identi.isEmpty()) && (trad.getDescripcion() == null || trad.getDescripcion().isEmpty()) && (trad.getFormaPago() == null || trad.getFormaPago().isEmpty()) && (trad.getUrl() == null || trad.getUrl().isEmpty())) {
-                continue; // Si no hay datos para esta traducciÃ³n, no la aÃ±adimos
+                continue; // Si no hay datos para esta traducciÃƒÂ³n, no la aÃƒÂ±adimos
             }
             jtasa.getTraducciones().add(trad);
         }
@@ -2501,7 +2501,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (!jlista.isEmpty()) {
             jtasa = jlista.get(0);
             if (jlista.size() > 1) {
-                // Si hay mÃ¡s de una por algÃºn error previo, borramos el resto
+                // Si hay mÃƒÂ¡s de una por algÃƒÂºn error previo, borramos el resto
                 for (int i = 1; i < jlista.size(); i++) {
                     entityManager.remove(jlista.get(i));
                 }
@@ -2590,7 +2590,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         );
         deleteQueryPO.setParameter("codigoProcWF", codigoProc);
         int filasAfectadasPO = deleteQueryPO.executeUpdate();
-        LOG.debug("PÃºblicos objetivo eliminados: {}", filasAfectadasPO);
+        LOG.debug("PÃƒÂºblicos objetivo eliminados: {}", filasAfectadasPO);
 
         //BORRAMOS todos los categorias PDU asociadas
         Query deleteQuery = entityManager.createQuery(
@@ -3224,7 +3224,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             ambosWf = true;
         }
 
-        // Hacemos esto para que la consulta sÃ³lo devuelva procedimientos que tengan workflow asociado
+        // Hacemos esto para que la consulta sÃƒÂ³lo devuelva procedimientos que tengan workflow asociado
         if (filtro.getEstadoWF() != null && filtro.getEstadoWF().equals("T")) {
             sql.append(" AND (wf is not null or wf2 is not null) ");
         }
@@ -3346,7 +3346,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfTipo JOIN wfTipo.tipoProcedimiento tipo JOIN tipo.descripcion tipoTrad WHERE wfTipo.codigo = WF.codigo AND tipoTrad.idioma = :idioma AND LOWER(TRIM(tipoTrad.descripcion)) LIKE :nombreTipoProcedimiento) ");
         }
 
-        if (filtro.isRellenoServicioResponsable() && ambosWf){
+        if (filtro.isRellenoServicioResponsable() && ambosWf) {
             sql.append(" AND (LOWER(TRIM(t.uaResponsable)) LIKE :servicioResponsable OR LOWER(TRIM(t2.uaResponsable)) LIKE :servicioResponsable) ");
         } else if (filtro.isRellenoServicioResponsable()) {
             sql.append(" AND (LOWER(TRIM(t.uaResponsable)) LIKE :servicioResponsable) ");
@@ -3732,7 +3732,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
         if (filtro.isRellenoPlataformaTramitacionCodigo()) {
-            if (filtro.getEsProcedimiento()) {
+            if ("P".equals(filtro.getTipo())) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo) AND plataforma.codigo = :plataformaTramitacionCodigo) ");
                 } else {
@@ -3747,7 +3747,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
         if (filtro.isRellenoPlataformaTramitacionNombre()) {
-            if (filtro.getEsProcedimiento()) {
+            if ("P".equals(filtro.getTipo())) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion tipo inner join tipo.codPlatTramitacion plataforma inner join plataforma.traducciones ptTrad where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo) AND ptTrad.idioma = :idioma AND LOWER(TRIM(ptTrad.descripcion)) LIKE :plataformaTramitacionNombre) ");
                 } else {
@@ -3762,7 +3762,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             }
         }
         if (filtro.isRellenoIdPlataforma()) {
-            if (filtro.getEsProcedimiento()) {
+            if ("P".equals(filtro.getTipo())) {
                 if (ambosWf) {
                     sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion as tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo  ) AND ( plataforma.identificador = :idPlataforma) ) ");
                 } else {
@@ -3970,8 +3970,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" order by ").append(getOrden(filtro.getOrderBy(), filtro.isAscendente(), ambosWf));
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
 
-            // Order de control. Como cuando se ordena por un campo los registros con el mismo valor no tienen garantizado el orden, se aÃ±ade
-            // un segundo criterio de orden, en este caso cÃ³digo para que el ordenamiento sea por completo determinÃ­stico
+            // Order de control. Como cuando se ordena por un campo los registros con el mismo valor no tienen garantizado el orden, se aÃƒÂ±ade
+            // un segundo criterio de orden, en este caso cÃƒÂ³digo para que el ordenamiento sea por completo determinÃƒÂ­stico
             if (!"codigo".equals(filtro.getOrderBy())) {
                 sql.append(", j.codigo").append(filtro.isAscendente() ? " asc " : " desc ");
             }
@@ -4099,7 +4099,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             String nombreTipoProcedimiento = filtro.getNombreTipoProcedimiento().trim().toLowerCase().replaceAll("\\s+", "%");
             query.setParameter("nombreTipoProcedimiento", "%" + nombreTipoProcedimiento + "%");
         }
-        if (filtro.isRellenoServicioResponsable()){
+        if (filtro.isRellenoServicioResponsable()) {
             String servicioResponsable = filtro.getServicioResponsable().trim().toLowerCase().replaceAll("\\s+", "%");
             query.setParameter("servicioResponsable", "%" + servicioResponsable + "%");
         }
@@ -4143,8 +4143,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             query.setParameter("estadoSIA", filtro.getEstadoSIA());
         }
         if (filtro.isRellenoEstado()
-            && !TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(filtro.getEstado())
-            && !TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString().equals(filtro.getEstado())) {
+                && !TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString().equals(filtro.getEstado())
+                && !TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString().equals(filtro.getEstado())) {
             query.setParameter("estado", filtro.getEstado());
         }
         if (filtro.isRellenoEstados()) {
@@ -4314,8 +4314,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
     private String getOrden(String order, boolean ascendente, boolean ambosWf) {
         // Se puede hacer un switch/if pero en este caso, con j.+order sobra
-
-
         if ("nombre".equals(order)) {
             return "t.nombre " + (ascendente ? " asc " : "desc ") + " , t2.nombre ";
         }
@@ -4325,9 +4323,17 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             } else {
                 return "WF.fechaPublicacion";
             }
-
         }
-
+        if ("fechaCaducidad".equals(order) || "dataCaducitat".equals(order)) {
+            if (ambosWf) {
+                return "CASE WHEN WF.fechaCaducidad is null THEN WF2.fechaCaducidad ELSE WF.fechaCaducidad END";
+            } else {
+                return "WF.fechaCaducidad";
+            }
+        }
+        if ("siaFecha".equals(order) || "dataSIA".equals(order)) {
+            return "j.siaFecha";
+        }
         if ("tipoProcedimiento".equals(order)) {
             if (ambosWf) {
                 return "CASE WHEN tipoPro1 is null THEN tipoPro2.descripcion ELSE tipoPro1.descripcion END";
@@ -4335,7 +4341,6 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 return "tipoPro1.descripcion";
             }
         }
-
         if ("comun".equals(order)) {
             if (ambosWf) {
                 return "CASE WHEN WF.comun is null THEN WF2.comun ELSE WF.comun END";
@@ -5419,7 +5424,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
         try {
             if (tramiteElectronico.getTramiteId() != null) {
-                // Buscamos si ya existe un tipo de tramitaciÃ³n con el mismo tramiteId y entidad
+                // Buscamos si ya existe un tipo de tramitaciÃƒÂ³n con el mismo tramiteId y entidad
                 if (tramiteElectronico.getEntidad() != null && tramiteElectronico.getEntidad().getCodigo() != null) {
                     Query q = entityManager.createQuery("SELECT t FROM JTipoTramitacion t WHERE t.tramiteId = :tid AND t.entidad.codigo = :enti");
                     q.setParameter("tid", tramiteElectronico.getTramiteId());
@@ -5429,7 +5434,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                         return res.get(0);
                     }
                 } else {
-                    // Si no tiene entidad, buscamos un tipo de tramitaciÃ³n con el mismo tramiteId y entidad nula
+                    // Si no tiene entidad, buscamos un tipo de tramitaciÃƒÂ³n con el mismo tramiteId y entidad nula
                     Query q = entityManager.createQuery("SELECT t FROM JTipoTramitacion t WHERE t.tramiteId = :tid AND t.entidad IS NULL");
                     q.setParameter("tid", tramiteElectronico.getTramiteId());
                     List<JTipoTramitacion> res = q.getResultList();
@@ -5439,7 +5444,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                 }
             }
         } catch (Exception e) {
-            LOG.debug("Error buscando tipo tramitacion existente, se persistirÃ¡ uno nuevo", e);
+            LOG.debug("Error buscando tipo tramitacion existente, se persistirÃƒÂ¡ uno nuevo", e);
         }
 
         entityManager.persist(tramiteElectronico);
@@ -5494,6 +5499,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
 }
+
+
+
 
 
 

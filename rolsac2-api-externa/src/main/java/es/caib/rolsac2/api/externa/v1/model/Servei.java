@@ -86,10 +86,10 @@ public class Servei implements Serializable {
     private Long plataformaTramitCodi;
     @Schema(description = "Nom de la plataforma de tramitació.")
     private String plataformaTramitNom;
-    @Schema(description = "Codi de la plantilla de tramitació.")
+    /*@Schema(description = "Codi de la plantilla de tramitació.")
     private Long plantillaTramitCodi;
     @Schema(description = "Nom de la plantilla de tramitació.")
-    private String plantillaTramitNom;
+    private String plantillaTramitNom;*/
     @Schema(description = "Públics objectiu, aplanats a codi i nom.")
     private List<PublicObjectiu> publicsObjectius;
 
@@ -345,7 +345,7 @@ public class Servei implements Serializable {
     public void setPlataformaTramitNom(final String plataformaTramitNom) {
         this.plataformaTramitNom = plataformaTramitNom;
     }
-
+/*
     public Long getPlantillaTramitCodi() {
         return plantillaTramitCodi;
     }
@@ -360,7 +360,7 @@ public class Servei implements Serializable {
 
     public void setPlantillaTramitNom(final String plantillaTramitNom) {
         this.plantillaTramitNom = plantillaTramitNom;
-    }
+    }*/
 
     public List<PublicObjectiu> getPublicsObjectius() {
         return publicsObjectius;
@@ -417,10 +417,10 @@ public class Servei implements Serializable {
                 }
             }
             final TipoTramitacionDTO plantilla = nodo.getPlantillaSel();
-            if (plantilla != null) {
-                this.plantillaTramitCodi = plantilla.getCodigo();
-                this.plantillaTramitNom = getTraduccion(plantilla.getDescripcion(), idioma, idiomaPorDefecto);
-            }
+            //if (plantilla != null) {
+            // this.plantillaTramitCodi = plantilla.getCodigo();
+            // this.plantillaTramitNom = getTraduccion(plantilla.getDescripcion(), idioma, idiomaPorDefecto);
+            //}
             this.tramitPresencial = nodo.isTramitPresencial();
             this.tramitElectronica = nodo.isTramitElectronica();
             this.tramitTelefonica = nodo.isTramitTelefonica();

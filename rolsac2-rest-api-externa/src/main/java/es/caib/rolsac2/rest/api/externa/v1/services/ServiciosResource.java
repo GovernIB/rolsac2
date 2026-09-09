@@ -289,7 +289,7 @@ public class ServiciosResource {
             case "codiSIA":
                 return "codigoSIA";
             case "dataSIA":
-                return "fechaSIA";
+                return "siaFecha";
             default:
                 return null;
         }
