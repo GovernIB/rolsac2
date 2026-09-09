@@ -270,8 +270,9 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                            aria-label="#{labels['viewServicios.codigoServ']}"/>
                             <p:inputText id="txtCodigoProc" value="#{viewServicios.filtro.codigoProc}"
                                          styleClass="w100" maxlength="10"
-                                         aria-label="#{labels['viewServicios.codigoServ']}">
-                                <p:keyFilter mask="num"/>
+                                         aria-label="#{labels['viewServicios.codigoServ']}"
+                                         onpaste="if (!/^[0-9]+$/.test((event.clipboardData || window.clipboardData).getData('text'))) { event.preventDefault(); }">
+                                <p:keyFilter mask="num" preventPaste="false"/>
                             </p:inputText>
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
@@ -279,8 +280,10 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                            aria-label="#{labels['viewServicios.codigoSIA']}"/>
                             <p:inputText id="txtCodigoSIA" value="#{viewServicios.filtro.codigoSIA}"
                                          styleClass="w100" maxlength="10"
-                                         aria-label="#{labels['viewServicios.codigoSIA']}">
-                                <p:keyFilter mask="num"/>
+                                         aria-label="#{labels['viewServicios.codigoSIA']}"
+                                         onpaste="if (!/^[0-9]+$/.test((event.clipboardData || window.clipboardData).getData('text'))) { event.preventDefault(); }">
+
+                                <p:keyFilter mask="num" preventPaste="false"/>
                             </p:inputText>
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">

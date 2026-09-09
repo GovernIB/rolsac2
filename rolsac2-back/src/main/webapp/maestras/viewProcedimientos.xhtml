@@ -268,14 +268,14 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
             <h:panelGroup id="panelFiltrosBasicos" layout="block">
                 <div class="filtroProcedimientosBasico">
                     <div class="row filtroBasicoGrid">
-                        <!--div   -->
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
                             <p:outputLabel value="#{labels['viewProcedimientos.codigoProc']}:" for="txtCodigoProc"
                                            aria-label="#{labels['viewProcedimientos.codigoProc']}"/>
                             <p:inputText id="txtCodigoProc" value="#{viewProcedimientos.filtro.codigoProc}"
                                          styleClass="w100" maxlength="10"
-                                         aria-label="#{labels['viewProcedimientos.codigoProc']}">
-                                <p:keyFilter mask="num"/>
+                                         aria-label="#{labels['viewProcedimientos.codigoProc']}"
+                                         onpaste="if (!/^[0-9]+$/.test((event.clipboardData || window.clipboardData).getData('text'))) { event.preventDefault(); }">
+                                <p:keyFilter mask="num" preventPaste="false"/>
                             </p:inputText>
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
@@ -283,8 +283,9 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                            aria-label="#{labels['viewProcedimientos.codigoSIA']}"/>
                             <p:inputText id="txtCodigoSIA" value="#{viewProcedimientos.filtro.codigoSIA}"
                                          styleClass="w100" maxlength="10"
-                                         aria-label="#{labels['viewProcedimientos.codigoSIA']}">
-                                <p:keyFilter mask="num"/>
+                                         aria-label="#{labels['viewProcedimientos.codigoSIA']}"
+                                         onpaste="if (!/^[0-9]+$/.test((event.clipboardData || window.clipboardData).getData('text'))) { event.preventDefault(); }">
+                                <p:keyFilter mask="num" preventPaste="false"/>
                             </p:inputText>
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-4 ui-lg-2 align-content-center">
