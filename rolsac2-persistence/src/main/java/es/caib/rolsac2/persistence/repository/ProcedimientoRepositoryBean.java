@@ -3334,16 +3334,46 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             sql.append(" AND (WF.tipoProcedimiento.codigo = :tipoProcedimiento) ");
         }
 
+        if (filtro.isRellenoCodigoTipoProcedimiento() && ambosWf) {
+            sql.append(" AND (WF.tipoProcedimiento.codigo = :codigoTipoProcedimiento OR WF2.tipoProcedimiento.codigo = :codigoTipoProcedimiento) ");
+        } else if (filtro.isRellenoCodigoTipoProcedimiento()) {
+            sql.append(" AND WF.tipoProcedimiento.codigo = :codigoTipoProcedimiento ");
+        }
+
+        if (filtro.isRellenoNombreTipoProcedimiento() && ambosWf) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfTipo1 JOIN wfTipo1.tipoProcedimiento tipo1 JOIN tipo1.descripcion tipoTrad1 WHERE wfTipo1.codigo = WF.codigo AND tipoTrad1.idioma = :idioma AND LOWER(TRIM(tipoTrad1.descripcion)) LIKE :nombreTipoProcedimiento) OR EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfTipo2 JOIN wfTipo2.tipoProcedimiento tipo2 JOIN tipo2.descripcion tipoTrad2 WHERE wfTipo2.codigo = WF2.codigo AND tipoTrad2.idioma = :idioma AND LOWER(TRIM(tipoTrad2.descripcion)) LIKE :nombreTipoProcedimiento)) ");
+        } else if (filtro.isRellenoNombreTipoProcedimiento()) {
+            sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfTipo JOIN wfTipo.tipoProcedimiento tipo JOIN tipo.descripcion tipoTrad WHERE wfTipo.codigo = WF.codigo AND tipoTrad.idioma = :idioma AND LOWER(TRIM(tipoTrad.descripcion)) LIKE :nombreTipoProcedimiento) ");
+        }
+
         if (filtro.isRellenoServicioResponsable() && ambosWf){
             sql.append(" AND (LOWER(TRIM(t.uaResponsable)) LIKE :servicioResponsable OR LOWER(TRIM(t2.uaResponsable)) LIKE :servicioResponsable) ");
         } else if (filtro.isRellenoServicioResponsable()) {
             sql.append(" AND (LOWER(TRIM(t.uaResponsable)) LIKE :servicioResponsable) ");
         }
 
-        if (filtro.isRellenoUaInstructorCodigo() && ambosWf) {
+        if ((filtro.isRellenoUaInstructorCodigo() || filtro.isRellenoCodigoUAInstructora()) && ambosWf) {
             sql.append(" AND (WF.uaInstructor.codigo = :uaInstructorCodigo OR WF2.uaInstructor.codigo = :uaInstructorCodigo) ");
-        } else if (filtro.isRellenoUaInstructorCodigo()) {
+        } else if (filtro.isRellenoUaInstructorCodigo() || filtro.isRellenoCodigoUAInstructora()) {
             sql.append(" AND WF.uaInstructor.codigo = :uaInstructorCodigo ");
+        }
+
+        if (filtro.isRellenoNombreUAInstructora() && ambosWf) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfIns1 JOIN wfIns1.uaInstructor ui1 JOIN ui1.traducciones uiTrad1 WHERE wfIns1.codigo = WF.codigo AND uiTrad1.idioma = :idioma AND LOWER(TRIM(uiTrad1.nombre)) LIKE :nombreUAInstructora) OR EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfIns2 JOIN wfIns2.uaInstructor ui2 JOIN ui2.traducciones uiTrad2 WHERE wfIns2.codigo = WF2.codigo AND uiTrad2.idioma = :idioma AND LOWER(TRIM(uiTrad2.nombre)) LIKE :nombreUAInstructora)) ");
+        } else if (filtro.isRellenoNombreUAInstructora()) {
+            sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfIns JOIN wfIns.uaInstructor ui JOIN ui.traducciones uiTrad WHERE wfIns.codigo = WF.codigo AND uiTrad.idioma = :idioma AND LOWER(TRIM(uiTrad.nombre)) LIKE :nombreUAInstructora) ");
+        }
+
+        if (filtro.isRellenoCodigoUACompetente() && ambosWf) {
+            sql.append(" AND (WF.uaCompetente.codigo = :codigoUACompetente OR WF2.uaCompetente.codigo = :codigoUACompetente) ");
+        } else if (filtro.isRellenoCodigoUACompetente()) {
+            sql.append(" AND WF.uaCompetente.codigo = :codigoUACompetente ");
+        }
+
+        if (filtro.isRellenoNombreUACompetente() && ambosWf) {
+            sql.append(" AND (EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfComp1 JOIN wfComp1.uaCompetente uc1 JOIN uc1.traducciones ucTrad1 WHERE wfComp1.codigo = WF.codigo AND ucTrad1.idioma = :idioma AND LOWER(TRIM(ucTrad1.nombre)) LIKE :nombreUACompetente) OR EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfComp2 JOIN wfComp2.uaCompetente uc2 JOIN uc2.traducciones ucTrad2 WHERE wfComp2.codigo = WF2.codigo AND ucTrad2.idioma = :idioma AND LOWER(TRIM(ucTrad2.nombre)) LIKE :nombreUACompetente)) ");
+        } else if (filtro.isRellenoNombreUACompetente()) {
+            sql.append(" AND EXISTS (SELECT 1 FROM JProcedimientoWorkflow wfComp JOIN wfComp.uaCompetente uc JOIN uc.traducciones ucTrad WHERE wfComp.codigo = WF.codigo AND ucTrad.idioma = :idioma AND LOWER(TRIM(ucTrad.nombre)) LIKE :nombreUACompetente) ");
         }
 
         if (filtro.isRellenoSilencioAdministrativo() && ambosWf) {
@@ -4002,12 +4032,31 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoTipoProcedimiento()) {
             query.setParameter("tipoProcedimiento", filtro.getTipoProcedimiento().getCodigo());
         }
+        if (filtro.isRellenoCodigoTipoProcedimiento()) {
+            query.setParameter("codigoTipoProcedimiento", filtro.getCodigoTipoProcedimiento());
+        }
+        if (filtro.isRellenoNombreTipoProcedimiento()) {
+            String nombreTipoProcedimiento = filtro.getNombreTipoProcedimiento().trim().toLowerCase().replaceAll("\\s+", "%");
+            query.setParameter("nombreTipoProcedimiento", "%" + nombreTipoProcedimiento + "%");
+        }
         if (filtro.isRellenoServicioResponsable()){
             String servicioResponsable = filtro.getServicioResponsable().trim().toLowerCase().replaceAll("\\s+", "%");
             query.setParameter("servicioResponsable", "%" + servicioResponsable + "%");
         }
-        if (filtro.isRellenoUaInstructorCodigo()) {
-            query.setParameter("uaInstructorCodigo", filtro.getUaInstructorCodigo());
+        if (filtro.isRellenoUaInstructorCodigo() || filtro.isRellenoCodigoUAInstructora()) {
+            Long uaInstructorCodigo = filtro.isRellenoUaInstructorCodigo() ? filtro.getUaInstructorCodigo() : filtro.getCodigoUAInstructora();
+            query.setParameter("uaInstructorCodigo", uaInstructorCodigo);
+        }
+        if (filtro.isRellenoNombreUAInstructora()) {
+            String nombreUAInstructora = filtro.getNombreUAInstructora().trim().toLowerCase().replaceAll("\\s+", "%");
+            query.setParameter("nombreUAInstructora", "%" + nombreUAInstructora + "%");
+        }
+        if (filtro.isRellenoCodigoUACompetente()) {
+            query.setParameter("codigoUACompetente", filtro.getCodigoUACompetente());
+        }
+        if (filtro.isRellenoNombreUACompetente()) {
+            String nombreUACompetente = filtro.getNombreUACompetente().trim().toLowerCase().replaceAll("\\s+", "%");
+            query.setParameter("nombreUACompetente", "%" + nombreUACompetente + "%");
         }
         if (filtro.isRellenoSilencioAdministrativo()) {
             query.setParameter("tipoSilencio", filtro.getSilencioAdministrativo().getCodigo());

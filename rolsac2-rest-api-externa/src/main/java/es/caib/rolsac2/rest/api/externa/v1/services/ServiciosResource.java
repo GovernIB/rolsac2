@@ -96,12 +96,12 @@ public class ServiciosResource {
             @QueryParam("comu") final Boolean comu,
             @Parameter(description = "Estat general del servei.", name = "estat", in = ParameterIn.QUERY)
             @QueryParam("estat") final String estat,
-            @Parameter(description = "Indica si permet tramitació mitjançant apoderat.", name = "habilitatApoderat", in = ParameterIn.QUERY)
+            /*@Parameter(description = "Indica si permet tramitació mitjançant apoderat.", name = "habilitatApoderat", in = ParameterIn.QUERY)
             @QueryParam("habilitatApoderat") final Boolean habilitatApoderat,
             @Parameter(description = "Indica si permet tramitació mitjançant funcionari habilitat.", name = "habilitatFuncionari", in = ParameterIn.QUERY)
             @QueryParam("habilitatFuncionari") final Boolean habilitatFuncionari,
             @Parameter(description = "Termini de resolució.", name = "terminiResolucio", in = ParameterIn.QUERY)
-            @QueryParam("terminiResolucio") final String terminiResolucio,
+            @QueryParam("terminiResolucio") final String terminiResolucio,*/
             @Parameter(description = "Codi del tipus de tramitació.", name = "tipusTramitacioCodi", in = ParameterIn.QUERY)
             @QueryParam("tipusTramitacioCodi") final Long tipusTramitacioCodi,
             @Parameter(description = "Nom del tipus de tramitació.", name = "tipusTramitacioNom", in = ParameterIn.QUERY)
@@ -183,9 +183,9 @@ public class ServiciosResource {
         }
         if (comu != null) fg.setComun(comu ? "S" : "N");
         if (hasText(estat)) fg.setEstado(estat.trim());
-        if (habilitatApoderat != null) fg.setHabilitadoApoderado(habilitatApoderat);
-        if (habilitatFuncionari != null) fg.setHabilitadoFuncionario(habilitatFuncionari);
-        if (hasText(terminiResolucio)) fg.setTerminoResolucion(terminiResolucio.trim());
+        //if (habilitatApoderat != null) fg.setHabilitadoApoderado(habilitatApoderat);
+        //if (habilitatFuncionari != null) fg.setHabilitadoFuncionario(habilitatFuncionari);
+        //if (hasText(terminiResolucio)) fg.setTerminoResolucion(terminiResolucio.trim());
         if (tipusTramitacioCodi != null) fg.setTipoTramitacionCodigo(tipusTramitacioCodi);
         if (hasText(tipusTramitacioNom)) fg.setTipoTramitacionNombre(tipusTramitacioNom.trim());
         if (tramitPresencial != null) fg.setTramitacionPresencial(tramitPresencial);

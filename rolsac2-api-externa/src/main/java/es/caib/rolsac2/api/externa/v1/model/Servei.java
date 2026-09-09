@@ -1,8 +1,6 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import es.caib.rolsac2.service.model.Literal;
-import es.caib.rolsac2.service.model.ServicioDTO;
-import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
+import es.caib.rolsac2.service.model.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,10 +70,10 @@ public class Servei implements Serializable {
     private String publicat;
     @Schema(description = "Indica si el servei està actiu en LOPD.")
     private Boolean actiuLOPD;
-    @Schema(description = "Codi del tipus de tramitació.")
+    /*@Schema(description = "Codi del tipus de tramitació.")
     private Long tipusTramitacioCodi;
     @Schema(description = "Nom del tipus de tramitació.")
-    private String tipusTramitacioNom;
+    private String tipusTramitacioNom;*/
     @Schema(description = "Indica si la tramitació és presencial.")
     private Boolean tramitPresencial;
     @Schema(description = "Indica si la tramitació és electrònica.")
@@ -283,7 +281,7 @@ public class Servei implements Serializable {
     public void setActiuLOPD(final Boolean actiuLOPD) {
         this.actiuLOPD = actiuLOPD;
     }
-
+/*
     public Long getTipusTramitacioCodi() {
         return tipusTramitacioCodi;
     }
@@ -298,7 +296,7 @@ public class Servei implements Serializable {
 
     public void setTipusTramitacioNom(final String tipusTramitacioNom) {
         this.tipusTramitacioNom = tipusTramitacioNom;
-    }
+    }*/
 
     public Boolean getTramitPresencial() {
         return tramitPresencial;
@@ -373,14 +371,9 @@ public class Servei implements Serializable {
     }
 
     /**
-     * Construye la salida pública del servicio. Los getters específicos de
-     * servicio han cambiado entre versiones de ROLSAC2; para esos campos se
-     * usa acceso compatible por reflexión y así evitar acoplar el API externa
-     * a una única versión del DTO.
-     * <p>
+     * Construye la salida p?blica del servicio a partir del DTO interno.
      * Los datos de contacto (responsableEmail, responsableTelefono e
-     * incidenciasEmail) NO se exponen: el apartado general del PDF indica que
-     * procedimientos y servicios no incluirán datos de contacto.
+     * incidenciasEmail) NO se exponen.
      */
     public Servei(final ServicioDTO nodo, final String urlBase, final String idioma,
                   final boolean hateoasEnabled, final String idiomaPorDefecto) {
@@ -403,57 +396,36 @@ public class Servei implements Serializable {
             this.habilitatApoderat = nodo.isHabilitadoApoderado();
             this.habilitatFuncionari = toBooleanFlag(nodo.getHabilitadoFuncionario());
             this.terminiResolucio = getTraduccion(nodo.getTerminoResolucion(), idioma, idiomaPorDefecto);
-
             this.uaResponsableNom = getTraduccion(nodo.getUaResponsableLiteral(), idioma, idiomaPorDefecto);
-            this.uaResponsableCodi = longFromDirectOrNested(nodo,
-                    new String[]{"getUaResponsableCodigo", "getCodigoUaResponsable"},
-                    new String[]{"getUaResponsable", "getUnidadResponsable"});
+            this.uaResponsableCodi = null;
             if (nodo.getUaInstructor() != null) {
                 this.uaInstructorCodi = nodo.getUaInstructor().getCodigo();
                 this.uaInstructorNom = getDescripcionUA(nodo.getUaInstructor(), idioma, idiomaPorDefecto);
             }
-
-            this.intern = stringValue(invokeAny(nodo, "getInterno", "getIntern"));
-            this.publicat = stringValue(invokeAny(nodo, "getPublicado", "getPublicat"));
-            this.actiuLOPD = booleanValue(invokeAny(nodo, "getActivoLopd", "getActiuLOPD", "isActivoLopd", "isActiuLOPD"));
-
-            Object tipusTramitacio = invokeAny(nodo, "getTipoTramitacion", "getTipusTramitacio", "getTipoTramite");
-            this.tipusTramitacioCodi = firstLong(
-                    invokeAny(nodo, "getTipoTramitacionCodigo", "getTipusTramitacioCodi"),
-                    invokeAny(tipusTramitacio, "getCodigo", "getId"));
-            this.tipusTramitacioNom = firstText(idioma, idiomaPorDefecto,
-                    invokeAny(nodo, "getTipoTramitacionNombre", "getTipusTramitacioNom"),
-                    invokeAny(tipusTramitacio, "getDescripcion", "getNombre"));
-
-            this.tramitPresencial = booleanValue(invokeAny(nodo,
-                    "getTramitacionPresencial", "getTramitePresencial", "isTramitacionPresencial", "isTramitePresencial"));
-            this.tramitElectronica = booleanValue(invokeAny(nodo,
-                    "getTramitacionElectronica", "getTramiteElectronico", "isTramitacionElectronica", "isTramiteElectronico"));
-            this.tramitTelefonica = booleanValue(invokeAny(nodo,
-                    "getTramitacionTelefonica", "getTramiteTelefonico", "isTramitacionTelefonica", "isTramiteTelefonico"));
-            this.urlTramitacio = stringValue(invokeAny(nodo,
-                    "getUrlTramitacion", "getUrlTramitacio", "getUrlTramiteTelematico", "getEnlaceTramitacion"));
-
-            Object plataforma = invokeAny(nodo, "getPlataformaTramitacion", "getPlataforma", "getPlatTramitElectronica");
-            this.plataformaTramitCodi = firstLong(
-                    invokeAny(nodo, "getPlataformaTramitacionCodigo", "getPlataformaTramitCodi"),
-                    invokeAny(plataforma, "getCodigo", "getId"));
-            this.plataformaTramitNom = firstText(idioma, idiomaPorDefecto,
-                    invokeAny(nodo, "getPlataformaTramitacionNombre", "getPlataformaTramitNom"),
-                    invokeAny(plataforma, "getDescripcion", "getNombre"));
-
-            Object plantilla = invokeAny(nodo, "getPlantillaTramitacion", "getPlantilla", "getTipoTramitacionPlantilla");
-            this.plantillaTramitCodi = firstLong(
-                    invokeAny(nodo, "getPlantillaTramitacionCodigo", "getPlantillaTramitCodi"),
-                    invokeAny(plantilla, "getCodigo", "getId"));
-            this.plantillaTramitNom = firstText(idioma, idiomaPorDefecto,
-                    invokeAny(nodo, "getPlantillaTramitacionNombre", "getPlantillaTramitNom"),
-                    invokeAny(plantilla, "getDescripcion", "getNombre"));
-
-            this.publicsObjectius = mapPublicsObjectius(
-                    invokeAny(nodo, "getPublicoObjetivos", "getPublicsObjectius", "getPublicosObjetivo"),
-                    idioma, idiomaPorDefecto);
-            this.url = resolveSeuUrl(nodo, urlBase, this.codi);
+            this.intern = String.valueOf(nodo.isInterno());
+            this.publicat = String.valueOf(nodo.isPublicado());
+            this.actiuLOPD = nodo.isActivoLOPD();
+            final TipoTramitacionDTO tipusTramitacio = nodo.getTipoTramitacion();
+            if (tipusTramitacio != null) {
+                // this.tipusTramitacioCodi = tipusTramitacio.getCodigo();
+                // this.tipusTramitacioNom = getTraduccion(tipusTramitacio.getDescripcion(), idioma, idiomaPorDefecto);
+                this.urlTramitacio = tipusTramitacio.getUrlTramitacion();
+                final PlatTramitElectronicaDTO plataforma = tipusTramitacio.getCodPlatTramitacion();
+                if (plataforma != null) {
+                    this.plataformaTramitCodi = plataforma.getCodigo();
+                    this.plataformaTramitNom = getTraduccion(plataforma.getDescripcion(), idioma, idiomaPorDefecto);
+                }
+            }
+            final TipoTramitacionDTO plantilla = nodo.getPlantillaSel();
+            if (plantilla != null) {
+                this.plantillaTramitCodi = plantilla.getCodigo();
+                this.plantillaTramitNom = getTraduccion(plantilla.getDescripcion(), idioma, idiomaPorDefecto);
+            }
+            this.tramitPresencial = nodo.isTramitPresencial();
+            this.tramitElectronica = nodo.isTramitElectronica();
+            this.tramitTelefonica = nodo.isTramitTelefonica();
+            this.publicsObjectius = mapPublicsObjectius(nodo.getPublicosObjetivo(), idioma, idiomaPorDefecto);
+            this.url = resolveSeuUrl(urlBase, this.codi);
         } catch (Exception e) {
             LOG.error("Error generando servei {}", this.codi, e);
         }
@@ -481,92 +453,21 @@ public class Servei implements Serializable {
         return "S".equalsIgnoreCase(value) || "1".equals(value) || "true".equalsIgnoreCase(value);
     }
 
-    private Object invokeAny(final Object target, final String... getters) {
-        if (target == null || getters == null) return null;
-        for (String getter : getters) {
-            try {
-                java.lang.reflect.Method method = target.getClass().getMethod(getter);
-                return method.invoke(target);
-            } catch (ReflectiveOperationException ignored) {
-                // siguiente getter compatible
-            }
-        }
-        return null;
-    }
-
-    private Long longFromDirectOrNested(final Object target, final String[] directGetters, final String[] nestedGetters) {
-        Long direct = longValue(invokeAny(target, directGetters));
-        if (direct != null) return direct;
-        Object nested = invokeAny(target, nestedGetters);
-        return longValue(invokeAny(nested, "getCodigo", "getId"));
-    }
-
-    private Long firstLong(final Object... values) {
-        for (Object value : values) {
-            Long parsed = longValue(value);
-            if (parsed != null) return parsed;
-        }
-        return null;
-    }
-
-    private Long longValue(final Object value) {
-        if (value == null) return null;
-        if (value instanceof Number) return ((Number) value).longValue();
-        try {
-            return Long.valueOf(String.valueOf(value));
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    private Boolean booleanValue(final Object value) {
-        if (value == null) return null;
-        if (value instanceof Boolean) return (Boolean) value;
-        if (value instanceof Number) return ((Number) value).intValue() != 0;
-        String text = String.valueOf(value);
-        return "S".equalsIgnoreCase(text) || "1".equals(text) || "true".equalsIgnoreCase(text);
-    }
-
-    private String stringValue(final Object value) {
-        if (value == null) return null;
-        String text = String.valueOf(value).trim();
-        return text.isEmpty() ? null : text;
-    }
-
-    private String firstText(final String idioma, final String idiomaPorDefecto, final Object... values) {
-        for (Object value : values) {
-            String text = textValue(value, idioma, idiomaPorDefecto);
-            if (text != null && !text.trim().isEmpty()) return text;
-        }
-        return null;
-    }
-
-    private String textValue(final Object value, final String idioma, final String idiomaPorDefecto) {
-        if (value == null) return null;
-        if (value instanceof Literal) return getTraduccion((Literal) value, idioma, idiomaPorDefecto);
-        Object nombre = invokeAny(value, "getDescripcion", "getNombre", "getLiteral");
-        if (nombre instanceof Literal) return getTraduccion((Literal) nombre, idioma, idiomaPorDefecto);
-        return stringValue(value);
-    }
-
-    private List<PublicObjectiu> mapPublicsObjectius(final Object value, final String idioma, final String idiomaPorDefecto) {
-        if (!(value instanceof Iterable)) return Collections.emptyList();
+    private List<PublicObjectiu> mapPublicsObjectius(final List<TipoPublicoObjetivoEntidadGridDTO> value,
+                                                     final String idioma,
+                                                     final String idiomaPorDefecto) {
+        if (value == null || value.isEmpty()) return Collections.emptyList();
         List<PublicObjectiu> result = new ArrayList<>();
-        for (Object item : (Iterable<?>) value) {
-            Object nested = invokeAny(item, "getPublicoObjetivo", "getTipoPublicoObjetivo", "getPublicObjectiu");
-            Object source = nested != null ? nested : item;
-            Long codi = firstLong(invokeAny(source, "getCodigo", "getId", "getCodigoPublicoObjetivo"));
-            String nom = firstText(idioma, idiomaPorDefecto,
-                    invokeAny(source, "getDescripcion", "getNombre", "getLiteral"));
-            result.add(new PublicObjectiu(codi, nom));
+        for (TipoPublicoObjetivoEntidadGridDTO item : value) {
+            if (item == null) {
+                continue;
+            }
+            result.add(new PublicObjectiu(item.getCodigo(), getTraduccion(item.getDescripcion(), idioma, idiomaPorDefecto)));
         }
         return result;
     }
 
-    private String resolveSeuUrl(final Object nodo, final String urlBase, final Long codigo) {
-        String direct = stringValue(invokeAny(nodo,
-                "getUrlSede", "getUrlSEDE", "getUrlSeu", "getUrlPublica", "getUrlServicio", "getUrl"));
-        if (direct != null) return direct;
+    private String resolveSeuUrl(final String urlBase, final Long codigo) {
         if (urlBase == null || codigo == null) return null;
         String base = urlBase.endsWith("/") ? urlBase : urlBase + "/";
         return base + codigo;
