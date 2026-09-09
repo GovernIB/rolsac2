@@ -712,7 +712,8 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                          aria-label="#{labels['dict.limpiarFiltro']}"
                                          iconPos="top" action="#{viewProcedimientos.limpiarFiltro()}"
-                                         process="@form" update="panelFiltrosBasicos panel dataTable"
+                                         process="@form"
+                                         update="filtroBusqueda panelFiltrosBasicos panel dataTable"
                                          resetValues="true"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                          aria-label="#{labels['dict.busqueda']}"
