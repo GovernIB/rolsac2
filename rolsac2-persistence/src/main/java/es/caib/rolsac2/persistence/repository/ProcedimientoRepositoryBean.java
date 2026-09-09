@@ -3686,6 +3686,36 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
 
 
         }
+        if (filtro.isRellenoPlantillaTramitacionCodigo()) {
+            if (filtro.getEsProcedimiento()) {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo) AND j.tipoTramitacionPlantilla.codigo = :plantillaTramitacionCodigo) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j where j.procedimiento.codigo = WF.codigo AND j.tipoTramitacionPlantilla.codigo = :plantillaTramitacionCodigo) ");
+                }
+            } else {
+                if (ambosWf) {
+                    sql.append(" AND (WF.tramiteElectronicoPlantilla.codigo = :plantillaTramitacionCodigo OR WF2.tramiteElectronicoPlantilla.codigo = :plantillaTramitacionCodigo) ");
+                } else {
+                    sql.append(" AND WF.tramiteElectronicoPlantilla.codigo = :plantillaTramitacionCodigo ");
+                }
+            }
+        }
+        if (filtro.isRellenoPlantillaTramitacionNombre()) {
+            if (filtro.getEsProcedimiento()) {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j inner join j.tipoTramitacionPlantilla p inner join p.traducciones pTrad where (j.procedimiento.codigo = WF.codigo OR j.procedimiento.codigo = WF2.codigo) AND pTrad.idioma = :idioma AND LOWER(TRIM(pTrad.descripcion)) LIKE :plantillaTramitacionNombre) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT j FROM JProcedimientoTramite j inner join j.tipoTramitacionPlantilla p inner join p.traducciones pTrad where j.procedimiento.codigo = WF.codigo AND pTrad.idioma = :idioma AND LOWER(TRIM(pTrad.descripcion)) LIKE :plantillaTramitacionNombre) ");
+                }
+            } else {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT p FROM JTipoTramitacion p inner join p.traducciones pTrad where (p.codigo = WF.tramiteElectronicoPlantilla.codigo OR p.codigo = WF2.tramiteElectronicoPlantilla.codigo) AND pTrad.idioma = :idioma AND LOWER(TRIM(pTrad.descripcion)) LIKE :plantillaTramitacionNombre) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT p FROM JTipoTramitacion p inner join p.traducciones pTrad where p.codigo = WF.tramiteElectronicoPlantilla.codigo AND pTrad.idioma = :idioma AND LOWER(TRIM(pTrad.descripcion)) LIKE :plantillaTramitacionNombre) ");
+                }
+            }
+        }
         if (filtro.isRellenoPlataforma()) {
             if (filtro.getEsProcedimiento()) {
                 if (ambosWf) {
@@ -3698,6 +3728,36 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                     sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion as plataforma where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo  ) AND ( plataforma.codigo = :plataforma) )");
                 } else {
                     sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion as plataforma where (t.codigo = WF.tramiteElectronico.codigo ) AND ( plataforma.codigo = :plataforma) ) ");
+                }
+            }
+        }
+        if (filtro.isRellenoPlataformaTramitacionCodigo()) {
+            if (filtro.getEsProcedimiento()) {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion tipo inner join tipo.codPlatTramitacion plataforma where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo) AND plataforma.codigo = :plataformaTramitacionCodigo) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion tipo inner join tipo.codPlatTramitacion plataforma where t.procedimiento.codigo = WF.codigo AND plataforma.codigo = :plataformaTramitacionCodigo) ");
+                }
+            } else {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion plataforma where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo) AND plataforma.codigo = :plataformaTramitacionCodigo) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion plataforma where t.codigo = WF.tramiteElectronico.codigo AND plataforma.codigo = :plataformaTramitacionCodigo) ");
+                }
+            }
+        }
+        if (filtro.isRellenoPlataformaTramitacionNombre()) {
+            if (filtro.getEsProcedimiento()) {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion tipo inner join tipo.codPlatTramitacion plataforma inner join plataforma.traducciones ptTrad where (t.procedimiento.codigo = WF.codigo OR t.procedimiento.codigo = WF2.codigo) AND ptTrad.idioma = :idioma AND LOWER(TRIM(ptTrad.descripcion)) LIKE :plataformaTramitacionNombre) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JProcedimientoTramite t inner join t.tipoTramitacion tipo inner join tipo.codPlatTramitacion plataforma inner join plataforma.traducciones ptTrad where t.procedimiento.codigo = WF.codigo AND ptTrad.idioma = :idioma AND LOWER(TRIM(ptTrad.descripcion)) LIKE :plataformaTramitacionNombre) ");
+                }
+            } else {
+                if (ambosWf) {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion plataforma inner join plataforma.traducciones ptTrad where (t.codigo = WF.tramiteElectronico.codigo OR t.codigo = WF2.tramiteElectronico.codigo) AND ptTrad.idioma = :idioma AND LOWER(TRIM(ptTrad.descripcion)) LIKE :plataformaTramitacionNombre) ");
+                } else {
+                    sql.append(" AND EXISTS (SELECT t FROM JTipoTramitacion t inner join t.codPlatTramitacion plataforma inner join plataforma.traducciones ptTrad where t.codigo = WF.tramiteElectronico.codigo AND ptTrad.idioma = :idioma AND LOWER(TRIM(ptTrad.descripcion)) LIKE :plataformaTramitacionNombre) ");
                 }
             }
         }
@@ -4149,6 +4209,20 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
         if (filtro.isRellenoPlantilla() && filtro.getPlantilla().getCodigo().compareTo(-1l) != 0) {
             query.setParameter("plantilla", filtro.getPlantilla().getCodigo());
+        }
+        if (filtro.isRellenoPlataformaTramitacionCodigo()) {
+            query.setParameter("plataformaTramitacionCodigo", filtro.getPlataformaTramitacionCodigo());
+        }
+        if (filtro.isRellenoPlataformaTramitacionNombre()) {
+            String plataformaTramitacionNombre = filtro.getPlataformaTramitacionNombre().trim().toLowerCase().replaceAll("\\s+", "%");
+            query.setParameter("plataformaTramitacionNombre", "%" + plataformaTramitacionNombre + "%");
+        }
+        if (filtro.isRellenoPlantillaTramitacionCodigo()) {
+            query.setParameter("plantillaTramitacionCodigo", filtro.getPlantillaTramitacionCodigo());
+        }
+        if (filtro.isRellenoPlantillaTramitacionNombre()) {
+            String plantillaTramitacionNombre = filtro.getPlantillaTramitacionNombre().trim().toLowerCase().replaceAll("\\s+", "%");
+            query.setParameter("plantillaTramitacionNombre", "%" + plantillaTramitacionNombre + "%");
         }
         if (filtro.isRellenoComun()) {
             query.setParameter("comun", "S".equals(filtro.getComun()) ? 1 : 0);
