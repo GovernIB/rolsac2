@@ -670,7 +670,7 @@
                             <p:ajax event="rowUnselect"/>
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                                <h:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" />
+                                <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
 
                         </p:dataTable>
@@ -816,7 +816,7 @@
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                       styleClass="text-center w75 ">
-                                <h:outputLabel value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" pt:aria-label="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" />
+                                <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" pt:aria-label="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -882,7 +882,7 @@
 
                                 <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
                                           styleClass="text-center w75">
-                                    <h:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" />
+                                    <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                                 </p:column>
                             </p:dataTable>
                         </div>
@@ -943,7 +943,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <h:outputLabel value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" />
+                                <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -1012,7 +1012,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dict.descripcion']}" styleClass="text-center w75">
-                                <h:outputLabel value="LOPD" class="labelGrande" pt:aria-label="LOPD" />
+                                <h:outputText value="LOPD" class="labelGrande" pt:aria-label="LOPD" />
                             </p:column>
 
                         </p:dataTable>
@@ -1081,7 +1081,7 @@
                                     global="false"/>
 
                             <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                                <h:outputLabel value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" />
+                                <h:outputText value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
                         </p:dataTable>
                     </div>
