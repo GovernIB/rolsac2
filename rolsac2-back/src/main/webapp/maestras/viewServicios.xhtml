@@ -325,7 +325,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:selectBooleanCheckbox id="txtUAHijas" styleClass="ml-2"
                                                          title="#{labels['viewServicios.uaHijas']}"
                                                          aria-label="#{labels['viewServicios.uaHijasMin']}"
-                                                         converter="javax.faces.Boolean"
                                                          value="#{viewServicios.filtro.hijasActivas}">
                                     <p:ajax process="@this" event="change" partialSubmit="true"
                                             listener="#{viewServicios.filtroHijasActivasChange}"/>
@@ -338,7 +337,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                 <p:selectBooleanCheckbox id="txtunidadesOrganicas" styleClass="ml-2"
                                                          title="#{labels['viewServicios.unidadesOrganicas']}"
                                                          aria-label="#{labels['viewServicios.unidadesOrganicasMin']}"
-                                                         converter="javax.faces.Boolean"
                                                          value="#{viewServicios.filtro.todasUnidadesOrganicas}">
                                     <p:ajax process="@this" event="change" partialSubmit="true"
                                             listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
