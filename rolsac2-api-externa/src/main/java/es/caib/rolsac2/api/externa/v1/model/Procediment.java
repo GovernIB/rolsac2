@@ -1,6 +1,7 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
+import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.Literal;
 import es.caib.rolsac2.service.model.ProcedimientoDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
@@ -475,7 +476,7 @@ public class Procediment implements Serializable {
             this.habilitatApoderat = nodo.isHabilitadoApoderado();
             this.habilitatFuncionari = toBooleanFlag(nodo.getHabilitadoFuncionario());
             this.terminiResolucio = getTraduccion(nodo.getTerminoResolucion(), idioma, idiomaPorDefecto);
-            this.url = buildUrl(urlBase, this.codi);
+            this.url = buildUrl(urlBase, idioma, this.codi);
         } catch (Exception e) {
             LOG.error("Error generando procediment {}", this.codi, e);
         }
@@ -520,12 +521,8 @@ public class Procediment implements Serializable {
     /**
      * Construye la URL p?blica de la Seu a partir de la base recibida.
      */
-    private String buildUrl(String urlBase, Long codigoProcedimiento) {
-        if (urlBase == null || codigoProcedimiento == null) {
-            return null;
-        }
-        String base = urlBase.endsWith("/") ? urlBase : urlBase + "/";
-        return base + Constantes.ENTIDAD_PROCEDIMIENTO + "/" + codigoProcedimiento;
+    private String buildUrl(String urlBase, String idioma, Long codigoProcedimiento) {
+        return Utiles.buildSeuUrl(urlBase, idioma, codigoProcedimiento);
     }
 
     @Override

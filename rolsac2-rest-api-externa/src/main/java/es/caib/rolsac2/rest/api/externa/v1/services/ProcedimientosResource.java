@@ -532,9 +532,10 @@ public class ProcedimientosResource {
         if (debugActivo) LOG.error(" getRespuesta: resultadoBusqueda: {}", resultadoBusqueda);
         List<Procediment> lista = new ArrayList<>();
         Procediment elemento;
+        final String urlBase = Utiles.getBaseUrl(requestUri);
 
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new Procediment((ProcedimientoDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
+            elemento = new Procediment((ProcedimientoDTO) nodo, urlBase, filtro.getIdioma(), true, idiomaPorDefecto);
             lista.add(elemento);
             if (debugActivo) LOG.error(" getRespuesta: añadido procedimiento a la lista: {}", elemento);
         }

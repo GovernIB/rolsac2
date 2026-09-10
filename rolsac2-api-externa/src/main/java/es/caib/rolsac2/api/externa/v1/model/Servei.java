@@ -1,5 +1,6 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
+import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -425,7 +426,7 @@ public class Servei implements Serializable {
             this.tramitElectronica = nodo.isTramitElectronica();
             this.tramitTelefonica = nodo.isTramitTelefonica();
             this.publicsObjectius = mapPublicsObjectius(nodo.getPublicosObjetivo(), idioma, idiomaPorDefecto);
-            this.url = resolveSeuUrl(urlBase, this.codi);
+            this.url = resolveSeuUrl(urlBase, idioma, this.codi);
         } catch (Exception e) {
             LOG.error("Error generando servei {}", this.codi, e);
         }
@@ -467,10 +468,8 @@ public class Servei implements Serializable {
         return result;
     }
 
-    private String resolveSeuUrl(final String urlBase, final Long codigo) {
-        if (urlBase == null || codigo == null) return null;
-        String base = urlBase.endsWith("/") ? urlBase : urlBase + "/";
-        return base + codigo;
+    private String resolveSeuUrl(final String urlBase, final String idioma, final Long codigo) {
+        return Utiles.buildSeuUrl(urlBase, idioma, codigo);
     }
 
     @Schema(name = "PublicObjectiu", description = "Públic objectiu aplanat a codi i nom.")

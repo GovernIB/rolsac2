@@ -243,8 +243,9 @@ public class ServiciosResource {
         // esa condición antes de paginar para que totalCount y totalPages sean correctos.
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
         List<Servei> lista = new ArrayList<>();
+        final String urlBase = Utiles.getBaseUrl(requestUri);
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            lista.add(new Servei((ServicioDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto));
+            lista.add(new Servei((ServicioDTO) nodo, urlBase, filtro.getIdioma(), true, idiomaPorDefecto));
         }
         int total = (int) resultadoBusqueda.getTotal();
         if (apiMaxLimit != null && total > apiMaxLimit) total = apiMaxLimit;

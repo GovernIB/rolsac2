@@ -322,4 +322,12 @@ public class Utiles {
 		return calendar;
 	}
 
+        public static String buildSeuUrl(final String urlBase, final String idioma, final Long codigo) {
+                if (StringUtils.isBlank(urlBase) || StringUtils.isBlank(idioma) || codigo == null) {
+                        return null;
+                }
+                String base = urlBase.endsWith("/") ? urlBase.substring(0, urlBase.length() - 1) : urlBase;
+                return base + "/seucaib/" + idioma.trim() + "/200/persones%20/tramites/tramite/" + codigo;
+        }
+
 }

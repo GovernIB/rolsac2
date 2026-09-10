@@ -1,5 +1,6 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -113,6 +114,24 @@ public class Utiles {
             return matcher.group(1) + "+" + matcher.group(2);
         }
         return value;
+    }
+
+    public static String getBaseUrl(final URI requestUri) {
+        if (requestUri == null || requestUri.getScheme() == null || requestUri.getHost() == null) {
+            return null;
+        }
+
+        StringBuilder urlBase = new StringBuilder();
+        urlBase.append(requestUri.getScheme()).append("://").append(requestUri.getHost());
+
+        int port = requestUri.getPort();
+        if (port != -1
+                && !(("http".equalsIgnoreCase(requestUri.getScheme()) && port == 80)
+                || ("https".equalsIgnoreCase(requestUri.getScheme()) && port == 443))) {
+            urlBase.append(':').append(port);
+        }
+
+        return urlBase.toString();
     }
 
     /**
