@@ -158,7 +158,7 @@ public class ProcedimientosResource {
             @QueryParam("codiSIACodi") final String codiSIACodi,
 
             @Parameter(
-                    description = "Estat del procediment a SIA.",
+                    description = "Estat del procediment a SIA (valors A o B).",
                     name = "estatSIA",
                     in = ParameterIn.QUERY
             )
@@ -226,7 +226,7 @@ public class ProcedimientosResource {
             @QueryParam("tipusNom") final String tipusNom,
 
             @Parameter(
-                    description = "Estat general del procediment.",
+                    description = "Estat general del procediment (valors: P [Publicat], T [Tancat] , PT [Pendent de tancar]).",
                     name = "estat",
                     in = ParameterIn.QUERY
             )

@@ -5,6 +5,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.net.URI;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -24,6 +27,7 @@ public class RespuestaBase {
 
     private static final int DEFAULT_PAGE = 0;
     private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final ZoneId ZONA = ZoneId.of("Europe/Madrid");
 
     @Schema(
             description = "Nom del conjunt de dades.",
@@ -53,7 +57,7 @@ public class RespuestaBase {
             description = "Data de descàrrega en format ISO8601.",
             example = "2022-07-26T12:58:55+02:00"
     )
-    private String dateDownload;
+    private String dateDownload = generarDateDownload();
 
     @Schema(
             description = "Nombre total d'elements disponibles.",
@@ -138,6 +142,10 @@ public class RespuestaBase {
         this.tiempo = tiempoMiliSegundos;
 
         completarUrlsPaginacion(total, this.pageSize, this.page, requestUri);
+    }
+
+    private static String generarDateDownload() {
+        return Instant.now().atZone(ZONA).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     private Integer calcularTotalPaginas(final int total, final Integer paginaTamanyo) {

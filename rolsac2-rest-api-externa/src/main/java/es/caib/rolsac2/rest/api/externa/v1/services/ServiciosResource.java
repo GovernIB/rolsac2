@@ -83,7 +83,7 @@ public class ServiciosResource {
             @QueryParam("fiDataCaducitat") final String fiDataCaducitat,
             @Parameter(description = "Codi SIA del servei.", name = "codiSIACodi", in = ParameterIn.QUERY)
             @QueryParam("codiSIACodi") final String codiSIACodi,
-            @Parameter(description = "Estat del servei a SIA.", name = "estatSIA", in = ParameterIn.QUERY)
+            @Parameter(description = "Estat del servei a SIA (valors A o B).", name = "estatSIA", in = ParameterIn.QUERY)
             @QueryParam("estatSIA") final String estatSIA,
             @Parameter(description = "Data inicial del rang de data SIA en format ISO8601.", name = "iniciDataSia", in = ParameterIn.QUERY)
             @QueryParam("iniciDataSia") final String iniciDataSia,
@@ -95,7 +95,7 @@ public class ServiciosResource {
             @QueryParam("uaInstructorNom") final String uaInstructorNom,
             @Parameter(description = "Indica si el servei és comú.", name = "comu", in = ParameterIn.QUERY)
             @QueryParam("comu") final Boolean comu,
-            @Parameter(description = "Estat general del servei.", name = "estat", in = ParameterIn.QUERY)
+            @Parameter(description = "Estat general del servei (valors: P [Publicat], T [Tancat] , PT [Pendent de tancar]).", name = "estat", in = ParameterIn.QUERY)
             @QueryParam("estat") final String estat,
             /*@Parameter(description = "Indica si permet tramitació mitjançant apoderat.", name = "habilitatApoderat", in = ParameterIn.QUERY)
             @QueryParam("habilitatApoderat") final Boolean habilitatApoderat,
