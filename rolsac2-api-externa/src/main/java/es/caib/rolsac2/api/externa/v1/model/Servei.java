@@ -469,7 +469,7 @@ public class Servei implements Serializable {
     }
 
     private String resolveSeuUrl(final String urlBase, final String idioma, final Long codigo) {
-        return Utiles.buildSeuUrl(urlBase, idioma, codigo);
+        return Utiles.buildSeuUrl(false, urlBase, idioma, codigo);
     }
 
     @Schema(name = "PublicObjectiu", description = "Públic objectiu aplanat a codi i nom.")
