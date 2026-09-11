@@ -934,6 +934,10 @@ legend {
 	height: 3rem;
 }
 
+.boton-traduccion .pi-sort-alt {
+	transform: rotate(90deg);
+}
+
 .ui-blockui-content.ui-widget.ui-widget-content{
 	background: transparent;
 	border-color: transparent;
