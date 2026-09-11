@@ -25,61 +25,61 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
     /**
      * Identificador
      */
-    @Schema(description = "tramiteId", name = "tramiteId", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del tipo de tramitación", name = "tramiteId", type = SchemaType.STRING, required = true)
     private String tramiteId;
 
     /**
      * enlace.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción del tipo de tramitación", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del tipo de tramitación", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     /**
      * Tramitación presencial
      */
-    @Schema(description = "tramitPresencial", name = "tramitPresencial", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Indica si el tipo de tramitación admite presentación presencial", name = "tramitPresencial", type = SchemaType.INTEGER, required = false)
     private Integer tramitPresencial;
 
     /**
      * Tramitación electrónica
      */
-    @Schema(description = "tramitElectronica", name = "tramitElectronica", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Indica si el tipo de tramitación admite presentación electrónica", name = "tramitElectronica", type = SchemaType.INTEGER, required = false)
     private Integer tramitElectronica;
 
     /**
      * Tramitacion telefonica
      */
-    @Schema(description = "tramitTelefonica", name = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Indica si el tipo de tramitación admite presentación telefónica", name = "tramitTelefonica", type = SchemaType.INTEGER, required = false)
     private Integer tramitTelefonica;
 
     /**
      * Url
      */
-    @Schema(description = "url", name = "url", type = SchemaType.STRING, required = false)
+    @Schema(description = "URL asociada al tipo de tramitación", name = "url", type = SchemaType.STRING, required = false)
     private String url;
 
     /**
      * Fase procedimiento
      */
-    @Schema(description = "faseProc", name = "faseProc", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código de la fase del procedimiento a la que corresponde este tipo de tramitación", name = "faseProc", type = SchemaType.INTEGER, required = false)
     private Integer faseProc;
 
     /**
      * URL tramitación
      */
-    @Schema(description = "urlTramitacion", name = "urlTramitacion", type = SchemaType.STRING, required = false)
+    @Schema(description = "URL desde la que se inicia la tramitación", name = "urlTramitacion", type = SchemaType.STRING, required = false)
     private String urlTramitacion;
 
     /**
      * Código plataforma tramitación
      */
-    @Schema(description = "link_codPlatTramitacion", required = false)
+    @Schema(description = "Enlace a la plataforma en la que se realiza la tramitación", required = false)
     private Link link_codPlatTramitacion;
     @Schema(hidden = true)
     @JsonIgnore
@@ -89,19 +89,19 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
     /**
      * Trámite Versión
      */
-    @Schema(description = "tramiteVersion", name = "tramiteVersion", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Versión del tipo de tramitación", name = "tramiteVersion", type = SchemaType.INTEGER, required = false)
     private Integer tramiteVersion;
 
     /**
      * Trámite parámetros
      */
-    @Schema(description = "tramiteParametros", name = "tramiteParametros", type = SchemaType.STRING, required = false)
+    @Schema(description = "Parámetros necesarios para ejecutar la tramitación", name = "tramiteParametros", type = SchemaType.STRING, required = false)
     private String tramiteParametros;
 
     /**
      * Indica si es una plantilla
      **/
-    @Schema(description = "plantilla", name = "plantilla", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Indica si el tipo de tramitación se utiliza como plantilla", name = "plantilla", type = SchemaType.INTEGER, required = false)
     private Integer plantilla;
 
     @Schema(description = "link_entidad", required = false)

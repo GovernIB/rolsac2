@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroPlatTramitElectronica", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroPlatTramitElectronica", type = SchemaType.STRING, description = "Criterios para localizar plataformas de tramitación electrónica")
 public class FiltroPlatTramitElectronica extends EntidadJson<FiltroPlatTramitElectronica> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroPlatTramitElectronica.class);
@@ -33,19 +33,19 @@ public class FiltroPlatTramitElectronica extends EntidadJson<FiltroPlatTramitEle
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o nombre de la plataforma", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * Indica la entidad
      **/
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad a la que pertenece la plataforma", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de plataformas de tramitación electrónica que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

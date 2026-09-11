@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroEstadistica", type = SchemaType.STRING, description = "Filtro para grabar una estadística")
+@Schema(name = "FiltroEstadistica", type = SchemaType.STRING, description = "Datos necesarios para registrar el acceso a un procedimiento, servicio o unidad administrativa")
 public class FiltroEstadistica extends EntidadJson<FiltroEstadistica> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroEstadistica.class);
@@ -31,7 +31,7 @@ public class FiltroEstadistica extends EntidadJson<FiltroEstadistica> {
     /**
      * Identificador aplicación.
      **/
-    @Schema(name = "idApp", description = "Id aplicación", type = SchemaType.STRING, required = true)
+    @Schema(name = "idApp", description = "Identificador de la aplicación desde la que se registra el acceso", type = SchemaType.STRING, required = true)
     private String idApp;
 
     /**

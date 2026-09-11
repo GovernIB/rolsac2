@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoFormaInicio", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoFormaInicio", type = SchemaType.STRING, description = "Criterios para localizar formas de inicio de los procedimientos")
 public class FiltroTipoFormaInicio extends EntidadJson<FiltroTipoFormaInicio> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoFormaInicio.class);
@@ -31,13 +31,13 @@ public class FiltroTipoFormaInicio extends EntidadJson<FiltroTipoFormaInicio> {
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción de la forma de inicio", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de formas de inicio que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
 //	public static FiltroNormativas valueOf(final String json) {

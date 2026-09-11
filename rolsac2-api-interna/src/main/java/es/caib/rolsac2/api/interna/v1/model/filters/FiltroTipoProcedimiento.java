@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoProcedimiento", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoProcedimiento", type = SchemaType.STRING, description = "Criterios para localizar tipos de procedimiento")
 public class FiltroTipoProcedimiento extends EntidadJson<FiltroTipoProcedimiento> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoProcedimiento.class);
@@ -33,19 +33,19 @@ public class FiltroTipoProcedimiento extends EntidadJson<FiltroTipoProcedimiento
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de procedimiento", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * Entidad
      */
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad asociada al tipo de procedimiento", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de procedimiento que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

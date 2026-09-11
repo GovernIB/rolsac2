@@ -20,7 +20,7 @@ import java.util.List;
  * @author Indra
  */
 @XmlRootElement
-@Schema(name = "FiltroProcedimientos", description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroProcedimientos", description = "Criterios para localizar procedimientos por entidad, temática, estado y relaciones administrativas")
 public class FiltroProcedimientos extends EntidadJson<FiltroProcedimientos> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroProcedimientos.class);

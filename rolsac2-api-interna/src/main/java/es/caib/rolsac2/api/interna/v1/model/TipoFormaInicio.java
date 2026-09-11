@@ -23,19 +23,19 @@ public class TipoFormaInicio extends EntidadBase<TipoFormaInicio> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador de la forma de inicio", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * enlace.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción de la forma de inicio", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico de la forma de inicio", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     public TipoFormaInicio(TipoFormaInicioDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {

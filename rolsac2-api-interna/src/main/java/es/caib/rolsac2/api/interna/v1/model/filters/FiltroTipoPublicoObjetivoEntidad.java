@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoPublicoObjetivoEntidad", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoPublicoObjetivoEntidad", type = SchemaType.STRING, description = "Criterios para localizar públicos objetivo específicos de una entidad")
 public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPublicoObjetivoEntidad> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoPublicoObjetivoEntidad.class);
@@ -39,37 +39,37 @@ public class FiltroTipoPublicoObjetivoEntidad extends EntidadJson<FiltroTipoPubl
     /**
      * traducciones.
      **/
-    @Schema(name = "traducciones", description = "traducciones", type = SchemaType.STRING, required = false)
+    @Schema(name = "traducciones", description = "Texto de las traducciones del público objetivo que se desea localizar", type = SchemaType.STRING, required = false)
     private String traducciones;
 
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del público objetivo de la entidad", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * identificador.
      **/
-    @Schema(name = "identificador", description = "identificador", type = SchemaType.STRING, required = false)
+    @Schema(name = "identificador", description = "Identificador del público objetivo específico de la entidad", type = SchemaType.STRING, required = false)
     private String identificador;
 
     /**
      * codigoTipo.
      **/
-    @Schema(name = "codigoPublicoObjetivoSia", description = "codigoPublicoObjetivoSia", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoPublicoObjetivoSia", description = "Código del público objetivo definido en el catálogo SIA", type = SchemaType.INTEGER, required = false)
     private Long codigoPublicoObjetivoSia;
 
     /**
      * idEntidad.
      **/
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad a la que se aplica el público objetivo", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de públicos objetivo de la entidad que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

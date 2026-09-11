@@ -20,7 +20,7 @@ import java.util.List;
  * @author Indra
  */
 @XmlRootElement
-@Schema(name = "FiltroNormativas", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroNormativas", type = SchemaType.STRING, description = "Criterios para localizar normativas aplicables a los contenidos")
 public class FiltroNormativas extends EntidadJson<FiltroNormativas> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroNormativas.class);

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoTramitacion", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoTramitacion", type = SchemaType.STRING, description = "Criterios para localizar tipos de tramitación y sus fases")
 public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoTramitacion.class);
@@ -28,31 +28,31 @@ public class FiltroTipoTramitacion extends EntidadJson<FiltroTipoTramitacion> {
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de tramitación", type = SchemaType.STRING, required = false)
     private String texto;
 
-    @Schema(name = "faseProc", description = "faseProc", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "faseProc", description = "Código de la fase del procedimiento a la que debe estar asociado el tipo de tramitación", type = SchemaType.INTEGER, required = false)
     private Integer faseProc;
 
     /**
      * Indica la entidad
      **/
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad asociada al tipo de tramitación", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
-    @Schema(name = "codPlatTramitacion", description = "codPlatTramitacion", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codPlatTramitacion", description = "Código de la plataforma donde se realiza la tramitación", type = SchemaType.INTEGER, required = false)
     private Long codPlatTramitacion;
 
     /**
      * Indica si es de tipo plantilla
      **/
-    @Schema(name = "plantilla", description = "plantilla", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "plantilla", description = "Indica si se deben incluir únicamente tipos de tramitación definidos como plantilla: 1 sí, 0 no", type = SchemaType.INTEGER, required = false)
     private Integer plantilla;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de tramitación que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

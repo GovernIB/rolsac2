@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoNormativa", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoNormativa", type = SchemaType.STRING, description = "Criterios para localizar tipos de normativa")
 public class FiltroTipoNormativa extends EntidadJson<FiltroTipoNormativa> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoNormativa.class);
@@ -31,13 +31,13 @@ public class FiltroTipoNormativa extends EntidadJson<FiltroTipoNormativa> {
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de normativa", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de normativa que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

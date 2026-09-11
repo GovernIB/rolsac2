@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoLegitimacion", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoLegitimacion", type = SchemaType.STRING, description = "Criterios para localizar tipos de legitimación")
 public class FiltroTipoLegitimacion extends EntidadJson<FiltroTipoLegitimacion> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoLegitimacion.class);
@@ -31,13 +31,13 @@ public class FiltroTipoLegitimacion extends EntidadJson<FiltroTipoLegitimacion> 
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de legitimación", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de legitimación que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
 //	public static FiltroNormativas valueOf(final String json) {

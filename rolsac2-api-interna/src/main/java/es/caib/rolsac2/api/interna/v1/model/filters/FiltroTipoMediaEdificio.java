@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoMediaEdificio", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoMediaEdificio", type = SchemaType.STRING, description = "Criterios para localizar tipos de media de edificio")
 public class FiltroTipoMediaEdificio extends EntidadJson<FiltroTipoMediaEdificio> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoMediaEdificio.class);
@@ -33,19 +33,19 @@ public class FiltroTipoMediaEdificio extends EntidadJson<FiltroTipoMediaEdificio
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de media", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * Entidad
      */
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad asociada al tipo de media", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de media de edificio que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

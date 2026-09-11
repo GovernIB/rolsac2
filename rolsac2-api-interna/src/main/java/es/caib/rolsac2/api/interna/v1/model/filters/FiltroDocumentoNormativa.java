@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Indra
  */
 @XmlRootElement
-@Schema(name = "FiltroDocumentoNormativa", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroDocumentoNormativa", type = SchemaType.STRING, description = "Criterios para localizar documentos asociados a una normativa")
 public class FiltroDocumentoNormativa extends EntidadJson<FiltroDocumentoNormativa> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroDocumentoNormativa.class);
@@ -38,23 +38,23 @@ public class FiltroDocumentoNormativa extends EntidadJson<FiltroDocumentoNormati
             "}";
 
     /*Normativa asociada al documento*/
-    @Schema(name = "codigoNormativa", description = "codigoNormativa", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoNormativa", description = "Código de la normativa cuyos documentos se quieren consultar", type = SchemaType.INTEGER, required = false)
     private Long codigoNormativa;
 
     /*Fichero asociado al documento*/
-    @Schema(name = "codigoDocumento", description = "codigoDocumento", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoDocumento", description = "Código del documento que se quiere localizar", type = SchemaType.INTEGER, required = false)
     private Long codigoDocumento;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de documentos de la normativa que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto incluido en el título o contenido identificativo del documento", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**

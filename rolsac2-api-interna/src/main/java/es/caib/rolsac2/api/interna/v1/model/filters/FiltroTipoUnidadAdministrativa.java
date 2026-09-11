@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoUnidadAdministrativa", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoUnidadAdministrativa", type = SchemaType.STRING, description = "Criterios para localizar tipos de unidad administrativa")
 public class FiltroTipoUnidadAdministrativa extends EntidadJson<FiltroTipoUnidadAdministrativa> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoUnidadAdministrativa.class);
@@ -34,25 +34,25 @@ public class FiltroTipoUnidadAdministrativa extends EntidadJson<FiltroTipoUnidad
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de unidad administrativa", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de unidad administrativa que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**
      * Entidad
      */
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad asociada al tipo de unidad administrativa", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * Campo por el que ordenar.
      **/
-    @Schema(name = "campoOrden", description = "Campo por el que ordenar", required = false)
+    @Schema(name = "campoOrden", description = "Campo y sentido de ordenación de los tipos de unidad administrativa que se devolverán", required = false)
     private CampoOrden campoOrden;
 
 

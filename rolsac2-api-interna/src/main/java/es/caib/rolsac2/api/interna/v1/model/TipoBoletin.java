@@ -23,25 +23,25 @@ public class TipoBoletin extends EntidadBase<TipoBoletin> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del tipo de boletín oficial", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * enlace.
      **/
-    @Schema(description = "url", name = "url", type = SchemaType.STRING, required = false)
+    @Schema(description = "URL del boletín oficial o de la fuente de publicación", name = "url", type = SchemaType.STRING, required = false)
     private String url;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del tipo de boletín", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     /**
      * nombre
      **/
-    @Schema(description = "nombre", name = "nombre", type = SchemaType.STRING, required = false)
+    @Schema(description = "Nombre del tipo de boletín oficial", name = "nombre", type = SchemaType.STRING, required = false)
     private String nombre;
 
     public TipoBoletin(TipoBoletinDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {

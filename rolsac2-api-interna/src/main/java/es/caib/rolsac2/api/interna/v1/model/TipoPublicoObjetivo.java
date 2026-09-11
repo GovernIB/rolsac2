@@ -23,25 +23,25 @@ public class TipoPublicoObjetivo extends EntidadBase<TipoPublicoObjetivo> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del público objetivo", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * descripcion.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción del público objetivo", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * empleadoPublico
      */
-    @Schema(description = "empleadoPublico", name = "empleadoPublico", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Indica si el público objetivo corresponde a empleados públicos", name = "empleadoPublico", type = SchemaType.INTEGER, required = false)
     private Integer empleadoPublico;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del público objetivo", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     public TipoPublicoObjetivo(TipoPublicoObjetivoDTO nodo, String urlBase, String idioma,

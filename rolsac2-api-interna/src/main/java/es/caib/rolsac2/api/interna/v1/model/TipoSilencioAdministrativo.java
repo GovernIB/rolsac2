@@ -24,31 +24,31 @@ public class TipoSilencioAdministrativo extends EntidadBase<TipoSilencioAdminist
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del tipo de silencio administrativo", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * descripcion.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción principal del tipo de silencio administrativo", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * descripcion.
      **/
-    @Schema(description = "descripcion2", name = "descripcion2", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción adicional del tipo de silencio administrativo", name = "descripcion2", type = SchemaType.STRING, required = false)
     private String descripcion2;
 
     /**
      * fechaBorrar.
      **/
-    @Schema(description = "fechaBorrar", name = "fechaBorrar", type = SchemaType.STRING, required = false)
+    @Schema(description = "Fecha en la que el tipo de silencio administrativo quedó marcado para baja", name = "fechaBorrar", type = SchemaType.STRING, required = false)
     private Date fechaBorrar;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del tipo de silencio administrativo", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     public TipoSilencioAdministrativo(TipoSilencioAdministrativoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {

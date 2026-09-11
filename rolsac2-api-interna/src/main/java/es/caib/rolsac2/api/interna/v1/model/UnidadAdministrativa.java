@@ -85,7 +85,7 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
     /**
      * orden
      **/
-    @Schema(description = "orden", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Orden de presentación de la unidad administrativa dentro de su nivel", type = SchemaType.INTEGER, required = false)
     private Integer orden;
 
     /**

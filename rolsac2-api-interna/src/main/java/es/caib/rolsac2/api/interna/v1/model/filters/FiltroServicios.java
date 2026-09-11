@@ -26,7 +26,7 @@ import java.util.List;
  * @author Indra
  */
 @XmlRootElement
-@Schema(name = "FiltroServicios", description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroServicios", description = "Criterios para localizar servicios por entidad, temática, estado y relaciones administrativas")
 public class FiltroServicios extends EntidadJson<FiltroServicios> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroServicios.class);

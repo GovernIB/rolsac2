@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTema", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTema", type = SchemaType.STRING, description = "Criterios para localizar temas del catálogo")
 public class FiltroTema extends EntidadJson<FiltroTema> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTema.class);
@@ -37,31 +37,31 @@ public class FiltroTema extends EntidadJson<FiltroTema> {
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o nombre del tema", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * identificador.
      **/
-    @Schema(name = "identificador", description = "identificador", type = SchemaType.STRING, required = false)
+    @Schema(name = "identificador", description = "Identificador del tema", type = SchemaType.STRING, required = false)
     private String identificador;
 
     /**
      * idEntidad.
      **/
-    @Schema(name = "idEntidad", description = "idEntidad", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idEntidad", description = "Código de la entidad propietaria del tema", type = SchemaType.INTEGER, required = false)
     private Long idEntidad;
 
     /**
      * idEntidad.
      **/
-    @Schema(name = "idPadre", description = "idPadre", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "idPadre", description = "Código del tema padre para consultar sus temas hijos", type = SchemaType.INTEGER, required = false)
     private Long idPadre;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de temas que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

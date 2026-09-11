@@ -18,8 +18,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 @XmlRootElement
-@Schema(name = "TipoProcedimiento", description = Constantes.TXT_DEFINICION_CLASE
-		+ Constantes.ENTIDAD_TIPO_PROCEDIMIENTO)
+@Schema(name = "TipoProcedimiento", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TIPO_PROCEDIMIENTO)
 public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TipoProcedimiento.class);
@@ -27,11 +26,11 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 	/**
 	 * Identificador
 	 */
-	@Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+	@Schema(description = "Identificador del tipo de procedimiento", name = "identificador", type = SchemaType.STRING, required = true)
 	private String identificador;
 
 	/** enlace. **/
-	@Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+	@Schema(description = "Descripción del tipo de procedimiento", name = "descripcion", type = SchemaType.STRING, required = false)
 	private String descripcion;
 
 //	public Date getDate() {
@@ -48,7 +47,7 @@ public class TipoProcedimiento extends EntidadBase<TipoProcedimientoDTO> {
 //    private Date date;
 
 	/** codigo **/
-	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+	@Schema(description = "Código numérico del tipo de procedimiento", name = "codigo", type = SchemaType.INTEGER, required = false)
 	private Long codigo;
 
 	@Schema(description = "link_entidad", required = false)

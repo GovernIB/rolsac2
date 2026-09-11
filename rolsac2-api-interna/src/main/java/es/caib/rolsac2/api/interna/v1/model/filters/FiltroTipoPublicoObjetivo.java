@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoPublicoObjetivo", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoPublicoObjetivo", type = SchemaType.STRING, description = "Criterios para localizar públicos objetivo del catálogo SIA")
 public class FiltroTipoPublicoObjetivo extends EntidadJson<FiltroTipoPublicoObjetivo> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoPublicoObjetivo.class);
@@ -31,13 +31,13 @@ public class FiltroTipoPublicoObjetivo extends EntidadJson<FiltroTipoPublicoObje
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del público objetivo", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de públicos objetivo del catálogo que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

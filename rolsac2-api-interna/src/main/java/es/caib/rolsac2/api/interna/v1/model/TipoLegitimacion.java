@@ -23,25 +23,25 @@ public class TipoLegitimacion extends EntidadBase<TipoLegitimacion> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del tipo de legitimación", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * descripcion.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción del tipo de legitimación", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del tipo de legitimación", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     /**
      * Legitimacion
      **/
-    @Schema(description = "porDefecto", name = "porDefecto", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Indica si este tipo de legitimación se utiliza por defecto", name = "porDefecto", type = SchemaType.INTEGER, required = false)
     private Integer porDefecto;
 
     public TipoLegitimacion(TipoLegitimacionDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {

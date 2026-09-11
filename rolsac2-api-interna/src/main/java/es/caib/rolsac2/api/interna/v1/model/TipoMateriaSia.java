@@ -23,25 +23,25 @@ public class TipoMateriaSia extends EntidadBase<TipoMateriaSia> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador de la materia en el catálogo SIA", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * descripcion.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción de la materia del catálogo SIA", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código interno de la materia", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     /**
      * codigo sia
      **/
-    @Schema(description = "codigoSIA", name = "codigoSIA", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código de la materia en el catálogo SIA", name = "codigoSIA", type = SchemaType.INTEGER, required = false)
     private Long codigoSIA;
 
     public TipoMateriaSia(TipoMateriaSIADTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {

@@ -26,11 +26,11 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 	/**
 	 * Identificador
 	 */
-	@Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+	@Schema(description = "Identificador del tipo de unidad administrativa", name = "identificador", type = SchemaType.STRING, required = true)
 	private String identificador;
 
 	/** descripcion. **/
-	@Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+	@Schema(description = "Descripción del tipo de unidad administrativa", name = "descripcion", type = SchemaType.STRING, required = false)
 	private String descripcion;
 
 	@Schema(description = "link_entidad", required = false)
@@ -43,29 +43,29 @@ public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrati
 	/**
 	 * Cargo Masculino
 	 */
-	@Schema(description = "cargoMasculino", name = "cargoMasculino", type = SchemaType.STRING, required = false)
+	@Schema(description = "Denominación del cargo en masculino", name = "cargoMasculino", type = SchemaType.STRING, required = false)
 	private String cargoMasculino;
 
 	/**
 	 * Cargo Femenino
 	 */
-	@Schema(description = "cargoFemenino", name = "cargoFemenino", type = SchemaType.STRING, required = false)
+	@Schema(description = "Denominación del cargo en femenino", name = "cargoFemenino", type = SchemaType.STRING, required = false)
 	private String cargoFemenino;
 
 	/**
 	 * Tratamiento masculino
 	 */
-	@Schema(description = "tratamientoMasculino", name = "tratamientoMasculino", type = SchemaType.STRING, required = false)
+	@Schema(description = "Tratamiento asociado en masculino", name = "tratamientoMasculino", type = SchemaType.STRING, required = false)
 	private String tratamientoMasculino;
 
 	/**
 	 * Tratamiento femenino
 	 */
-	@Schema(description = "tratamientoFemenino", name = "tratamientoFemenino", type = SchemaType.STRING, required = false)
+	@Schema(description = "Tratamiento asociado en femenino", name = "tratamientoFemenino", type = SchemaType.STRING, required = false)
 	private String tratamientoFemenino;
 
 	/** codigo **/
-	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+	@Schema(description = "Código numérico del tipo de unidad administrativa", name = "codigo", type = SchemaType.INTEGER, required = false)
 	private Long codigo;
 
 	public TipoUnidadAdministrativa(TipoUnidadAdministrativaDTO nodo, String urlBase, String idioma,

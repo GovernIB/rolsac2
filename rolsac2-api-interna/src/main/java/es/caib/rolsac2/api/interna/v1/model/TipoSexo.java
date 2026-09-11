@@ -23,19 +23,19 @@ public class TipoSexo extends EntidadBase<TipoSexo> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del tipo de sexo", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * descripcion.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción del tipo de sexo", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del tipo de sexo", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
     public TipoSexo(TipoSexoDTO nodo, String urlBase, String idioma,

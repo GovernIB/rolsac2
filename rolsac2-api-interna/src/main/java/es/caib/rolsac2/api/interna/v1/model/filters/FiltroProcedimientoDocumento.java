@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Indra
  */
 @XmlRootElement
-@Schema(name = "FiltroProcedimientoDocumentos", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroProcedimientoDocumentos", type = SchemaType.STRING, description = "Criterios para localizar documentos vinculados a procedimientos")
 public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimientoDocumento> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroProcedimientoDocumento.class);
@@ -46,7 +46,7 @@ public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimient
     /**
      * Orden
      */
-    @Schema(name = "orden", description = "orden", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "orden", description = "Posición del documento dentro de la relación del procedimiento", type = SchemaType.INTEGER, required = false)
     private Integer orden;
 
     /**
@@ -56,7 +56,7 @@ public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimient
     private CampoOrden campoOrden;
 
     /*Fichero asociado al documento*/
-    @Schema(name = "codigoDocumento", description = "codigoDocumento", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoDocumento", description = "Código del documento vinculado al procedimiento", type = SchemaType.INTEGER, required = false)
     private Long codigoDocumento;
 
 //    /**
@@ -68,13 +68,13 @@ public class FiltroProcedimientoDocumento extends EntidadJson<FiltroProcedimient
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de documentos vinculados al procedimiento que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el título o descripción del documento", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**

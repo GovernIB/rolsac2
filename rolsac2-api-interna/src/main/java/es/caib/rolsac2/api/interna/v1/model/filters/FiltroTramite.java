@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Indra
  */
 @XmlRootElement
-@Schema(name = "FiltroTramite", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTramite", type = SchemaType.STRING, description = "Criterios para localizar trámites de un procedimiento")
 public class FiltroTramite extends EntidadJson<FiltroTramite> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTramite.class);
@@ -44,7 +44,7 @@ public class FiltroTramite extends EntidadJson<FiltroTramite> {
     @Schema(name = "codigoUnidadAdministrativa", description = "Código de la unidad administrativa. Este valor puede sacarse del método /services/v1/unidades_administrativas", type = SchemaType.INTEGER, required = false)
     private Long codigoUnidadAdministrativa;
 
-    @Schema(name = "codigoProcedimiento", description = "codigoProcedimiento", type = SchemaType.INTEGER, required = false)
+    @Schema(name = "codigoProcedimiento", description = "Código del procedimiento al que pertenece el trámite", type = SchemaType.INTEGER, required = false)
     private Long codigoProcedimiento;
 
     @Schema(name = "codigoProcedimientoWF", description = "Código workflow del procedimiento. Se puede consultar en el método /services/v1/procedimientos", type = SchemaType.INTEGER, required = false)

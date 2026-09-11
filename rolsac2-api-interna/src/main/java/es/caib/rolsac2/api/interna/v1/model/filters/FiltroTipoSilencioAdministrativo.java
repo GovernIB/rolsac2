@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-@Schema(name = "FiltroTipoSilencioAdministrativo", type = SchemaType.STRING, description = "Filtro que permite buscar por diferentes campos")
+@Schema(name = "FiltroTipoSilencioAdministrativo", type = SchemaType.STRING, description = "Criterios para localizar tipos de silencio administrativo")
 public class FiltroTipoSilencioAdministrativo extends EntidadJson<FiltroTipoSilencioAdministrativo> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroTipoSilencioAdministrativo.class);
@@ -31,13 +31,13 @@ public class FiltroTipoSilencioAdministrativo extends EntidadJson<FiltroTipoSile
     /**
      * texto.
      **/
-    @Schema(name = "texto", description = "texto", type = SchemaType.STRING, required = false)
+    @Schema(name = "texto", description = "Texto a buscar en el identificador o descripción del tipo de silencio administrativo", type = SchemaType.STRING, required = false)
     private String texto;
 
     /**
      * FiltroPaginacion.
      **/
-    @Schema(name = "filtroPaginacion", description = "filtroPaginacion", required = false)
+    @Schema(name = "filtroPaginacion", description = "Página y número máximo de tipos de silencio administrativo que se devolverán", required = false)
     private FiltroPaginacion filtroPaginacion;
 
     /**

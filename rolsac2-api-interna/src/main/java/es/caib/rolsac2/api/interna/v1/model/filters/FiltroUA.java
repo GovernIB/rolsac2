@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author indra
  */
 @XmlRootElement
-@Schema(name = "FiltroUA", description = "Filtro propio de la entidad Unidad Administrativa")
+@Schema(name = "FiltroUA", description = "Criterios para localizar unidades administrativas por identificación, entidad, estado o relación jerárquica")
 public class FiltroUA extends EntidadJson<FiltroUA> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FiltroUA.class);

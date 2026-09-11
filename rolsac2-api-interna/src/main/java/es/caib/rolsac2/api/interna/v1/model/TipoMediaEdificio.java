@@ -25,22 +25,22 @@ public class TipoMediaEdificio extends EntidadBase<TipoMediaEdificio> {
     /**
      * Identificador
      */
-    @Schema(description = "identificador", name = "identificador", type = SchemaType.STRING, required = true)
+    @Schema(description = "Identificador del tipo de medio o recurso del edificio", name = "identificador", type = SchemaType.STRING, required = true)
     private String identificador;
 
     /**
      * enlace.
      **/
-    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "Descripción del tipo de medio o recurso del edificio", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
     /**
      * codigo
      **/
-    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    @Schema(description = "Código numérico del tipo de medio o recurso", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    @Schema(description = "link_entidad", required = false)
+    @Schema(description = "Enlace a la entidad propietaria del tipo de medio", required = false)
     private Link link_entidad;
     @Schema(hidden = true)
     @JsonIgnore
