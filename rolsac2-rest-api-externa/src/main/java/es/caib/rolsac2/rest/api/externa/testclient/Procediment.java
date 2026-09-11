@@ -3,10 +3,11 @@ package es.caib.rolsac2.rest.api.externa.testclient;
 import java.io.Serializable;
 
 /**
- * Modelo de cliente para la respuesta de /procediments/.
- *
- * Es una copia ligera del contrato público de Procediment:
- * no contiene dependencias de JBoss, OpenAPI, SLF4J ni de los DTO internos.
+ * Modelo standalone del cliente de ejemplo.
+ * <p>
+ * IMPORTANTE:
+ * Debe mantenerse sincronizado con
+ * es.caib.rolsac2.api.externa.v1.model.Procediment.
  */
 public class Procediment implements Serializable {
 
@@ -42,6 +43,8 @@ public class Procediment implements Serializable {
     private Boolean habilitatApoderat;
     private Boolean habilitatFuncionari;
     private String terminiResolucio;
+    private Long tipusProcedimientoCodi;
+    private String tipusProcedimientoNom;
 
     public Procediment() {
     }
@@ -284,6 +287,22 @@ public class Procediment implements Serializable {
 
     public void setTerminiResolucio(String terminiResolucio) {
         this.terminiResolucio = terminiResolucio;
+    }
+
+    public Long getTipusProcedimientoCodi() {
+        return tipusProcedimientoCodi;
+    }
+
+    public void setTipusProcedimientoCodi(Long tipusProcedimientoCodi) {
+        this.tipusProcedimientoCodi = tipusProcedimientoCodi;
+    }
+
+    public String getTipusProcedimientoNom() {
+        return tipusProcedimientoNom;
+    }
+
+    public void setTipusProcedimientoNom(String tipusProcedimientoNom) {
+        this.tipusProcedimientoNom = tipusProcedimientoNom;
     }
 
     @Override

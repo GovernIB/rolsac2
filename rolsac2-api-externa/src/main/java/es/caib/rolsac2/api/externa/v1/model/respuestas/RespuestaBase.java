@@ -4,24 +4,29 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.net.URI;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * RespuestaBase. Estructura de respuesta que contiene la información comun a todas las respuestas.
+ * Estructura comuna de resposta de l'API REST externa.
  *
- * @author indra
+ * <p>Conté exclusivament els camps comuns definits pel contracte:
+ * metadades del conjunt de dades, informació de paginació, els elements
+ * retornats i el temps d'execució.</p>
+ *
+ * @param <T> tipus dels elements continguts a {@code items}
  */
 @XmlRootElement
 @Schema(
         name = "RespuestaBase",
-        description = "Estructura general de resposta de l'API REST externa."
+        description = "Estructura comuna de resposta de l'API REST externa."
 )
-public class RespuestaBase {
-
+public class RespuestaBase<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,151 +34,209 @@ public class RespuestaBase {
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final ZoneId ZONA = ZoneId.of("Europe/Madrid");
 
-    @Schema(
-            description = "Nom del conjunt de dades.",
-            example = "Procediments"
-    )
+    @Schema(description = "Nom del conjunt de dades.", example = "Procediments")
     private String title;
 
     @Schema(
             description = "Descripció clara i concisa de l'acció realitzada pel servei.",
-            example = "Consulta de procediments disponibles."
+            example = "Retorna els procediments disponibles en funció dels filtres indicats."
     )
     private String description;
 
     @Schema(
-            description = "Cobertura geogràfica. En l'aplicació correspon a l'entitat.",
+            description = "Cobertura geogràfica. A ROLSAC2 correspon a l'entitat consultada.",
             example = "1"
     )
     private String spatial;
 
     @Schema(
-            description = "Codi DIR3 del creador. En l'aplicació correspon a l'arrel.",
+            description = "Codi DIR3 del creador. A ROLSAC2 correspon al codi DIR3 de l'arrel.",
             example = "A04003003"
     )
     private String creator;
 
     @Schema(
-            description = "Data de descàrrega en format ISO8601.",
-            example = "2022-07-26T12:58:55+02:00"
+            description = "Data i hora de descàrrega en format ISO8601 amb offset.",
+            example = "2026-09-10T17:30:00+02:00"
     )
-    private String dateDownload = generarDateDownload();
+    private String dateDownload;
 
-    @Schema(
-            description = "Nombre total d'elements disponibles.",
-            example = "125"
-    )
+    @Schema(description = "Nombre total d'elements que compleixen la consulta.", example = "125")
     private Long totalCount;
 
-    @Schema(
-            description = "Nombre total d'elements retornats en la pàgina actual.",
-            example = "20"
-    )
+    @Schema(description = "Nombre d'elements retornats a la pàgina actual.", example = "20")
     private Integer itemsReturned;
 
-    @Schema(
-            description = "Mida de la pàgina.",
-            example = "20"
-    )
+    @Schema(description = "Mida de pàgina aplicada.", example = "20")
     private Integer pageSize;
 
-    @Schema(
-            description = "Nombre total de pàgines.",
-            example = "7"
-    )
+    @Schema(description = "Nombre total de pàgines.", example = "7")
     private Integer totalPages;
 
-    @Schema(
-            description = "Número de la pàgina actual.",
-            example = "1"
-    )
+    @Schema(description = "Número de la pàgina actual, començant per 0.", example = "0")
     private Integer page;
 
     @Schema(
-            description = "URL completa per accedir a la pàgina següent. "
-                    + "Serà nul si és la darrera pàgina.",
-            example = "https://servidor/api/procediments?page=2&page-size=20",
+            description = "URL completa de la pàgina següent. És nul·la si no hi ha pàgina següent.",
+            example = "https://servidor/rolsac2api/externa/services/v1/procediments?page=1&page-size=20",
             nullable = true
     )
     private String nextUrl;
 
     @Schema(
-            description = "URL completa per accedir a la pàgina anterior. "
-                    + "Serà nul si és la primera pàgina.",
-            example = "https://servidor/api/procediments?page=1&page-size=20",
+            description = "URL completa de la pàgina anterior. És nul·la si no hi ha pàgina anterior.",
+            example = "https://servidor/rolsac2api/externa/services/v1/procediments?page=0&page-size=20",
             nullable = true
     )
     private String previousUrl;
 
-    @Schema(
-            description = "Llista d'elements retornats."
-    )
-    private List<?> items;
+    /**
+     * En la classe base el tipus és genèric. Els esquemes concrets
+     * RespuestaProcedimientos i RespuestaServicios documenten explícitament
+     * Procediment i Servei respectivament.
+     */
+    @Schema(description = "Llista d'elements retornats.")
+    private List<T> items;
 
-    @Schema(
-            description = "Temps d'execució del servei en mil·lisegons.",
-            example = "125"
-    )
+    @Schema(description = "Temps d'execució del servei en mil·lisegons.", example = "125")
     private Long tiempo;
 
     public RespuestaBase() {
-        // Constructor por defecto
+        this.dateDownload = generarDateDownload();
+        this.items = Collections.emptyList();
     }
 
-    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url,
-                         List<?> lista, long tiempoMiliSegundos) {
-        this.totalCount = (long) total;
-        this.itemsReturned = size;
-        this.pageSize = paginaTamanyo;
-        this.page = paginaFirst;
+    /**
+     * Constructor principal per a respostes paginades.
+     */
+    public RespuestaBase(final long total,
+                         final Integer paginaTamanyo,
+                         final Integer pagina,
+                         final URI requestUri,
+                         final List<T> lista,
+                         final long tiempoMiliSegundos) {
+
+        this.dateDownload = generarDateDownload();
+        this.totalCount = Math.max(0L, total);
+        this.pageSize = normalitzarPageSize(paginaTamanyo);
+        this.page = normalitzarPagina(pagina);
+        this.items = lista != null ? lista : Collections.<T>emptyList();
+        this.itemsReturned = this.items.size();
+        this.totalPages = calcularTotalPaginas(this.totalCount, this.pageSize);
+        this.tiempo = Math.max(0L, tiempoMiliSegundos);
+
+        completarUrlsPaginacion(this.totalCount, this.pageSize, this.page, requestUri);
+    }
+
+    /**
+     * Constructor compatible amb el codi existent.
+     *
+     * <p>El paràmetre {@code size} es conserva per compatibilitat, però
+     * {@code itemsReturned} es calcula sempre a partir de la llista real.</p>
+     */
+    public RespuestaBase(final int total,
+                         final int size,
+                         final Integer paginaTamanyo,
+                         final Integer pagina,
+                         final URI requestUri,
+                         final List<T> lista,
+                         final long tiempoMiliSegundos) {
+        this((long) total, paginaTamanyo, pagina, requestUri, lista, tiempoMiliSegundos);
+    }
+
+    /**
+     * Constructor antic conservat únicament per compatibilitat binària/fonte.
+     *
+     * @deprecated utilitzar el constructor que rep {@link URI}, ja que és
+     *             l'únic que pot calcular correctament nextUrl/previousUrl.
+     */
+    @Deprecated
+    public RespuestaBase(final int total,
+                         final int size,
+                         final Integer paginaTamanyo,
+                         final Integer pagina,
+                         final String url,
+                         final List<T> lista,
+                         final long tiempoMiliSegundos) {
+
+        this.dateDownload = generarDateDownload();
+        this.totalCount = Math.max(0L, total);
+        this.pageSize = normalitzarPageSize(paginaTamanyo);
+        this.page = normalitzarPagina(pagina);
+        this.items = lista != null ? lista : Collections.<T>emptyList();
+        this.itemsReturned = this.items.size();
+        this.totalPages = calcularTotalPaginas(this.totalCount, this.pageSize);
         this.nextUrl = url;
-        this.items = lista;
-        this.tiempo = tiempoMiliSegundos;
+        this.tiempo = Math.max(0L, tiempoMiliSegundos);
     }
 
-    public RespuestaBase(int total, int size, Integer paginaTamanyo, Integer pagina, URI requestUri,
-                         List<?> lista, long tiempoMiliSegundos) {
-        this.totalCount = (long) total;
-        this.itemsReturned = size;
-        this.pageSize = paginaTamanyo != null ? paginaTamanyo : DEFAULT_PAGE_SIZE;
-        this.page = pagina != null && pagina >= 0 ? pagina : DEFAULT_PAGE;
-        this.totalPages = calcularTotalPaginas(total, this.pageSize);
-        this.items = lista;
-        this.tiempo = tiempoMiliSegundos;
-
-        completarUrlsPaginacion(total, this.pageSize, this.page, requestUri);
+    /**
+     * Constructor utilitzat per respostes simples d'estat.
+     */
+    public RespuestaBase(final String status, final String msg, final long tiempo) {
+        this();
+        this.title = status;
+        this.description = msg;
+        this.tiempo = Math.max(0L, tiempo);
     }
 
     private static String generarDateDownload() {
-        return Instant.now().atZone(ZONA).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        return Instant.now()
+                .atZone(ZONA)
+                .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
-    private Integer calcularTotalPaginas(final int total, final Integer paginaTamanyo) {
-        if (paginaTamanyo == null || paginaTamanyo <= 0) {
+    private static int normalitzarPageSize(final Integer paginaTamanyo) {
+        return paginaTamanyo != null && paginaTamanyo > 0
+                ? paginaTamanyo
+                : DEFAULT_PAGE_SIZE;
+    }
+
+    private static int normalitzarPagina(final Integer pagina) {
+        return pagina != null && pagina >= 0
+                ? pagina
+                : DEFAULT_PAGE;
+    }
+
+    private static Integer calcularTotalPaginas(final long total, final int paginaTamanyo) {
+        if (total <= 0L) {
             return 0;
         }
-        return (int) Math.ceil((double) total / paginaTamanyo);
+        return (int) Math.ceil((double) total / (double) paginaTamanyo);
     }
 
-    private void completarUrlsPaginacion(final int total, final Integer paginaTamanyo,
-                                         final Integer paginaActual, final URI requestUri) {
-        if (requestUri == null || paginaTamanyo == null || paginaTamanyo <= 0) {
+    private void completarUrlsPaginacion(final long total,
+                                         final int paginaTamanyo,
+                                         final int paginaActual,
+                                         final URI requestUri) {
+
+        if (requestUri == null) {
             return;
         }
 
-        final int pagina = paginaActual != null && paginaActual > 0 ? paginaActual : 0;
-
-        if (pagina > 0) {
-            this.previousUrl = construirUrlPaginacion(requestUri, pagina - 1, paginaTamanyo);
+        if (paginaActual > 0) {
+            this.previousUrl = construirUrlPaginacion(
+                    requestUri,
+                    paginaActual - 1,
+                    paginaTamanyo
+            );
         }
 
-        final long primerElementoPaginaSiguiente = ((long) pagina + 1) * paginaTamanyo;
+        final long primerElementoPaginaSiguiente =
+                ((long) paginaActual + 1L) * (long) paginaTamanyo;
+
         if (primerElementoPaginaSiguiente < total) {
-            this.nextUrl = construirUrlPaginacion(requestUri, pagina + 1, paginaTamanyo);
+            this.nextUrl = construirUrlPaginacion(
+                    requestUri,
+                    paginaActual + 1,
+                    paginaTamanyo
+            );
         }
     }
 
-    private String construirUrlPaginacion(final URI requestUri, final int pagina, final int paginaTamanyo) {
+    private static String construirUrlPaginacion(final URI requestUri,
+                                                 final int pagina,
+                                                 final int paginaTamanyo) {
         return UriBuilder.fromUri(requestUri)
                 .replaceQueryParam("page")
                 .replaceQueryParam("page-size")
@@ -181,12 +244,6 @@ public class RespuestaBase {
                 .queryParam("page-size", paginaTamanyo)
                 .build()
                 .toString();
-    }
-
-    public RespuestaBase(String status, String msg, long tiempo) {
-        this.title = status;
-        this.description = msg;
-        this.tiempo = tiempo;
     }
 
     public String getTitle() {
@@ -285,12 +342,13 @@ public class RespuestaBase {
         this.previousUrl = previousUrl;
     }
 
-    public List<?> getItems() {
+    public List<T> getItems() {
         return items;
     }
 
-    public void setItems(final List<?> items) {
-        this.items = items;
+    public void setItems(final List<T> items) {
+        this.items = items != null ? items : Collections.<T>emptyList();
+        this.itemsReturned = this.items.size();
     }
 
     public Long getTiempo() {

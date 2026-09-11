@@ -1,6 +1,5 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
-import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -10,10 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Informació pública d'un servei.
@@ -87,12 +83,7 @@ public class Servei implements Serializable {
     private Long plataformaTramitCodi;
     @Schema(description = "Nom de la plataforma de tramitació.")
     private String plataformaTramitNom;
-    /*@Schema(description = "Codi de la plantilla de tramitació.")
-    private Long plantillaTramitCodi;
-    @Schema(description = "Nom de la plantilla de tramitació.")
-    private String plantillaTramitNom;*/
-    @Schema(description = "Públics objectiu, aplanats a codi i nom.")
-    private List<PublicObjectiu> publicsObjectius;
+
 
     public Servei() {
         // Constructor por defecto.
@@ -282,22 +273,6 @@ public class Servei implements Serializable {
     public void setActiuLOPD(final Boolean actiuLOPD) {
         this.actiuLOPD = actiuLOPD;
     }
-/*
-    public Long getTipusTramitacioCodi() {
-        return tipusTramitacioCodi;
-    }
-
-    public void setTipusTramitacioCodi(final Long tipusTramitacioCodi) {
-        this.tipusTramitacioCodi = tipusTramitacioCodi;
-    }
-
-    public String getTipusTramitacioNom() {
-        return tipusTramitacioNom;
-    }
-
-    public void setTipusTramitacioNom(final String tipusTramitacioNom) {
-        this.tipusTramitacioNom = tipusTramitacioNom;
-    }*/
 
     public Boolean getTramitPresencial() {
         return tramitPresencial;
@@ -345,30 +320,6 @@ public class Servei implements Serializable {
 
     public void setPlataformaTramitNom(final String plataformaTramitNom) {
         this.plataformaTramitNom = plataformaTramitNom;
-    }
-/*
-    public Long getPlantillaTramitCodi() {
-        return plantillaTramitCodi;
-    }
-
-    public void setPlantillaTramitCodi(final Long plantillaTramitCodi) {
-        this.plantillaTramitCodi = plantillaTramitCodi;
-    }
-
-    public String getPlantillaTramitNom() {
-        return plantillaTramitNom;
-    }
-
-    public void setPlantillaTramitNom(final String plantillaTramitNom) {
-        this.plantillaTramitNom = plantillaTramitNom;
-    }*/
-
-    public List<PublicObjectiu> getPublicsObjectius() {
-        return publicsObjectius;
-    }
-
-    public void setPublicsObjectius(final List<PublicObjectiu> publicsObjectius) {
-        this.publicsObjectius = publicsObjectius;
     }
 
     /**
@@ -425,8 +376,8 @@ public class Servei implements Serializable {
             this.tramitPresencial = nodo.isTramitPresencial();
             this.tramitElectronica = nodo.isTramitElectronica();
             this.tramitTelefonica = nodo.isTramitTelefonica();
-            this.publicsObjectius = mapPublicsObjectius(nodo.getPublicosObjetivo(), idioma, idiomaPorDefecto);
-            this.url = resolveSeuUrl(urlBase, idioma, this.codi);
+            //this.publicsObjectius = mapPublicsObjectius(nodo.getPublicosObjetivo(), idioma, idiomaPorDefecto);
+            //this.url = resolveSeuUrl(urlBase, idioma, this.codi);
         } catch (Exception e) {
             LOG.error("Error generando servei {}", this.codi, e);
         }
@@ -453,7 +404,7 @@ public class Servei implements Serializable {
         if (value == null) return null;
         return "S".equalsIgnoreCase(value) || "1".equals(value) || "true".equalsIgnoreCase(value);
     }
-
+/*
     private List<PublicObjectiu> mapPublicsObjectius(final List<TipoPublicoObjetivoEntidadGridDTO> value,
                                                      final String idioma,
                                                      final String idiomaPorDefecto) {
@@ -501,5 +452,5 @@ public class Servei implements Serializable {
         public void setNom(final String nom) {
             this.nom = nom;
         }
-    }
+    } */
 }

@@ -322,9 +322,9 @@ public class Utiles {
         }
         String base = urlBase.endsWith("/") ? urlBase.substring(0, urlBase.length() - 1) : urlBase;
         if (procedimiento) {
-            return base + "/seucaib/" + idioma.trim() + "/200/persones%20/tramites/tramite/" + codigo;
+            return base + "/seucaib/" + idioma.trim() + "/200/persones/tramites/tramite/" + codigo;
         } else {
-            return base + "/seucaib/" + idioma.trim() + "/200/persones%20/tramites/servicio/" + codigo;
+            return base + "/seucaib/" + idioma.trim() + "/200/persones/tramites/servicio/" + codigo;
         }
 
     }

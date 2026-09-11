@@ -1,88 +1,60 @@
 package es.caib.rolsac2.api.externa.v1.model.respuestas;
 
 import es.caib.rolsac2.api.externa.v1.model.Procediment;
-import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.net.URI;
 import java.util.List;
 
 /**
- * Respuesta Procedimientos
+ * Resposta tipada del servei de consulta de procediments.
  *
- * @author Indra
+ * <p>No afegeix cap camp al JSON de RespuestaBase. La seva funció és
+ * concretar que {@code items} conté objectes {@link Procediment}, perquè
+ * Swagger/OpenAPI mostri correctament l'esquema de retorn.</p>
  */
-
 @XmlRootElement
-@Schema(name = "RespuestaProcedimientos", description = Constantes.TXT_RESPUESTA + Constantes.ENTIDAD_PROCEDIMIENTO)
-public class RespuestaProcedimientos extends RespuestaBase {
+@Schema(
+        name = "RespostaProcediments",
+        description = "Resposta paginada de la consulta de procediments."
+)
+public class RespuestaProcedimientos extends RespuestaBase<Procediment> {
 
-    /**
-     * Resultado.
-     **/
-    @Schema(description = "Listado con los objetos de resultado")
-    private List<Procediment> resultado;
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * Url.
-     **/
-    @Schema(description = "Enlace tramite telematico")
-    private String url;
-
-    /**
-     * Constructor
-     *
-     * @param total              Total de elementos
-     * @param size               Tamaño de la página
-     * @param paginaTamanyo      Tamaño de la página
-     * @param paginaFirst        Primer elemento de la página
-     * @param url                URL del recurso
-     * @param lista              Lista de procedimientos
-     * @param tiempoMiliSegundos Tiempo en milisegundos
-     */
-    public RespuestaProcedimientos(int total, int size, Integer paginaTamanyo, Integer paginaFirst, String url, List<Procediment> lista, long tiempoMiliSegundos) {
-        super(total, size, paginaTamanyo, paginaFirst, url, lista, tiempoMiliSegundos);
-        this.url = url;
-        this.resultado = lista;
-    }
-
-    /**
-     * Constructor vacio.
-     */
     public RespuestaProcedimientos() {
         super();
     }
 
-    /**
-     * Devuelve el resultado.
-     *
-     * @return
-     */
-    public List<Procediment> getResultado() {
-        return resultado;
+    public RespuestaProcedimientos(final long total,
+                                   final Integer paginaTamanyo,
+                                   final Integer pagina,
+                                   final URI requestUri,
+                                   final List<Procediment> lista,
+                                   final long tiempoMiliSegundos) {
+        super(total, paginaTamanyo, pagina, requestUri, lista, tiempoMiliSegundos);
     }
 
-    /**
-     * Establece el resultado.
-     *
-     * @param resultado
-     */
-    public void setResultado(final List<Procediment> resultado) {
-        this.resultado = resultado;
+    public RespuestaProcedimientos(final int total,
+                                   final int size,
+                                   final Integer paginaTamanyo,
+                                   final Integer pagina,
+                                   final URI requestUri,
+                                   final List<Procediment> lista,
+                                   final long tiempoMiliSegundos) {
+        super(total, size, paginaTamanyo, pagina, requestUri, lista, tiempoMiliSegundos);
     }
 
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return url;
+    @Override
+    @Schema(description = "Llista de procediments retornats.")
+
+    public List<Procediment> getItems() {
+        return super.getItems();
     }
 
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(final String url) {
-        this.url = url;
+    @Override
+    public void setItems(final List<Procediment> items) {
+        super.setItems(items);
     }
-
 }

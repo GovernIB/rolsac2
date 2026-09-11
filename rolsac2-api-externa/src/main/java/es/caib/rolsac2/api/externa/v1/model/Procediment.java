@@ -138,14 +138,14 @@ public class Procediment implements Serializable {
             description = "Nom del silenci del procediment."
     )
     private String silenciNom;
-    /*@Schema(
+    @Schema(
             description = "Codi del tipus de procediment."
     )
     private Long tipusProcedimientoCodi;
     @Schema(
             description = "Nom del tipus de procediment."
     )
-    private String tipusProcedimientoNom;*/
+    private String tipusProcedimientoNom;
     @Schema(
             description = "Codi del tipus de via del procediment."
     )
@@ -370,7 +370,7 @@ public class Procediment implements Serializable {
     public void setSilenciNom(final String silenciNom) {
         this.silenciNom = silenciNom;
     }
-/*
+
     public Long getTipusProcedimientoCodi() {
         return tipusProcedimientoCodi;
     }
@@ -385,7 +385,7 @@ public class Procediment implements Serializable {
 
     public void setTipusProcedimientoNom(final String tipusProcedimientoNom) {
         this.tipusProcedimientoNom = tipusProcedimientoNom;
-    }*/
+    }
 
     public Long getTipusViaCodi() {
         return tipusViaCodi;
@@ -456,8 +456,8 @@ public class Procediment implements Serializable {
             if (nodo.getTipoProcedimiento() != null) {
                 this.tipusCodi = nodo.getTipoProcedimiento().getCodigo();
                 this.tipusNom = getTraduccion(nodo.getTipoProcedimiento().getDescripcion(), idioma, idiomaPorDefecto);
-                //       this.tipusProcedimientoCodi = this.tipusCodi;
-                //     this.tipusProcedimientoNom = this.tipusNom;
+                this.tipusProcedimientoCodi = this.tipusCodi;
+                this.tipusProcedimientoNom = this.tipusNom;
             }
             this.estat = nodo.getEstado() == null ? null : nodo.getEstado().name();
             if (nodo.getIniciacion() != null) {
@@ -533,8 +533,8 @@ public class Procediment implements Serializable {
                 ", iniciacionNom='" + iniciacionNom + '\'' +
                 ", silenciCodi=" + silenciCodi +
                 ", silenciNom='" + silenciNom + '\'' +
-      /*          ", tipusProcedimientoCodi=" + tipusProcedimientoCodi +
-                ", tipusProcedimientoNom='" + tipusProcedimientoNom + '\'' +*/
+                ", tipusProcedimientoCodi=" + tipusProcedimientoCodi +
+                ", tipusProcedimientoNom='" + tipusProcedimientoNom + '\'' +
                 ", tipusViaCodi=" + tipusViaCodi +
                 ", tipusViaNom='" + tipusViaNom + '\'' +
                 ", habilitatApoderat=" + habilitatApoderat +

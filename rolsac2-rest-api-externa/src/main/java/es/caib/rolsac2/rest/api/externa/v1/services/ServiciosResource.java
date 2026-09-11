@@ -1,7 +1,7 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
 import es.caib.rolsac2.api.externa.v1.model.Servei;
-import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaBase;
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaServicios;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
@@ -59,7 +59,7 @@ public class ServiciosResource {
             description = "Llista els serveis disponibles en funció dels filtres indicats.")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO,
             content = @Content(mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = RespuestaBase.class)))
+                    schema = @Schema(implementation = RespuestaServicios.class)))
     public Response listarServicios(
             @Parameter(description = "Idioma de la informació retornada. Per defecte, català.", name = "idioma", in = ParameterIn.QUERY,
                     schema = @Schema(defaultValue = "ca"))
@@ -185,7 +185,13 @@ public class ServiciosResource {
             fg.setUaInstructorNombre(uaInstructorNom.trim());
         }
         if (comu != null) fg.setComun(comu ? "S" : "N");
-        if (hasText(estat)) fg.setEstado(estat.trim());
+        if (hasText(estat)) {
+            if ("P".equals(estat.trim()) || "T".equals(estat.trim()) || "PT".equals(estat.trim())) {
+                fg.setEstado(estat.trim());
+            } else {
+                throw new ValidationException("estat ha de ser P, T o PT.");
+            }
+        }
         //if (habilitatApoderat != null) fg.setHabilitadoApoderado(habilitatApoderat);
         //if (habilitatFuncionari != null) fg.setHabilitadoFuncionario(habilitatFuncionari);
         //if (hasText(terminiResolucio)) fg.setTerminoResolucion(terminiResolucio.trim());
@@ -229,14 +235,14 @@ public class ServiciosResource {
         fg.setIdioma(idioma != null ? idioma : idiomaPorDefecto);
         Integer apiMaxLimit = aplicarApiMaxLimit(fg);
         URI uriCompleta = uriInfo.getRequestUri();
-        RespuestaBase respuesta = getRespuesta(fg, idiomaPorDefecto, start, uriCompleta, apiMaxLimit,
+        RespuestaServicios respuesta = getRespuesta(fg, idiomaPorDefecto, start, uriCompleta, apiMaxLimit,
                 paginaActual, tamanyoPaginaSolicitado);
         respuesta.setTitle("Serveis");
         respuesta.setDescription("Retorna els serveis disponibles en funció dels filtres indicats com a paràmetres de consulta.");
         return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
     }
 
-    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
+    private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
                                        final Instant start, final URI requestUri, final Integer apiMaxLimit,
                                        final int paginaActual, final int tamanyoPaginaSolicitado) {
         // El contrato exige sólo versiones definitivas. La consulta REST debe aplicar
@@ -250,8 +256,21 @@ public class ServiciosResource {
         int total = (int) resultadoBusqueda.getTotal();
         if (apiMaxLimit != null && total > apiMaxLimit) total = apiMaxLimit;
         long tiempo = Duration.between(start, Instant.now()).toMillis();
-        return new RespuestaBase(total, lista.size(), tamanyoPaginaSolicitado, paginaActual,
-                requestUri, lista, tiempo);
+        RespuestaServicios respuesta = new RespuestaServicios(
+                total,
+                lista.size(),
+                tamanyoPaginaSolicitado,
+                paginaActual,
+                requestUri,
+                lista,
+                tiempo);
+        respostaMetadata(respuesta, filtro);
+        return respuesta;
+    }
+
+    private void respostaMetadata(final RespuestaServicios respuesta,
+                                  final ProcedimientoFiltro filtro) {
+        respuesta.setSpatial(String.valueOf(filtro.getIdEntidad()));
     }
 
     private String idiomaPorDefecto(final Long idEntidad) {

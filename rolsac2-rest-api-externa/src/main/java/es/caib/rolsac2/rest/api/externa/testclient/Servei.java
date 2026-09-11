@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Modelo de cliente para la respuesta de /serveis/.
- *
- * Es una copia ligera del contrato público de Servei:
- * no contiene dependencias de JBoss, OpenAPI, SLF4J ni de los DTO internos.
+ * Modelo standalone del cliente de ejemplo.
+ * <p>
+ * IMPORTANTE:
+ * Debe mantenerse sincronizado con
+ * es.caib.rolsac2.api.externa.v1.model.Servei.
  */
 public class Servei implements Serializable {
 

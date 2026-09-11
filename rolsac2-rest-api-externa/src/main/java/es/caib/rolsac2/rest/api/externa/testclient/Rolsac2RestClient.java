@@ -270,7 +270,13 @@ public class Rolsac2RestClient {
         p.setHabilitatApoderat(asBoolean(json.get("habilitatApoderat")));
         p.setHabilitatFuncionari(asBoolean(json.get("habilitatFuncionari")));
         p.setTerminiResolucio(asString(json.get("terminiResolucio")));
+        p.setTipusProcedimientoCodi(
+                asLong(json.get("tipusProcedimientoCodi"))
+        );
 
+        p.setTipusProcedimientoNom(
+                asString(json.get("tipusProcedimientoNom"))
+        );
         return p;
     }
 

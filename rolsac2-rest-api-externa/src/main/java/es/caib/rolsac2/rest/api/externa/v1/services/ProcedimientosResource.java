@@ -1,7 +1,7 @@
 package es.caib.rolsac2.rest.api.externa.v1.services;
 
 import es.caib.rolsac2.api.externa.v1.model.Procediment;
-import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaBase;
+import es.caib.rolsac2.api.externa.v1.model.respuestas.RespuestaProcedimientos;
 import es.caib.rolsac2.api.externa.v1.utils.Constantes;
 import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.ProcedimientoServiceFacade;
@@ -77,7 +77,7 @@ public class ProcedimientosResource {
             description = Constantes.MSJ_200_GENERICO,
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = RespuestaBase.class)
+                    schema = @Schema(implementation = RespuestaProcedimientos.class)
             )
     )/*
     @APIResponse(
@@ -390,7 +390,11 @@ public class ProcedimientosResource {
         }
 
         if (estat != null && !estat.trim().isEmpty()) {
-            fg.setEstado(estat.trim());
+            if ("P".equals(estat.trim()) || "T".equals(estat.trim()) || "PT".equals(estat.trim())) {
+                fg.setEstado(estat.trim());
+            } else {
+                throw new ValidationException("estat ha de ser P, T o PT.");
+            }
         }
 
         if (habilitatApoderat != null) {
@@ -432,7 +436,7 @@ public class ProcedimientosResource {
                 fg.setOrder("DESCENDING");
                 fg.setAscendente(false);
             } else {
-                LOG.warn("El parámetro ordenAscendente no es válido: {}", ordenAscendente);
+                throw new ValidationException("ordenAscendente ha de ser asc o desc.");
             }
         }
 
@@ -524,9 +528,9 @@ public class ProcedimientosResource {
     }
 
 
-    private RespuestaBase getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
-                                       final Instant start, final URI requestUri, final Integer apiMaxLimit,
-                                       final int paginaActual, final int tamanyoPaginaSolicitado) {
+    private RespuestaProcedimientos getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
+                                                 final Instant start, final URI requestUri, final Integer apiMaxLimit,
+                                                 final int paginaActual, final int tamanyoPaginaSolicitado) {
         if (debugActivo) LOG.error(" getRespuesta: filtro: {}", filtro);
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
         if (debugActivo) LOG.error(" getRespuesta: resultadoBusqueda: {}", resultadoBusqueda);
@@ -550,7 +554,7 @@ public class ProcedimientosResource {
         long tiempoMiliSegundos = Duration.between(start, finish).toMillis();
         if (debugActivo) LOG.error(" getRespuesta: tiempoMiliSegundos: {}", tiempoMiliSegundos);
 
-        RespuestaBase respuesta = new RespuestaBase(
+        RespuestaProcedimientos respuesta = new RespuestaProcedimientos(
                 total,
                 lista.size(),
                 tamanyoPaginaSolicitado,
@@ -560,6 +564,7 @@ public class ProcedimientosResource {
                 tiempoMiliSegundos);
         respuesta.setTitle("Procediments");
         respuesta.setDescription("Retorna els procediments disponibles en funció dels filtres indicats com a paràmetres de consulta.");
+        respuesta.setSpatial(String.valueOf(filtro.getIdEntidad()));
         return respuesta;
     }
 
