@@ -95,7 +95,7 @@ public class ServiciosResource {
      */
     @POST
     @Path("/")
-    @Operation(operationId = "listarServicios", summary = "Lista los servicios", description = "Lista los servicios disponibles en función de los filtros")
+    @Operation(operationId = "listarServicios", summary = "Lista los servicios", description = "Lista los servicios disponibles que cumplen los criterios de búsqueda y paginación indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarServicios(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de servicios: " + FiltroServicios.SAMPLE, name = "filtro", content = @Content(example = FiltroServicios.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroServicios.class))) FiltroServicios filtro) throws ValidationException {
@@ -226,10 +226,10 @@ public class ServiciosResource {
      */
     @POST
     @Path("/enlaceTelematico/{codigo}")
-    @Operation(operationId = "getEnlaceTelematico", summary = "Obtiene enlace telematico", description = "Obtiene enlace telemático dado servicio")
+    @Operation(operationId = "getEnlaceTelematico", summary = "Obtiene el enlace telemático", description = "Obtiene la URL de tramitación telemática asociada al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getEnlaceTelematico(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws ValidationException {
+    public Response getEnlaceTelematico(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws ValidationException {
         Instant start = Instant.now();
         final ProcedimientoFiltro fg = new ProcedimientoFiltro();
         fg.setCodigoWF(Long.valueOf(codigo));
@@ -261,7 +261,7 @@ public class ServiciosResource {
      */
     @POST
     @Path("/{codigo}")
-    @Operation(operationId = "getPorId", summary = "Obtiene un servicio", description = "Obtiene el servicio con el código indicado")
+    @Operation(operationId = "getPorId", summary = "Obtiene un servicio", description = "Obtiene el servicio identificado por su código WF y el estado WF solicitado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response getPorId(@Parameter(description = "Código servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang,
@@ -339,10 +339,10 @@ public class ServiciosResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/tasas/{codigo}")
-    @Operation(operationId = "listarTasasServicio", summary = "Obtiene la tasa del servicio", description = "Obtiene la tasa asociada al servicio dado por código workflow")
+    @Operation(operationId = "listarTasasServicio", summary = "Obtiene la tasa del servicio", description = "Obtiene la tasa asociada al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarTasaServicio(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+    public Response listarTasaServicio(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
         Instant start = Instant.now();
         List<Tasa> lista = new ArrayList<>();
         try {
@@ -389,10 +389,10 @@ public class ServiciosResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/publicoObjetivoEntidad/{codigo}")
-    @Operation(operationId = "listarPublicoObjetivoEntidad", summary = "Lista los tipos de público objetivo entidad del servicio", description = "Lista los tipos de público objetivo entidad del servicio dado por código workflow")
+    @Operation(operationId = "listarPublicoObjetivoEntidad", summary = "Lista los públicos objetivo de un servicio", description = "Lista los tipos de público objetivo de la entidad asociados al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarPublicoObjetivoEntidad(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+    public Response listarPublicoObjetivoEntidad(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
         Instant start = Instant.now();
         List<TipoPublicoObjetivoEntidadDTO> result = new ArrayList<>();
@@ -439,10 +439,10 @@ public class ServiciosResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/normativas/{codigo}")
-    @Operation(operationId = "listarNormativas", summary = "Lista los normativas del servicio", description = "Lista los normativas del servicio dado por código workflow")
+    @Operation(operationId = "listarNormativas", summary = "Lista las normativas de un servicio", description = "Lista las normativas asociadas al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarNormativas(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+    public Response listarNormativas(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
         Instant start = Instant.now();
         List<NormativaDTO> result = new ArrayList<>();
@@ -488,10 +488,10 @@ public class ServiciosResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/temas/{codigo}")
-    @Operation(operationId = "listarTemas", summary = "Lista los temas del servicio", description = "Lista los temas del servicio dado por código workflow")
+    @Operation(operationId = "listarTemas", summary = "Lista los temas de un servicio", description = "Lista los temas asociados al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarTemas(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+    public Response listarTemas(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
         Instant start = Instant.now();
         List<TemaDTO> result = new ArrayList<>();
         List<Tema> lista = new ArrayList<>();
@@ -537,10 +537,10 @@ public class ServiciosResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/documentos/{codigo}")
-    @Operation(operationId = "listarDocumentos", summary = "Lista los documentos del servicio", description = "Lista los documentos del servicio dado por código workflow")
+    @Operation(operationId = "listarDocumentos", summary = "Lista los documentos de un servicio", description = "Lista los documentos asociados al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarDocumentos(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+    public Response listarDocumentos(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
         Instant start = Instant.now();
         List<ProcedimientoDocumentoDTO> result = new ArrayList<>();
@@ -587,10 +587,10 @@ public class ServiciosResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/documentosLopd/{codigo}")
-    @Operation(operationId = "listarDocumentosLopd", summary = "Lista los documentos LOPD del servicio", description = "Lista los documentos LOPD del servicio dado por código workflow")
+    @Operation(operationId = "listarDocumentosLopd", summary = "Lista los documentos LOPD de un servicio", description = "Lista los documentos LOPD asociados al servicio identificado por su código WF")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response listarDocumentosLopd(@Parameter(description = "Código servicio workflow", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
+    public Response listarDocumentosLopd(@Parameter(description = "Código WF del servicio", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) {
 
         Instant start = Instant.now();
         List<ProcedimientoDocumentoDTO> result = new ArrayList<>();

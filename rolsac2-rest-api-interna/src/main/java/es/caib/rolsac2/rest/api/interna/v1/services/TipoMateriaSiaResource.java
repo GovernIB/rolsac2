@@ -58,7 +58,7 @@ public class TipoMateriaSiaResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listarTiposMateria", summary = "Lista de tipos de materia", description = "Lista todos los tipos de materia disponibles")
+    @Operation(operationId = "listarTiposMateria", summary = "Lista los tipos de materia SIA", description = "Lista los tipos de materia SIA disponibles que cumplen los filtros indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposMateria(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoMateriaSia.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoMateriaSia.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoMateriaSia.class))) FiltroTipoMateriaSia filtro) throws ValidationException {

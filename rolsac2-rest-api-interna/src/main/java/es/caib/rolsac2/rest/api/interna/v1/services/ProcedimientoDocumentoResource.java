@@ -58,7 +58,7 @@ public class ProcedimientoDocumentoResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listar", summary = "Lista los procedimientos documentos", description = "Lista los procedimientos documentos disponibles en funcion de los filtros")
+    @Operation(operationId = "listar", summary = "Lista los documentos de procedimientos", description = "Lista los documentos vinculados a procedimientos que cumplen los filtros indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listar(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro de procedimiento documentos: " + FiltroProcedimientoDocumento.SAMPLE, name = "filtro", content = @Content(example = FiltroProcedimientoDocumento.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroProcedimientoDocumento.class))) FiltroProcedimientoDocumento filtro) throws ValidationException {
@@ -108,10 +108,10 @@ public class ProcedimientoDocumentoResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getPorId", summary = "Obtiene una procedimiento documento", description = "Obtiene el procedimiento documento con el código indicado")
+    @Operation(operationId = "getPorId", summary = "Obtiene un documento de procedimiento", description = "Obtiene el documento vinculado a un procedimiento identificado por el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getPorId(@Parameter(description = "Código procedimiento documento", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
+    public Response getPorId(@Parameter(description = "Código del documento de procedimiento", name = "codigo", required = true, in = ParameterIn.PATH) @PathParam("codigo") final String codigo, @Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang) throws Exception, ValidationException {
 
         Instant start = Instant.now();
         try {

@@ -56,7 +56,7 @@ public class TipoLegitimacionResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listarTiposLegitimacion", summary = "Lista de tipos de legitimacion", description = "Lista todos los tipos de legitimación disponibles")
+    @Operation(operationId = "listarTiposLegitimacion", summary = "Lista los tipos de legitimación", description = "Lista los tipos de legitimación disponibles que cumplen los filtros indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposLegitimacion(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoLegitimacion.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoLegitimacion.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoLegitimacion.class))) FiltroTipoLegitimacion filtro) throws ValidationException {
@@ -116,10 +116,10 @@ public class TipoLegitimacionResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/{codigo}")
-    @Operation(operationId = "getTipoLegitimacion", summary = "Obtiene un tipo de legitimacion", description = "Obtiene el tipo de legitimacion con el código indicado")
+    @Operation(operationId = "getTipoLegitimacion", summary = "Obtiene un tipo de legitimación", description = "Obtiene el tipo de legitimación identificado por el código indicado")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
-    public Response getTipoLegitimacion(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código de tipo de legitimacion", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
+    public Response getTipoLegitimacion(@Parameter(description = "Código de idioma de la respuesta", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @Parameter(description = "Código del tipo de legitimación", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
         try {

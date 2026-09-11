@@ -57,7 +57,7 @@ public class TipoBoletinResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listarBoletines", summary = "Lista de boletines", description = "Lista todos los boletines disponibles")
+    @Operation(operationId = "listarBoletines", summary = "Lista los boletines", description = "Lista los boletines disponibles que cumplen los filtros indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarBoletines(@RequestBody(description = "Filtro: " + FiltroTipoBoletin.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoBoletin.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoBoletin.class))) FiltroTipoBoletin filtro) throws ValidationException {

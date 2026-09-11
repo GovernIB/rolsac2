@@ -47,7 +47,7 @@ public class EstadisticaResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("grabar_acceso/{codigo}")
-    @Operation(operationId = "grabarAcceso", summary = "Graba el acceso para el computo de estadísticas", description = "Método utilizado para grabar el acceso de una aplicación a un objeto determinado")
+    @Operation(operationId = "grabarAcceso", summary = "Registra un acceso para el cómputo de estadísticas", description = "Registra el acceso de una aplicación a un procedimiento, servicio o unidad administrativa")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response grabarAcceso(@Parameter(description = "Código del objeto al que se accede", name = "codigo", required = true, in = ParameterIn.QUERY) @PathParam("codigo") final String codigo, @RequestBody(description = "Filtro: " + FiltroEstadistica.SAMPLE, name = "filtro", content = @Content(example = FiltroEstadistica.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroEstadistica.class))) FiltroEstadistica filtro) throws ValidationException {

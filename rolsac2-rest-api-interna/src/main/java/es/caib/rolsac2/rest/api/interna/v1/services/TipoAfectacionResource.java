@@ -57,7 +57,7 @@ public class TipoAfectacionResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listarTiposAfectacion", summary = "Lista de tipos de afectación", description = "Lista todos los tipos de afectación disponibles")
+    @Operation(operationId = "listarTiposAfectacion", summary = "Lista los tipos de afectación", description = "Lista los tipos de afectación disponibles que cumplen los filtros indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposAfectacion(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoAfectacion.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoAfectacion.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoAfectacion.class))) FiltroTipoAfectacion filtro) throws ValidationException {

@@ -58,7 +58,7 @@ public class TipoFormaInicioResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
     @Path("/")
-    @Operation(operationId = "listarTiposFormaInicio", summary = "Lista de tipos de forma de inicio", description = "Lista todos los tipos de forma de inicio disponibles")
+    @Operation(operationId = "listarTiposFormaInicio", summary = "Lista los tipos de forma de inicio", description = "Lista los tipos de forma de inicio disponibles que cumplen los filtros indicados")
     @APIResponse(responseCode = "200", description = Constantes.MSJ_200_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaBase.class)))
     @APIResponse(responseCode = "400", description = Constantes.MSJ_400_GENERICO, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RespuestaError.class)))
     public Response listarTiposFormaInicio(@Parameter(description = "Código de idioma", name = "lang", in = ParameterIn.QUERY) @QueryParam("lang") final String lang, @RequestBody(description = "Filtro: " + FiltroTipoFormaInicio.SAMPLE, name = "filtro", content = @Content(example = FiltroTipoFormaInicio.SAMPLE_JSON, mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FiltroTipoFormaInicio.class))) FiltroTipoFormaInicio filtro) throws ValidationException {
