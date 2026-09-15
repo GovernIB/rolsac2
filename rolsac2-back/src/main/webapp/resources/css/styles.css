@@ -2160,3 +2160,25 @@ tr.ui-expanded-row-content.ui-widget-content >td {
     background-color: #eee;
 }
 
+.filtros-checkbox {
+    justify-content: space-evenly;
+}
+
+.checkbox-inline {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.checkbox-inline label {
+    margin: 0 !important;
+    line-height: 20px;
+}
+
+.checkbox-inline .ui-chkbox {
+    display: flex;
+    align-items: center;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    transform: translateY(2px);
+}

@@ -318,30 +318,49 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-4 row" style="margin-bottom: -.2rem;">
-                            <div class="ui-g-6 ui-sm-6 ui-md-6 ui-lg-4 d-flex flex-row  justify-content-center align-items-end">
-                                <p:outputLabel value="#{labels['viewServicios.uaHijasMin']}:" for="txtUAHijas"
-                                               aria-label="#{labels['viewServicios.uaHijasMin']}"/>
-                                <p:selectBooleanCheckbox id="txtUAHijas" styleClass="ml-2"
-                                                         title="#{labels['viewServicios.uaHijas']}"
-                                                         aria-label="#{labels['viewServicios.uaHijasMin']}"
-                                                         value="#{viewServicios.filtro.hijasActivas}">
-                                    <p:ajax process="@this" event="change" partialSubmit="true"
+                        <div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-4
+            d-flex align-items-end flex-nowrap filtros-checkbox">
+
+                            <div class="checkbox-inline">
+                                <p:outputLabel
+                                        value="#{labels['viewServicios.uaHijasMin']}:"
+                                        for="txtUAHijas"
+                                        aria-label="#{labels['viewServicios.uaHijasMin']}"/>
+
+                                <p:selectBooleanCheckbox
+                                        id="txtUAHijas"
+                                        styleClass="ml-2"
+                                        title="#{labels['viewServicios.uaHijas']}"
+                                        aria-label="#{labels['viewServicios.uaHijasMin']}"
+                                        value="#{viewServicios.filtro.hijasActivas}">
+                                    <p:ajax
+                                            process="@this"
+                                            event="change"
+                                            partialSubmit="true"
                                             listener="#{viewServicios.filtroHijasActivasChange}"/>
                                 </p:selectBooleanCheckbox>
                             </div>
-                            <div class="ui-g-6 ui-sm-6 ui-md-6 ui-lg-8 d-flex flex-row  justify-content-center align-items-end">
-                                <p:outputLabel value="#{labels['viewServicios.unidadesOrganicasMin']}:"
-                                               for="txtunidadesOrganicas"
-                                               aria-label="#{labels['viewServicios.unidadesOrganicasMin']}"/>
-                                <p:selectBooleanCheckbox id="txtunidadesOrganicas" styleClass="ml-2"
-                                                         title="#{labels['viewServicios.unidadesOrganicas']}"
-                                                         aria-label="#{labels['viewServicios.unidadesOrganicasMin']}"
-                                                         value="#{viewServicios.filtro.todasUnidadesOrganicas}">
-                                    <p:ajax process="@this" event="change" partialSubmit="true"
+
+                            <div class="checkbox-inline">
+                                <p:outputLabel
+                                        value="#{labels['viewServicios.unidadesOrganicasMin']}:"
+                                        for="txtunidadesOrganicas"
+                                        aria-label="#{labels['viewServicios.unidadesOrganicasMin']}"/>
+
+                                <p:selectBooleanCheckbox
+                                        id="txtunidadesOrganicas"
+                                        styleClass="ml-2"
+                                        title="#{labels['viewServicios.unidadesOrganicas']}"
+                                        aria-label="#{labels['viewServicios.unidadesOrganicasMin']}"
+                                        value="#{viewServicios.filtro.todasUnidadesOrganicas}">
+                                    <p:ajax
+                                            process="@this"
+                                            event="change"
+                                            partialSubmit="true"
                                             listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
                                 </p:selectBooleanCheckbox>
                             </div>
+
                         </div>
                     </div>
                 </div>
