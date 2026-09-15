@@ -1098,3 +1098,12 @@ button.ui-state-hover:hover{
 .pl0 {
 	padding-left: 0px !important;
 }
+
+.ui-icon-carat-1-n {
+	left: 0 !important;
+	top: 0 !important;
+}
+.ui-icon-carat-1-s {
+	left: 0 !important;
+	top: 0 !important;
+}

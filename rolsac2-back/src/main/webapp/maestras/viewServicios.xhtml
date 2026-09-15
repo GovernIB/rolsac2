@@ -318,15 +318,12 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-4
-            d-flex align-items-end flex-nowrap filtros-checkbox">
-
+                        <div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-4 d-flex align-items-end flex-nowrap filtros-checkbox" style="padding-bottom: 10px;">
                             <div class="checkbox-inline">
                                 <p:outputLabel
                                         value="#{labels['viewServicios.uaHijasMin']}:"
                                         for="txtUAHijas"
                                         aria-label="#{labels['viewServicios.uaHijasMin']}"/>
-
                                 <p:selectBooleanCheckbox
                                         id="txtUAHijas"
                                         styleClass="ml-2"
@@ -340,13 +337,11 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                             listener="#{viewServicios.filtroHijasActivasChange}"/>
                                 </p:selectBooleanCheckbox>
                             </div>
-
                             <div class="checkbox-inline">
                                 <p:outputLabel
                                         value="#{labels['viewServicios.unidadesOrganicasMin']}:"
                                         for="txtunidadesOrganicas"
                                         aria-label="#{labels['viewServicios.unidadesOrganicasMin']}"/>
-
                                 <p:selectBooleanCheckbox
                                         id="txtunidadesOrganicas"
                                         styleClass="ml-2"
@@ -360,7 +355,6 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                             listener="#{viewServicios.filtroUnidadOrganicasChange}"/>
                                 </p:selectBooleanCheckbox>
                             </div>
-
                         </div>
                     </div>
                 </div>

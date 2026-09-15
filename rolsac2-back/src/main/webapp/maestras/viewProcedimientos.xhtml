@@ -317,57 +317,43 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                             </p:selectOneMenu>
                         </div>
 
-                        <div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-4
-            d-flex align-items-end flex-nowrap filtros-checkbox">
-
+                        <div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-4  d-flex align-items-end flex-nowrap filtros-checkbox" style="padding-bottom: 10px;">
                             <div class="checkbox-inline">
-
                                 <p:outputLabel
                                         value="#{labels['viewProcedimientos.uaHijasMin']}:"
                                         for="txtUAHijas"
                                         aria-label="#{labels['viewProcedimientos.uaHijasMin']}"/>
-
                                 <p:selectBooleanCheckbox
                                         id="txtUAHijas"
                                         styleClass="ml-2"
                                         title="#{labels['viewProcedimientos.uaHijas']}"
                                         aria-label="#{labels['viewProcedimientos.uaHijasMin']}"
                                         value="#{viewProcedimientos.filtro.hijasActivas}">
-
                                     <p:ajax
                                             process="@this"
                                             event="change"
                                             partialSubmit="true"
                                             listener="#{viewProcedimientos.filtroHijasActivasChange}"/>
-
                                 </p:selectBooleanCheckbox>
-
                             </div>
-
                             <div class="checkbox-inline">
-
                                 <p:outputLabel
                                         value="#{labels['viewProcedimientos.unidadesOrganicasMin']}:"
                                         for="txtunidadesOrganicas"
                                         aria-label="#{labels['viewProcedimientos.unidadesOrganicasMin']}"/>
-
                                 <p:selectBooleanCheckbox
                                         id="txtunidadesOrganicas"
                                         styleClass="ml-2"
                                         title="#{labels['viewProcedimientos.unidadesOrganicas']}"
                                         aria-label="#{labels['viewProcedimientos.unidadesOrganicasMin']}"
                                         value="#{viewProcedimientos.filtro.todasUnidadesOrganicas}">
-
                                     <p:ajax
                                             process="@this"
                                             event="change"
                                             partialSubmit="true"
                                             listener="#{viewProcedimientos.filtroUnidadOrganicasChange}"/>
-
                                 </p:selectBooleanCheckbox>
-
                             </div>
-
                         </div>
                     </div>
                 </div>
