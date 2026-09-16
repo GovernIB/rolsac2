@@ -894,10 +894,10 @@ public class CastUtil {
 
                     json.writeStringField("aplicacion", "SEUCAIB");
 
-                    String uaNombre = (proc.getUaCompetente() != null
-                            && proc.getUaCompetente().getNombre() != null
-                            && proc.getUaCompetente().getNombre().getTraduccion(enumIdioma.toString()) != null)
-                            ? proc.getUaCompetente().getNombre().getTraduccionConValor(enumIdioma.toString(), "ca")
+                    String uaNombre = (proc.getUaInstructor() != null
+                            && proc.getUaInstructor().getNombre() != null
+                            && proc.getUaInstructor().getNombre().getTraduccion(enumIdioma.toString()) != null)
+                            ? proc.getUaInstructor().getNombre().getTraduccionConValor(enumIdioma.toString(), "ca")
                             : "";
 
                     json.writeStringField("ua", uaNombre);
