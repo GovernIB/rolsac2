@@ -136,6 +136,10 @@ public class Tramite extends EntidadBase<Tramite> {
                 this.terminoMaximo = elem.getTerminoMaximo().getTraduccionConValor(idioma, idiomaPorDefecto);
             }
         }
+        if (elem.getUnidadAdministrativa() != null) {
+            this.unidadAdministrativa = elem.getUnidadAdministrativa().getCodigo();
+            this.link_unidadAdministrativa = this.generaLink(this.unidadAdministrativa, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, elem.getUnidadAdministrativa().getNombre().getTraduccionConValor(idioma, idiomaPorDefecto));
+        }
 
         ProcedimientoDTO procedimientoDTO = null;
         if (elem.getProcedimiento() != null) {
@@ -164,7 +168,7 @@ public class Tramite extends EntidadBase<Tramite> {
     @Override
     public void generaLinks(String urlBase) {
         link_procedimiento = this.generaLink(this.procedimiento, Constantes.ENTIDAD_PROCEDIMIENTO, Constantes.URL_PROCEDIMIENTO, urlBase, null);
-        link_unidadAdministrativa = this.generaLink(this.unidadAdministrativa, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
+        //  link_unidadAdministrativa = this.generaLink(this.unidadAdministrativa, Constantes.ENTIDAD_UA, Constantes.URL_UA, urlBase, null);
         link_tipoTramitacion = this.generaLink(this.tipoTramitacion, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase, null);
         link_plantillaSel = this.generaLink(this.plantillaSel, Constantes.ENTIDAD_TIPO_TRAMITACION, Constantes.URL_TIPO_TRAMITACION, urlBase, null);
     }
