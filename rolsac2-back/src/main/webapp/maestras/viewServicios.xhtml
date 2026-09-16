@@ -695,7 +695,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                        message="#{labels['viewServicios.aviso.noExisteModif']}"
                                        icon="pi pi-exclamation-triangle"/>
                             <p:ajax event="dialogReturn" listener="#{viewServicios.returnDialogo}"
-                                    update="messages dataTable"/>
+                                    update="messages dataTable"
+                                    oncomplete="restaurarBorradoresExpandido()"/>
                         </p:commandButton>
 
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"

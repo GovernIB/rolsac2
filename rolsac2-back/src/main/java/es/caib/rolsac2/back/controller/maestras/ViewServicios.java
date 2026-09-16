@@ -541,6 +541,7 @@ public class ViewServicios extends AbstractController implements Serializable {
                 ServicioGridDTO proc = this.datoSeleccionado;
                 this.buscar();
                 this.seleccionarPorId(proc);
+                serviciosExpandidos.remove(proc.getCodigo());
             }
         }
     }
