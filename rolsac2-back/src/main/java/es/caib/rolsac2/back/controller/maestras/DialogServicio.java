@@ -156,7 +156,9 @@ public class DialogServicio extends AbstractController implements Serializable {
             data.setHabilitadoFuncionario("N");
             data.setLopdFinalidad((Literal) sessionBean.getEntidad().getLopdFinalidad().clone());
             data.setLopdDestinatario((Literal) sessionBean.getEntidad().getLopdDestinatario().clone());
-
+            if (data.getTipoTramitacion() != null && data.getTipoTramitacion().getEntidad() == null) {
+                data.getTipoTramitacion().setEntidad(UtilJSF.getSessionBean().getEntidad());
+            }
         } else if (this.isModoEdicion() || this.isModoConsulta()) {
             if (id != null && !id.isEmpty()) {
                 data = procedimientoServiceFacade.findServicioById(Long.valueOf(id));
@@ -487,14 +489,15 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
+        /*
         if (this.data.getCodigo() == null) {
             guardarSinCheck(false);
             dataOriginal = (ServicioDTO) this.data.clone();
-        }
+        }*/
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "S");
-        params.put("ID", this.data.getCodigo().toString());
+        params.put("ID", this.data.getCodigo() == null ? "" : this.data.getCodigo().toString());
         params.put("ESTADO", data.getEstado().toString());
         if (estadosProcedimiento != null) {
             params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
@@ -522,6 +525,11 @@ public class DialogServicio extends AbstractController implements Serializable {
             resetearOrdenListas();
             String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
             ProcedimientoBaseDTO dataDefinitivo = null;
+
+            if (this.data.getCodigo() == null) {
+                guardarSinCheck(false);
+                dataOriginal = (ServicioDTO) this.data.clone();
+            }
             if (data.getWorkflow() != TypeProcedimientoWorkflow.DEFINITIVO) {
                 Long codigoWF = procedimientoServiceFacade.getCodigoPublicado(data.getCodigo());
                 if (codigoWF != null) {
@@ -1497,7 +1505,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             //Si el estado es PUBLICADO y esta el procedimiento en PUBLICADO y PENDINETE PUBLICAR, es decir, no se puede mover el publicado
             return false;
         }
-        
+
         if (this.isGestor()) {
             if (this.data.getComun() == 1) {
                 // Si es común, no mostrar botón
@@ -1532,6 +1540,10 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean isMostrarBtnMensajes() {
+        if (this.data == null || this.data.getCodigo() == null) {
+            return false;
+        }
+
         if (this.isGestor() || this.isAdministradorContenidos()) {
             return true;
         } else {

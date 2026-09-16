@@ -490,16 +490,16 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
-        if (this.data.getCodigo() == null) {
+        /*if (this.data.getCodigo() == null) {
             guardarSinCheck(false);
             dataOriginal = (ProcedimientoDTO) data.clone();
-        }
+        }*/
 
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "P");
         UtilJSF.anyadirMochila("procedimiento", this.data);
-        params.put("ID", this.data.getCodigo().toString());
-        params.put("IDWF", this.data.getCodigoWF().toString());
+        params.put("ID", this.data.getCodigo() == null ? "" : this.data.getCodigo().toString());
+        params.put("IDWF", this.data.getCodigoWF() == null ? "" : this.data.getCodigoWF().toString());
         params.put("ESTADO", data.getEstado().toString());
         if (estadosProcedimiento != null) {
             params.put("ESTADO_PROCEDIMIENTO", estadosProcedimiento);
@@ -666,6 +666,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             resetearOrdenListas();
             String ruta = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
             ProcedimientoBaseDTO dataDefinitivo = null;
+
+            if (this.data.getCodigo() == null) {
+                guardarSinCheck(false);
+                dataOriginal = (ProcedimientoDTO) data.clone();
+            }
             if (data.getWorkflow() != TypeProcedimientoWorkflow.DEFINITIVO) {
                 Long codigoWF = procedimientoServiceFacade.getCodigoPublicado(data.getCodigo());
                 if (codigoWF != null) {
@@ -1899,6 +1904,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean isMostrarBtnMensajes() {
+        if (this.data == null || this.data.getCodigo() == null) {
+            return false;
+        }
+
         if (this.isGestor()) {
             if (this.data.getComun() == 1) {
                 // Si es común, no mostrar botón

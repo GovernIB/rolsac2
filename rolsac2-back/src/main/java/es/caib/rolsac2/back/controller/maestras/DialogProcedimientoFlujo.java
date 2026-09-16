@@ -412,7 +412,7 @@ public class DialogProcedimientoFlujo extends AbstractController implements Seri
         data.setEstadoDestino(this.estadoSeleccionado);
         data.setPendienteMensajesSupervisor(getLeidoSupervisor());
         data.setPendienteMensajesGestor(getLeidoGestor());
-        data.setCodigoProcedimiento(this.idProcedimiento.toString());
+        data.setCodigoProcedimiento(this.idProcedimiento == null ? "" : this.idProcedimiento.toString());
         result.setResult(data);
         UtilJSF.closeDialog(result);
     }
