@@ -880,7 +880,8 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                        message="#{labels['viewProcedimientos.aviso.noExisteModif']}"
                                        icon="pi pi-exclamation-triangle"/>
                             <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogo}"
-                                    update="messages dataTable"/>
+                                    update="messages dataTable"
+                                    oncomplete="restaurarBorradoresExpandido()"/>
                         </p:commandButton>
                         <p:commandButton icon="pi pi-trash" title="#{labels['dict.borrar']}" styleClass="mr-1"
                                          rendered="#{viewProcedimientos.mostrarBorrar(procedimiento)}"

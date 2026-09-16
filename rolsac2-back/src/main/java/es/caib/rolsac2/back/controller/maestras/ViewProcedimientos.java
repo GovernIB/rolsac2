@@ -549,6 +549,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 ProcedimientoGridDTO proc = this.datoSeleccionado;
                 this.buscar();
                 this.seleccionarPorId(proc);
+                procedimientosExpandidos.remove(proc.getCodigo());
             }
         }
     }
