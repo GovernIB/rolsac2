@@ -487,6 +487,11 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
+        if (this.data.getCodigo() == null) {
+            guardarSinCheck(false);
+            dataOriginal = (ServicioDTO) this.data.clone();
+        }
+
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "S");
         params.put("ID", this.data.getCodigo().toString());

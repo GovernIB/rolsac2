@@ -490,6 +490,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }
 
+        if (this.data.getCodigo() == null) {
+            guardarSinCheck(false);
+            dataOriginal = (ProcedimientoDTO) data.clone();
+        }
+
         UtilJSF.anyadirMochila("mensajes", this.data.getMensajes());
         UtilJSF.anyadirMochila("tipo", "P");
         UtilJSF.anyadirMochila("procedimiento", this.data);
