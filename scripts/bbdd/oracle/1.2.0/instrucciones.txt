@@ -1,0 +1,13 @@
+A continuación se detallan las instrucciones para ejecutar el script de base de datos Oracle versión 1.2.0 (ejecutar por el orden que se comenta a continuación).
+
+Con el usuario ROLSAC (la sql da permisos para el usuario ROLSAC2 y WWW_ROLSAC2 para leer la tabla de mensajes de servicios):
+   05_GRANT.sql
+   26_GRANT.sql
+
+Con el usuario ROLSAC2
+    05_SINONIMOS.sql
+    rolsac2_update_index_from_1.1.0_to_1.2.0_ROLSAC2.sql
+
+Con el usuario WWW_ROLSAC2.
+     27_SINONIMOS.sql
+
