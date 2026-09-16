@@ -1989,6 +1989,7 @@ a.iconoXarxes {
     max-width: 100% !important;
 }
 
+
 .checkBoxMenu .ui-selectcheckboxmenu-trigger {
     display: flex !important;
     align-items: center;
@@ -2181,4 +2182,8 @@ tr.ui-expanded-row-content.ui-widget-content >td {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     transform: translateY(2px);
+}
+
+.checkBoxMenu div.ui-corner-right {
+    width: 25px;
 }

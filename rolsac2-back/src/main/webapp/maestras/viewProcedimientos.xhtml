@@ -292,7 +292,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                             <p:outputLabel value="#{labels['viewProcedimientos.estado']}:" for="txtTipoEstado"
                                            aria-label="#{labels['viewProcedimientos.estado']}"/>
                             <p:selectOneMenu id="txtTipoEstado" value="#{viewProcedimientos.filtro.estado}"
-                                             styleClass="w100" autoWidth="false">
+                                             styleClass="w100 checkBoxMenu" autoWidth="false">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                 <f:selectItems value="#{typeEstados.values()}" var="estado"
                                                itemValue="#{estado.toString()}"
@@ -305,7 +305,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                            aria-label="#{labels['viewProcedimientos.mensajesPorLeer']}"/>
                             <p:selectOneMenu id="txtMensajesPorLeer"
                                              value="#{viewProcedimientos.filtro.mensajesPendiente}"
-                                             styleClass="w100" autoWidth="false">
+                                             styleClass="w100 checkBoxMenu" autoWidth="false">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                 <f:selectItem itemLabel="#{labels['viewProcedimientos.sinMensajes']}" itemValue="NO"/>
                                 <f:selectItem itemLabel="#{labels['viewProcedimientos.mensajesPendientes']}"
@@ -373,7 +373,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.visibleASede']}"/>
                                     <p:selectOneMenu id="txtVisibleSede"
                                                      value="#{viewProcedimientos.filtro.visibleSEDE}"
-                                                     styleClass="w95">
+                                                     styleClass="w95 checkBoxMenu">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
@@ -409,7 +409,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.tipoProcedimiento']}"/>
                                     <p:selectOneMenu id="txtTipoProcedimiento"
                                                      value="#{viewProcedimientos.filtro.tipoProcedimiento}"
-                                                     styleClass="w95" converter="#{tipoProcedimientoConverter}"
+                                                     styleClass="w95 checkBoxMenu" converter="#{tipoProcedimientoConverter}"
                                                      autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
@@ -426,7 +426,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.formaInicio']}"/>
                                     <p:selectOneMenu id="txtFormaInicio"
                                                      value="#{viewProcedimientos.filtro.formaInicio}"
-                                                     styleClass="w95" converter="#{tipoFormaInicioConverter}"
+                                                     styleClass="w95 checkBoxMenu" converter="#{tipoFormaInicioConverter}"
                                                      autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
@@ -460,7 +460,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['dict.estadoCodigoSIA']}"/>
                                     <p:selectOneMenu id="txtEstadoCodigoSIA"
                                                      value="#{viewProcedimientos.filtro.estadoSIA}"
-                                                     styleClass="w95">
+                                                     styleClass="w95 checkBoxMenu">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['dict.ninguno']}" itemValue="N"/>
@@ -476,7 +476,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.silencioAdministrativo']}"/>
                                     <p:selectOneMenu id="txtSilencioAdministrativo"
                                                      value="#{viewProcedimientos.filtro.silencioAdministrativo}"
-                                                     styleClass="w95" converter="#{tipoSilencioAdministrativoConverter}"
+                                                     styleClass="w95 checkBoxMenu" converter="#{tipoSilencioAdministrativoConverter}"
                                                      autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
@@ -489,7 +489,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                     <p:outputLabel value="#{labels['viewProcedimientos.finVia']}:" for="txtFinVia"
                                                    aria-label="#{labels['viewProcedimientos.finVia']}"/>
                                     <p:selectOneMenu id="txtFinVia" value="#{viewProcedimientos.filtro.finVia}"
-                                                     styleClass="w95" converter="#{tipoViaConverter}" autoWidth="false">
+                                                     styleClass="w95 checkBoxMenu" converter="#{tipoViaConverter}" autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItems value="#{viewProcedimientos.listFinVias}" var="estado"
@@ -558,7 +558,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.tramitacionPersonaApoderada']}"/>
                                     <p:selectOneMenu id="comboApoderado"
                                                      value="#{viewProcedimientos.filtro.tramitacionPersonaApoderada}"
-                                                     styleClass="w95" autoWidth="false">
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
@@ -572,7 +572,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                             aria-label="#{labels['viewProcedimientos.disponiblefuncionario.habilitado']}"/>
                                     <p:selectOneMenu id="comboFuncionario"
                                                      value="#{viewProcedimientos.filtro.disponibleFuncionarioHabilitado}"
-                                                     styleClass="w95" autoWidth="false">
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
@@ -585,7 +585,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.integrarPdu']}"/>
                                     <p:selectOneMenu id="selIntegrarPdu"
                                                      value="#{viewProcedimientos.filtro.integrarPdu}"
-                                                     styleClass="w95" autoWidth="false">
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['viewProcedimientos.pdu.integrar.si']}"
@@ -600,7 +600,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.esComun']}"
                                                    rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}"/>
                                     <p:selectOneMenu id="txtEsComun" value="#{viewProcedimientos.filtro.comun}"
-                                                     styleClass="w95" autoWidth="false"
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false"
                                                      rendered="#{!sessionBean.perfil.equals(TypePerfiles.GESTOR)}">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
@@ -633,7 +633,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    aria-label="#{labels['viewProcedimientos.tramiteVigente']}"/>
                                     <p:selectOneMenu id="txtTtramiteVige"
                                                      value="#{viewProcedimientos.filtro.tramiteVigente}"
-                                                     styleClass="w95" autoWidth="false">
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
                                         <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
@@ -660,7 +660,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    for="txtPlataforma"
                                                    aria-label="#{labels['viewProcedimientos.plataformaTramitacion']}"/>
                                     <p:selectOneMenu id="txtPlataforma" value="#{viewProcedimientos.filtro.plataforma}"
-                                                     styleClass="w95" autoWidth="false"
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false"
                                                      converter="#{platTramitElectronicaConverter}">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
@@ -676,7 +676,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                                    for="txtPlantilla"
                                                    aria-label="#{labels['viewProcedimientos.plantillaTramite']}"/>
                                     <p:selectOneMenu id="txtPlantilla" value="#{viewProcedimientos.filtro.plantilla}"
-                                                     styleClass="w95" autoWidth="false"
+                                                     styleClass="w95 checkBoxMenu" autoWidth="false"
                                                      converter="#{tipoTramitacionConverter}">
                                         <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}"
                                                       itemValue="#{null}"/>
