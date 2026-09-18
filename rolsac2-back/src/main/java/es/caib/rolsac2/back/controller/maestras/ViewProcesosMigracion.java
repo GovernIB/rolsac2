@@ -162,16 +162,17 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
             public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
+                    filtroLog.setPaginaFirst(first);
+                    filtroLog.setPaginaTamanyo(pageSize);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();
                         if (sortOrder != null) {
-                            filtro.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
+                            filtroLog.setAscendente(sortOrder.equals(SortOrder.ASCENDING));
                         }
-                        filtro.setOrderBy(sortMeta.getField());
+                        filtroLog.setOrderBy(sortMeta.getField());
                     }
                     filtroLog.setTipo("MIGRA_PUNT");
-                    filtroLog.setAscendente(false);
                     filtroLog.setIdEntidad(sessionBean.getEntidad().getCodigo());
                     Pagina<ProcesoLogGridDTO> pagina = procesoLogServiceFacade.findByFiltro(filtroLog);
                     setRowCount((int) pagina.getTotal());

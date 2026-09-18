@@ -8,7 +8,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 <!--
-PÃ gina amb el llistat de processos automÃ tics
+Pagina amb el llistat de processos automàtics
 -->
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="metadata">
@@ -39,8 +39,8 @@ PÃ gina amb el llistat de processos automÃ tics
                 </p:commandButton>
                 <p:dataTable id="dataTable" value="#{viewProcesosMigracion.lazyModelLogs}" var="proceso"
                              paginator="true" lazy="true" filterDelay="300" widgetVar="procesosTable"
-                             rows="#{viewProcesosMigracion.filtro.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
-                             first="#{viewProcesosMigracion.filtro.paginaFirst}"
+                             rows="#{viewProcesosMigracion.filtroLog.paginaTamanyo}" rowsPerPageTemplate="10,20,50,100"
+                             first="#{viewProcesosMigracion.filtroLog.paginaFirst}"
                              paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              paginatorTemplate="{RowsPerPageLabel} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
                              {NextPageLink} {LastPageLink}"
@@ -113,7 +113,7 @@ PÃ gina amb el llistat de processos automÃ tics
                 </div>
                 <div class="row">
                     <div class="ui-md-2 text-align-right ml10">
-                        Usuarios asociados a la UA base (SÃ³lo si se carga las unidades administrativas):
+                        Usuarios asociados a la UA base (Solo si se carga las unidades administrativas):
                     </div>
                     <div class="ui-md-8 text-align-left ">
                         <div class="row left-container mx-0">
@@ -231,6 +231,3 @@ PÃ gina amb el llistat de processos automÃ tics
     </ui:define>
 </ui:composition>
 </html>
-
-
-
