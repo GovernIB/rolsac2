@@ -47,13 +47,13 @@ public class RespuestaBase<T> implements Serializable {
             description = "Cobertura geogràfica. A ROLSAC2 correspon a l'entitat consultada.",
             example = "1"
     )
-    private String spatial;
+    private String spatial = "Illes Balears";
 
     @Schema(
             description = "Codi DIR3 del creador. A ROLSAC2 correspon al codi DIR3 de l'arrel.",
-            example = "A04003003"
+            example = "IBDIGITAL  : A04027051"
     )
-    private String creator;
+    private String creator = "A04027051";
 
     @Schema(
             description = "Data i hora de descàrrega en format ISO8601 amb offset.",
@@ -148,7 +148,7 @@ public class RespuestaBase<T> implements Serializable {
      * Constructor antic conservat únicament per compatibilitat binària/fonte.
      *
      * @deprecated utilitzar el constructor que rep {@link URI}, ja que és
-     *             l'únic que pot calcular correctament nextUrl/previousUrl.
+     * l'únic que pot calcular correctament nextUrl/previousUrl.
      */
     @Deprecated
     public RespuestaBase(final int total,

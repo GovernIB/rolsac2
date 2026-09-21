@@ -23,7 +23,6 @@ public class Procediment implements Serializable {
     private String codiSIA;
     private String estatSIA;
     private String dataSIA;
-    private Long uaResponsableCodi;
     private String uaResponsableNom;
     private Long uaCompetenteCodi;
     private String uaCompetenteNom;
@@ -127,14 +126,6 @@ public class Procediment implements Serializable {
 
     public void setDataSIA(String dataSIA) {
         this.dataSIA = dataSIA;
-    }
-
-    public Long getUaResponsableCodi() {
-        return uaResponsableCodi;
-    }
-
-    public void setUaResponsableCodi(Long uaResponsableCodi) {
-        this.uaResponsableCodi = uaResponsableCodi;
     }
 
     public String getUaResponsableNom() {

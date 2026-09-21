@@ -79,11 +79,7 @@ public class Procediment implements Serializable {
     )
     private String dataSIA;
     @Schema(
-            description = "Codi de la unitat administrativa responsable."
-    )
-    private Long uaResponsableCodi;
-    @Schema(
-            description = "Nom de la unitat administrativa responsable."
+            description = "Nom del responsable."
     )
     private String uaResponsableNom;
     @Schema(
@@ -249,14 +245,6 @@ public class Procediment implements Serializable {
 
     public void setDataSIA(final String dataSIA) {
         this.dataSIA = dataSIA;
-    }
-
-    public Long getUaResponsableCodi() {
-        return uaResponsableCodi;
-    }
-
-    public void setUaResponsableCodi(final Long uaResponsableCodi) {
-        this.uaResponsableCodi = uaResponsableCodi;
     }
 
     public String getUaResponsableNom() {
@@ -442,7 +430,6 @@ public class Procediment implements Serializable {
             this.estatSIA = nodo.getEstadoSIA();
             this.dataSIA = toIso8601(nodo.getFechaSIA());
             this.uaResponsableNom = getTraduccion(nodo.getUaResponsableLiteral(), idioma, idiomaPorDefecto);
-            this.uaResponsableCodi = null;
             if (nodo.getUaCompetente() != null) {
                 this.uaCompetenteCodi = nodo.getUaCompetente().getCodigo();
                 this.uaCompetenteNom = getDescripcionUA(nodo.getUaCompetente(), idioma, idiomaPorDefecto);

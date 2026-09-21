@@ -241,7 +241,6 @@ public class Rolsac2RestClient {
         p.setEstatSIA(asString(json.get("estatSIA")));
         p.setDataSIA(asString(json.get("dataSIA")));
 
-        p.setUaResponsableCodi(asLong(json.get("uaResponsableCodi")));
         p.setUaResponsableNom(asString(json.get("uaResponsableNom")));
 
         p.setUaCompetenteCodi(asLong(json.get("uaCompetenteCodi")));
@@ -406,7 +405,7 @@ public class Rolsac2RestClient {
 
             printCodeName(
                     "UA responsable",
-                    p.getUaResponsableCodi(),
+                    0L,
                     p.getUaResponsableNom()
             );
 
@@ -415,7 +414,6 @@ public class Rolsac2RestClient {
                     p.getUaCompetenteCodi(),
                     p.getUaCompetenteNom()
             );
-
             printCodeName(
                     "UA instructora",
                     p.getUaInstructor(),

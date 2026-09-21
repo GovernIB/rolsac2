@@ -1,5 +1,6 @@
 package es.caib.rolsac2.api.externa.v1.model;
 
+import es.caib.rolsac2.api.externa.v1.utils.Utiles;
 import es.caib.rolsac2.service.model.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.slf4j.Logger;
@@ -39,8 +40,6 @@ public class Servei implements Serializable {
     private String estatSIA;
     @Schema(description = "Data SIA del servei en format ISO8601.")
     private String dataSIA;
-    @Schema(description = "Codi de la unitat administrativa responsable.")
-    private Long uaResponsableCodi;
     @Schema(description = "Nom de la unitat administrativa responsable.")
     private String uaResponsableNom;
     @Schema(description = "Codi de la unitat administrativa instructora.")
@@ -160,14 +159,6 @@ public class Servei implements Serializable {
 
     public void setDataSIA(final String dataSIA) {
         this.dataSIA = dataSIA;
-    }
-
-    public Long getUaResponsableCodi() {
-        return uaResponsableCodi;
-    }
-
-    public void setUaResponsableCodi(final Long uaResponsableCodi) {
-        this.uaResponsableCodi = uaResponsableCodi;
     }
 
     public String getUaResponsableNom() {
@@ -349,7 +340,6 @@ public class Servei implements Serializable {
             this.habilitatFuncionari = toBooleanFlag(nodo.getHabilitadoFuncionario());
             this.terminiResolucio = getTraduccion(nodo.getTerminoResolucion(), idioma, idiomaPorDefecto);
             this.uaResponsableNom = getTraduccion(nodo.getUaResponsableLiteral(), idioma, idiomaPorDefecto);
-            this.uaResponsableCodi = null;
             if (nodo.getUaInstructor() != null) {
                 this.uaInstructorCodi = nodo.getUaInstructor().getCodigo();
                 this.uaInstructorNom = getDescripcionUA(nodo.getUaInstructor(), idioma, idiomaPorDefecto);
@@ -377,7 +367,7 @@ public class Servei implements Serializable {
             this.tramitElectronica = nodo.isTramitElectronica();
             this.tramitTelefonica = nodo.isTramitTelefonica();
             //this.publicsObjectius = mapPublicsObjectius(nodo.getPublicosObjetivo(), idioma, idiomaPorDefecto);
-            //this.url = resolveSeuUrl(urlBase, idioma, this.codi);
+            this.url = resolveSeuUrl(urlBase, idioma, this.codi);
         } catch (Exception e) {
             LOG.error("Error generando servei {}", this.codi, e);
         }
@@ -404,53 +394,8 @@ public class Servei implements Serializable {
         if (value == null) return null;
         return "S".equalsIgnoreCase(value) || "1".equals(value) || "true".equalsIgnoreCase(value);
     }
-/*
-    private List<PublicObjectiu> mapPublicsObjectius(final List<TipoPublicoObjetivoEntidadGridDTO> value,
-                                                     final String idioma,
-                                                     final String idiomaPorDefecto) {
-        if (value == null || value.isEmpty()) return Collections.emptyList();
-        List<PublicObjectiu> result = new ArrayList<>();
-        for (TipoPublicoObjetivoEntidadGridDTO item : value) {
-            if (item == null) {
-                continue;
-            }
-            result.add(new PublicObjectiu(item.getCodigo(), getTraduccion(item.getDescripcion(), idioma, idiomaPorDefecto)));
-        }
-        return result;
-    }
 
     private String resolveSeuUrl(final String urlBase, final String idioma, final Long codigo) {
         return Utiles.buildSeuUrl(false, urlBase, idioma, codigo);
     }
-
-    @Schema(name = "PublicObjectiu", description = "Públic objectiu aplanat a codi i nom.")
-    public static class PublicObjectiu implements Serializable {
-        private static final long serialVersionUID = 1L;
-        private Long codi;
-        private String nom;
-
-        public PublicObjectiu() {
-        }
-
-        public PublicObjectiu(final Long codi, final String nom) {
-            this.codi = codi;
-            this.nom = nom;
-        }
-
-        public Long getCodi() {
-            return codi;
-        }
-
-        public void setCodi(final Long codi) {
-            this.codi = codi;
-        }
-
-        public String getNom() {
-            return nom;
-        }
-
-        public void setNom(final String nom) {
-            this.nom = nom;
-        }
-    } */
 }
