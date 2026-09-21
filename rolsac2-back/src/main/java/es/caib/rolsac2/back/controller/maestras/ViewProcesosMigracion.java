@@ -140,6 +140,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
      */
     public void buscar() {
         //Thread.currentThread().getStackTrace()
+        filtroLog.setPaginaFirst(0);
         lazyModelLogs = new LazyDataModel<ProcesoLogGridDTO>() {
             @Override
             public ProcesoLogGridDTO getRowData(String rowKey) {
@@ -162,7 +163,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
             public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
-                    filtroLog.setPaginaFirst(0);
+                    filtroLog.setPaginaFirst(first);
                     filtroLog.setPaginaTamanyo(pageSize);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
