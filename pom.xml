@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>es.caib.rolsac2</groupId>
     <artifactId>rolsac2</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>pom</packaging>
     <name>rolsac2</name>
     <description>rolsac2 Java EE 8 i JBOSS 7.2</description>
@@ -59,56 +59,56 @@
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-commons</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-service</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-persistence</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-api-externa</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-api-interna</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-ejb</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
                 <type>ejb</type>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-back</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-front</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-rest-api-externa</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>es.caib.rolsac2</groupId>
                 <artifactId>rolsac2-rest-api-interna</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
                 <type>war</type>
             </dependency>
             <!-- Definició de les versions de les llibreries, especificacions i eines disponibles dins JBoss -->
