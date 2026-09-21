@@ -233,7 +233,7 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton id="btnBuscar" value="#{labels['dict.busqueda']}"
                                          styleClass="mr-2" icon="pi pi-search"
                                          aria-label="#{labels['dict.busqueda']}"
-                                         actionListener="#{viewProcedimientos.buscar()}"
+                                         action="#{viewProcedimientos.buscar()}"
                                          update="messages dataTable"
                                          process="@form"
                                          onstart="start()"
@@ -725,12 +725,12 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                         <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                          aria-label="#{labels['dict.limpiarFiltro']}"
                                          iconPos="top" action="#{viewProcedimientos.limpiarFiltro()}"
-                                         process="@form"
+                                         process="@this"
                                          update="filtroBusqueda panelFiltrosBasicos panel dataTable"
                                          resetValues="true"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                          aria-label="#{labels['dict.busqueda']}"
-                                         actionListener="#{viewProcedimientos.buscar()}" update="messages dataTable"
+                                         action="#{viewProcedimientos.buscar()}" update="messages dataTable"
                                          onstart="start()" oncomplete="stop()"
                                          process="@form"/>
                         <h:inputHidden id="descargarFlag" value="#{viewProcedimientos.downloadReady}"/>

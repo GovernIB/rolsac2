@@ -66,6 +66,7 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<PlatTramitElectronicaGridDTO>() {
             private static final long serialVersionUID = 1L;
 
@@ -92,6 +93,7 @@ public class ViewPlatTramitElectronica extends AbstractController implements Ser
             @Override
             public List<PlatTramitElectronicaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

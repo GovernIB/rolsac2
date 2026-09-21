@@ -892,7 +892,7 @@ public class ViewServicios extends AbstractController implements Serializable {
     }
 
     public void buscar() {
-//        filtro.setIdUAInstructor(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
@@ -920,7 +920,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             @Override
             public List<ServicioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
-
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

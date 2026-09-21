@@ -84,6 +84,7 @@ public class ViewTipoLegitimacion extends AbstractController implements Serializ
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
@@ -110,6 +111,7 @@ public class ViewTipoLegitimacion extends AbstractController implements Serializ
             @Override
             public List<TipoLegitimacionGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

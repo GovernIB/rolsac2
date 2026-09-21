@@ -91,6 +91,7 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<AlertaGridDTO>() {
             private static final long serialVersionUID = 1L;
 
@@ -116,6 +117,7 @@ public class ViewMisAlertas extends AbstractController implements Serializable {
             @Override
             public List<AlertaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

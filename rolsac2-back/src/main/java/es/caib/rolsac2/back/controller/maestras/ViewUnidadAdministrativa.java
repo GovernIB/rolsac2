@@ -94,6 +94,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
         if (mostrarOcultas) {
             filtro.setEstado(null);
@@ -124,6 +125,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
             public List<UnidadAdministrativaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

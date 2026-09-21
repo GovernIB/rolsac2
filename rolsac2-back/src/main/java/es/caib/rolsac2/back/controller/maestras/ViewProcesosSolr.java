@@ -90,6 +90,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<IndexacionDTO>() {
             @Override
             public IndexacionDTO getRowData(String rowKey) {
@@ -112,6 +113,7 @@ public class ViewProcesosSolr extends AbstractController implements Serializable
             public List<IndexacionDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

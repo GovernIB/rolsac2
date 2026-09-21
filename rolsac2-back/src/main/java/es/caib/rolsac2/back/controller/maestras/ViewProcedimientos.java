@@ -21,11 +21,10 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.primefaces.event.ToggleEvent;
-import org.primefaces.model.Visibility;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -305,7 +304,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
                 consultarProcedimiento();
             } else if (mostrarEditar(datoSeleccionado)) {
                 editarProcedimiento();
-            } else{
+            } else {
                 return;
             }
         }
@@ -778,6 +777,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             return;
         }
 
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<ProcedimientoGridDTO>() {
             private static final long serialVersionUID = 1L;
 
@@ -807,7 +807,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             @Override
             public List<ProcedimientoGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
-
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();
@@ -1458,7 +1458,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
     }
 
     public boolean mostrarConsultar(ProcedimientoGridDTO procedimiento) {
-        return ((procedimiento != null && procedimiento.getCodigoWFPub() != null) 
+        return ((procedimiento != null && procedimiento.getCodigoWFPub() != null)
                 || (procedimiento != null && !isModoConsulta() && "PV".equals(procedimiento.getEstado()) && this.isGestor()));
     }
 

@@ -82,6 +82,7 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<>() {
             private static final long serialVersionUID = 1L;
 
@@ -106,6 +107,7 @@ public class ViewTipoFormaInicio extends AbstractController implements Serializa
             public List<TipoFormaInicioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

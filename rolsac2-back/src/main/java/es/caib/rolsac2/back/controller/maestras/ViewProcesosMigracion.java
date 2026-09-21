@@ -162,7 +162,7 @@ public class ViewProcesosMigracion extends AbstractController implements Seriali
             public List<ProcesoLogGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtroLog.setIdioma(sessionBean.getLang());
-                    filtroLog.setPaginaFirst(first);
+                    filtroLog.setPaginaFirst(0);
                     filtroLog.setPaginaTamanyo(pageSize);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();

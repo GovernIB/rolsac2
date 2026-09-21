@@ -99,6 +99,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
      * Buscar
      */
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<IndexacionSIADTO>() {
 
             @Override
@@ -122,6 +123,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
             public List<IndexacionSIADTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setIdioma(sessionBean.getLang());
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

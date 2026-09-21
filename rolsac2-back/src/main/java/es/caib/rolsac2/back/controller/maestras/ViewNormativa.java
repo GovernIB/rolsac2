@@ -39,8 +39,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLConnection;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 @Named
 @ViewScoped
@@ -145,7 +145,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
      * Busca las normativas.
      */
     public void buscar() {
-
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<NormativaGridDTO>() {
 
             @Override
@@ -195,6 +195,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
             @Override
             public List<NormativaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setPaginaFirst(first);
                     if (mostrarUAs) {
                         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
                     }
@@ -620,7 +621,6 @@ public class ViewNormativa extends AbstractController implements Serializable {
                 InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", filename);
                 return DefaultStreamedContent.builder().contentType("application/xls").name(filename).stream(() -> inputStream).build();
-
 
 
             } catch (Exception e) {

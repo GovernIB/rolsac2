@@ -76,6 +76,7 @@ public class ViewConfiguracionesAlertas extends AbstractController implements Se
     }
 
     public void buscar() {
+        filtro.setPaginaFirst(0);
         lazyModel = new LazyDataModel<AlertaGridDTO>() {
             private static final long serialVersionUID = 1L;
 
@@ -101,6 +102,7 @@ public class ViewConfiguracionesAlertas extends AbstractController implements Se
             @Override
             public List<AlertaGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
+                    filtro.setPaginaFirst(first);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();
