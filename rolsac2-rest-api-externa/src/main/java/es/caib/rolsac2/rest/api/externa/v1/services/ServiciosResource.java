@@ -243,8 +243,8 @@ public class ServiciosResource {
     }
 
     private RespuestaServicios getRespuesta(final ProcedimientoFiltro filtro, final String idiomaPorDefecto,
-                                       final Instant start, final URI requestUri, final Integer apiMaxLimit,
-                                       final int paginaActual, final int tamanyoPaginaSolicitado) {
+                                            final Instant start, final URI requestUri, final Integer apiMaxLimit,
+                                            final int paginaActual, final int tamanyoPaginaSolicitado) {
         // El contrato exige sólo versiones definitivas. La consulta REST debe aplicar
         // esa condición antes de paginar para que totalCount y totalPages sean correctos.
         Pagina<ProcedimientoBaseDTO> resultadoBusqueda = procedimientoService.findProcedimientosByFiltroRest(filtro);
@@ -270,7 +270,7 @@ public class ServiciosResource {
 
     private void respostaMetadata(final RespuestaServicios respuesta,
                                   final ProcedimientoFiltro filtro) {
-        respuesta.setSpatial(String.valueOf(filtro.getIdEntidad()));
+        // respuesta.setSpatial(String.valueOf(filtro.getIdEntidad()));
     }
 
     private String idiomaPorDefecto(final Long idEntidad) {
