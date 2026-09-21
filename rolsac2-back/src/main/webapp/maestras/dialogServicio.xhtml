@@ -76,7 +76,7 @@
                  life="5000"
                  escape="false"/>
         <div class="row" style="margin-right: 0px;">
-        <div class="ui-g-12 ui-md-9 pl-4 panel-container">
+        <div id="divContenido" class="ui-g-12 ui-md-9 pl-4 panel-container">
             <p:panel header="#{labels['dialogServicio.datosSIA']}" id="formDatosSIA">
             <div class="form-row mb0">
                 <div class="form-group col-12 col-md-2 mb0">
@@ -288,7 +288,8 @@
 
                             <h:panelGroup id="panelComun">
 
-                                                 <span style="white-space:nowrap">
+                                                     <span style="white-space:nowrap; display:flex; align-items:center; width:100%;">
+
                                                         <p:inputText id="labelComun"
                                                                      value="#{dialogServicio.comunUA.getTraduccionConValor(dialogServicio.idioma)}"
                                                                      rendered="#{dialogServicio.data.esComun()}"
@@ -305,7 +306,7 @@
                                                                          icon="pi pi-sitemap"
                                                                          value=" "
                                                                          styleClass="w35px h30px iconoUAselector"
-                                                                         style="position:relative; top:10px;"
+                                                                         style="position:relative;"
                                                                          process="@this"
                                                                          rendered="#{!dialogServicio.data.esComun()}"
                                                                          disabled="#{dialogServicio.isModoConsulta()}"

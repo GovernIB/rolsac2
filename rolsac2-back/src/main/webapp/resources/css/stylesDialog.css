@@ -1107,3 +1107,7 @@ button.ui-state-hover:hover{
 	left: 0 !important;
 	top: 0 !important;
 }
+
+#divContenido .ui-icon-loading.ui-icon.ui-c.pi.pi-spin.pi-spinner.left {
+	left: 25% !important;
+}
