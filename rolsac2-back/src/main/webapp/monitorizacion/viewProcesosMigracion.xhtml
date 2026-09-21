@@ -47,11 +47,8 @@ Pagina amb el llistat de processos automàtics
                              currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                              emptyMessage="#{labels['dict.noHayDatos']}"
                              reflow="true"
-                             style="min-height: 300px;margin-left:10px;margin-right:10px;"
-
-                >
-                    <p:ajax
-                            event="rowDblselect"
+                             style="min-height: 300px;margin-left:10px;margin-right:10px;">
+                    <p:ajax event="rowDblselect"
                             oncomplete="triggerDblClick();"
                             global="false"/>
                     <p:ajax event="rowSelect" />
@@ -78,12 +75,23 @@ Pagina amb el llistat de processos automàtics
                     </p:column>
                     <p:column headerText="#{labels['dict.activo']}" styleClass="w130px">
                         <f:facet name="header"/>
-                        <h:outputLabel for="chkActivo" styleClass="sr-only"                   value="#{proceso.proceso.descripcion} #{proceso.proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"/>
-                        <h:selectBooleanCheckbox id="chkActivo"                             value="#{proceso.proceso.activo}"                             pt:aria-label="#{proceso.proceso.descripcion} #{proceso.proceso.activo ? labels['dict.activo'] : labels['dict.noActivo']}"                             disabled="true"/>
+                        <h:outputLabel for="chkActivo" styleClass="sr-only"                   
+                                       value="#{proceso.proceso.descripcion} #{proceso.fechaFin eq null ? labels['dict.activo'] : labels['dict.noActivo']}"/>
+                        <h:selectBooleanCheckbox id="chkActivo" value="#{proceso.fechaFin eq null}"
+                                                 pt:aria-label="#{proceso.proceso.descripcion} #{proceso.fechaFin eq null ? labels['dict.activo'] : labels['dict.noActivo']}"
+                                                 disabled="true"/>
                     </p:column>
                     <p:column headerText="#{labels['dict.resultado']}">
                         <f:facet name="header"/>
-                        <h:outputText value="#{proceso.getListaPropiedadesPlano()}" escape="false" style="white-space:pre-line;" />
+                        <h:panelGroup rendered="#{proceso.estadoTexto eq 'ERROR'}">
+                            <h:outputText value="#{labels['viewProcesosMigracion.errorProceso']}:"
+                                          rendered="#{proceso.estadoTexto eq 'ERROR'}"
+                                          styleClass="font-weight-bold"/>
+                            <br />
+                            <br />
+                        </h:panelGroup>
+                        <h:outputText value="#{proceso.getListaPropiedadesPlano()}" escape="false"
+                                      style="white-space:pre-line;" />
                     </p:column>
                     <p:column headerText="" styleClass="w50px">
                         <p:commandButton value="" icon="pi pi-align-center" iconPos="center"
