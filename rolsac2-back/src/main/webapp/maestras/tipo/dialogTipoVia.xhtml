@@ -116,14 +116,14 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </script>
   </ui:define>
   <ui:define name="contentFooterDialogRight">
+    <p:commandButton id="closeButton" action="#{dialogTipoVia.cerrar}" update="messagesDialog" process="@all"
+                     value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
     <p:commandButton action="#{dialogTipoVia.guardar}"
                      value="Guardar" update="messagesDialog form"
                      process="@all" pt:aria-label="Guardar"/>
-    <p:commandButton id="closeButton" action="#{dialogTipoVia.cerrar}" update="messagesDialog" process="@all"
-                     value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
     <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-      <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoVia.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.si']}"  />
       <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.no']}"  />
+      <p:commandButton value="#{labels['dict.si']}" action="#{dialogTipoVia.cerrarDefinitivo}" process="@this" update="messagesDialog form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.si']}"  />
     </p:confirmDialog>
   </ui:define>
 

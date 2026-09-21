@@ -241,12 +241,12 @@
                       trigger="btnCopy" successMessage="Copiado" errorMessage="Error al copiar"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
-                         value="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}" update="messagesDialog formDatos"
-                         process="@all" pt:aria-label="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}"/>
         <p:commandButton action="#{dialogProcedimientoFlujo.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
+        <p:commandButton action="#{dialogProcedimientoFlujo.guardarOEnviarMail}"
+                         value="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}" update="messagesDialog formDatos"
+                         process="@all" pt:aria-label="#{labels[dialogProcedimientoFlujo.consultarSoloMensajes == 'S' ? 'dialogProcedimientoFlujo.guardarMensaje' : 'dialogProcedimientoFlujo.guardarFlujo']}"/>
     </ui:define>
 </ui:composition>
 </html>

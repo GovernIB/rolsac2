@@ -169,14 +169,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     <ui:define name="contentFooterDialogLeft">
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionarUA.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
         <p:commandButton id="btnSeleccionar" action="#{dialogSeleccionarUA.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionarUA.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.seleccionar']}" />
-        <p:commandButton action="#{dialogSeleccionarUA.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
-
     </ui:define>
 
 </ui:composition>

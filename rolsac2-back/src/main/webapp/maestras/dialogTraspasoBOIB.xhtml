@@ -134,6 +134,9 @@
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTraspasoBOIB.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <h:panelGroup id="panelCrear">
            <!-- <p:commandButton action="#{dialogTraspasoBOIB.crearNormativa2}"
                              value="#{labels['dialogTraspasoBOIB.crearNormativa']}2" update="messagesDialog"
@@ -142,9 +145,6 @@
                              value="#{labels['dialogTraspasoBOIB.crearNormativa']}" update="messagesDialog"
                              process="@this" rendered="#{dialogTraspasoBOIB.mostrarResultados}" pt:aria-label="#{labels['dialogTraspasoBOIB.crearNormativa']}"/>
         </h:panelGroup>
-        <p:commandButton action="#{dialogTraspasoBOIB.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

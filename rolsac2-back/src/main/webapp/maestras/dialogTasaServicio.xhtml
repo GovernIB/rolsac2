@@ -121,13 +121,13 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTasaServicio.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogTasaServicio.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"
                          disabled="#{dialogTasaServicio.isModoConsulta()}" pt:aria-label="#{labels['dict.aceptar']}"/>
-        <p:commandButton action="#{dialogTasaServicio.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 
 </ui:composition>

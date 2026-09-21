@@ -132,13 +132,13 @@
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
         <p:commandButton action="#{dialogSeleccionarTema.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionarTema.isModoConsulta()}"
                          process="@all" id="seleccionar" pt:aria-label="#{labels['dict.seleccionar']}"/>
-        <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
     </ui:define>
 
 </ui:composition>

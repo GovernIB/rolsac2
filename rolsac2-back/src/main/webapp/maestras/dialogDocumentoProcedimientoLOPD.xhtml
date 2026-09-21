@@ -113,13 +113,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog form"
                          process="@all"
                          disabled="#{dialogDocumentoProcedimientoLOPD.isModoConsulta()}" pt:aria-label="#{labels['dict.aceptar']}"/>
-        <p:commandButton action="#{dialogDocumentoProcedimientoLOPD.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 
     </ui:define>
 

@@ -727,21 +727,20 @@
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimientoTramite.cerrarSinCheck()}"
                              process="@this" update="messagesDialog" oncomplete="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.si']}"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton id="closeButton" action="#{dialogProcedimientoTramite.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogProcedimientoTramite.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelDatosPublicacion panelOrganos panelCanales "
                          rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
-
-        <p:commandButton id="closeButton" action="#{dialogProcedimientoTramite.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

@@ -1192,37 +1192,37 @@
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.datoModificadoCerrar']}"
                          header="#{labels['dict.aviso']}!"
                          widgetVar="cdSalirSinGuardar">
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.si']}" onclick="confirmation.hide()"
                              action="#{dialogServicio.cerrarSinCheck()}" update="messagesDialog" pt:aria-label="#{labels['dict.si']}"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogServicio.cerrarSinCheck()}" process="@this"
                              update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.si']}"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardarSIA.mensaje']}"
                          widgetVar="cdSalirSinGuardarSIA">
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogServicio.enviarSIAsincomprobar()}"
                              process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.si']}"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton id="closeButton" action="#{dialogServicio.cerrar}"
+                         value="#{labels['dict.cerrar']}"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogServicio.guardar}"
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales"
                          rendered="#{dialogServicio.mostrarBotonGuardar()}"
                          process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
-        <p:commandButton id="closeButton" action="#{dialogServicio.cerrar}"
-                         value="#{labels['dict.cerrar']}"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
 
     </ui:define>
 </ui:composition>

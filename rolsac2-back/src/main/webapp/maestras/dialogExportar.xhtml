@@ -128,12 +128,12 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogExportar.cerrar}" update="messagesDialog"
+                         value="#{labels['dict.cerrar']}" id="closeButton" pt:aria-label="#{labels['dict.cerrar']}"
+        />
         <p:commandButton action="#{dialogExportar.guardar}"
                          value="#{labels['dict.exportar']}" update="messagesDialog form"
                          process="@all" pt:aria-label="#{labels['dict.exportar']}"/>
-        <p:commandButton action="#{dialogExportar.cerrar}" update="messagesDialog"
-                         value="#{labels['dict.cerrar']}" id="closeButton" pt:aria-label="#{labels['dict.cerrar']}"
-                          />
     </ui:define>
 
 </ui:composition>

@@ -34,13 +34,13 @@
 	</h:form>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton value="#{labels['dict.editar']}" actionListener="#{dialogAyuda.editar()}" process="@form" update="@form dialogAyuda:growlDialog" rendered="#{sessionBean.tienePermisoSuperAdmin()}" pt:aria-label="#{labels['dict.editar']}">
+    	<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogAyuda.cerrar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
+		<p:commandButton value="#{labels['dict.editar']}" actionListener="#{dialogAyuda.editar()}" process="@form" update="@form dialogAyuda:growlDialog" rendered="#{sessionBean.tienePermisoSuperAdmin()}" pt:aria-label="#{labels['dict.editar']}">
 			<p:ajax event="dialogReturn"
-					listener="#{dialogAyuda.returnDialogo}"
-					process="@this"
-					update="formDialog:dialogAyuda:txtDescripcion" />
+		            listener="#{dialogAyuda.returnDialogo}"
+		            process="@this"
+		            update="formDialog:dialogAyuda:txtDescripcion" />
 		</p:commandButton>
-		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogAyuda.cerrar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

@@ -153,12 +153,13 @@ Página con el detalle de un edificio
 
     <ui:define name="contentFooterDialogRight">
 
-        <p:commandButton action="#{dialogEdificio.guardar}"
-                         value="#{labels['dict.guardar']}" update="messagesDialog"
-                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
         <p:commandButton action="#{dialogEdificio.cerrar}"
                          value="#{labels['dict.cerrar']}"
                          process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
+
+        <p:commandButton action="#{dialogEdificio.guardar}"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
 
     </ui:define>
 

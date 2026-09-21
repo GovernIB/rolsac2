@@ -40,8 +40,8 @@
 	</h:form>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
-        <p:commandButton value="#{labels['dict.guardar']}" actionListener="#{dialogPropiedad.aceptar()}" process="@form" update="@form dialogPropiedad:growlDialog" pt:aria-label="#{labels['dict.guardar']}"/>
 		<p:commandButton value="#{labels['dict.cerrar']}" actionListener="#{dialogPropiedad.cancelar()}" process="@this" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
+		<p:commandButton value="#{labels['dict.guardar']}" actionListener="#{dialogPropiedad.aceptar()}" process="@form" update="@form dialogPropiedad:growlDialog" pt:aria-label="#{labels['dict.guardar']}"/>
 
 <!-- 		<p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}" responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar"> -->
 <!-- 			<p:commandButton value="Sí" action="#{dialogPropiedad.cancelarDefinitivo}" update="@form" oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"  /> -->

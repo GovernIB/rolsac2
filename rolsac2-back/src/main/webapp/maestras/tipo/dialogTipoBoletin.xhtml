@@ -101,19 +101,20 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogTipoBoletin.cerrar}" id="closeButton"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogTipoBoletin.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog form"
                          rendered="#{!dialogTipoBoletin.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
-        <p:commandButton action="#{dialogTipoBoletin.cerrar}" id="closeButton"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@all" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          update="messagesDialog form" responsive="true" width="458px"
                          message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}" widgetVar="confirmCerrar">
-            <p:commandButton value="Sí" process="@this" action="#{dialogTipoBoletin.cerrarDefinitivo}"
-                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="Sí"/>
-            <p:commandButton value="No" onclick="PF('confirmCerrar').hide();" pt:aria-label="No"/>
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.no']}"/>
+            <p:commandButton value="#{labels['dict.si']}" process="@this" action="#{dialogTipoBoletin.cerrarDefinitivo}"
+                             oncomplete="PF('confirmCerrar').hide();" pt:aria-label="#{labels['dict.si']}"/>
+
         </p:confirmDialog>
     </ui:define>
 

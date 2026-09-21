@@ -1234,11 +1234,12 @@
                          header="#{labels['dict.guardandoDato']}"
 
                          widgetVar="cdApoderado">
+            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()"
                              action="#{dialogProcedimiento.accionSin()}" update="messagesDialog" pt:aria-label="#{labels['dict.continuar']}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
-            <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
+
         </p:confirmDialog>
 
         <p:confirmDialog message="#{labels['dialogProcedimiento.warning.habilitadoFuncionario']}"
@@ -1250,17 +1251,17 @@
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardar.mensaje']}"
                          widgetVar="cdSalirSinGuardar">
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.cerrarSinCheck()}"
                              process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.si']}"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardar').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
         <p:confirmDialog showEffect="fade" hideEffect="fade" header="#{labels['dict.cerrar.cambiosSinGuardar.titulo']}"
                          responsive="true" width="458px" message="#{labels['dict.cerrar.cambiosSinGuardarSIA.mensaje']}"
                          widgetVar="cdSalirSinGuardarSIA">
+            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.si']}" action="#{dialogProcedimiento.enviarSIAsincomprobar()}"
                              process="@this" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA" oncomplete="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.si']}"/>
-            <p:commandButton value="#{labels['dict.no']}" onclick="PF('cdSalirSinGuardarSIA').hide();" pt:aria-label="#{labels['dict.no']}"/>
         </p:confirmDialog>
 
     </ui:define>
@@ -1307,14 +1308,14 @@
 
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton id="closeButton" action="#{dialogProcedimiento.cerrar}" update="messagesDialog" process="@all"
+                         value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}">
+        </p:commandButton>
         <p:commandButton id="btnGuardar" action="#{dialogProcedimiento.guardar}"
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos"
                          rendered="#{dialogProcedimiento.mostrarBotonGuardar()}"
                          process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
-        <p:commandButton id="closeButton" action="#{dialogProcedimiento.cerrar}" update="messagesDialog" process="@all"
-                         value="#{labels['dict.cerrar']}" oncomplete="stopCargando()" onstart="startCargando()" pt:aria-label="#{labels['dict.cerrar']}">
-        </p:commandButton>
 
     </ui:define>
 </ui:composition>

@@ -119,13 +119,13 @@
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionNormativa.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialogSelec"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogSeleccionNormativa.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialogSelec"
                          rendered="#{!dialogSeleccionNormativa.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
-        <p:commandButton action="#{dialogSeleccionNormativa.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialogSelec"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

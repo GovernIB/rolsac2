@@ -110,12 +110,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 
 
   <ui:define name="contentFooterDialogRight">
-    <p:commandButton action="#{dialogTipoMediaEdificio.guardar}" validateClient="true"
-                     value="#{labels['dict.guardar']}" update="messagesDialog"
-                     process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
     <p:commandButton action="#{dialogTipoMediaEdificio.cerrar}"
                      value="#{labels['dict.cerrar']}" update="messagesDialog"
                      process="@this" pt:aria-label="#{labels['dict.cerrar']}">
+    <p:commandButton action="#{dialogTipoMediaEdificio.guardar}" validateClient="true"
+                     value="#{labels['dict.guardar']}" update="messagesDialog"
+                     process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
+
          <!-- <p:confirm header="Confirmation" message="Tienes cambios pendientes, ¿quieres guardarlos?" icon="pi pi-exclamation-triangle" disabled="#{!dialogTipoMediaEdificio.isActualizadoSinGuardar()}" />-->
 
     </p:commandButton>

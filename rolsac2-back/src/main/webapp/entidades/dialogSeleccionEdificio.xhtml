@@ -93,13 +93,13 @@
         </h:form>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionEdificio.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogSeleccionEdificio.guardar}"
                          value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionEdificio.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
-        <p:commandButton action="#{dialogSeleccionEdificio.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>

@@ -165,13 +165,13 @@
         </div>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
+        <p:commandButton action="#{dialogSeleccionNormativaAfectacion.cerrar}"
+                         value="#{labels['dict.cerrar']}" update="messagesDialog"
+                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogSeleccionNormativaAfectacion.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogSeleccionNormativaAfectacion.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.aceptar']}"/>
-        <p:commandButton action="#{dialogSeleccionNormativaAfectacion.cerrar}"
-                         value="#{labels['dict.cerrar']}" update="messagesDialog"
-                         process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
     </ui:define>
 </ui:composition>
 </html>
