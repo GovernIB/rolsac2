@@ -2187,3 +2187,8 @@ tr.ui-expanded-row-content.ui-widget-content >td {
 .checkBoxMenu div.ui-corner-right {
     width: 25px;
 }
+
+.cabeceraFiltros .ui-button .pi {
+    font-size: 17px !important;
+    line-height: 1 !important;
+}
