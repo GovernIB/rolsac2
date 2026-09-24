@@ -411,7 +411,7 @@
                                      process="@this" update="dataServiciosRelacionados messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                 </div>
             </div>
-            <div class="row left-container mx-0 mb-2">
+            <div class="row left-container mx-0 mb-2 d-none">
                 <div class="left-container-header ml-0 col-12 row">
                     <div class="col-10 text-center">
                         <p class="left-container-tit mt-2 mb-1">#{labels['dialogNormativa.afectaciones']}</p>
@@ -445,8 +445,8 @@
 
                     </p:dataTable>
                 </div>
-                <div id="divAfectsBtns" class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                    <p:commandButton id="btnAbrirAfect" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
+                <div id="divAfectsBtns" class="col-2 p-1 d-none flex-column align-content-center justify-content-center align-items-center">
+                        <p:commandButton id="btnAbrirAfect" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                      styleClass="text-success"
                                      process="@this" actionListener="#{dialogNormativa.abrirAfectacion}"
                                      rendered="#{!dialogNormativa.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
