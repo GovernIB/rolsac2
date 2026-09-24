@@ -956,6 +956,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", data.getPublicosObjetivo());
             final Map<String, String> params = new HashMap<>();
+            params.put("tipoElemento", "procedimiento");
             UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
         }
     }

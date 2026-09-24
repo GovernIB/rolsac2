@@ -798,6 +798,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         } else if (TypeModoAcceso.ALTA.equals(modoAcceso)) {
             UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", data.getPublicosObjetivo());
             final Map<String, String> params = new HashMap<>();
+            params.put("tipoElemento", "servicio");
             UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", modoAcceso, params, true, 1040, 460);
         }
     }

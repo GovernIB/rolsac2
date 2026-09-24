@@ -23,25 +23,6 @@
                  escape="false"/>
         <div class="row" style="margin-right: 0px;">
         <div class="ui-g-12 ui-md-8 pl-4 panel-container">
-            <p:commandButton value="#{labels['dict.actualizar']}" id="actualizarBusqueda"
-                             style="display:none" ajax="false" action="#{dialogSeleccionTipoPublicoObjetivoEntidad.buscar}"
-                             update="dataTable messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
-            <p:toolbar id="toolbar" styleClass="mb-1">
-                <f:facet name="left">
-                    <p:outputLabel value="#{labels['dict.filtro']}" styleClass="ml-1" pt:aria-label="#{labels['dict.filtro']}" />:
-                    <p:inputText id="filtroBusqueda"      value="#{dialogSeleccionTipoPublicoObjetivoEntidad.filtroTexto}"/>
-                    <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
-                                     update="dataTable messagesDialog" styleClass="ml-1 estiloGrande"
-                                     actionListener="#{dialogSeleccionTipoPublicoObjetivoEntidad.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>
-                </f:facet>
-                <f:facet name="right">
-                    <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
-                                     actionListener="#{dialogSeleccionTipoPublicoObjetivoEntidad.anadirPubObjEntLista()}"
-                                     update="messagesDialog dataTablePubObjEnt" styleClass="estiloGrande mt-1"
-                                     disabled="#{empty dialogSeleccionTipoPublicoObjetivoEntidad.datoSeleccionado}"
-                                     icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}"></p:commandButton>
-                </f:facet>
-            </p:toolbar>
             <p:dataTable id="dataTable" value="#{dialogSeleccionTipoPublicoObjetivoEntidad.lazyModel}" var="pubobjent"
                          paginator="true" lazy="true" filterDelay="300" widgetVar="pubobjentTable"
                          rows="10" rowsPerPageTemplate="5,10,20,50,100"
@@ -52,8 +33,7 @@
                          currentPageReportTemplate="#{labels.dataTable_currentPageReport} - #{labels.dataTable_elementsFound}: {totalRecords}"
                          emptyMessage="#{labels['dict.noHayDatos']}"
                          selectionMode="single" selection="#{dialogSeleccionTipoPublicoObjetivoEntidad.datoSeleccionado}"
-                         reflow="true"
-                         style="min-height: 250px;">
+                         reflow="true">
                 <p:ajax event="rowUnselect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax event="rowSelect" global="false"  update="@form:btnAnyadir"  process="@form" />
                 <p:ajax event="rowDblselect"
@@ -68,20 +48,30 @@
                     <f:facet name="header">#{labels['viewPublicoObjetivoEntidad.tipoPublicoObjetivo']}</f:facet>
                     <h:outputText value="#{pubobjent.tipo.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}" class="labelGrande" />
                 </p:column>
-                <p:column sortBy="#{pubobjent.descripcion}">
-                    <f:facet name="header">#{labels['dict.descripcion']}</f:facet>
-                    <h:outputText value="#{pubobjent.descripcion.getTraduccion(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}" class="labelGrande" />
-                </p:column>
                 <p:column sortBy="#{pubobjent.empleadoPublico}">
-                    <f:facet name="header">#{labels['dict.esEmpleadoPublico']}</f:facet>
+                    <f:facet name="header">#{dialogSeleccionTipoPublicoObjetivoEntidad.etiquetaInterno}</f:facet>
                     <h:outputLabel for="chkEmpleadoPublico" styleClass="sr-only"
-                                   value="#{pubobjent.codigo} #{labels['dict.esEmpleadoPublico']} #{pubobjent.empleadoPublico}"/>
+                                   value="#{pubobjent.codigo} #{dialogSeleccionTipoPublicoObjetivoEntidad.etiquetaInterno} #{pubobjent.empleadoPublico}"/>
                     <p:selectBooleanCheckbox id="chkEmpleadoPublico"
                                              value="#{pubobjent.empleadoPublico}"
-                                             pt:aria-label="#{pubobjent.codigo} #{labels['dict.esEmpleadoPublico']} #{pubobjent.empleadoPublico}"
+                                             pt:aria-label="#{pubobjent.codigo} #{dialogSeleccionTipoPublicoObjetivoEntidad.etiquetaInterno} #{pubobjent.empleadoPublico}"
                                              disabled="true"/>
+                    <h:panelGroup rendered="#{pubobjent.empleadoPublico}"
+                                  title="#{labels['dialogSeleccionTipoPublicoObjetivoEntidad.visibleSede']}">
+                        <i class="pi pi-eye-slash ml-2" aria-hidden="true"></i>
+                        <h:outputText value="#{labels['dialogSeleccionTipoPublicoObjetivoEntidad.visibleSede']}"
+                                      styleClass="sr-only"/>
+                    </h:panelGroup>
                 </p:column>
             </p:dataTable>
+            <div class="text-right">
+                <p:commandButton id="btnAnyadir" value="#{labels['dict.anyadir']}"
+                                 actionListener="#{dialogSeleccionTipoPublicoObjetivoEntidad.anadirPubObjEntLista()}"
+                                 update="messagesDialog dataTablePubObjEnt" styleClass="estiloGrande"
+                                 disabled="#{empty dialogSeleccionTipoPublicoObjetivoEntidad.datoSeleccionado}"
+                                 icon="pi pi-plus" pt:aria-label="#{labels['dict.anyadir']}">
+                </p:commandButton>
+            </div>
 
 
             <h:outputScript>
@@ -92,33 +82,38 @@
 
         </div>
 
-        <div class="ui-g-10 ui-md-3 left-container row p-0 mt-2 mx-3 ml-5 mb-2">
-            <div class="col-12 left-container-header text-center">
-                <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.publicoObjetivo']}</p>
+        <div class="ui-g-10 ui-md-3 left-container p-0 mt-2 mx-3 ml-5 mb-2">
+            <div class="col-12 left-container-header d-flex align-items-center justify-content-center" style="height:30px;">
+                <p class="left-container-tit m-0">#{labels['dialogProcedimiento.publicoObjetivo']}</p>
             </div>
-            <div class="col-10 p-1" style="height: 250px;">
-                <p:dataTable id="dataTablePubObjEnt" var="td" value="#{dialogSeleccionTipoPublicoObjetivoEntidad.tipoPublicoObjEntSeleccionadas}"
-                             emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="230"
-                             paginator="false" selectionMode="single"
-                             selection="#{dialogSeleccionTipoPublicoObjetivoEntidad.pubobjentGridSeleccionada}"
-                             rowKey="#{td.codigo}" styleClass="noHeader">
+            <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                <div class="col-10 p-1">
+                    <p:dataTable id="dataTablePubObjEnt" var="td" value="#{dialogSeleccionTipoPublicoObjetivoEntidad.tipoPublicoObjEntSeleccionadas}"
+                                 emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true" scrollHeight="230"
+                                 paginator="false" selectionMode="single"
+                                 selection="#{dialogSeleccionTipoPublicoObjetivoEntidad.pubobjentGridSeleccionada}"
+                                 rowKey="#{td.codigo}" styleClass="noHeader">
 
-                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                    <p:ajax event="rowSelect" global="false"/>
-                    <p:ajax event="rowUnselect"/>
-                    <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
-                        <p:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
-                    </p:column>
-                </p:dataTable>
+                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                        <p:ajax event="rowSelect" global="false"/>
+                        <p:ajax event="rowUnselect"/>
+                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center">
+                            <p:outputLabel value="#{td.descripcion.getTraduccionConValor(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogSeleccionTipoPublicoObjetivoEntidad.idioma)}"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
+                                     action="#{dialogSeleccionTipoPublicoObjetivoEntidad.borrarTipoPubObjEnt}"
+                                     process="@this" update="dataTablePubObjEnt messagesDialog" pt:aria-label="Eliminar"/>
+                </div>
             </div>
-            <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
-                <p:commandButton title="Eliminar" icon="pi pi-minus" styleClass="text-danger"
-                                 action="#{dialogSeleccionTipoPublicoObjetivoEntidad.borrarTipoPubObjEnt}"
-                                 process="@this" update="dataTablePubObjEnt messagesDialog" pt:aria-label="Eliminar"/>
-            </div>
-
         </div>
         </div>
+    </ui:define>
+    <ui:define name="contentFooterDialogLeft">
+        <i class="pi pi-eye-slash mr-1" aria-hidden="true"></i>
+        <h:outputText value="#{labels['dialogSeleccionTipoPublicoObjetivoEntidad.visibleSede']}"/>
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogSeleccionTipoPublicoObjetivoEntidad.cerrar}"

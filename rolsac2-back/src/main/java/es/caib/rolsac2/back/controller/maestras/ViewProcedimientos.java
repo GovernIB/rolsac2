@@ -952,7 +952,9 @@ public class ViewProcedimientos extends AbstractController implements Serializab
 
     public void seleccionarPubObjetivos() {
         UtilJSF.anyadirMochila("tipoPubObjEntSeleccionadas", filtro.getPublicoObjetivos());
-        UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", TypeModoAcceso.EDICION, new HashMap<>(), true, 1040, 460);
+        final Map<String, String> params = new HashMap<>();
+        params.put("tipoElemento", "procedimiento");
+        UtilJSF.openDialog("dialogSeleccionTipoPublicoObjetivoEntidad", TypeModoAcceso.EDICION, params, true, 1040, 460);
     }
 
     public void seleccionarTemas() {

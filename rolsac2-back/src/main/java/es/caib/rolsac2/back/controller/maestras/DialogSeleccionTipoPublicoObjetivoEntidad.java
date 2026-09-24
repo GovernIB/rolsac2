@@ -44,6 +44,12 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
 
     private TipoPublicoObjetivoEntidadGridDTO pubobjentGridSeleccionada;
 
+    private boolean esProcedimiento;
+
+    public String getEtiquetaInterno() {
+        return getLiteral(esProcedimiento ? "dict.procedimientoInterno" : "dict.servicioInterno");
+    }
+
     public LazyDataModel<TipoPublicoObjetivoEntidadGridDTO> getLazyModel() {
         return lazyModel;
     }
@@ -51,6 +57,8 @@ public class DialogSeleccionTipoPublicoObjetivoEntidad extends AbstractControlle
     public void load() {
         LOG.debug("load");
         this.setearIdioma();
+        
+        esProcedimiento = "procedimiento".equals(UtilJSF.getDialogParam("tipoElemento"));
 
         // Inicializamos combos/desplegables/inputs/filtro
         filtro = new TipoPublicoObjetivoEntidadFiltro();
