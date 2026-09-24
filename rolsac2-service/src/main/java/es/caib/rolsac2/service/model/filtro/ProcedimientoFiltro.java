@@ -21,7 +21,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private List<Long> codigosProc;
 
     private Long codigoWF;
-    private Long codigoTram;
     private String estadoSIA;
     private String siaFecha;
     private String fechaPublicacionDesde;
@@ -155,6 +154,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
     private Long codigoDocumento;
     private String tituloDocumento;
     private Long codigoTramite;
+    private Long codigoTramiteWf;
     private String nombreTramite;
     private Integer faseTramite;
     private String inicioFechaInicioTramite;
@@ -228,7 +228,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.codigoProc = otro.codigoProc;
         this.codigosProc = otro.codigosProc;
         this.codigoWF = otro.codigoWF;
-        this.codigoTram = otro.codigoTram;
         this.estadoSIA = otro.estadoSIA;
         this.siaFecha = otro.siaFecha;
         this.fechaPublicacionDesde = otro.fechaPublicacionDesde;
@@ -329,6 +328,7 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         this.codigoDocumento = otro.codigoDocumento;
         this.tituloDocumento = otro.tituloDocumento;
         this.codigoTramite = otro.codigoTramite;
+        this.codigoTramiteWf = otro.codigoTramiteWf;
         this.nombreTramite = otro.nombreTramite;
         this.faseTramite = otro.faseTramite;
         this.inicioFechaInicioTramite = otro.inicioFechaInicioTramite;
@@ -425,14 +425,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setCodigoWF(Long codigoWF) {
         this.codigoWF = codigoWF;
-    }
-
-    public Long getCodigoTram() {
-        return codigoTram;
-    }
-
-    public void setCodigoTram(Long codigoTram) {
-        this.codigoTram = codigoTram;
     }
 
     public String getEstadoSIA() {
@@ -897,6 +889,14 @@ public class ProcedimientoFiltro extends AbstractFiltro {
 
     public void setCodigoTramite(Long codigoTramite) {
         this.codigoTramite = codigoTramite;
+    }
+
+    public Long getCodigoTramiteWf() {
+        return codigoTramiteWf;
+    }
+
+    public void setCodigoTramiteWf(Long codigoTramiteWf) {
+        this.codigoTramiteWf = codigoTramiteWf;
     }
 
     public String getNombreTramite() {
@@ -1604,11 +1604,6 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return codigosProc != null && !codigosProc.isEmpty();
     }
 
-
-    public boolean isRellenoCodigoTram() {
-        return codigoTram != null;
-    }
-
     public boolean isRellenoCodigoSIA() {
         return codigoSIA != null;
     }
@@ -2116,6 +2111,10 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         return codigoTramite != null;
     }
 
+    public boolean isRellenoCodigoTramiteWf() {
+        return codigoTramiteWf != null;
+    }
+
     public boolean isRellenoNombreTramite() {
         return nombreTramite != null && !nombreTramite.isEmpty();
     }
@@ -2264,7 +2263,8 @@ public class ProcedimientoFiltro extends AbstractFiltro {
         texto.append(", codigoProc=").append(codigoProc);
         texto.append(", codigosProc=").append(codigosProc);
         texto.append(", codigoWF=").append(codigoWF);
-        texto.append(", codigoTram=").append(codigoTram);
+        texto.append(", codigoTramite=").append(codigoTramite);
+        texto.append(", codigoTramiteWf=").append(codigoTramiteWf);
         texto.append(", estadoSIA='").append(estadoSIA).append('\'');
         texto.append(", siaFecha='").append(siaFecha).append('\'');
         texto.append(", fechaPublicacionDesde='").append(fechaPublicacionDesde).append('\'');

@@ -20,7 +20,6 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
     private Integer codigoSIA;
     private Long codigoProc;
     private List<Long> codigosProc;
-    private Long codigoTram;
     private Long codigoTramite;
     private String estadoSIA;
     private String siaFecha;
@@ -103,14 +102,6 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 
     public void setCodigos(List<Long> codigos) {
         this.codigos = codigos;
-    }
-
-    public Long getCodigoTram() {
-        return codigoTram;
-    }
-
-    public void setCodigoTram(Long codigoTram) {
-        this.codigoTram = codigoTram;
     }
 
     public String getTexto() {
@@ -416,10 +407,6 @@ public class ProcedimientoTramiteFiltro extends AbstractFiltro {
 
     public boolean isRellenoCodigosProc() {
         return codigosProc != null && !codigosProc.isEmpty();
-    }
-
-    public boolean isRellenoCodigoTram() {
-        return codigoTram != null;
     }
 
     public boolean isRellenoCodigoSIA() {
