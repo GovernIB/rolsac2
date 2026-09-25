@@ -564,7 +564,7 @@ public class ProcedimientosResource {
                 tiempoMiliSegundos);
         respuesta.setTitle("Procediments");
         respuesta.setDescription("Retorna els procediments disponibles en funció dels filtres indicats com a paràmetres de consulta.");
-        respuesta.setSpatial(String.valueOf(filtro.getIdEntidad()));
+        // respuesta.setSpatial(String.valueOf(filtro.getIdEntidad()));
         return respuesta;
     }
 
