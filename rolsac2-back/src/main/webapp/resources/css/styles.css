@@ -2192,6 +2192,10 @@ tr.ui-expanded-row-content.ui-widget-content >td {
     font-size: 17px !important;
     line-height: 1 !important;
 }
+.cabeceraBottom .ui-button .pi {
+    font-size: 17px !important;
+    line-height: 1 !important;
+}
 
 .ui-icon-check {
     background-position: -65px -145px !important;

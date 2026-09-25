@@ -125,12 +125,12 @@
                                                      value="#{labels['dict.enviarSIA']}"
                                                      update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA"
                                                      rendered="#{dialogProcedimiento.mostrarBtnSIA()}"
-                                                     style="margin-top:24px"
+                                                     style="margin-top:4px"
                                                      process="@all" pt:aria-label="#{labels['dict.enviarSIA']}"/>
                                     <p:commandButton id="btnRefrescarSIA" action="#{dialogProcedimiento.refrescarSIA}"
                                                      value="#{labels['dict.refrescarSIA']}" update=":formDialog:messagesDialog :formDialog:formDatosSIA :formDialog:panelBotonesSIA"
                                                      rendered="#{dialogProcedimiento.mostrarRefreshSIA}"
-                                                     style="margin-top:19px"
+                                                     style="margin-top:4px"
                                                      process="@all" pt:aria-label="#{labels['dict.refrescarSIA']}"/>
                                 </p>
                             </p:outputPanel>
