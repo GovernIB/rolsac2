@@ -1096,7 +1096,7 @@ public class SessionBean implements Serializable {
 
     public boolean isTipoActivo() {
         List<String> tiposViewIds = new ArrayList<>();
-        tiposViewIds.add("/maestras/tipo/viewTipoAfectacion.xhtml");
+        //tiposViewIds.add("/maestras/tipo/viewTipoAfectacion.xhtml");
         tiposViewIds.add("/maestras/tipo/viewTipoMateriaSIA.xhtml");
         tiposViewIds.add("/maestras/tipo/viewTipoFormaInicio.xhtml");
         tiposViewIds.add("/maestras/tipo/viewTipoNormativa.xhtml");
