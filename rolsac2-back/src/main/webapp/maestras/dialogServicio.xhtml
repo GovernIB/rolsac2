@@ -1029,19 +1029,31 @@
             }
 
             function triggerDblClickTramite() {
-            document.getElementById("formDialog:btnEditarTramite").click();
+                var button = document.getElementById("formDialog:btnEditarTramite") || document.getElementById("formDialog:btnConsultarTramite");
+                if (button) {
+                    button.click();
+                }
             }
 
             function triggerDblClickDoc() {
-            document.getElementById("formDialog:btnEditarDoc").click();
+                var button = document.getElementById("formDialog:btnEditarDoc") || document.getElementById("formDialog:btnConsultarDoc");
+                if (button) {
+                    button.click();
+                }
             }
 
             function triggerDblClickDocLopd() {
-            document.getElementById("formDialog:btnEditarDocLOPD").click();
+                var button = document.getElementById("formDialog:btnEditarDocLOPD") || document.getElementById("formDialog:btnConsultarDocLOPD");
+                if (button) {
+                    button.click();
+                }
             }
 
             function triggerDblClickTasaServicio() {
-            document.getElementById("formDialog:btnEditarTasaServicio").click();
+                var button = document.getElementById("formDialog:btnEditarTasaServicio") || document.getElementById("formDialog:btnConsultarTasaServicio");
+                if (button) {
+                    button.click();
+                }
             }
 
             function checkUAraiz() {
