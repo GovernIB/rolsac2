@@ -9,6 +9,7 @@ import java.net.URI;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class RespuestaBase<T> implements Serializable {
 
     @Schema(
             description = "Cobertura geogràfica. A ROLSAC2 correspon a l'entitat consultada.",
-            example = "1"
+            example = "Illes Balears"
     )
     private String spatial = "Illes Balears";
 
@@ -96,7 +97,7 @@ public class RespuestaBase<T> implements Serializable {
      * Procediment i Servei respectivament.
      */
     @Schema(description = "Llista d'elements retornats.")
-    private List<T> items;
+    private List<T> items = new ArrayList<>();
 
     @Schema(description = "Temps d'execució del servei en mil·lisegons.", example = "125")
     private Long tiempo;

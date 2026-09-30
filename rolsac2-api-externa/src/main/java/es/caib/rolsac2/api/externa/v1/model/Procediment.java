@@ -61,7 +61,8 @@ public class Procediment implements Serializable {
     )
     private String dataPublicacio;
     @Schema(
-            description = "Destinataris del procediment."
+            description = "Destinataris del procediment.",
+            example = "2026-01-15T09:00:00+01:00"
     )
     private String destinataris;
     @Schema(
@@ -70,7 +71,8 @@ public class Procediment implements Serializable {
     )
     private String codiSIA;
     @Schema(
-            description = "Estat SIA del procediment."
+            description = "Estat SIA del procediment.",
+            example = "A"
     )
     private String estatSIA;
     @Schema(
@@ -79,87 +81,108 @@ public class Procediment implements Serializable {
     )
     private String dataSIA;
     @Schema(
-            description = "Nom del responsable."
+            description = "Nom del responsable.",
+            example = "2026-05-20T12:00:00+02:00"
     )
     private String uaResponsableNom;
     @Schema(
-            description = "Codi de la unitat administrativa competent."
+            description = "Codi de la unitat administrativa competent.",
+            example = "1"
     )
     private Long uaCompetenteCodi;
     @Schema(
-            description = "Nom de la unitat administrativa competent."
+            description = "Nom de la unitat administrativa competent.",
+            example = "Govern de les Illes Balears"
     )
     private String uaCompetenteNom;
     @Schema(
-            description = "Codi de la unitat administrativa instructora."
+            description = "Codi de la unitat administrativa instructora.",
+            example = "1"
     )
     private Long uaInstructor;
     @Schema(
-            description = "Nom de la unitat administrativa instructora."
+            description = "Nom de la unitat administrativa instructora.",
+            example = "Govern de les Illes Balears"
     )
     private String uaInstructorNom;
     @Schema(
-            description = "Indica si el procediment es comu."
+            description = "Indica si el procediment es comu.",
+            example = "true"
     )
     private Boolean comu;
     @Schema(
-            description = "Objecte del procediment."
+            description = "Objecte del procediment.",
+            example = "Objecte"
     )
     private String objecte;
     @Schema(
-            description = "Codi del tipus del procediment."
+            description = "Codi del tipus del procediment.",
+            example = "1"
     )
     private Long tipusCodi;
     @Schema(
-            description = "Nom del tipus del procediment."
+            description = "Nom del tipus del procediment.",
+            example = "Tipus"
     )
     private String tipusNom;
     @Schema(
-            description = "Estat del procediment."
+            description = "Estat del procediment.",
+            example = "PUBLICADO"
     )
     private String estat;
     @Schema(
-            description = "Codi d'iniciacio del procediment."
+            description = "Codi d'iniciacio del procediment.",
+            example = "1"
     )
     private Long iniciacionCodi;
     @Schema(
-            description = "Nom d'iniciacio del procediment."
+            description = "Nom d'iniciacio del procediment.",
+            example = "Iniciacio"
     )
     private String iniciacionNom;
     @Schema(
-            description = "Codi del silenci del procediment."
+            description = "Codi del silenci del procediment.",
+            example = "1"
     )
     private Long silenciCodi;
     @Schema(
-            description = "Nom del silenci del procediment."
+            description = "Nom del silenci del procediment.",
+            example = "Silenci"
     )
     private String silenciNom;
     @Schema(
-            description = "Codi del tipus de procediment."
+            description = "Codi del tipus de procediment.",
+            example = "1"
     )
     private Long tipusProcedimientoCodi;
     @Schema(
-            description = "Nom del tipus de procediment."
+            description = "Nom del tipus de procediment.",
+            example = "Tipus"
     )
     private String tipusProcedimientoNom;
     @Schema(
-            description = "Codi del tipus de via del procediment."
+            description = "Codi del tipus de via del procediment.",
+            example = "1"
     )
     private Long tipusViaCodi;
     @Schema(
-            description = "Nom del tipus de via del procediment."
+            description = "Nom del tipus de via del procediment.",
+            example = "Via"
     )
     private String tipusViaNom;
     @Schema(
-            description = "Indica si esta habilitada la tramitacio mitjancant apoderat."
+            description = "Indica si esta habilitada la tramitacio mitjancant apoderat.",
+            example = "true"
     )
     private Boolean habilitatApoderat;
     @Schema(
-            description = "Indica si esta habilitada la tramitacio mitjancant funcionari."
+            description = "Indica si esta habilitada la tramitacio mitjancant funcionari.",
+            example = "true"
     )
     private Boolean habilitatFuncionari;
     @Schema(
-            description = "Termini de resolucio del procediment."
+            description = "Termini de resolucio del procediment.",
+            example = "Termini de resolucio"
     )
     private String terminiResolucio;
 

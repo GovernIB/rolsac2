@@ -22,65 +22,65 @@ public class Servei implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(Servei.class);
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "Enllaç a la URL pública de la Seu CAIB.")
+    @Schema(description = "Enllaç a la URL pública de la Seu CAIB.", example = "https://www.caib.es/seucaib/tramites/servicio/1")
     private String url;
-    @Schema(description = "Codi del servei.")
+    @Schema(description = "Codi del servei.", example = "1")
     private Long codi;
-    @Schema(description = "Nom del servei.")
+    @Schema(description = "Nom del servei.", example = "Servei")
     private String nom;
-    @Schema(description = "Data d’actualització del servei en format ISO8601.")
+    @Schema(description = "Data d’actualització del servei en format ISO8601.", example = "2026-05-20T12:00:00+02:00")
     private String dataActualizacio;
-    @Schema(description = "Data de publicació del servei en format ISO8601.")
+    @Schema(description = "Data de publicació del servei en format ISO8601.", example = "2026-05-20T12:00:00+02:00")
     private String dataPublicacio;
-    @Schema(description = "Data de caducitat del servei en format ISO8601.")
+    @Schema(description = "Data de caducitat del servei en format ISO8601.", example = "2026-05-20T12:00:00+02:00")
     private String dataCaducitat;
-    @Schema(description = "Codi SIA del servei.")
+    @Schema(description = "Codi SIA del servei.", example = "1234567")
     private String codiSIA;
-    @Schema(description = "Estat SIA del servei.")
+    @Schema(description = "Estat SIA del servei.", example = "A")
     private String estatSIA;
-    @Schema(description = "Data SIA del servei en format ISO8601.")
+    @Schema(description = "Data SIA del servei en format ISO8601.", example = "2026-05-20T12:00:00+02:00")
     private String dataSIA;
-    @Schema(description = "Nom de la unitat administrativa responsable.")
+    @Schema(description = "Nom de la unitat administrativa responsable.", example = "Govern de les Illes Balears")
     private String uaResponsableNom;
-    @Schema(description = "Codi de la unitat administrativa instructora.")
+    @Schema(description = "Codi de la unitat administrativa instructora.", example = "1")
     private Long uaInstructorCodi;
-    @Schema(description = "Nom de la unitat administrativa instructora.")
+    @Schema(description = "Nom de la unitat administrativa instructora.", example = "Govern de les Illes Balears")
     private String uaInstructorNom;
-    @Schema(description = "Indica si el servei és comú.")
+    @Schema(description = "Indica si el servei és comú.", example = "true")
     private Boolean comu;
-    @Schema(description = "Objecte del servei.")
+    @Schema(description = "Objecte del servei.", example = "Objecte")
     private String objecte;
-    @Schema(description = "Destinataris del servei.")
+    @Schema(description = "Destinataris del servei.", example = "Destinataris")
     private String destinataris;
-    @Schema(description = "Estat del servei.")
+    @Schema(description = "Estat del servei.", example = "PUBLICADO")
     private String estat;
-    @Schema(description = "Indica si permet tramitació mitjançant apoderat.")
+    @Schema(description = "Indica si permet tramitació mitjançant apoderat.", example = "true")
     private Boolean habilitatApoderat;
-    @Schema(description = "Indica si permet tramitació mitjançant funcionari habilitat.")
+    @Schema(description = "Indica si permet tramitació mitjançant funcionari habilitat.", example = "true")
     private Boolean habilitatFuncionari;
-    @Schema(description = "Termini de resolució.")
+    @Schema(description = "Termini de resolució.", example = "Termini de resolució")
     private String terminiResolucio;
-    @Schema(description = "Indicador intern del servei definit al contracte.")
+    @Schema(description = "Indicador intern del servei definit al contracte.", example = "true")
     private String intern;
-    @Schema(description = "Indicador de publicació del servei.")
+    @Schema(description = "Indicador de publicació del servei.", example = "true")
     private String publicat;
-    @Schema(description = "Indica si el servei està actiu en LOPD.")
+    @Schema(description = "Indica si el servei està actiu en LOPD.", example = "true")
     private Boolean actiuLOPD;
     /*@Schema(description = "Codi del tipus de tramitació.")
     private Long tipusTramitacioCodi;
     @Schema(description = "Nom del tipus de tramitació.")
     private String tipusTramitacioNom;*/
-    @Schema(description = "Indica si la tramitació és presencial.")
+    @Schema(description = "Indica si la tramitació és presencial.", example = "true")
     private Boolean tramitPresencial;
-    @Schema(description = "Indica si la tramitació és electrònica.")
+    @Schema(description = "Indica si la tramitació és electrònica.", example = "true")
     private Boolean tramitElectronica;
-    @Schema(description = "Indica si la tramitació és telefònica.")
+    @Schema(description = "Indica si la tramitació és telefònica.", example = "true")
     private Boolean tramitTelefonica;
-    @Schema(description = "Enllaç telemàtic a la tramitació.")
+    @Schema(description = "Enllaç telemàtic a la tramitació.", example = "https://www.caib.es/seucaib/X")
     private String urlTramitacio;
-    @Schema(description = "Codi de la plataforma de tramitació.")
+    @Schema(description = "Codi de la plataforma de tramitació.", example = "1")
     private Long plataformaTramitCodi;
-    @Schema(description = "Nom de la plataforma de tramitació.")
+    @Schema(description = "Nom de la plataforma de tramitació.", example = "SISTRA2")
     private String plataformaTramitNom;
 
 
