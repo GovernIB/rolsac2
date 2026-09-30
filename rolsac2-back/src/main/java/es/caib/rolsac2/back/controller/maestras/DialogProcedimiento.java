@@ -242,7 +242,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
      * Enviado a SIA para que se indexe.
      */
     public void enviarSIA() {
-        if (data.getCodigo() != null && data.getCodigoSIA() == null) {
+        if (puedeEnviarSIA()) {
             if (this.data.compareTo(this.dataOriginal, false) != 0) {
                 PrimeFaces.current().executeScript("PF('cdSalirSinGuardarSIA').show();");
                 return;
@@ -254,6 +254,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void enviarSIAsincomprobar() {
         try {
+            if (!puedeEnviarSIA()) {
+                return;
+            }
             if (!checkObligatorio()) {
                 return;
             }
@@ -1935,9 +1938,11 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean mostrarBtnSIA() {
-        return data.getCodigoSIA() == null && data.getCodigo() != null && !mostrarRefreshSIA && !isInformador() && (data.getEstado().compareTo(TypeProcedimientoEstado.MODIFICACION) == 0
-                || data.getEstado().compareTo(TypeProcedimientoEstado.PENDIENTE_PUBLICAR) == 0
-        );
+        return puedeEnviarSIA() && !mostrarRefreshSIA && !isInformador();
+    }
+
+    private boolean puedeEnviarSIA() {
+        return data != null && data.getCodigo() != null && data.getCodigoSIA() == null
+                && (data.getEstado() == TypeProcedimientoEstado.MODIFICACION || data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
     }
 }
-
