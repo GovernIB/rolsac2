@@ -1523,7 +1523,7 @@ public class SessionBean implements Serializable {
     public void marcarAlertaLeida(Long codigo) {
         alertaService.marcarAlertaLeida(codigo, seguridad.getIdentificadorUsuario());
 
-        this.alertasAvisos = alertaService.getAlertas(seguridad.getIdentificadorUsuario(), perfiles, lang);
+        cargarAlertas();
     }
 
     public UsuarioDTO getUsuario() {
