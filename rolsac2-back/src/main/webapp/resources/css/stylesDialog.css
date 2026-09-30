@@ -30,10 +30,10 @@ body {
 	border-color: white;
 }
 .bordeRojoRequired {
-	border: 1px solid #eed3d7 !important;
+	border: 1px solid #dc3545 !important;
 }
 .botonRojoRequired {
-	color: #62c7fa !important;
+	color: #dc3545 !important;
 }
 .bordeAzulRequired {
 	border: 1px solid #62c7fa !important;
@@ -42,7 +42,7 @@ body {
 	color: #0080C0 !important;
 }
 .ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
-	color: #0080C0 !important;
+	color: #dc3545 !important;
 }
 .botonNaranjaRequired {
 	color: #FF8C00 !important;

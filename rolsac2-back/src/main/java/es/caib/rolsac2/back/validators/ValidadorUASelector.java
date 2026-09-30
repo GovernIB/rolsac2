@@ -23,7 +23,7 @@ public class ValidadorUASelector implements Validator {
 
             if (uaComponent.getValue() == null || (uaComponent.getValue() instanceof UnidadAdministrativaDTO && ((UnidadAdministrativaDTO) uaComponent.getValue()).getCodigo() == null)) {
 
-                uaComponent.setEstiloInput("bordeAzulRequired botonAzulRequired");
+                uaComponent.setEstiloInput("bordeRojoRequired botonRojoRequired");
 
 
                 String mensajeError = "";

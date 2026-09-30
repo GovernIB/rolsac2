@@ -33,7 +33,7 @@ public class ValidadorLiteral implements Validator {
 
         if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
-            literalComponent.setEstiloInput("bordeAzulRequired");
+            literalComponent.setEstiloInput("bordeRojoRequired");
 
             String mensajeError = "";
             if (literalComponent.getAttributes().get("mensajeError") != null) {
@@ -59,7 +59,7 @@ public class ValidadorLiteral implements Validator {
                 Literal literal = (Literal) literalComponent.getAttributes().get("literal");
                 for (Traduccion trad : literal.getTraducciones()) {
                     if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
-                        literalComponent.setEstiloInput("bordeAzulRequired");
+                        literalComponent.setEstiloInput("bordeRojoRequired");
                         Object[] param = new Object[3];
                         param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
                         param[1] = trad.getIdioma();
@@ -83,7 +83,7 @@ public class ValidadorLiteral implements Validator {
 
         if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
-            literalComponent.setEstiloInput("bordeAzulRequired");
+            literalComponent.setEstiloInput("bordeRojoRequired");
 
             String mensajeError = "";
             if (literalComponent.getAttributes().get("mensajeError") != null) {
@@ -107,7 +107,7 @@ public class ValidadorLiteral implements Validator {
                 Literal literal = (Literal) literalComponent.getAttributes().get("literal");
                 for (Traduccion trad : literal.getTraducciones()) {
                     if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
-                        literalComponent.setEstiloInput("bordeAzulRequired");
+                        literalComponent.setEstiloInput("bordeRojoRequired");
                         Object[] param = new Object[3];
                         param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
                         param[1] = trad.getIdioma();
