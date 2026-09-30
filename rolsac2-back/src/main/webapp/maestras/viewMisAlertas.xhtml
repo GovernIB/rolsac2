@@ -87,10 +87,13 @@
                 <p:column headerText=" "
                           renderer="#{viewMisAlertas.renderMarcarLeido}" styleClass="w100px">
                     <f:facet name="header"/>
-                    <p:commandButton value=" " styleClass="w40px h25px iconoMarcarAlertaComoLeido"
+                    <p:commandButton value=" "
+                                     styleClass="w40px h25px iconoMarcarAlertaComoLeido"
                                      icon="pi pi-times-circle"
                                      action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
-                                     process="@form" update="messages dataTablePendientes" pt:aria-label=" ">
+                                     process="@form"
+                                     update="messages dataTablePendientes"
+                                     pt:aria-label="#{labels['msg.marcarAlertaComoLeido']}">
                         <!--onstart="startEliminando()"
                                      oncomplete="stopEliminando()"> -->
                         <p:confirm header="#{labels['msg.aviso']}" message="#{labels['msg.marcarAlertaComoLeido']}"/>

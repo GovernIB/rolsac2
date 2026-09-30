@@ -46,6 +46,8 @@
             	}
 
             	setEstilos();
+
+                corregirAriaTree('formDialog:treeTemas');
         	}
 
         	function seleccion(){
@@ -100,6 +102,7 @@
                 display:none;
             }
         </style>
+
     </ui:define>
     <ui:define name="contentDialog">
         <p:growl id="messagesDialog"
@@ -109,34 +112,59 @@
                  process="@all"
                  escape="false"/>
         <div class="container">
-            <p:tree value="#{dialogSeleccionarTema.root}" var="node" dynamic="true"
+            <p:tree id="treeTemas" value="#{dialogSeleccionarTema.root}" var="node" dynamic="true"
                     selectionMode="single"
                     selection="#{dialogSeleccionarTema.selectedNode}" styleClass="panel-tree w100"
             >
-                <p:ajax event="expand" listener="#{dialogSeleccionarTema.onNodeExpand}" />
+                <p:ajax event="expand" listener="#{dialogSeleccionarTema.onNodeExpand}"  oncomplete="corregirAriaTree('formDialog:treeTemas')" />
                 <p:ajax event="select" listener="#{dialogSeleccionarTema.onNodeSelect}" update="@form:messagesDialog"/>
 
                 <p:treeNode type="TemaDTO" nodeType="TemaDTO" >
-                    <p:outputLabel value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" pt:aria-label="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}" />
-                    <i class="#{dialogSeleccionarTema.getIcono(node)}"></i>
+                    <h:outputText
+                            value="#{node.descripcion.getTraduccion(dialogSeleccionarTema.idioma)}"/>
+                    <i class="#{dialogSeleccionarTema.getIcono(node)}" aria-hidden="true"></i>
                 </p:treeNode>
             </p:tree>
         </div>
 
+        <h:outputScript>
+            function corregirAriaTree(treeId) {
+            var tree = document.getElementById(treeId);
+
+            if (!tree) {
+            return;
+            }
+
+            tree.querySelectorAll('.ui-tree-container, .ui-treenode-children')
+            .forEach(function(el) {
+            el.setAttribute('role', 'group');
+            });
+
+            tree.querySelectorAll('.ui-treenode')
+            .forEach(function(el) {
+            el.setAttribute('role', 'none');
+            el.removeAttribute('aria-selected');
+            el.removeAttribute('aria-expanded');
+            });
+            }
+
+        </h:outputScript>
     </ui:define>
 
     <ui:define name="contentFooterDialogLeft">
 
-        <p:outputLabel value="#{labels['dict.indexacionSIA.icono']}" pt:aria-label="#{labels['dict.indexacionSIA.icono']}" />
+        <h:outputText value="#{labels['dict.indexacionSIA.icono']}"/>
         <i class="#{dialogSeleccionarTemaMultiple.getIconoSIA()}"></i>
     </ui:define>
 
     <ui:define name="contentFooterDialogRight">
         <p:commandButton action="#{dialogSeleccionarTema.cerrar}"
                          value="#{labels['dict.cerrar']}"
+                         ariaLabel="#{labels['dict.cerrar']}"
                          process="@this" pt:aria-label="#{labels['dict.cerrar']}" />
         <p:commandButton action="#{dialogSeleccionarTema.guardar}"
                          value="#{labels['dict.seleccionar']}" update="messagesDialog"
+                         ariaLabel="#{labels['dict.seleccionar']}"
                          rendered="#{!dialogSeleccionarTema.isModoConsulta()}"
                          process="@all" id="seleccionar" pt:aria-label="#{labels['dict.seleccionar']}"/>
     </ui:define>

@@ -208,7 +208,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         dto.setCodigoWF(jProcWF.getCodigo());
         ProcedimientoBaseDTO dtoAntiguo = ProcedimientoBaseDTO.createInstance(dto.getNombreProcedimientoWorkFlow().getIdiomas());
         if (conAuditoria) {
-            crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.CREAR", TypeAccionAuditoria.ALTA.toString());
+            crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.CREAR", TypeAccionAuditoria.ALTA.toString(), ruta);
         }
         // return jProcedimiento.getCodigo();
         return jProcWF.getCodigo();
@@ -341,7 +341,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             indexacionPDURepository.deleteByCodElemento(dtoAntiguo.getCodigo());
         }
 
-        crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.modificar", TypeAccionAuditoria.MODIFICACION.toString());
+        crearAuditoria(dtoAntiguo, dto, perfil, "auditoria.flujo.modificar", TypeAccionAuditoria.MODIFICACION.toString(), ruta);
     }
 
     private void updateWF(ProcedimientoBaseDTO dto, JProcedimientoWorkflow jProcWF, String ruta) throws RecursoNoEncontradoException {
@@ -577,6 +577,23 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                     FicheroDTO ficheroDTO = ficheroExternoRepository.getContentById(trad.getFicheroDTO().getCodigo(), ruta);
                     Long idFicheroNuevo = ficheroExternoRepository.createFicheroExterno(ficheroDTO.getContenido(), ficheroDTO.getFilename(), ficheroDTO.getTipo(), null, ruta);
                     trad.getFicheroDTO().setCodigo(idFicheroNuevo);
+                }
+            }
+        }
+    }
+
+    private void completarNombresFicherosDocumentos(List<ProcedimientoDocumentoDTO> documentos, String ruta) {
+        if (documentos == null) {
+            return;
+        }
+        for (ProcedimientoDocumentoDTO documento : documentos) {
+            if (documento.getDocumentos() == null || documento.getDocumentos().getTraducciones() == null) {
+                continue;
+            }
+            for (DocumentoTraduccion trad : documento.getDocumentos().getTraducciones()) {
+                Long codigoFichero = trad.getFicheroDTO() != null ? trad.getFicheroDTO().getCodigo() : trad.getFichero();
+                if (codigoFichero != null && (trad.getFicheroDTO() == null || trad.getFicheroDTO().getFilename() == null)) {
+                    trad.setFicheroDTO(ficheroExternoRepository.getMetadata(codigoFichero, ruta));
                 }
             }
         }
@@ -949,7 +966,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
      * @param procedimientoAntiguo Procedimiento antiguo
      * @param procedimientoNuevo   Procedimiento nuevo
      */
-    private void crearAuditoria(final ProcedimientoBaseDTO procedimientoAntiguo, final ProcedimientoBaseDTO procedimientoNuevo, TypePerfiles perfil, String literalFlujo, String accion) {
+    private void crearAuditoria(final ProcedimientoBaseDTO procedimientoAntiguo, final ProcedimientoBaseDTO procedimientoNuevo, TypePerfiles perfil, String literalFlujo, String accion, String ruta) {
+
+        completarNombresFicherosDocumentos(procedimientoAntiguo.getDocumentos(), ruta);
+        completarNombresFicherosDocumentos(procedimientoNuevo.getDocumentos(), ruta);
+        completarNombresFicherosDocumentos(procedimientoAntiguo.getDocumentosLOPD(), ruta);
+        completarNombresFicherosDocumentos(procedimientoNuevo.getDocumentosLOPD(), ruta);
 
         List<AuditoriaCambio> cambios;
 
@@ -1220,9 +1242,9 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
             } else {
                 if (estadoDestino != null && estadoDestino.equals(TypeProcedimientoEstado.CERRADO)) {
-                    crearAuditoria(procDestino, data, perfil, literalFlujo, TypeAccionAuditoria.BAJA.toString());
+                    crearAuditoria(procDestino, data, perfil, literalFlujo, TypeAccionAuditoria.BAJA.toString(), ruta);
                 } else {
-                    crearAuditoria(procDestino, data, perfil, literalFlujo, TypeAccionAuditoria.MODIFICACION.toString());
+                    crearAuditoria(procDestino, data, perfil, literalFlujo, TypeAccionAuditoria.MODIFICACION.toString(), ruta);
                 }
             }
 

@@ -25,7 +25,7 @@
 
         <p:panel id="panelTraduccion">
             <div class="d-flex justify-content-center align-content-center h25px">
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 " pt:aria-label="#{labels['dialogTraduccion.idiomaOrigen']}"/>
+                <p:outputLabel for="selectId1" value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 " pt:aria-label="#{labels['dialogTraduccion.idiomaOrigen']}"/>
                 <p:selectOneMenu id="selectId1" value="#{dialogTraduccion.idiomaOrigen}"
                                  required="false" styleClass="p-0">
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
@@ -46,7 +46,7 @@
                     <p:ajax process="@this" listener="#{dialogTraduccion.cambiarIdiomaDestinoAux}"
                             update="tradLiteral selectId1 selectId2"/>
                 </p:selectOneMenu>
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2" pt:aria-label="#{labels['dialogTraduccion.idiomaDestino']}"/>
+                <p:outputLabel for="selectId2" value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2" pt:aria-label="#{labels['dialogTraduccion.idiomaDestino']}"/>
 
             </div>
             <div class="d-flex justify-content-center align-content-center h25px mt-2">
@@ -64,11 +64,13 @@
                             <h:outputText value="#{labels['dict.' += dialogTraduccion.listaFields[rep.index]]}:"/>
                         </div>
                         <p:inputTextarea rows="3" autoResize="false" styleClass="w40"
+                                         pt:aria-label="#{labels['dict.' += dialogTraduccion.listaFields[rep.index]]}"
                                          value="#{dialogTraduccion.literalAuxOrigen[rep.index]}">
                             <p:ajax event="change"
                                     listener="#{dialogTraduccion.cambioIdiomaOrigen(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaOrigen, rep.index)}"/>
                         </p:inputTextarea>
                         <p:inputTextarea rows="3" autoResize="false" styleClass="w50"
+                                         pt:aria-label="#{labels['dict.' += dialogTraduccion.listaFields[rep.index]]}"
                                          value="#{dialogTraduccion.literalAuxDestino[rep.index]}">
                             <p:ajax event="change"
                                     listener="#{dialogTraduccion.cambioIdiomaDestino(dialogTraduccion.literales[rep.index], dialogTraduccion.idiomaDestino, rep.index)}"/>
@@ -78,6 +80,7 @@
                         <div class="d-flex justify-content-center mt-2">
                             <p:outputLabel value="#{labels['dict.traduccio'] += ':'}" styleClass="mr-2" pt:aria-label="#{labels['dict.traduccio'] += ':'}"/>
                             <p:inputTextarea rows="3" autoResize="false" styleClass="w50"
+                                            pt:aria-label="#{labels['dict.traduccio'] += ':'}"
                                              value="#{dialogTraduccion.literalAuxDestinoSust[rep.index]}">
                             </p:inputTextarea>
                         </div>
@@ -89,13 +92,13 @@
                         <div class="w10">
                             <h:outputText value="#{labels['dict.' += dialogTraduccion.listaFieldsHTML[stat.index]]}:"/>
                         </div>
-                        <p:inputTextarea id="literalOrigen" rows="3" autoResize="false" styleClass="w40" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}">
+                        <p:inputTextarea pt:aria-label="#{labels['dict.' += dialogTraduccion.listaFieldsHTML[stat.index]]}" id="literalOrigen" rows="3" autoResize="false" styleClass="w40" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}">
 
                         </p:inputTextarea>
                         <p:inputText id="literalOrigenInput" value="#{dialogTraduccion.literalHTMLAuxOrigen[stat.index]}" style="display: none;"/>
                         <p:commandButton id="literalOrigenBtn" actionListener="#{dialogTraduccion.cambioIdiomaOrigenHTML(dialogTraduccion.literalesHTML[stat.index], dialogTraduccion.idiomaOrigen, stat.index)}" process="@form" style="display: none;" pt:aria-label="literalOrigenBtn"/>
 
-                        <p:inputTextarea id="literalDestino" rows="3" autoResize="false" styleClass="w50" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}">
+                        <p:inputTextarea pt:aria-label="#{labels['dict.' += dialogTraduccion.listaFieldsHTML[stat.index]]}" id="literalDestino" rows="3" autoResize="false" styleClass="w50" class="htmlEditor" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}">
 
                         </p:inputTextarea>
                         <p:inputText id="literalDestinoInput" value="#{dialogTraduccion.literalHTMLAuxDestino[stat.index]}" style="display: none;"/>
@@ -105,6 +108,7 @@
                         <div class="d-flex justify-content-center mt-2">
                             <p:outputLabel value="#{labels['dict.traduccio'] += ':'}" styleClass="mr-2" pt:aria-label="#{labels['dict.traduccio'] += ':'}"/>
                             <p:inputTextarea rows="3" autoResize="false" styleClass="w50" class="htmlEditor"
+                                             pt:aria-label="#{labels['dict.traduccio'] += ':'}"
                                              value="#{dialogTraduccion.literalHTMLAuxDestinoSust[stat.index]}">
                             </p:inputTextarea>
                         </div>

@@ -87,7 +87,41 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
 				for(let i=0; i&lt;elementos.length; i++){
         			elementos[i].classList.add("ui-treenode-parent");
 				}
+                fixTreeAria();
         	}
+
+            function fixTreeAria() {
+
+                // Contenedores del árbol
+                document.querySelectorAll('.ui-tree-container, .ui-treenode-children')
+                    .forEach(function(ul) {
+                        ul.setAttribute('role', 'group');
+                    });
+
+                // El treeitem debe ser el LI
+                document.querySelectorAll('.ui-treenode').forEach(function(li) {
+
+                    let content = li.querySelector(':scope > .ui-treenode-content');
+
+                    if (content) {
+                        li.setAttribute('role', 'treeitem');
+
+                        if (content.hasAttribute('aria-expanded')) {
+                            li.setAttribute('aria-expanded',
+                                content.getAttribute('aria-expanded'));
+                            content.removeAttribute('aria-expanded');
+                        }
+
+                        if (content.hasAttribute('aria-selected')) {
+                            li.setAttribute('aria-selected',
+                                content.getAttribute('aria-selected'));
+                            content.removeAttribute('aria-selected');
+                        }
+
+                        content.removeAttribute('role');
+                    }
+                });
+            }
 
         	//function addLeaf(el){
         		//el.classList.add("ui-treenode-leaf");
@@ -150,7 +184,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                      process="@all"
                      escape="false"/>
 
-            <p:tree value="#{dialogSeleccionarUA.root}" var="node" dynamic="true"
+            <p:tree id="treeUA" value="#{dialogSeleccionarUA.root}" var="node" dynamic="true"
                     selectionMode="single"
                     selection="#{dialogSeleccionarUA.selectedNode}" style="width: 100% !important; height: 90vh; overflow-y: scroll;"
                 >

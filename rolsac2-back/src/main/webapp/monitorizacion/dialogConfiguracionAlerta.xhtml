@@ -26,7 +26,7 @@
     </ui:define>
     <ui:define name="contentIdioma">
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
+        <p:outputLabel for="opcionIdioma" value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogConfiguracionAlerta.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -145,7 +145,7 @@
                 </div>
 
                 <div id="divPerfil" class="ui-g-12 ui-md-2 ui-lg-1">
-                    <p:outputLabel value="#{labels['dict.perfil']}:" rendered="true" pt:aria-label="#{labels['dict.perfil']}:" />
+                    <p:outputLabel for="txtPerfiles" value="#{labels['dict.perfil']}:" rendered="true" pt:aria-label="#{labels['dict.perfil']}:" />
                 </div>
                 <div id="divPerfil2"  class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:selectOneMenu id="txtPerfiles" requiredMessage="#{labels['dict.obligatorio.perfil']}"
@@ -172,8 +172,8 @@
                                                           ocultarTexto="false" esCabecera="false"
                         />
                     <br />
-                        <p:outputLabel value="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" styleClass="mr-3" pt:aria-label="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" />
-                        <p:selectBooleanCheckbox id="txtUnaDescendiente" label="xefw"
+                        <p:outputLabel for="txtUnaDescendiente" value="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" styleClass="mr-3" pt:aria-label="#{labels['dialogConfiguracionAlerta.ua.descendientes']}" />
+                        <p:selectBooleanCheckbox id="txtUnaDescendiente"
                                              value="#{dialogConfiguracionAlerta.data.descendientes}" />
 
                 </div>

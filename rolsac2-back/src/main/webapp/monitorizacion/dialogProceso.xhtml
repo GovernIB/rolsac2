@@ -109,39 +109,39 @@
                     </p:dataTable>
                     <div class="w5 ml-2 d-flex flex-column align-items-center g-5">
                         <p:commandButton id="btnNuevaPropiedad" icon="pi pi-plus"
-                                         title="#{msg['botones.nuevo']}"
+                                         title="#{labels['dict.nuevo']}"
                                          actionListener="#{dialogProceso.nuevaPropiedad()}" process="@this"
                                          update="messagesDialog"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2" pt:aria-label="#{msg['botones.nuevo']}">
+                                         styleClass="p-2" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
                         <p:commandButton id="btnEditarPropiedad" icon="pi pi-pencil"
-                                         title="#{msg['botones.editar']}"
+                                         title="#{labels['dict.editar']}"
                                          actionListener="#{dialogProceso.editarPropiedad()}" process="@this"
                                          update="messagesDialog"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2" pt:aria-label="#{msg['botones.editar']}">
+                                         styleClass="p-2" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProceso.returnDialogo}"
                                     update="messagesDialog dataTablePropiedades"/>
                         </p:commandButton>
                         <p:commandButton id="btnEliminarPropiedad" icon="pi pi-minus"
-                                         title="#{msg['botones.eliminar']}"
+                                         title="#{labels['dict.eliminar']}"
                                          actionListener="#{dialogProceso.quitarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2" pt:aria-label="#{msg['botones.eliminar']}"/>
-                        <p:commandButton icon="pi pi-arrow-up" title="#{msg['botones.subir']}"
+                                         styleClass="p-2" pt:aria-label="#{labels['dict.eliminar']}"/>
+                        <p:commandButton icon="pi pi-arrow-up" title="#{labels['dict.subir']}"
                                          actionListener="#{dialogProceso.subirPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2" pt:aria-label="#{msg['botones.subir']}"/>
-                        <p:commandButton icon="pi pi-arrow-down" title="#{msg['botones.bajar']}"
+                                         styleClass="p-2" pt:aria-label="#{labels['dict.subir']}"/>
+                        <p:commandButton icon="pi pi-arrow-down" title="#{labels['dict.bajar']}"
                                          actionListener="#{dialogProceso.bajarPropiedad()}" process="@this"
                                          update="messagesDialog dataTablePropiedades"
                                          rendered="#{dialogProceso.modoAcceso!='TypeModoAcceso.CONSULTA'}"
-                                         styleClass="p-2" pt:aria-label="#{msg['botones.bajar']}"/>
+                                         styleClass="p-2" pt:aria-label="#{labels['dict.bajar']}"/>
 
                     </div>
                 </div>

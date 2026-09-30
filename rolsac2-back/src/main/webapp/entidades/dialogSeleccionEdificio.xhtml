@@ -28,7 +28,7 @@
                              update="dataTable" pt:aria-label="#{labels['dict.actualizar']}"/>
             <p:toolbar id="toolbar">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
+                    <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
                                                                                      value="#{dialogSeleccionEdificio.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search" update="messages dataTable"
                                      actionListener="#{dialogSeleccionEdificio.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>

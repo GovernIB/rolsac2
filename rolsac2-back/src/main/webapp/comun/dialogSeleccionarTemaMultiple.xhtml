@@ -21,6 +21,27 @@
     </ui:define>
 
     <ui:define name="icerik">
+        <h:outputScript>
+            function corregirAriaTree(treeId) {
+            var tree = document.getElementById(treeId);
+
+            if (!tree) {
+            return;
+            }
+
+            tree.querySelectorAll('.ui-tree-container, .ui-treenode-children')
+            .forEach(function(el) {
+            el.setAttribute('role', 'group');
+            });
+
+            tree.querySelectorAll('.ui-treenode')
+            .forEach(function(el) {
+            el.setAttribute('role', 'none');
+            el.removeAttribute('aria-selected');
+            el.removeAttribute('aria-expanded');
+            });
+            }
+        </h:outputScript>
         <script>
             window.onload = function(){
                 let elementos = document.getElementsByClassName("cabeceraIdiomas");
@@ -46,6 +67,8 @@
                 }
 
                 setEstilos();
+
+                corregirAriaTree('formDialog:treeTemasMultiple');
             }
 
             function seleccion(){
@@ -114,10 +137,12 @@
                  process="@all"
                  escape="false"/>
         <div class="container ">
-            <p:tree value="#{dialogSeleccionarTemaMultiple.root}" var="node"
-                    selectionMode="checkbox" styleClass="panel-tree w100"
-                    selection="#{dialogSeleccionarTemaMultiple.temasSeleccionados}"
-                    >
+            <p:tree id="treeTemasMultiple"
+                    value="#{dialogSeleccionarTemaMultiple.root}"
+                    var="node"
+                    selectionMode="checkbox"
+                    styleClass="panel-tree w100"
+                    selection="#{dialogSeleccionarTemaMultiple.temasSeleccionados}">
                 <p:treeNode type="default" >
                     <!--<i id="icono#{node.codigo}" class="#{dialogSeleccionarTemaMultiple.getIcono(node)}"></i> -->
 <!--                    <i class="#{dialogSeleccionarTemaMultiple.getIcono(node)}" />-->

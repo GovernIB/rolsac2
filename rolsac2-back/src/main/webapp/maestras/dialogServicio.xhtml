@@ -42,7 +42,7 @@
     <ui:define name="contentIdioma">
 
         <span class="pi pi-tag" style="margin-top:15px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;" pt:aria-label="#{labels['dict.idioma']}:"/>
+        <p:outputLabel for="opcionIdioma" value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogServicio.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -281,9 +281,17 @@
             <p:panel id="panelOrganos" header="#{labels['dialogProcedimientoTramite.organos']}" styleClass="panel" >
                 <div class="form-row height50">
                     <div class="form-group col-md-12">
-                        <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
-                                       value="#{labels['dialogProcedimiento.organoInstructor']}:"
-                                       for="txtOrgComp" pt:aria-label="#{labels['dialogProcedimiento.organoInstructor']}:"/>
+                        <p:outputLabel
+                                styleClass="mr-2 mb-1 pt-0 negrita"
+                                value="#{labels['dialogProcedimiento.organoInstructor']}:"
+                                for="labelComun"
+                                rendered="#{dialogServicio.data.esComun()}"/>
+
+                        <p:outputLabel
+                                styleClass="mr-2 mb-1 pt-0 negrita"
+                                value="#{labels['dialogProcedimiento.organoInstructor']}:"
+                                for="txtOrgComp"
+                                rendered="#{!dialogServicio.data.esComun()}"/>
                         <p>
 
                             <h:panelGroup id="panelComun">
@@ -310,7 +318,8 @@
                                                                          process="@this"
                                                                          rendered="#{!dialogServicio.data.esComun()}"
                                                                          disabled="#{dialogServicio.isModoConsulta()}"
-                                                                         id="btnAbrirUA" pt:aria-label=" "
+                                                                         id="btnAbrirUA"
+                                                                         pt:aria-label="#{labels['dialogProcedimiento.organoInstructor']}"
                                                         >
                                                             <p:ajax event="dialogReturn"
                                                                     listener="#{dialogServicio.returnDialogoUA}"
@@ -560,6 +569,7 @@
                                              idioma="#{dialogServicio.idioma}"
                                              idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                              idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                             nombreLiteral="#{labels['dialogProcedimiento.responsableTratamiento']}"
                         />
                         <p:inputText id="txtRespTratComun"
                                      value="#{dialogServicio.comunLOPD.getTraduccionConValor(dialogServicio.idioma)}"

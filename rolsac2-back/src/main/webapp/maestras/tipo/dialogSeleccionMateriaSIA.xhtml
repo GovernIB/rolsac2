@@ -28,8 +28,8 @@
                                  update="dataTable messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
                 <p:toolbar id="toolbar">
                     <f:facet name="left">
-                        <h:outputFormat value="#{labels['dict.filtro']}"/>: <p:inputText id="filtroBusqueda"
-                                                                                         value="#{dialogSeleccionMateriaSIA.filtroTexto}"/>
+                        <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}"/>:
+                        <p:inputText id="filtroBusqueda"      value="#{dialogSeleccionMateriaSIA.filtroTexto}"/>
                         <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                          update="dataTable messagesDialog"
                                          actionListener="#{dialogSeleccionMateriaSIA.buscar()}" process="@form" pt:aria-label="#{labels['dict.busqueda']}"/>

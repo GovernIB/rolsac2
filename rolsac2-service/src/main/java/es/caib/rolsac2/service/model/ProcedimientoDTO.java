@@ -715,10 +715,6 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         AuditoriaUtil.auditar(data.getDestinatarios(), dataOriginal.getDestinatarios(), cambios, "auditoria.procedimiento.destinatarios");
         AuditoriaUtil.auditar(data.getRequisitos(), dataOriginal.getRequisitos(), cambios, "auditoria.procedimiento.requisitos");
 
-
-        AuditoriaUtil.auditar(data.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
-
-
         AuditoriaUtil.auditar(data.getTipoProcedimiento(), dataOriginal.getTipoProcedimiento(), cambios, "auditoria.procedimiento.tipoProcedimiento");
         AuditoriaUtil.auditar(data.getIniciacion(), dataOriginal.getIniciacion(), cambios, "auditoria.procedimiento.iniciacion");
         AuditoriaUtil.auditar(data.getTerminoResolucion(), dataOriginal.getTerminoResolucion(), cambios, "auditoria.procedimiento.terminoResolucion");
@@ -749,12 +745,13 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
 
 
         //Seccion datos LOPD
+        AuditoriaUtil.auditar(data.getLopdInfoAdicional(), dataOriginal.getLopdInfoAdicional(), cambios, "auditoria.procedimiento.lopdInfoAdicional");
         AuditoriaUtil.auditar(data.isInterno(), dataOriginal.isInterno(), cambios, "auditoria.procedimiento.interno");
         AuditoriaUtil.auditar(data.getLopdResponsable(), dataOriginal.getLopdResponsable(), cambios, "auditoria.procedimiento.lopdResponsable");
         AuditoriaUtil.auditar(data.getDatosPersonalesLegitimacion(), dataOriginal.getDatosPersonalesLegitimacion(), cambios, "auditoria.procedimiento.datosPersonalesLegitimacion");
         AuditoriaUtil.auditar(data.getLopdFinalidad(), dataOriginal.getLopdFinalidad(), cambios, "auditoria.procedimiento.datosPersonalesFinalidad");
         AuditoriaUtil.auditar(data.getLopdDestinatario(), dataOriginal.getLopdDestinatario(), cambios, "auditoria.procedimiento.datosPersonalesDestinatario");
-
+        AuditoriaUtil.auditar(data.getLopdDerechos(), dataOriginal.getLopdDerechos(), cambios, "auditoria.procedimiento.lopdDerechos");
         AuditoriaUtil.auditar(data.getUaResponsableLiteral(), dataOriginal.getUaResponsableLiteral(), cambios, "auditoria.procedimiento.uaResponsableLiteral");
 
 

@@ -38,8 +38,8 @@
                 <f:facet name="header">
                     <div class="row">
                         <div class="ui-g-12 ui-md-6 ui-lg-6">
-                            <p:outputLabel value="#{labels['dict.filtro']}:" styleClass="mr-2" pt:aria-label="#{labels['dict.filtro']}:" /> <p:inputText id="filtroBusqueda"
-                                                                                                               value="#{dialogSeleccionNormativaAfectacion.filtroTexto}"/>
+                            <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="mr-2" pt:aria-label="#{labels['dict.filtro']}:" />
+                            <p:inputText id="filtroBusqueda"   value="#{dialogSeleccionNormativaAfectacion.filtroTexto}"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"
                                              update="dataTableAfectaciones messagesDialog" styleClass="ml-2"
                                              actionListener="#{dialogSeleccionNormativaAfectacion.buscar()}"

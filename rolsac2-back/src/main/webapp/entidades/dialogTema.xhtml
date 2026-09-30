@@ -79,12 +79,14 @@
                 </div>
 
                 <div class="ui-g-12 ui-md-9 ui-lg-4">
-                    <my:temaComponent id="txtTemaPadre" value="#{dialogTema.data.temaPadre}"
+                    <my:temaComponent id="txtTemaPadre"
+                                      value="#{dialogTema.data.temaPadre}"
                                       codigoTema="#{dialogTema.data.codigo}"
-                                      idioma="#{dialogTema.idioma}" ocultarTexto="false"
+                                      idioma="#{dialogTema.idioma}"
+                                      ocultarTexto="false"
                                       disable="#{dialogTema.quitarSeleccionarTema}"
                                       deshabilitarLimpiar="#{!dialogTema.isModoAlta()}"
-                    />
+                                      ariaLabel="#{labels['dialogTema.temaPadre']}"/>
                 </div>
 
                 <div class="ui-g-12 ui-md-3 ui-lg-2">
@@ -137,6 +139,8 @@
                 }
             }
         </script>
+
+
 
     </ui:define>
     <ui:define name="contentFooterDialogRight">

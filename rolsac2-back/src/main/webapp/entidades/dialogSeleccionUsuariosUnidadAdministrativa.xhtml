@@ -30,7 +30,7 @@
                              update="dataTable messagesDialog" pt:aria-label="#{labels['dict.actualizar']}"/>
             <p:toolbar id="toolbar" styleClass="mb-2">
                 <f:facet name="left">
-                    <h:outputFormat value="#{labels['dict.filtro']}:" styleClass="mr-2" />
+                    <p:outputLabel for="filtroBusqueda" value="#{labels['dict.filtro']}:" styleClass="mr-2" />
                     <p:inputText id="filtroBusqueda"  styleClass="mr-2"
                                  value="#{dialogSeleccionUsuariosUnidadAdministrativa.filtroTexto}"/>
                     <p:commandButton value="#{labels['dict.busqueda']}" icon="pi pi-search"

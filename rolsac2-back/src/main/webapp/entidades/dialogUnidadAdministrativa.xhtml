@@ -27,7 +27,7 @@
 
         <span class="pi pi-tag mt-2"/>
         <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:3px;" pt:aria-label="#{labels['dict.idioma']}:"/>
-        <p:selectOneButton id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
+        <p:selectOneButton for="opcionIdioma" id="opcionIdioma" value="#{dialogUnidadAdministrativa.idioma}"
                            styleClass="botoneraRed" unselectable="false" maxlength="50">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
@@ -68,9 +68,9 @@
                         </div>
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" pt:aria-label="#{labels['dict.fechaBaja']}:" />
+                                <p:outputLabel for="fechaBaja" styleClass="mr-2 mb-1" value="#{labels['dict.fechaBaja']}:" pt:aria-label="#{labels['dict.fechaBaja']}:" />
                             </p>
-                             <p:inputText value="#{dialogUnidadAdministrativa.data.fechaBaja}"  disabled="true"  styleClass="w95" >
+                             <p:inputText id="fechaBaja" value="#{dialogUnidadAdministrativa.data.fechaBaja}"  disabled="true"  styleClass="w95" >
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                             </p:inputText>
                         </div>
@@ -81,7 +81,16 @@
                         </div>
                         <div class="form-group col-md-8">
                             <p class="mb-1">
-                                <p:outputLabel styleClass="mr-2 mb-1" value="#{labels['dict.normativaBaja']}:" pt:aria-label="#{labels['dict.normativaBaja']}:" />
+                                <p:outputLabel
+                                        for="txtNormativaBajaNoasociada"
+                                        styleClass="mr-2 mb-1"
+                                        value="#{labels['dict.normativaBaja']}:"
+                                        rendered="#{empty dialogUnidadAdministrativa.normativaBaja}" />
+                                <p:outputLabel
+                                        for="txtNormativaBaja"
+                                        styleClass="mr-2 mb-1"
+                                        value="#{labels['dict.normativaBaja']}:"
+                                        rendered="#{!empty dialogUnidadAdministrativa.normativaBaja}" />
                             </p>
                             <p:inputText id="txtNormativaBajaNoasociada" value="#{labels['dialogUnidadAdministrativa.bajaSinNormativa']}"
                                          styleClass="w95" disabled="true" rendered="#{empty dialogUnidadAdministrativa.normativaBaja}"/>

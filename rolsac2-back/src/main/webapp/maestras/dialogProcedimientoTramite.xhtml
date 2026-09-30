@@ -276,7 +276,7 @@
                                     style="position:relative; top:10px;"
                                     rendered="#{!dialogProcedimientoTramite.isProcedimientoComun()}"
                                     disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                    id="btnAbrirUAInstr" pt:aria-label=" "
+                                    id="btnAbrirUAInstr" pt:aria-label="#{labels['dialogProcedimientoTramite.organoCompetente']}"
                             >
                                 <p:ajax event="dialogReturn"
                                         listener="#{dialogProcedimientoTramite.returnDialogoUA}"

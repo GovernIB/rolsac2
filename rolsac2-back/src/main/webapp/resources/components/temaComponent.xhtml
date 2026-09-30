@@ -16,11 +16,19 @@
         <cc:attribute name="codigoTema" required="false" />
         <cc:attribute name="deshabilitarLimpiar" type="java.lang.Boolean"
                   shortDescription="Indica si el boton de limpiar esta deshabilitado"/>
+        <cc:attribute name="ariaLabel"
+                      type="java.lang.String"
+                      required="false"/>
     </cc:interface>
     <cc:implementation>
         <span id="#{cc.clientId}" style="white-space:nowrap">
             <p:importConstants type="es.caib.rolsac2.service.model.types.TypeModoAcceso" var="ModoAcceso"/>
-            <p:inputText id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w80 mr-1" disabled="true"/>
+            <p:inputText id="texto"
+                         binding="#{cc.texto}"
+                         value="#{cc.textoValor}"
+                         styleClass="w80 mr-1"
+                         disabled="true"
+                         pt:aria-label="#{cc.attrs.ariaLabel}"/>
             <p:inputText id="textoES" binding="#{cc.textoES}" style="display:none"/>
             <p:inputText id="textoCA" binding="#{cc.textoCA}" style="display:none"/>
             <p:inputText id="textoID" binding="#{cc.textoID}" style="display:none"/>
@@ -41,7 +49,7 @@
                              styleClass="w45px h25px iconoUAselector"
                              process="@this"
                              update="#{cc.updateElementos}"
-                             disabled="#{cc.attrs.deshabilitarLimpiar}" pt:aria-label="Limpiar selección"
+                             disabled="#{cc.attrs.deshabilitarLimpiar}" pt:aria-label="#{cc.attrs.ariaLabel}"
             />
         </span>
     </cc:implementation>

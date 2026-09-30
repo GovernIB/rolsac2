@@ -42,7 +42,7 @@
     </ui:define>
     <ui:define name="contentIdioma">
         <span class="pi pi-tag" style="margin-top:15px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;" pt:aria-label="#{labels['dict.idioma']}:"/>
+        <p:outputLabel for="opcionIdioma" value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:5px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogProcedimiento.idioma}" styleClass="botoneraRed"
                            unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
@@ -170,7 +170,7 @@
                             </p>
                         </div>
                         <div class="form-group col-md-2">
-                            <p:outputLabel id="labelSelectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" pt:aria-label="#{labels['dict.tipo']}:" />
+                            <p:outputLabel for="selectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" pt:aria-label="#{labels['dict.tipo']}:" />
                             <br/>
                             <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
                                              autoWidth="false" styleClass="w100px"
@@ -423,7 +423,7 @@
                                                     process="@this"
                                                     rendered="#{!dialogProcedimiento.data.esComun()}"
                                                     disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                                    id="btnAbrirUA" pt:aria-label=" "
+                                                    id="btnAbrirUA" pt:aria-label="#{labels['dialogProcedimiento.organoCompetente']}"
                                             >
                                                 <p:ajax event="dialogReturn"
                                                         listener="#{dialogProcedimiento.returnDialogoUACompetente}"
@@ -444,9 +444,17 @@
                             </p>
                         </div>
                         <div class="form-group col-md-12">
-                            <p:outputLabel styleClass="mr-2 pt-0 negrita"
-                                           value="#{labels['dialogProcedimiento.organoInstructor']}:"
-                                           for="txtOrgInstr" pt:aria-label="#{labels['dialogProcedimiento.organoInstructor']}:"/>
+                            <p:outputLabel
+                                    styleClass="mr-2 pt-0 negrita"
+                                    value="#{labels['dialogProcedimiento.organoInstructor']}:"
+                                    for="labelComunInstr"
+                                    rendered="#{dialogProcedimiento.data.esComun()}" />
+
+                            <p:outputLabel
+                                    styleClass="mr-2 pt-0 negrita"
+                                    value="#{labels['dialogProcedimiento.organoInstructor']}:"
+                                    for="txtOrgInstr"
+                                    rendered="#{!dialogProcedimiento.data.esComun()}" />
                             <p>
                                 <h:panelGroup id="panelComunInstr">
                                  <span style="white-space:nowrap;  display:flex;">
@@ -473,7 +481,7 @@
                                              process="@this"
                                              rendered="#{!dialogProcedimiento.data.esComun()}"
                                              disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                             id="btnAbrirUAInstr" pt:aria-label=" "
+                                             id="btnAbrirUAInstr" pt:aria-label="#{labels['dialogProcedimiento.organoInstructor']}"
                                      >
                                             <p:ajax event="dialogReturn"
                                                     listener="#{dialogProcedimiento.returnDialogoUAInstr}"
@@ -573,6 +581,7 @@
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
+                                                 nombreLiteral="#{labels['dialogProcedimiento.responsableTratamiento']}"
                             />
                             <p:inputText id="txtRespTratComun"
                                          value="#{dialogProcedimiento.comunLOPD.getTraduccionConValor(dialogProcedimiento.idioma)}"
@@ -709,6 +718,7 @@
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
                                   styleClass="w100" required="#{empty param['formDialog:closeButton']}"
                                          autoWidth="false"
+                                         pt:aria-label="#{labels['dialogProcedimiento.tipoProcedimiento']}"
                                          requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoProcedimientoConverter}">

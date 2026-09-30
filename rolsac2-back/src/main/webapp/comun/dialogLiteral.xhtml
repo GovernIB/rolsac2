@@ -47,7 +47,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                         />
 
             <div class="d-flex justify-content-center align-content-center h25px">
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 " pt:aria-label="#{labels['dialogTraduccion.idiomaOrigen']}"/>
+                <p:outputLabel for="selectId1" value="#{labels['dialogTraduccion.idiomaOrigen']}" styleClass="mr-2 " pt:aria-label="#{labels['dialogTraduccion.idiomaOrigen']}"/>
                 <p:selectOneMenu id="selectId1" value="#{dialogLiteral.idiomaOrigen}"
                                  required="false" styleClass="p-0">
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}" itemValue="#{null}"/>
@@ -66,7 +66,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                                    itemLabel="#{labels['idiomas.' += lang]}" itemValue="#{lang}"/>
                     <p:ajax process="@this" listener="#{dialogLiteral.cambiarIdiomaDestinoAux}" update="selectId1 selectId2"  />
                 </p:selectOneMenu>
-                <p:outputLabel value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2" pt:aria-label="#{labels['dialogTraduccion.idiomaDestino']}"/>
+                <p:outputLabel for="selectId2" value="#{labels['dialogTraduccion.idiomaDestino']}" styleClass="ml-2" pt:aria-label="#{labels['dialogTraduccion.idiomaDestino']}"/>
 
             </div>
 

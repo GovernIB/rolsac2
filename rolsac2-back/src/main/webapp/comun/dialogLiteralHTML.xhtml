@@ -232,6 +232,7 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 						<p:inputTextarea id="txt#{idioma.toUpperCase()}"
 										 value="#{dialogLiteralHTML.texto[idioma.substring(0, 1).toUpperCase().concat(idioma.substring(1))]}"
 										 disabled="#{dialogLiteralHTML.isConsulta()}"
+										 pt:aria-label="#{labels['dict.descripcion']}"
 										 rows="14" cols="140" autoResize="false" maxlength="4000"
 										 style="height:559px" />
 					</div>

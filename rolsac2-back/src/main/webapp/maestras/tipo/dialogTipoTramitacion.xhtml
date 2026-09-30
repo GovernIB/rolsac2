@@ -36,7 +36,7 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
          }
          </h:outputStylesheet>
         <span class="pi pi-tag" style="margin-top:10px"/>
-        <p:outputLabel value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
+        <p:outputLabel for="opcionIdioma" value="#{labels['dict.idioma']}:" style="margin-right:4px;margin-top:2px;" pt:aria-label="#{labels['dict.idioma']}:"/>
         <p:selectOneButton id="opcionIdioma" value="#{dialogTipoTramitacion.idioma}" styleClass="botoneraRed" unselectable="false">
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>

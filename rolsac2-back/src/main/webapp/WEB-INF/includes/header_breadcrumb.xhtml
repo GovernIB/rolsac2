@@ -33,7 +33,8 @@
                                         value=" "
                                         styleClass="w45px h25px iconoAlertaLeido botonBordeado"
                                         process="@this"
-                                        update="@parent" pt:aria-label=" "
+                                        update="@parent"
+                                        ariaLabel="#{labels['msg.marcarAlertaComoLeido']}"
                                 />
                                 <p:outputLabel value="#{alerta.fechaIni}" pt:aria-label="#{alerta.fechaIni}">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>

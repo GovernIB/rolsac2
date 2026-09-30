@@ -49,6 +49,7 @@
         	<c:choose>
 				<c:when test="#{cc.tipo == null || !cc.tipo.equals('html')}">
 						<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1 "
+						                 pt:aria-label="#{cc.attrs.nombreLiteral}"
 										 readonly="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}" autoResize="false">
 		                <p:ajax event="change" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
 		            </p:inputTextarea>
@@ -60,8 +61,7 @@
 							 aria-label="#{labels['dict.abrir']}"
                              styleClass="w35px h30px #{cc.getEstiloBoton()}"
                              disabled="#{cc.isModoConsulta()}"
-                             process="@this"
-            >
+                             process="@this"  ariaLabel="#{labels['dict.seleccionar']}">
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
                              update="texto btnAbrir"/>
             </p:commandButton>
@@ -128,7 +128,7 @@
 
 					</h:outputScript>
 					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"
-                         readonly="#{cc.isModoConsulta()}" style="white-space:nowrap;">
+                         readonly="#{cc.isModoConsulta()}" style="white-space:nowrap;" pt:aria-label="#{cc.attrs.nombreLiteral}">
 		            </p:inputTextarea>
 		             <p:commandButton id="textoHTMLprocess"
 		             		 action="#{cc.actualizarLiteral()}"
@@ -146,8 +146,7 @@
                              disabled="#{cc.isModoConsulta()}"
                              process="@this"
                              style="margin-left:4px;"
-
-		            >
+                             ariaLabel="#{labels['dict.seleccionar']}">
 		                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
 		                             update="@form btnAbrir"/>
 		            </p:commandButton>
