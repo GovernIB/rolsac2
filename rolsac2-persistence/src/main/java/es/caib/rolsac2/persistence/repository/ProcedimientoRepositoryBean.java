@@ -3259,7 +3259,8 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         }
 
         if (filtro.isRellenoSiaFecha()) {
-            sql.append(" AND j.siaFecha = :siaFecha ");
+            sql.append(" AND j.siaFecha >= :siaFecha ");
+            sql.append(" AND j.siaFecha < :siaFechaFin ");
         }
         if (filtro.isRellenoInicioFechaSIA()) {
             sql.append(" AND j.siaFecha >= :inicioFechaSIA ");
@@ -4076,9 +4077,14 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         if (filtro.isRellenoSiaFecha()) {
             try {
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                Date date = df.parse(filtro.getSiaFecha());
-                Timestamp timeStampDate = new Timestamp(date.getTime());
-                query.setParameter("siaFecha", timeStampDate);
+                Date fechaInicio = df.parse(filtro.getSiaFecha());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaInicio);
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+                Date fechaFin = cal.getTime();
+
+                query.setParameter("siaFecha", new Timestamp(fechaInicio.getTime()));
+                query.setParameter("siaFechaFin", new Timestamp(fechaFin.getTime()));
             } catch (ParseException e) {
                 LOG.error("Error al parsear la fecha de SIA", e);
             }
@@ -4939,7 +4945,9 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
             query.setParameter("tipo", tipo);
         }
         return query;
+
     }
+ 
 
     private boolean contiene(List<ProcedimientoDocumentoDTO> docs, JProcedimientoDocumento jdoc) {
         for (ProcedimientoDocumentoDTO doc : docs) {
