@@ -1577,6 +1577,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     private boolean puedeEnviarSIA() {
         return data != null && data.getCodigo() != null && data.getCodigoSIA() == null
-                && (data.getEstado() == TypeProcedimientoEstado.MODIFICACION || data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR);
+                && ((data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || data.getEstado() == TypeProcedimientoEstado.MODIFICACION)
+                && procedimientoServiceFacade.getCodigoPublicado(data.getCodigo()) == null); // si es borrador no se puede enviar a SIA
     }
 }
