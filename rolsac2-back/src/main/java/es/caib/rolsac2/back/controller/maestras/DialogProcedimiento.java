@@ -1942,8 +1942,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     private boolean puedeEnviarSIA() {
-        return data != null && data.getCodigo() != null && data.getCodigoSIA() == null
-                && ((data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || data.getEstado() == TypeProcedimientoEstado.MODIFICACION)
-                && procedimientoServiceFacade.getCodigoPublicado(data.getCodigo()) == null); // si es borrador no se puede enviar a SIA
+        return data != null && data.getCodigo() != null && data.getCodigoSIA() == null && estadosProcedimiento != null
+                && ((!estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.CERRADO.toString()))
+                && (data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || data.getEstado() == TypeProcedimientoEstado.MODIFICACION));
     }
 }
