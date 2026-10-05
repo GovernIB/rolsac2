@@ -67,7 +67,7 @@ PÃ gina amb el llistat de processos automÃ tics
 
                     <p:column headerText="#{labels['dict.descripcion']}" styleClass="w140px">
                         <f:facet name="header"/>
-                        <h:outputText value="#{proceso.proceso.descripcion}"/>
+                        <h:outputText value="#{viewProcesosSIA.getDescripcionProceso(proceso)}"/>
                     </p:column>
                     <p:column headerText="#{labels['dict.fechaInicio']}" styleClass="w160px">
                         <f:facet name="header"/>

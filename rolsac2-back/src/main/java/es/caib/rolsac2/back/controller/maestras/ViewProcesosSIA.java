@@ -243,7 +243,7 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
         procesoTimerServiceFacade.procesadoManual("SIA_PUNT", listaPropiedades, idEntidad);
         UtilJSF.addMessageContext(TypeNivelGravedad.INFO, getLiteral("dialogProcesos.procesoLanzado"));
     }
-    
+
     private boolean isPluginActivo(TypePluginEntidad tipo, Long idEntidad, String propName) {
         try {
             Object plg = systemServiceFacade.obtenerPluginEntidad(tipo, idEntidad);
@@ -322,5 +322,29 @@ public class ViewProcesosSIA extends AbstractController implements Serializable 
 
     public void setFiltroLog(ProcesoLogFiltro filtroLog) {
         this.filtroLog = filtroLog;
+    }
+
+    public String getDescripcionProceso(ProcesoLogGridDTO proceso) {
+        if (proceso.getListaPropiedades() != null) {
+        	LOG.error("Entra por el if");
+            String accion = proceso.getListaPropiedades().getPropiedad("accion");
+            LOG.error("Accion:" + accion);
+
+            if (Constantes.INDEXAR_SIA_COMPLETO.equals(accion)) {
+            	LOG.error("Entra por el if1");
+
+                return "Procés de llançament puntual SIA complet";
+            }
+
+            if (Constantes.INDEXAR_SIA_PENDIENTES.equals(accion)) {
+            	LOG.error("Entra por el if");
+
+                return "Procés de llançament puntual SIA pendents";
+            }
+
+
+        }
+        LOG.error("Pos if");
+        return proceso.getProceso().getDescripcion();
     }
 }
