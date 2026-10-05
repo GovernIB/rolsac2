@@ -31,17 +31,17 @@
                                         ariaLabel="#{labels['msg.marcarAlertaComoLeido']}"
                                 />
 
-                                <p:outputLabel value="#{alerta.fechaIni}" style="margin-bottom:  -15px;">
+                                <p:outputLabel value="#{alerta.fechaIni}" style="margin-bottom:  -10px;">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
 
                                 <p:outputLabel value="- #{alerta.fechaFin}"
-                                               rendered="#{!empty alerta.fechaFin}" style="margin-bottom:  -15px;">
+                                               rendered="#{!empty alerta.fechaFin}" style="margin-bottom:  -10px;">
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
 
                                 <p:outputLabel
-                                        value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" style="margin-bottom: -15px;"/>
+                                        value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" style="margin-bottom: -10px;"/>
 
                             </div>
                         </div>

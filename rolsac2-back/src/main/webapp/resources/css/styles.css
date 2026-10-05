@@ -2211,9 +2211,9 @@ tr.ui-expanded-row-content.ui-widget-content >td {
 }
 
 .botonAlertaLeida {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
     padding: 0 !important;
     position: relative !important;
 
