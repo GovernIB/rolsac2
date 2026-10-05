@@ -98,7 +98,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 tipo = params.getPropiedad("tipo");
             }
             detalles.addPropiedades(params);
-
+            detalles.addPropiedad("accion", accion);
             Pagina<IndexacionSIADTO> datos = null;
 
             IPluginSIA plugin = null;
