@@ -2200,3 +2200,44 @@ tr.ui-expanded-row-content.ui-widget-content >td {
 .ui-icon-check {
     background-position: -65px -145px !important;
 }
+
+
+
+
+.alertaContenido {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.botonAlertaLeida {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    padding: 0 !important;
+    position: relative !important;
+
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+}
+
+.botonAlertaLeida .ui-button-text {
+    padding: 0 !important;
+}
+
+.botonAlertaLeida .ui-button-icon-left {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.botonAlertaLeida:hover,
+.botonAlertaLeida:focus,
+.botonAlertaLeida:active {
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+}
