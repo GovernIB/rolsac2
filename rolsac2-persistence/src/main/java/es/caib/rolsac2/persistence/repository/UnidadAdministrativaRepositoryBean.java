@@ -426,7 +426,7 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql.append(" where 1 = 1  ");
 
         } else {
-            sql = new StringBuilder("SELECT j.codigo, jtipo, padre, j.orden, t.nombre, j.codigoDIR3, j.estado FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre padre where 1 = 1 ");
+            sql = new StringBuilder("SELECT j.codigo, jtipo, tp, j.orden, t.nombre, j.codigoDIR3, j.estado FROM JUnidadAdministrativa j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma LEFT OUTER JOIN j.tipo jtipo LEFT OUTER JOIN j.padre tp " + " LEFT OUTER JOIN tp.traducciones tpd ON tpd.idioma=:idioma LEFT OUTER JOIN j.entidad je where 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
             sql.append(" and (LOWER(jtipo.identificador) LIKE :filtro " + " OR LOWER(j.codigoDIR3) LIKE :filtro OR cast(j.id as string) like :filtro " + " OR LOWER(t.nombre) LIKE :filtro OR LOWER(cast(j.orden as string)) LIKE :filtro " + " OR LOWER(tpd.nombre) LIKE :filtro OR LOWER(cast(je.codigo as string)) LIKE :filtro ) ");
@@ -477,7 +477,9 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
             sql.append(filtro.isAscendente() ? " asc " : " desc ");
         }
         //sql = new StringBuilder("SELECT j.codigo,j.orden, t.nombre, j.codigoDIR3 FROM JUnidadAdministrativaLite j LEFT OUTER JOIN j.traducciones t ON t.idioma=:idioma  where 1 = 1 AND je =:codEnti and j.codigo = :idUA order by j.codigo asc ");
-        Query query = entityManager.createQuery(sql.toString());
+        String sSql = sql.toString();
+        Query query = entityManager.createQuery(sSql);
+        // Query query = entityManager.createQuery(sql.toString());
 
         if (filtro.isRellenoTexto()) {
             query.setParameter("filtro", "%" + filtro.getTexto().toLowerCase() + "%");

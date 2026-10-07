@@ -6,7 +6,6 @@ import es.caib.rolsac2.back.utils.UtilExport;
 import es.caib.rolsac2.back.utils.UtilJSF;
 import es.caib.rolsac2.service.exception.BorradoConReferenciasException;
 import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
-import es.caib.rolsac2.service.model.Constantes;
 import es.caib.rolsac2.service.model.Pagina;
 import es.caib.rolsac2.service.model.UnidadAdministrativaDTO;
 import es.caib.rolsac2.service.model.UnidadAdministrativaGridDTO;
@@ -96,6 +95,7 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
     public void buscar() {
         filtro.setPaginaFirst(0);
         filtro.setIdUA(sessionBean.getUnidadActiva().getCodigo());
+        filtro.setTexto(getFiltroTexto());
         if (mostrarOcultas) {
             filtro.setEstado(null);
         } else {
@@ -134,7 +134,11 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                         }
                         filtro.setOrderBy(sortMeta.getField());
                     }
-                    return unidadAdministrativaService.findPagedByFiltro(filtro);
+                    //       return unidadAdministrativaService.findPagedByFiltro(filtro);
+                    Pagina<UnidadAdministrativaGridDTO> pagina = unidadAdministrativaService.findByFiltro(filtro);
+                    setRowCount((int) pagina.getTotal());
+                    return pagina.getItems();
+
                 } catch (Exception e) {
                     LOG.error("Error llamando", e);
                     Pagina<UnidadAdministrativaGridDTO> pagina = new Pagina<UnidadAdministrativaGridDTO>(new ArrayList<>(), 0);
@@ -238,8 +242,8 @@ public class ViewUnidadAdministrativa extends AbstractController implements Seri
                 addGlobalMessage(getLiteral("msg.eliminaciocorrecta"));
                 buscar();
 
-            }catch (BorradoConReferenciasException e){
-                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
+            } catch (BorradoConReferenciasException e) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dato.error.delete.proc_asociado"));
             }
         }
     }
