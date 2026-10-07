@@ -2,6 +2,6 @@ A continuación se detallan las instrucciones para ejecutar el script de base de
  
 
 Con el usuario ROLSAC2
-     rolsac2_update_index_from_1.2.0_to_1.3.0_ROLSAC2.sql
+     rolsac2_update_index_from_1.2.0_to_1.2.1_ROLSAC2.sql
  
 
