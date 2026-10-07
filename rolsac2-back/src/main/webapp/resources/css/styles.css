@@ -353,6 +353,24 @@ a:hover {
     color: #FFFFFF;
 }
 
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon,
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon .ui-icon,
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon:hover,
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon:focus {
+    color: #FFFFFF !important;
+}
+
+/* Invertir color icono para poner en blanco */
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon .ui-icon {
+    filter: brightness(0) invert(1) !important;
+}
+
+/* Estilo hover para el icono de la barra de título del diálogo */
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon:hover,
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon.ui-state-hover {
+    background: #DEEFF7 !important;
+}
+
 .ui-dialog-titlebar {
     background-color: #004B99 !important;
     color: #FFFFFF;
