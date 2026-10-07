@@ -54,6 +54,11 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
      */
     private String fechaAprobacion;
 
+    /**
+     * Fecha del boletin
+     */
+    private String fechaBoletin;
+
 
     /**
      * Vigencia de la normativa
@@ -166,6 +171,24 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
     }
 
     /**
+     * Obtiene fecha boletin.
+     *
+     * @return fecha boletin
+     */
+    public String getFechaBoletin() {
+        return fechaBoletin;
+    }
+
+    /**
+     * Establece fecha boletin.
+     *
+     * @param fechaBoletin fecha boletin
+     */
+    public void setFechaBoletin(String fechaBoletin) {
+        this.fechaBoletin = fechaBoletin;
+    }
+
+    /**
      * Obtiene boletin oficial.
      *
      * @return boletin oficial
@@ -255,6 +278,7 @@ public class NormativaGridDTO extends ModelApi implements Cloneable, Comparable<
         tipo.setNumero(this.getNumero());
         tipo.setOrden(this.getOrden());
         tipo.setFechaAprobacion(this.getFechaAprobacion());
+        tipo.setFechaBoletin(this.getFechaBoletin());
         tipo.setIdString(this.getIdString());
         tipo.setVigente(this.getVigente());
         if (this.getTitulo() != null) {

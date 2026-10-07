@@ -42,7 +42,7 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         } else if (isRest) {
             sql = new StringBuilder("SELECT j from JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma where 1 = 1 ");
         } else {
-            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE 1 = 1 ");
+            sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.fechaBoletin, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma WHERE 1 = 1 ");
             //sql = new StringBuilder("SELECT DISTINCT j.codigo, t.titulo, j.tipoNormativa, j.numero, j.boletinOficial, j.fechaAprobacion, j.vigente FROM JNormativa j LEFT OUTER JOIN j.descripcion t ON t.idioma=:idioma  WHERE 1 = 1 ");
         }
         if (filtro.isRellenoTexto()) {
@@ -86,9 +86,8 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (filtro.isRellenoNumero()) {
             sql.append(" and (j.numero = :numero) ");
         }
-
         if (filtro.isRellenoCodigo()) {
-            sql.append(" and to_char(j.codigo) LIKE :codigo ");
+            sql.append(" and j.codigo = :codigo ");
         }
 
         if (filtro.isRellenoVigente()) {
@@ -154,9 +153,8 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (filtro.isRellenoNumero()) {
             query.setParameter("numero", filtro.getNumero());
         }
-
         if (filtro.isRellenoCodigo()) {
-            query.setParameter("codigo", filtro.getCodigo() + "%");
+            query.setParameter("codigo", filtro.getCodigo());
         }
 
         if (filtro.isRellenoSoloValidas()) {
@@ -223,7 +221,8 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
                 normativaGridDTO.setNumero((String) jNormativa[3]);
                 normativaGridDTO.setBoletinOficial(((JTipoBoletin) jNormativa[4]).getNombre());
                 normativaGridDTO.setFechaAprobacion(Utils.dateToString((LocalDate) jNormativa[5]));
-                normativaGridDTO.setVigente((Boolean) jNormativa[6]);
+                normativaGridDTO.setFechaBoletin(jNormativa[6] == null ? null : Utils.dateToString((LocalDate) jNormativa[6]));
+                normativaGridDTO.setVigente((Boolean) jNormativa[7]);
 
                 normativa.add(normativaGridDTO);
             }

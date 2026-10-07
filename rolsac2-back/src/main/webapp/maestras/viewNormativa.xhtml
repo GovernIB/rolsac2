@@ -351,7 +351,7 @@ Pàgina amb el llistat de normativas
                             <p:commandButton value="#{labels['dict.limpiarFiltro']}" styleClass="" icon="pi pi-trash"
                                              aria-label="#{labels['dict.limpiarFiltro']}"
                                              iconPos="top" action="#{viewNormativa.limpiarFiltro()}"
-                                             process="@form" update="panel"/>
+                                             process="@this" update="filtroBusqueda panel dataTable" resetValues="true"/>
                             <p:commandButton value="#{labels['dict.busqueda']}" styleClass="ml-2" icon="pi pi-search"
                                              aria-label="#{labels['dict.busqueda']}"
                                              actionListener="#{viewNormativa.buscar()}" update="messages dataTable"
@@ -409,6 +409,11 @@ Pàgina amb el llistat de normativas
                           headerText="#{labels['viewNormativas.fechaAprobacion']}">
                     <f:facet name="header"/>
                     <h:outputText value="#{normativa.fechaAprobacion}"/>
+                </p:column>
+                <p:column sortBy="#{normativa.fechaBoletin}"
+                          headerText="#{labels['viewNormativas.fechaBoletin']}">
+                    <f:facet name="header"/>
+                    <h:outputText value="#{normativa.fechaBoletin}"/>
                 </p:column>
                 <p:column
                           headerText="#{labels['viewNormativas.estado']}">

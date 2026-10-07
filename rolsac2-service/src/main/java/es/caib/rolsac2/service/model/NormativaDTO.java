@@ -206,6 +206,7 @@ public class NormativaDTO extends ModelApi {
         normativaGridDTO.setNumero(this.numero);
         normativaGridDTO.setBoletinOficial(this.boletinOficial == null ? null : this.boletinOficial.getIdentificador());
         normativaGridDTO.setFechaAprobacion(this.fechaAprobacion == null ? null : this.fechaAprobacion.toString());
+        normativaGridDTO.setFechaBoletin(this.fechaBoletin == null ? null : this.fechaBoletin.toString());
         normativaGridDTO.setTitulo(this.titulo);
         normativaGridDTO.setVigente(this.vigente);
         return normativaGridDTO;
