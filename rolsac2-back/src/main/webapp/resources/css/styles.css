@@ -2071,15 +2071,28 @@ a.iconoXarxes {
 #lateralDerecho .navbar-collapse {
     flex-basis: auto;
     flex-grow: 0;
+    width: 100%;
 }
 
-/* (Opcional) Si notas recortes, ayuda a que el contenedor pueda encoger sin desbordar */
-#lateralDerecho { min-width: 0; }
+/* Mantiene los selectores y la botonera en filas independientes y alineadas. */
+#lateralDerecho {
+    min-width: 0;
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: flex-end;
+    row-gap: .35rem;
+}
+
+#lateralDerecho > div {
+    width: 100%;
+}
 
 /* Los <li> ya envuelven (flex-wrap), ahora anyadimos separacion vertical entre filas */
 #lateralDerecho .navbar-nav {
     display: flex;      /* por si acaso */
+    width: 100%;
     flex-wrap: wrap;
+    justify-content: flex-end;
     row-gap: .35rem;    /* espacio entre filas */
     column-gap: .5rem;  /* opcional: espacio horizontal entre items */
 }
