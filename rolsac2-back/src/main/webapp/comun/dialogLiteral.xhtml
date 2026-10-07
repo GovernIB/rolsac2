@@ -56,8 +56,8 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                     <p:ajax event="change" listener="#{dialogLiteral.cambiarIdiomaOrigenAux}" update="selectId1 selectId2" />
                 </p:selectOneMenu>
                 <p:commandButton action="#{dialogLiteral.cambioValores}"
-                                 icon="pi pi-refresh" update="selectId1 selectId2"
-                                 process="@this" styleClass="mx-1" pt:aria-label="Boton"/>
+                                 icon="pi pi-sort-alt" update="selectId1 selectId2"
+                                 process="@this" styleClass="mx-1 boton-traduccion" pt:aria-label="Boton"/>
                 <p:selectOneMenu id="selectId2" value="#{dialogLiteral.idiomaDestino}"
                                  required="false" styleClass="p-0">
                     <f:selectItem itemLabel="#{labels['dict.seleccionar']}"
@@ -99,14 +99,13 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.traducir']}" update="messagesDialog "
                          rendered="#{!dialogLiteral.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.traducir']}" />
+        <p:commandButton action="#{dialogLiteral.cerrar}"
+                         value="#{labels['dict.cancelar']}"
+                         process="@this" pt:aria-label="#{labels['dict.cancelar']}" />
         <p:commandButton action="#{dialogLiteral.guardar}"
                          value="#{labels['dict.aceptar']}" update="messagesDialog"
                          rendered="#{!dialogLiteral.isModoConsulta()}"
                          process="@all" pt:aria-label="#{labels['dict.aceptar']}" />
-        <p:commandButton action="#{dialogLiteral.cerrar}"
-                         value="#{labels['dict.cancelar']}"
-                         process="@this" pt:aria-label="#{labels['dict.cancelar']}" />
-
     </ui:define>
 
 </ui:composition>
