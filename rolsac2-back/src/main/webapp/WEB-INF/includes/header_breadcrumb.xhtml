@@ -13,7 +13,36 @@
     <nav class="navbar navbar-light navbar-expand-lg flex-column justify-content-start align-items-start" style="background: #FFF">
         <div class="d-flex flex-column" style="width: 100% !important;">
 
+            <h:outputStylesheet>
+                .botonCerrarAlerta {
+                    background: transparent !important;
+                    box-shadow: none !important;
 
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+
+                    padding: 0 !important;
+                    overflow: visible !important;
+                }
+
+                .botonCerrarAlerta .ui-button-text {
+                    display: none !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                }
+
+                .botonCerrarAlerta .ui-button-icon-left,
+                .botonCerrarAlerta .pi {
+                    position: static !important;
+                    margin: 0 !important;
+                    transform: none !important;
+                    line-height: 1 !important;
+                }
+                .botonCerrarAlerta .ui-button-icon-left, .botonCerrarAlerta .pi {
+                    line-height: 1.2 !important;
+                }
+            </h:outputStylesheet>
             <c:if test="#{!empty sessionBean.alertas}">
 
                 <c:forEach items="#{sessionBean.alertas}" var="alerta" varStatus="status">
@@ -25,23 +54,22 @@
                                 <p:commandButton
                                         action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
                                         icon="pi pi-times-circle"
-                                        styleClass="botonAlertaLeida"
+                                        styleClass="w45px h23px iconoAlertaLeido botonBordeado botonCerrarAlerta"
                                         process="@this"
                                         update="@parent"
-                                        ariaLabel="#{labels['msg.marcarAlertaComoLeido']}"
+                                        pt:aria-label="Cerrar alerta"
                                 />
-
-                                <p:outputLabel value="#{alerta.fechaIni}" style="margin-bottom:  -10px;">
+                                <p:outputLabel value="#{alerta.fechaIni}" >
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
 
                                 <p:outputLabel value="- #{alerta.fechaFin}"
-                                               rendered="#{!empty alerta.fechaFin}" style="margin-bottom:  -10px;">
+                                               rendered="#{!empty alerta.fechaFin}" >
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
 
                                 <p:outputLabel
-                                        value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" style="margin-bottom: -10px;"/>
+                                        value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" />
 
                             </div>
                         </div>
