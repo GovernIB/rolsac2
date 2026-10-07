@@ -46,9 +46,11 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
      **/
     private int totalProcedimientos = 0;
     private int totalProcedimientosOK = 0;
+    private int totalProcedimientosNoIndexados = 0;
     private int totalProcedimientosERROR = 0;
     private int totalServicios = 0;
     private int totalServiciosOK = 0;
+    private int totalServiciosNoIndexados = 0;
     private int totalServiciosERROR = 0;
 
     /**
@@ -195,7 +197,6 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
 
                             break;
                         case SERVICIO:
-                            totalServicios++;
                             ResultadoSIA resultadoSrv = indexarServicio(dato, plugin, mensajeTraza, puntual, "ca");
 
                             //Si es distinto null, significa que es un dato pendiente
@@ -209,10 +210,10 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 String fechaFin = "La dada de fi es " + sdf.format(new Date());
                 res.setFinalizadoOk(true);
                 if (totalProcedimientos > 0) {
-                    detalles.addPropiedad("Procediments", "S'ha indexat " + totalProcedimientos + " (correctes:" + totalProcedimientosOK + " , error:" + totalProcedimientosERROR + ")");
+                    detalles.addPropiedad("Procediments", "Total: " + totalProcedimientos + " (indexats:" + totalProcedimientosOK + " , no indexats:" + totalProcedimientosNoIndexados + " , error:" + totalProcedimientosERROR + ")");
                 }
                 if (totalServicios > 0) {
-                    detalles.addPropiedad("Serveis", "S'ha indexat " + totalServicios + " (correctes:" + totalServiciosOK + " , error:" + totalServiciosERROR + ")");
+                    detalles.addPropiedad("Serveis", "Total: " + totalServicios + " (indexats:" + totalServiciosOK + " , no indexats:" + totalServiciosNoIndexados + " , error:" + totalServiciosERROR + ")");
                 }
                 detalles.addPropiedad("Fin del procés", fechaFin);
 
@@ -292,7 +293,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             publicado = true;
 
             if (codigoWF == null) {
-                totalServiciosOK++;
+                totalServiciosNoIndexados++;
                 mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " no está publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El servei " + indexacionDTO.getCodElemento() + " NO esta publicat.");
             }
@@ -309,7 +310,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " s'ha desindexat correctament. \n");
             } else {
                 totalServiciosERROR++;
-                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament, error:" + resultadoSIA.getMensaje() + " \n");
+                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha desindexat correctament, error:" + obtenerMensajeResultado(resultadoSIA) + " \n");
             }
             return resultadoSIA;
         } else {
@@ -337,11 +338,11 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                                 return resultadoSIA;
                             } else {
                                 totalServiciosERROR++;
-                                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje() + ". \n");
-                                return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje());
+                                mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + obtenerMensajeResultado(resultadoSIA) + ". \n");
+                                return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El servei " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + obtenerMensajeResultado(resultadoSIA));
                             }
                         } else {
-                            totalServiciosOK++;
+                            totalServiciosNoIndexados++;
                             // Guardamos un SIA Pendiente como que no cumple datos (ultima pestaña)
                             final ResultadoSIA siaPendiente = new ResultadoSIA();
                             siaPendiente.setCorrectos(1);
@@ -351,7 +352,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             return siaPendiente;
                         }
                     } else {
-                        totalServiciosOK++;
+                        totalServiciosNoIndexados++;
                         mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " es no enviable \n");
                         return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_ENVIABLE, esEnviable.getRespuesta());
                     }
@@ -362,7 +363,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                     return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getMessage());
                 }
             } else {
-                totalServiciosOK++;
+                totalServiciosNoIndexados++;
                 mensajeTraza.append("El servei " + indexacionDTO.getCodElemento() + " no està publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_HACER_NADA, "El servei no està publicat");
             }
@@ -384,7 +385,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
             publicado = true;
 
             if (codigoWF == null) {
-                totalProcedimientosOK++;
+                totalProcedimientosNoIndexados++;
                 mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" no está publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_OK, "El procediment " + indexacionDTO.getCodElemento() + " NO esta publicat.");
             }
@@ -404,7 +405,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                 mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" s'ha desindexat correctament. \n");
             } else {
                 totalProcedimientosERROR++;
-                mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" NO s'ha desindexat correctament, error:").append(resultadoSIA.getMensaje()).append(" \n");
+                mensajeTraza.append("El procedimient ").append(indexacionDTO.getCodElemento()).append(" NO s'ha desindexat correctament, error:").append(obtenerMensajeResultado(resultadoSIA)).append(" \n");
             }
             return resultadoSIA;
         } else {
@@ -436,11 +437,11 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             } else {
                                 totalProcedimientosERROR++;
                                 assert resultadoSIA != null;
-                                mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" NO s'ha indexat correctament, error:").append(resultadoSIA.getMensaje()).append(". \n");
-                                return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + resultadoSIA.getMensaje());
+                                mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" NO s'ha indexat correctament, error:").append(obtenerMensajeResultado(resultadoSIA)).append(". \n");
+                                return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, "El procediment " + indexacionDTO.getCodElemento() + " NO s'ha indexat correctament, error:" + obtenerMensajeResultado(resultadoSIA));
                             }
                         } else {
-                            totalProcedimientosOK++;
+                            totalProcedimientosNoIndexados++;
                             // Guardamos un SIA Pendiente como que no cumple datos (ultima pestaña)
                             final ResultadoSIA siaPendiente = new ResultadoSIA();
                             siaPendiente.setCorrectos(1);
@@ -450,6 +451,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                             return siaPendiente;
                         }
                     } else {
+                        totalProcedimientosNoIndexados++;
                         mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" es no enviable \n");
                         return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_ENVIABLE, esEnviable.getRespuesta());
                     }
@@ -460,7 +462,7 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
                     return new ResultadoSIA(ResultadoSIA.RESULTADO_ERROR, e.getMessage());
                 }
             } else {
-                totalProcedimientosOK++;
+                totalProcedimientosNoIndexados++;
                 mensajeTraza.append("El procediment ").append(indexacionDTO.getCodElemento()).append(" no està publicat. \n");
                 return new ResultadoSIA(ResultadoSIA.RESULTADO_NO_HACER_NADA, "El procediment no està publicat");
             }
@@ -479,11 +481,21 @@ public abstract class ProcesoProgramadoBaseSiaComponentBean {
     private void inicializarTotalesACero() {
         totalProcedimientos = 0;
         totalProcedimientosOK = 0;
+        totalProcedimientosNoIndexados = 0;
         totalProcedimientosERROR = 0;
         totalServicios = 0;
         totalServiciosOK = 0;
+        totalServiciosNoIndexados = 0;
         totalServiciosERROR = 0;
     }
+
+    private String obtenerMensajeResultado(ResultadoSIA resultadoSIA) {
+        if (resultadoSIA == null || resultadoSIA.getMensaje() == null || resultadoSIA.getMensaje().trim().isEmpty()) {
+            return "Sin respuesta del plugin SIA";
+        }
+        return resultadoSIA.getMensaje();
+    }
+
 
 
     private ResultadoSIA borradoSIA(IndexacionSIADTO indexacionDTO, IPluginSIA plugin, EntidadRaizDTO entidadRaiz, ProcedimientoBaseDTO procedimiento) {
