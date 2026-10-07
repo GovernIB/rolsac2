@@ -122,6 +122,10 @@ public class DialogTraduccion extends AbstractController implements Serializable
 
             imprimirDocumentoNormativa();
 
+        } else if (data instanceof PlatTramitElectronicaDTO) {
+
+            imprimirPlatTramitElectronica();
+
         } else {
 
             imprimirLiterales();
@@ -217,6 +221,11 @@ public class DialogTraduccion extends AbstractController implements Serializable
                 ((DocumentoNormativaDTO) data).setDescripcion(literales.get(1));
                 ((DocumentoNormativaDTO) data).setUrl(literales.get(2));
             }
+        } else if (data instanceof PlatTramitElectronicaDTO) {
+            if (literales != null) {
+                ((PlatTramitElectronicaDTO) data).setDescripcion(literales.get(0));
+                ((PlatTramitElectronicaDTO) data).setUrlAcceso(literales.get(1));
+            }
         } else {
 
             if (literales != null) {
@@ -306,6 +315,16 @@ public class DialogTraduccion extends AbstractController implements Serializable
         listaFields.add("titulo");
         listaFields.add("descripcion");
         listaFields.add("url");
+    }
+
+    private void imprimirPlatTramitElectronica() {
+        final PlatTramitElectronicaDTO platTramitElectronicaDTO = (PlatTramitElectronicaDTO) data;
+
+        literales.add(cloneLiteralOrEmpty(platTramitElectronicaDTO.getDescripcion()));
+        literales.add(cloneLiteralOrEmpty(platTramitElectronicaDTO.getUrlAcceso()));
+
+        listaFields.add("descripcion");
+        listaFields.add("urlAcceso");
     }
 
     private void imprimirProcedimientoTramite() {
