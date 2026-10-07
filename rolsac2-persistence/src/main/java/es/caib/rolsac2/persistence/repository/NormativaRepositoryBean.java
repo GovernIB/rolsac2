@@ -86,8 +86,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (filtro.isRellenoNumero()) {
             sql.append(" and (j.numero = :numero) ");
         }
+
         if (filtro.isRellenoCodigo()) {
-            sql.append(" and j.codigo = :codigo ");
+            sql.append(" and to_char(j.codigo) LIKE :codigo ");
         }
 
         if (filtro.isRellenoVigente()) {
@@ -153,8 +154,9 @@ public class NormativaRepositoryBean extends AbstractCrudRepository<JNormativa, 
         if (filtro.isRellenoNumero()) {
             query.setParameter("numero", filtro.getNumero());
         }
+
         if (filtro.isRellenoCodigo()) {
-            query.setParameter("codigo", filtro.getCodigo());
+            query.setParameter("codigo", filtro.getCodigo() + "%");
         }
 
         if (filtro.isRellenoSoloValidas()) {

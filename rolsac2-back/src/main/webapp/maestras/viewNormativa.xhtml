@@ -257,10 +257,33 @@ Pàgina amb el llistat de normativas
                             <p:outputLabel value="#{labels['dialogNormativa.fechaAprobacion']}:" for="txtFechaAprobacion" pt:aria-label="#{labels['dialogNormativa.fechaAprobacion']}:"/>
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
-                            <p:calendar id="txtFechaAprobacion" showOn="button" widgetVar="fechaAprobacionWidget"
-                                        styleClass="w95"
-                                        value="#{viewNormativa.filtro.fechaAprobacion}" pattern="dd/MM/yyyy"/>
-                        </div> 
+                            <p:datePicker showIcon="true" id="txtFechaAprobacion" styleClass="fecha"
+                                          locale="#{sessionBean.lang}"
+                                          value="#{viewNormativa.filtro.fechaAprobacion}"
+                                          pattern="dd/MM/yyyy"
+                                          showTime="false" showOn="button" maxlength="10">
+                                <p:ajax event="dateSelect"
+                                        update="messages" process="@this"/>
+                                <p:ajax event="change" update="messages" process="@this"/>
+                            </p:datePicker>
+
+                        </div>
+                        <div class="ui-g-12 ui-md-2 ui-lg-1">
+                            <p:outputLabel value="#{labels['dialogNormativa.fechaBoletin']}:" for="txtFechaBoletin" pt:aria-label="#{labels['dialogNormativa.fechaBoletin']}:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-4 ui-lg-3">
+                            <p:datePicker showIcon="true" id="txtFechaBoletin" styleClass="fecha"
+                                          locale="#{sessionBean.lang}"
+                                          value="#{viewNormativa.filtro.fechaBoletin}"
+                                          pattern="dd/MM/yyyy"
+                                          showTime="false" showOn="button" maxlength="10">
+                            <p:ajax event="dateSelect"
+                                    update="messages" process="@this"/>
+                            <p:ajax event="change" update="messages" process="@this"/>
+                            </p:datePicker>
+                        </div>
+
+
                         <div class="ui-g-12 ui-md-2 ui-lg-1">
                             <p:outputLabel value="#{labels['dialogNormativa.numero']}:" for="txtNumero" pt:aria-label="#{labels['dialogNormativa.numero']}:"/>
                         </div>

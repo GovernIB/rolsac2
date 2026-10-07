@@ -128,6 +128,8 @@ public class ViewNormativa extends AbstractController implements Serializable {
         filtro = new NormativaFiltro();
         filtro.setIdioma(sessionBean.getLang());
         filtro.setIdEntidad(sessionBean.getEntidad().getCodigo());
+        filtro.setFechaAprobacion(null);
+        filtro.setFechaBoletin(null);
         filtro.setOrder("DESCENDING");
         filtro.setVigente(Boolean.TRUE);
     }
@@ -631,6 +633,7 @@ public class ViewNormativa extends AbstractController implements Serializable {
         return null;
 
     }
+
 
     /**
      * Carga los filtros de la ventana.
