@@ -297,7 +297,7 @@ Pàgina amb el llistat de normativas
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtTipoNormativa" value="#{viewNormativa.filtro.tipoNormativa}"
-                                             styleClass="w95" converter="#{tipoNormativaConverter}" widgetVar="tipoNormativaWidget">
+                                             styleClass="w95 normativaSelectResponsive" converter="#{tipoNormativaConverter}" widgetVar="tipoNormativaWidget">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                 <f:selectItems value="#{viewNormativa.listTipoNormativa}" var="tipoNormativa"
                                                itemLabel="#{tipoNormativa.descripcion.getTraduccion(viewNormativa.idioma)}" itemValue="#{tipoNormativa}"/>
@@ -308,7 +308,7 @@ Pàgina amb el llistat de normativas
                         </div>
                         <div class="ui-g-12 ui-md-4 ui-lg-3">
                             <p:selectOneMenu id="txtBoletin" value="#{viewNormativa.filtro.tipoBoletin}"
-                                             styleClass="w95" converter="#{boletinOficialConverter}" widgetVar="tipoBoletinWidget">
+                                             styleClass="w95 normativaSelectResponsive" converter="#{boletinOficialConverter}" widgetVar="tipoBoletinWidget">
                                 <f:selectItem itemLabel="#{labels['dict.seleccionaUnaOpcion']}" itemValue="#{null}"/>
                                 <f:selectItems value="#{viewNormativa.listTipoBoletin}" var="tipoBoletin"
                                                itemLabel="#{tipoBoletin.nombre}" itemValue="#{tipoBoletin}"/>

@@ -2284,3 +2284,19 @@ tr.ui-expanded-row-content.ui-widget-content >td {
     border: 1px solid #000 !important;
     box-shadow: none !important;
 }
+
+/* Filtros de tipo normativa y boletín */
+.normativaSelectResponsive.ui-selectonemenu {
+    width: 95% !important;
+    max-width: 95% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+}
+
+.normativaSelectResponsive .ui-selectonemenu-label {
+    min-width: 0;
+    width: auto !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
