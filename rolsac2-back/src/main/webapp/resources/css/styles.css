@@ -370,6 +370,16 @@ a:hover {
 .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon.ui-state-hover {
     background: #DEEFF7 !important;
 }
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close:focus:not(:focus-visible),
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close.ui-state-focus:not(:focus-visible) {
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close:focus-visible {
+    outline: 2px solid #FFFFFF !important;
+    outline-offset: 2px;
+}
 
 .ui-dialog-titlebar {
     background-color: #004B99 !important;
