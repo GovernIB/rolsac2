@@ -12,7 +12,7 @@ Pàgina amb informació d'accessibilitat
 
     <ui:define name="content">
         <main id="main-content" role="main" class="row">
-            <h:panelGroup layout="block" styleClass="col-12 col-md-10 col-lg-9 px-3 mx-auto mb-5" 
+            <h:panelGroup layout="block" styleClass="col-12 col-md-10 col-lg-9 px-3 mx-auto mb-5"
                           rendered="#{sessionBean.current.language == 'ca'}">
                 <div class="text-justify">
                     <h1>DECLARACIÓ D'ACCESSIBILITAT</h1>
@@ -26,12 +26,14 @@ Pàgina amb informació d'accessibilitat
                     <p>El contingut que es recull a continuació no és accessible pels motius següents:</p>
                     <p>Manca de conformitat amb el <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-12699" target="_blank" rel="noopener">Reial decret 1112/2018</a>:</p>
                     <ul>
-                        <li>Hi ha enllaços sense un nom discernible.</li>
-                        <li>Hi ha elements de text amb un contrast insuficient amb el fons. El contrast ha de ser d'almenys 4,5:1 per al text petit i 3:1 per al text gran.</li>
-                        <li>Algunes pàgines no disposen d'un contenidor per al contingut principal, fet que dificulta la navegació amb lectors de pantalla.</li>
-                        <li>Hi ha elements interactius amb altres elements interactius niats.</li>
-                        <li>Alguns atributs ARIA aplicats a files de taula requereixen que el contenidor pare utilitzi el rol <code>treegrid</code> en lloc de <code>table</code> o <code>grid</code>.</li>
-                        <li>Alguns elements amb un rol ARIA requereixen fills amb rols ARIA específics i alguns rols ARIA han d'estar continguts dins d'un element pare amb un rol determinat.</li>
+                        <li><strong>No està assegurat que totes les funcionalitats siguin accessibles amb el teclat:</strong> algunes botoneres per navegar pels llistats no mostren un indicador de focus quan s'hi passa amb la tecla de tabulació, com ara els botons per avançar de pàgina.</li>
+                        <li><strong>Hi ha controls interactius que no es poden enfocar amb el teclat:</strong> en alguns registres dels llistats es pot fer doble clic per accedir al formulari corresponent. Aquesta acció no està disponible amb el teclat.</li>
+                        <li><strong>Enllaços sense un nom discernible:</strong> tots els enllaços han de tenir un nom o text alternatiu discernible pels lectors de pantalla. S'han identificat enllaços que no en disposen.</li>
+                        <li><strong>Manca de contrast suficient entre el text i el fons:</strong> el contrast ha de ser suficient per garantir la llegibilitat, d'almenys 4,5:1 per al text petit i 3:1 per al text gran. S'han identificat casos en què el contrast no és suficient.</li>
+                        <li><strong>Algunes pàgines no disposen d'un contenidor per al contingut principal:</strong> dividir tot el contingut en una o més seccions d'alt nivell facilita la navegació per la pàgina als usuaris de lectors de pantalla. La manca d'aquest contenidor dificulta la identificació i l'accés al contingut principal.</li>
+                        <li><strong>Elements interactius amb altres elements interactius niats:</strong> els elements interactius niats dins d'altres elements interactius no són anunciats pels lectors de pantalla, fet que dificulta la navegació als seus usuaris.</li>
+                        <li><strong>Atributs ARIA aplicats a files de taula que requereixen que el pare utilitzi el rol <code>treegrid</code> en lloc de <code>table</code> o <code>grid</code>:</strong> l'ús d'atributs ARIA en elements on no s'esperen pot generar un comportament impredictible de les eines d'assistència.</li>
+                        <li><strong>Alguns elements amb un rol ARIA requereixen fills amb rols ARIA específics i alguns rols ARIA han d'estar continguts dins d'un element pare amb un rol determinat:</strong> per a cada rol, WAI-ARIA defineix específicament quins rols pares i fills estan permesos o són requerits. L'absència dels elements pares o fills requerits impedeix que es puguin dur a terme les funcionalitats d'accessibilitat previstes pel desenvolupador.</li>
                     </ul>
 
                     <h2>Preparació d'aquesta declaració</h2>
@@ -72,12 +74,14 @@ Pàgina amb informació d'accessibilitat
                     <p>El contenido que se recoge a continuación no es accesible por los siguientes motivos:</p>
                     <p>Falta de conformidad con el <a href="https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-12699" target="_blank" rel="noopener">Real Decreto 1112/2018</a>:</p>
                     <ul>
-                        <li>Hay enlaces sin un nombre discernible.</li>
-                        <li>Hay elementos de texto con un contraste insuficiente con el fondo. El contraste debe ser de al menos 4,5:1 para el texto pequeño y 3:1 para el texto grande.</li>
-                        <li>Algunas páginas no disponen de un contenedor para el contenido principal, lo que dificulta la navegación con lectores de pantalla.</li>
-                        <li>Hay elementos interactivos con otros elementos interactivos anidados.</li>
-                        <li>Algunos atributos ARIA aplicados a filas de tabla requieren que el contenedor padre utilice el rol <code>treegrid</code> en lugar de <code>table</code> o <code>grid</code>.</li>
-                        <li>Algunos elementos con un rol ARIA requieren hijos con roles ARIA específicos y algunos roles ARIA deben estar contenidos dentro de un elemento padre con un rol determinado.</li>
+                        <li><strong>No está asegurado que todas las funcionalidades sean accesibles con el teclado:</strong> algunas botoneras para navegar por los listados no muestran un indicador de foco cuando se recorren con la tecla de tabulación, como los botones para avanzar de página.</li>
+                        <li><strong>Hay controles interactivos que no se pueden enfocar con el teclado:</strong> en algunos registros de los listados se puede hacer doble clic para acceder al formulario correspondiente. Esta acción no está disponible con el teclado.</li>
+                        <li><strong>Enlaces sin un nombre discernible:</strong> todos los enlaces deben tener un nombre o texto alternativo discernible por los lectores de pantalla. Se han identificado enlaces que no disponen de él.</li>
+                        <li><strong>Falta de contraste suficiente entre el texto y el fondo:</strong> el contraste debe ser suficiente para garantizar la legibilidad, de al menos 4,5:1 para el texto pequeño y 3:1 para el texto grande. Se han identificado casos en los que el contraste no es suficiente.</li>
+                        <li><strong>Algunas páginas no disponen de un contenedor para el contenido principal:</strong> dividir todo el contenido en una o más secciones de alto nivel facilita la navegación por la página a los usuarios de lectores de pantalla. La falta de este contenedor dificulta la identificación y el acceso al contenido principal.</li>
+                        <li><strong>Elementos interactivos con otros elementos interactivos anidados:</strong> los elementos interactivos anidados dentro de otros elementos interactivos no son anunciados por los lectores de pantalla, lo que dificulta la navegación a sus usuarios.</li>
+                        <li><strong>Atributos ARIA aplicados a filas de tabla que requieren que el padre utilice el rol <code>treegrid</code> en lugar de <code>table</code> o <code>grid</code>:</strong> el uso de atributos ARIA en elementos donde no se esperan puede generar un comportamiento impredecible de las herramientas de asistencia.</li>
+                        <li><strong>Algunos elementos con un rol ARIA requieren hijos con roles ARIA específicos y algunos roles ARIA deben estar contenidos dentro de un elemento padre con un rol determinado:</strong> para cada rol, WAI-ARIA define específicamente qué roles padres e hijos están permitidos o son requeridos. La ausencia de los elementos padres o hijos requeridos impide que se puedan realizar las funcionalidades de accesibilidad previstas por el desarrollador.</li>
                     </ul>
 
                     <h2>Preparación de la presente declaración</h2>
