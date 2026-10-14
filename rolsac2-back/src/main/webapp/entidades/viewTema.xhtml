@@ -63,8 +63,10 @@
                 </f:facet>
             </p:panel>
             <div class="row">
+
                 <div class="col-12 col-lg-6 mx-auto">
-                    <p:treeTable id="dataTable" value="#{viewTema.root}" var="tema"
+<!--                    <p:outputLabel value="#{labels['dict.filtro']}:" />-->
+                    <p:treeTable id="dataTable"  value="#{viewTema.root}" var="tema"
 
                                  emptyMessage="#{labels['dict.noHayDatos']}"
                                  selectionMode="single" selection="#{viewTema.datoSeleccionado}"
@@ -82,10 +84,11 @@
                             #{labels.dataTable_rowsPerPage}
                         </f:facet>
                         <p:column
+                                  headerText="#{labels['dict.filtro']}"
                                   filterBy="#{tema.descripcion.getTraduccion(viewTema.idioma)}"
                                   filterMatchMode="contains"
-                                  filterStyleClass="mt-2">
-                            <f:facet name="header"/>
+                                  filterStyleClass="mt-2"
+                        >
                             <h:outputText value="#{tema.codigo} - #{tema.descripcion.getTraduccion(viewTema.idioma)}"/>
                         </p:column>
 
@@ -140,6 +143,14 @@
 
 
             <h:outputScript>
+                $(document).on('keydown', '#form input', function(event) {
+                if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+                }
+                });
+
                 function triggerDblClick() {
                     $('#form\\:btnEditar').click();
                 }
