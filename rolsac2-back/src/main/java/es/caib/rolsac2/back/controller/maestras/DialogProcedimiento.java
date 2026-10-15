@@ -815,7 +815,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean isDocumentoLopdObligatorio() {
-        return data != null && data.getEstado() == TypeProcedimientoEstado.MODIFICACION;
+        return false;
+        //  return data != null && data.getEstado() == TypeProcedimientoEstado.MODIFICACION;
     }
 
     public boolean isCategoriaPduObligatoria() {
@@ -824,6 +825,31 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public boolean isTramiteIniciacionCompleto() {
         return data.getTramites() != null && data.getTramites().stream().anyMatch(tramite -> tramite.getFase() == FASE_INICIACION.intValue());
+    }
+
+    public boolean isListaTramitesCompleto() {
+        boolean todoCorrecto = true;
+        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+        for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
+            if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
+                todoCorrecto = false;
+                break;
+            }
+            if (tramite.getListaTasas() != null) {
+                for (TasaProcedimientoDTO tasa : tramite.getListaTasas()) {
+                    if (tasa == null) {
+                        continue;
+                    }
+                    if (tasa.getIdentificador() == null || !tasa.getIdentificador().estaCompleto(idiomasObligatorios)) {
+                        todoCorrecto = false;
+                    }
+                    if (tasa.getFormaPago() == null || !tasa.getFormaPago().estaCompleto(idiomasObligatorios)) {
+                        todoCorrecto = false;
+                    }
+                }
+            }
+        }
+        return todoCorrecto;
     }
 
     public boolean isTemaCompleto(TemaGridDTO temaPadre) {
@@ -856,6 +882,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
             todoCorrecto = false;
+        }
+
+        if (data.getTemas() == null || data.getTemas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+            todoCorrecto = false;
+        }
+
+        for (TemaGridDTO temaPadre : temasPadre) {
+            if (!isTemaCompleto(temaPadre)) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+                todoCorrecto = false;
+            }
         }
 
         if (this.data.getTramites() != null) {

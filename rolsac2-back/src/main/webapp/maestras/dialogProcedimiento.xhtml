@@ -953,7 +953,7 @@
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloTramites" titulo="#{labels['dialogProcedimiento.tramites']}"
-                                  required="true" completo="#{dialogProcedimiento.tramiteIniciacionCompleto}">
+                                  required="true" completo="#{dialogProcedimiento.isListaTramitesCompleto()}">
                         <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                                      paginator="false" selectionMode="single"
