@@ -873,6 +873,17 @@ a.iconoXarxes{
 	border-radius: 5px 5px 0px 0px;
 
 }
+
+.modulo-lateral.ui-state-error {
+	border: 1px solid #dc3545;
+}
+.modulo-lateral.ui-state-error .left-container-header {
+	background-color: #dc3545;
+}
+.modulo-lateral-boton {
+	margin-left: -10px;
+}
+
 .sinMarginBottom{
 	margin-bottom:0px !important;
 }

@@ -487,7 +487,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
 
         for (TemaGridDTO temaPadre : temasPadre) {
-            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
+            if (!isTemaCompleto(temaPadre)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
                 return;
             }
@@ -674,6 +674,10 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
+    }
+
+    public boolean isTemaCompleto(TemaGridDTO temaPadre) {
+        return data.getTemas() != null && data.getTemas().stream().anyMatch(tema -> tema.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString()));
     }
 
     private boolean checkObligatorio() {

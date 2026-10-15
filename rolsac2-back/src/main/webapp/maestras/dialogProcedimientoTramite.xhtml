@@ -468,34 +468,28 @@
             </p:panel>
         </div>
         <div class="ui-g-12 ui-md-3 pr-1 ">
-            <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.modelos']}</p>
-                </div>
-                <div class="col-10 p-1">
-                    <p:dataTable id="dataDocumentosModelo" var="td"
-                                 value="#{dialogProcedimientoTramite.data.listaModelos}"
-                                 emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
-                                 scrollHeight="120"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimientoTramite.modeloSeleccionado}"
-                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+            <my:moduloLateral id="moduloModelos" titulo="#{labels['dialogProcedimientoTramite.modelos']}"
+                              required="#{dialogProcedimientoTramite.data.tramitPresencial}">
+                <p:dataTable id="dataDocumentosModelo" var="td"
+                             value="#{dialogProcedimientoTramite.data.listaModelos}"
+                             emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
+                             scrollHeight="120"
+                             paginator="false" selectionMode="single"
+                             selection="#{dialogProcedimientoTramite.modeloSeleccionado}"
+                             rowKey="#{td.codigoString}" styleClass="noHeader">
 
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClickModelo();"
-                        />
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                    <p:ajax event="rowSelect" global="false"/>
+                    <p:ajax event="rowUnselect"/>
+                    <p:ajax event="rowDblselect"
+                            oncomplete="triggerDblClickModelo();"
+                    />
 
-                        <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
-                                  styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
-                        </p:column>
-
-                    </p:dataTable>
-                </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
+                        <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                    </p:column>
+                </p:dataTable>
+                <f:facet name="acciones">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogProcedimientoTramite.nuevoModelo()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -506,12 +500,12 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.borrarModelo}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                     process="@this" update="dataDocumentosModelo :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarModelo"
                                      action="#{dialogProcedimientoTramite.editarModelo}"
                                      rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                                     process="@this" update="dataDocumentosModelo :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}"
                                 process="@this"
                                 update="dataDocumentosModelo"/>
@@ -521,43 +515,37 @@
                                      id="btnConsultarModelo"
                                      action="#{dialogProcedimientoTramite.consultarModelo}"
                                      rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                                     process="@this" update="dataDocumentosModelo :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                     <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirModelo}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                     process="@this" update="dataDocumentosModelo :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarModelo" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimientoTramite.bajarModelo}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                </div>
-            </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.documentosRelacionados']}</p>
-                </div>
-                <div class="col-10 p-1">
-                    <p:dataTable id="dataDocumentosRelacionados" var="td"
-                                 value="#{dialogProcedimientoTramite.data.listaDocumentos}"
-                                 emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
-                                 scrollHeight="120"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimientoTramite.documentoSeleccionado}"
-                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+                                     process="@this" update="dataDocumentosModelo :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                </f:facet>
+            </my:moduloLateral>
+            <my:moduloLateral id="moduloDocumentosRelacionados" titulo="#{labels['dialogProcedimientoTramite.documentosRelacionados']}">
+                <p:dataTable id="dataDocumentosRelacionados" var="td"
+                             value="#{dialogProcedimientoTramite.data.listaDocumentos}"
+                             emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
+                             scrollHeight="120"
+                             paginator="false" selectionMode="single"
+                             selection="#{dialogProcedimientoTramite.documentoSeleccionado}"
+                             rowKey="#{td.codigoString}" styleClass="noHeader">
 
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect" oncomplete="triggerDblClickDocumento();"/>
-                         <p:column headerText="#{labels['dialogProcedimiento.descripcion']}"
-                                  styleClass="text-center w75">
-                            <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
-                        </p:column>
-                    </p:dataTable>
-                </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                    <p:ajax event="rowSelect" global="false"/>
+                    <p:ajax event="rowSelect" global="false"/>
+                    <p:ajax event="rowUnselect"/>
+                    <p:ajax event="rowDblselect" oncomplete="triggerDblClickDocumento();"/>
+                    <p:column headerText="#{labels['dialogProcedimiento.descripcion']}" styleClass="text-center w75">
+                        <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                    </p:column>
+                </p:dataTable>
+                <f:facet name="acciones">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogProcedimientoTramite.nuevoDocumento()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -568,12 +556,12 @@
                     <p:commandButton disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      action="#{dialogProcedimientoTramite.borrarDocumento}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarDocumento"
                                      rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.editarDocumento}"
-                                     process="@this" update="messagesDialog" pt:aria-label="#{labels['dict.editar']}"
+                                     process="@this" update=":formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}"
                                         >
                     <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogDocumento}"
                             process="@this"
@@ -583,47 +571,40 @@
                                      id="btnConsultarDocumento"
                                      rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.consultarDocumento}"
-                                     process="@this" update="messagesDialog" pt:aria-label="#{labels['dict.consultar']}"
+                                     process="@this" update=":formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}"
                     />
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogProcedimientoTramite.subirDocumento}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogProcedimientoTramite.bajarDocumento}"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                </div>
-            </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.tasas']}</p>
-                </div>
-                <div class="col-10 p-1">
-                    <p:dataTable id="dataTasas" var="td"
-                                 value="#{dialogProcedimientoTramite.data.listaTasas}"
-                                 emptyMessage="#{labels['dialogProcedimiento.noTasas']}" scrollable="true"
-                                 scrollHeight="120"
-                                 paginator="false" selectionMode="single"
-                                 selection="#{dialogProcedimientoTramite.tasaSeleccionada}"
-                                 rowKey="#{td.codigoString}" styleClass="noHeader">
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                </f:facet>
+            </my:moduloLateral>
+            <my:moduloLateral id="moduloTasas" titulo="#{labels['dialogProcedimientoTramite.tasas']}">
+                <p:dataTable id="dataTasas" var="td"
+                             value="#{dialogProcedimientoTramite.data.listaTasas}"
+                             emptyMessage="#{labels['dialogProcedimiento.noTasas']}" scrollable="true"
+                             scrollHeight="120"
+                             paginator="false" selectionMode="single"
+                             selection="#{dialogProcedimientoTramite.tasaSeleccionada}"
+                             rowKey="#{td.codigoString}" styleClass="noHeader">
 
-                        <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                        <p:ajax event="rowSelect" global="false"/>
-                        <p:ajax event="rowUnselect"/>
-                        <p:ajax event="rowDblselect"
-                                oncomplete="triggerDblClickTasa();"
-                        />
-
-                        <p:column headerText="#{labels['dialogProcedimientoTramite.descripcion']}"
-                                  styleClass="text-center w75">
-                            <h:outputText value="#{td.identificador.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
-                        </p:column>
-
-                    </p:dataTable>
-                </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                    <!-- Necesario para actualizar en controlador la fila seleccionada -->
+                    <p:ajax event="rowSelect" global="false"/>
+                    <p:ajax event="rowUnselect"/>
+                    <p:ajax event="rowDblselect"
+                            oncomplete="triggerDblClickTasa();"
+                    />
+                    <p:ajax event="rowDblselect" oncomplete="triggerDblClickTasa();"/>
+                    <p:column headerText="#{labels['dialogProcedimientoTramite.descripcion']}" styleClass="text-center w75">
+                        <h:outputText value="#{td.identificador.getTraduccionConValor(dialogProcedimientoTramite.idioma)}" class="labelGrande" />
+                    </p:column>
+                </p:dataTable>
+                <f:facet name="acciones">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogProcedimientoTramite.nuevaTasa()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -634,12 +615,12 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogProcedimientoTramite.isModoConsulta()}"
                                      action="#{dialogProcedimientoTramite.borrarTasa}"
-                                     process="@this" update="dataTasas messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                     process="@this" update="dataTasas :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      id="btnEditarTasa"
                                      action="#{dialogProcedimientoTramite.editarTasa}"
                                      rendered="#{!dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataTasas messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                                     process="@this" update="dataTasas :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogTasa}"
                                 process="@this"
                                 update="dataTasas"/>
@@ -648,24 +629,33 @@
                                      id="btnConsultarTasa"
                                      action="#{dialogProcedimientoTramite.consultarTasa}"
                                      rendered="#{dialogProcedimientoTramite.isModoConsulta()}"
-                                     process="@this" update="dataTasas messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                                     process="@this" update="dataTasas :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
-                </div>
-            </div>
+                </f:facet>
+            </my:moduloLateral>
         </div>
         </div>
         <h:outputScript library="js" name="datePickerR2.js"/>
         <h:outputScript>
             function triggerDblClickModelo() {
-                document.getElementById("formDialog:btnEditarModelo").click();
+                var button = document.getElementById("formDialog:moduloModelos:btnEditarModelo") || document.getElementById("formDialog:moduloModelos:btnConsultarModelo");
+                if (button) {
+                    button.click();
+                }
             }
 
             function triggerDblClickDocumento() {
-                document.getElementById("formDialog:btnEditarDocumento").click();
+                var button = document.getElementById("formDialog:moduloDocumentosRelacionados:btnEditarDocumento") || document.getElementById("formDialog:moduloDocumentosRelacionados:btnConsultarDocumento");
+                if (button) {
+                    button.click();
+                }
             }
 
             function triggerDblClickTasa() {
-                document.getElementById("formDialog:btnEditarTasa").click();
+                var button = document.getElementById("formDialog:moduloTasas:btnEditarTasa") || document.getElementById("formDialog:moduloTasas:btnConsultarTasa");
+                if (button) {
+                    button.click();
+                }
             }
         </h:outputScript>
 

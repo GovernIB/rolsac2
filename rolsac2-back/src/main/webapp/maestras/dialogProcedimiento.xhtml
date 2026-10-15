@@ -48,7 +48,7 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtTerminios formDialog:txtObservaciones form:txtKeywords
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtTipoProcedimiento formDialog:txtSilAdmin formDialog:dataTablePublico dataNormativaProcedimiento dataCategoriaPDUProcedimiento formDialog:dataTableTramite formDialog:dataDocumentosRelacionados formDialog:dataDocumentosLopd formDialog:panelTemas formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:panelComun formDialog:panelComunInstr formDialog:txtOrgResp formDialog:txtLegitimacion"/>
+            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtFormaIni formDialog:txtTipoVia formDialog:txtSilAdmin formDialog:panelModulosLaterales formDialog:txtRespTrat formDialog:txtRespTratComun formDialog:panelComun formDialog:panelComunInstr formDialog:txtOrgResp formDialog:txtLegitimacion"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogProcedimiento.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -652,22 +652,9 @@
             </div>
 
 
-            <div class="ui-g-12 ui-md-3 pr-1 ">
-                <div class="row left-container mx-0 mb-2">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1 negrita">#{labels['dialogServicio.publicoObjetivo']}*</p>
-                        </div>
-                        <div class="col-2 mb-1">
-                            <p:commandButton id="btnPubObjCol" onclick="colapsarModulo('#divPublico','btnPubObj');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                             style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnPubObjExp" onclick="expandirModulo('#divPublico','btnPubObj');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                    <div id="divPublico" class="col-10 p-1">
+            <h:panelGroup id="panelModulosLaterales" layout="block" styleClass="ui-g-12 ui-md-3 pr-1">
+                <my:moduloLateral id="moduloPublico" titulo="#{labels['dialogServicio.publicoObjetivo']}"
+                                  required="true">
                         <p:dataTable id="dataTablePublico" var="td"
                                      value="#{dialogProcedimiento.data.publicosObjetivo}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -683,8 +670,7 @@
                             </p:column>
 
                         </p:dataTable>
-                    </div>
-                    <div id="divPublicoBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <f:facet name="acciones">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
                                          actionListener="#{dialogProcedimiento.nuevoPubObjEnt()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -695,25 +681,12 @@
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarPubObjEnt}"
-                                         process="@this" update="dataTablePublico messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
-                    </div>
-
-                </div>
-                <div class="row left-container mx-0 mb-2">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1 negrita">#{labels['dialogProcedimiento.tipoProcedimiento.header']}*</p>
-                        </div>
-                        <div class="col-2 mb-1">
-                            <p:commandButton id="btnTipoProcCol" onclick="colapsarModulo('#divTipoProcedimiento','btnTipoProc');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                             style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnTipoProcExp" onclick="expandirModulo('#divTipoProcedimiento','btnTipoProc');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                    <div id="divTipoProcedimiento" class="col-12 p-1">
+                                         process="@this" update="dataTablePublico :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                    </f:facet>
+                </my:moduloLateral>
+                <my:moduloLateral id="moduloTipoProcedimiento" titulo="#{labels['dialogProcedimiento.tipoProcedimiento.header']}"
+                                  required="true"
+                                  conBotones="false">
 
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
                                   styleClass="w100" required="#{empty param['formDialog:closeButton']}"
@@ -728,30 +701,12 @@
                                            itemValue="#{tipoProcedimiento}"/>
                             <p:ajax event="change" update="@this"></p:ajax>
                         </p:selectOneMenu>
-
-                    </div>
-
-                </div>
+                </my:moduloLateral>
                 <h:panelGroup id="panelTemas">
                     <c:forEach items="#{dialogProcedimiento.roots}" var="tema" varStatus="status">
-                        <div class="row left-container mx-0 mt-2">
-                            <div class="left-container-header ml-0 col-12 row">
-                                <div class="col-10 text-center">
-                                    <p:outputLabel styleClass="left-container-tit mt-2 mb-1" pt:aria-label="Etiqueta">#{labels['dialogUnidadAdministrativa.temas']} -
-                                        #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}</p:outputLabel>
-                                </div>
-                                <div class="col-2">
-                                    <p:commandButton id="btnTema#{tema.data.codigo}Col"
-                                                     onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                     title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                                     style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                                    <p:commandButton id="btnTema#{tema.data.codigo}Exp"
-                                                     onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                     title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                                     styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                                </div>
-                            </div>
-                            <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
+                        <my:moduloLateral id="moduloTema#{tema.data.codigo}" styleClass="mt-2"
+                                          titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                          required="true" completo="#{dialogProcedimiento.isTemaCompleto(tema.data)}">
                                 <p:treeTable
                                         value="#{tema}"
                                         var="td"
@@ -776,9 +731,7 @@
                                     </p:column>
 
                                 </p:treeTable>
-                            </div>
-                            <div id="divTema#{tema.data.codigo}Btns"
-                                 class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                            <f:facet name="acciones">
                                 <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                                  styleClass="text-success"
                                                  process="@this"
@@ -786,30 +739,15 @@
                                                  rendered="#{!dialogProcedimiento.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                     <p:ajax event="dialogReturn"
                                             listener="#{dialogProcedimiento.returnDialogTemas}" process="@this"
-                                            update="messagesDialog panelTemas"/>
+                                            update=":formDialog:messagesDialog :formDialog:panelTemas"/>
                                 </p:commandButton>
-                            </div>
-                        </div>
+                            </f:facet>
+                        </my:moduloLateral>
                     </c:forEach>
 
                 </h:panelGroup>
-                <div class="row left-container mx-0 mb-2 mt-2">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.normativaProc']}*</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnNormativasCol"
-                                             onclick="colapsarModulo('#divNormativas','btnNormativas');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                             style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnNormativasExp"
-                                             onclick="expandirModulo('#divNormativas','btnNormativas');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                    <div id="divNormativas" class="col-10 p-1">
+                <my:moduloLateral id="moduloNormativas" titulo="#{labels['dialogProcedimiento.normativaProc']}"
+                                  styleClass="mb-2 mt-2" required="true">
                         <p:dataTable id="dataNormativaProcedimiento" var="td"
                                      value="#{dialogProcedimiento.data.normativas}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -829,9 +767,7 @@
                                 <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" style="#{td.vigente == null or !td.vigente ? 'color:red' : ''}" pt:aria-label="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
                         </p:dataTable>
-                    </div>
-                    <div id="divNormativasBtns"
-                         class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <f:facet name="acciones">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
                                          actionListener="#{dialogProcedimiento.nuevaNormativa()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -842,40 +778,26 @@
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarNormativa}"
-                                         process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarNormativa}"
-                                         process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
+                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                         <p:commandButton id="btnSubirNormativa" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                          action="#{dialogProcedimiento.subirNormativa}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                         <p:commandButton id="btnBajarNormativa" title="#{labels['dict.bajar']}"
                                          icon="pi pi-arrow-circle-down"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.bajarNormativa}"
-                                         process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                    </div>
-                </div>
+                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                    </f:facet>
+                </my:moduloLateral>
 
                 <p:outputPanel id="panelCategoriasPDU" layout="block">
-                    <div id="divCategoriasPadrePDU" class="row left-container mx-0 mb-2 mt-2" style="#{dialogProcedimiento.getStyleDivCategoriasPDU()}">
-                        <div class="left-container-header ml-0 col-12 row" >
-                            <div class="col-10 text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.categoriasPDU']}</p>
-                            </div>
-                            <div class="col-2">
-                                <p:commandButton id="btnCategoriasPDUCol"
-                                                 onclick="colapsarModulo('#divCategoriasPDU','btnCategoriasPDU');"
-                                                 title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2 mb-1"
-                                                 style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                                <p:commandButton id="btnCategoriasPDUExp"
-                                                 onclick="expandirModulo('#divCategoriasPDU','btnCategoriasPDU');"
-                                                 title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                                 styleClass="mt-2 mb-1 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                            </div>
-                        </div>
-                        <div id="divCategoriasPDU" class="col-10 p-1">
+                    <div id="divCategoriasPadrePDU" style="#{dialogProcedimiento.getStyleDivCategoriasPDU()}">
+                        <my:moduloLateral id="moduloCategoriasPDU" titulo="#{labels['dialogProcedimiento.categoriasPDU']}"
+                                          styleClass="mb-2 mt-2" required="#{dialogProcedimiento.categoriaPduObligatoria}">
                             <p:dataTable id="dataCategoriaPDUProcedimiento" var="td"
                                          value="#{dialogProcedimiento.data.categoriasPDU}"
                                          emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -895,9 +817,7 @@
                                     <h:outputText value="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                                 </p:column>
                             </p:dataTable>
-                        </div>
-                        <div id="divCategoriasPDUBtns"
-                             class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                        <f:facet name="acciones">
                             <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                              disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
                                              actionListener="#{dialogProcedimiento.nuevaCategoriaPDU()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -908,10 +828,10 @@
                             <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                              disabled="#{dialogProcedimiento.isModoConsulta()}"
                                              action="#{dialogProcedimiento.borrarCategoriaPDU}"
-                                             process="@this" update="dataCategoriaPDUProcedimiento messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                             process="@this" update="dataCategoriaPDUProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                             <p:commandButton id="btnConsultarCategoriaPDU" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogProcedimiento.consultarCategoriaPDU}"
-                                             process="@this" update="dataCategoriaPDUProcedimiento messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
+                                             process="@this" update="dataCategoriaPDUProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                             <!-- <p:commandButton id="btnSubirCategoriaPDU" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                               action="#{dialogProcedimiento.subirCategoriaPDU}"
                                               process="@this" update="dataCategoriaPDUProcedimiento messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
@@ -919,25 +839,12 @@
                                               icon="pi pi-arrow-circle-down"
                                               action="#{dialogProcedimiento.bajarCategoriaPDU}"
                                               process="@this" update="dataCategoriaPDUProcedimiento messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>-->
-                        </div>
+                        </f:facet>
+                        </my:moduloLateral>
                     </div>
                 </p:outputPanel>
 
-                <div class="row left-container mx-0 mb-2">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.docRelacionados']}</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnDocsRelCol" onclick="colapsarModulo('#divDocsRel','btnDocsRel');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                             style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnDocsRelExp" onclick="expandirModulo('#divDocsRel','btnDocsRel');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                    <div id="divDocsRel" class="col-10 p-1">
+                <my:moduloLateral id="moduloDocumentos" titulo="#{labels['dialogProcedimiento.docRelacionados']}">
                         <p:dataTable id="dataDocumentosRelacionados" var="td" value="#{dialogProcedimiento.data.documentos}"
                                      emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -956,8 +863,7 @@
                                 <h:outputText value="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.titulo.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
                         </p:dataTable>
-                    </div>
-                    <div id="divDocsRelBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <f:facet name="acciones">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
                                          action="#{dialogProcedimiento.nuevoDocumento}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -968,11 +874,11 @@
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarDocumento}"
-                                         process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                          action="#{dialogProcedimiento.editarDocumento}"
                                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumento}"
                                     process="@this"
                                     update="dataDocumentosRelacionados"/>
@@ -980,34 +886,21 @@
                         <p:commandButton id="btnConsultarDoc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarDocumento}"
                                          rendered="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                         </p:commandButton>
                         <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                          action="#{dialogProcedimiento.subirDocumento}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                         <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                          icon="pi pi-arrow-circle-down"
                                          action="#{dialogProcedimiento.bajarDocumento}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                    </div>
-                </div>
-                <div class="row left-container mx-0 mb-2">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.docInformacion']}</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnDocsInfCol" onclick="colapsarModulo('#divDocsInf','btnDocsInf');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                             style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnDocsInfExp" onclick="expandirModulo('#divDocsInf','btnDocsInf');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                    <div id="divDocsInf" class="col-10 p-1">
+                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                    </f:facet>
+                </my:moduloLateral>
+                <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogProcedimiento.docInformacion']}"
+                                  required="#{dialogProcedimiento.documentoLopdObligatorio}">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogProcedimiento.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -1026,14 +919,12 @@
                             </p:column>
 
                         </p:dataTable>
-                    </div>
-                    <div id="divDocsInfBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <f:facet name="acciones">
                         <p:commandButton id="btnNuevoDocLOPD" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                          styleClass="text-success"
                                          disabled="#{dialogProcedimiento.isModoConsulta() or !empty dialogProcedimiento.data.documentosLOPD}"
                                          process="@this"
-                                         actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}" pt:aria-label="#{labels['dict.nuevo']}"
-                        >
+                                         actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}"
                                     process="@this"
                                     update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
@@ -1043,10 +934,10 @@
                                          disabled="#{dialogProcedimiento.isModoConsulta() or empty dialogProcedimiento.data.documentosLOPD}"
                                          action="#{dialogProcedimiento.borrarDocumentoLOPD}"
                                          process="@this"
-                                         update="dataDocumentosLopd @form:btnNuevoDocLOPD  @form:btnEliminarDocLOPD  @form:btnEditarDocLOPD messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         update="dataDocumentosLopd :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnEditarDocLOPD" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                          action="#{dialogProcedimiento.editarDocumentoLOPD}" styleClass=" "
-                                         process="@this" update="dataDocumentosLopd messagesDialog"
+                                         process="@this" update="dataDocumentosLopd :formDialog:messagesDialog"
                                          disabled="#{dialogProcedimiento.isModoConsulta() or empty dialogProcedimiento.data.documentosLOPD}"
                                          rendered="#{!dialogProcedimiento.isModoConsulta()}" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}"
@@ -1055,28 +946,14 @@
                         </p:commandButton>
                         <p:commandButton id="btnConsultarDocLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarDocumentoLOPD}" styleClass=" "
-                                         process="@this" update="dataDocumentosLopd messagesDialog"
+                                         process="@this" update="dataDocumentosLopd :formDialog:messagesDialog"
                                          rendered="#{dialogProcedimiento.isModoConsulta() and !empty dialogProcedimiento.data.documentosLOPD}" pt:aria-label="#{labels['dict.consultar']}">
 
                         </p:commandButton>
-                    </div>
-                </div>
-                <div class="row left-container mx-0 mb-2">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogProcedimiento.tramites']}</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnTramitesCol" onclick="colapsarModulo('#divTramites','btnTramites');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                             style="margin-left:-10px;margin-bottom:10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnTramitesExp" onclick="expandirModulo('#divTramites','btnTramites');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar"
-                                             style="margin-left:-10px;margin-bottom:10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                    <div id="divTramites" class="col-10 p-1">
+                    </f:facet>
+                </my:moduloLateral>
+                <my:moduloLateral id="moduloTramites" titulo="#{labels['dialogProcedimiento.tramites']}"
+                                  required="true" completo="#{dialogProcedimiento.tramiteIniciacionCompleto}">
                         <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -1094,8 +971,7 @@
                                 <h:outputText value="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" class="labelGrande" pt:aria-label="#{td.nombre.getTraduccionConValor(dialogProcedimiento.idioma)}" />
                             </p:column>
                         </p:dataTable>
-                    </div>
-                    <div id="divTramitesBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                    <f:facet name="acciones">
                         <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}" process="@this"
                                          actionListener="#{dialogProcedimiento.nuevoTramite()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -1106,11 +982,11 @@
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarTramite}"
-                                         process="@this" update="dataTableTramite messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnEditarTramite" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                          action="#{dialogProcedimiento.editarTramite}"
                                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataTableTramite messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
                                     process="@this"
                                     update="dataTableTramite"/>
@@ -1118,20 +994,20 @@
                         <p:commandButton id="btnConsultarTramite" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarTramite}"
                                          rendered="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataTableTramite messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
 
                         </p:commandButton>
                         <p:commandButton id="btnSubirTramite" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                          action="#{dialogProcedimiento.subirTramite}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataTableTramite messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                         <p:commandButton id="btnBajarTramite" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
                                          action="#{dialogProcedimiento.bajarTramite}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataTableTramite messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                    </div>
-                </div>
-            </div>
+                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                    </f:facet>
+                </my:moduloLateral>
+            </h:panelGroup>
         </div>
         <h:outputScript library="js" name="datePickerR2.js"/>
         <h:outputScript>
@@ -1142,25 +1018,25 @@
                 document.getElementById("formDialog:btnConsultarMateria").click();
             }
             function triggerDblClickNormativa() {
-                document.getElementById("formDialog:btnConsultarNormativa").click();
+                document.getElementById("formDialog:moduloNormativas:btnConsultarNormativa").click();
             }
             function triggerDblClickCategoriaPDU() {
-                document.getElementById("formDialog:btnConsultarCategoriaPDU").click();
+                document.getElementById("formDialog:moduloCategoriasPDU:btnConsultarCategoriaPDU").click();
             }
             function triggerDblClickTramite() {
-                var button = document.getElementById("formDialog:btnEditarTramite") || document.getElementById("formDialog:btnConsultarTramite");
+                var button = document.getElementById("formDialog:moduloTramites:btnEditarTramite") || document.getElementById("formDialog:moduloTramites:btnConsultarTramite");
                 if (button) {
                     button.click();
                 }
             }
             function triggerDblClickDoc() {
-                var button = document.getElementById("formDialog:btnEditarDoc") || document.getElementById("formDialog:btnConsultarDoc");
+                var button = document.getElementById("formDialog:moduloDocumentos:btnEditarDoc") || document.getElementById("formDialog:moduloDocumentos:btnConsultarDoc");
                 if (button) {
                     button.click();
                 }
             }
             function triggerDblClickDocLopd() {
-                var button = document.getElementById("formDialog:btnEditarDocLOPD") || document.getElementById("formDialog:btnConsultarDocLOPD");
+                var button = document.getElementById("formDialog:moduloLOPD:btnEditarDocLOPD") || document.getElementById("formDialog:moduloLOPD:btnConsultarDocLOPD");
                 if (button) {
                     button.click();
                 }
@@ -1174,7 +1050,7 @@
                     $("#formDialog\\:labelSelectComun").show();
                 }
             }
-
+            
             function colapsarModulo(lateral, botones) {
                 $(lateral).addClass('importantOcultar');
                 $(lateral+"Btns").addClass('importantOcultar');
@@ -1300,9 +1176,10 @@
                              style="white-space: nowrap;text-align: center;flex:0 0 auto; "
                              process="@all"
                              readonly="#{empty dialogProcedimiento.data.codigo}"
-                             update="messagesDialog"
+                             update="messagesDialog panelModulosLaterales"
                              rendered="#{dialogProcedimiento.isMostrarBtnFlujo()}" pt:aria-label="#{labels['dialogProcedimiento.seguirFlujo']}">
-                <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"/>
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"
+                                update="messagesDialog panelModulosLaterales"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}"
                              icon="pi pi-inbox"
@@ -1332,9 +1209,10 @@
         </p:commandButton>
         <p:commandButton id="btnGuardar" action="#{dialogProcedimiento.guardar}"
                          value="#{labels['dict.guardar']}"
-                         update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos"
+                         update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos panelModulosLaterales"
                          rendered="#{dialogProcedimiento.mostrarBotonGuardar()}"
-                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}">
+        </p:commandButton>
 
     </ui:define>
 </ui:composition>

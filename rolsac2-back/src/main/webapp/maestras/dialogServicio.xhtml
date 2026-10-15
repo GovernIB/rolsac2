@@ -48,7 +48,8 @@
             <f:selectItems value="#{sessionBean.getIdiomasPermitidosList()}" var="idioma"
                            itemValue="#{idioma}" itemLabel="#{labels['idiomas.' += idioma]}"/>
             <p:ajax process="@this" update="formDialog:txtNombre formDialog:txtObjeto formDialog:txtDestinatarios formDialog:txtrequisitos  formDialog:txtObservaciones
-            formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtTraUrl "/>
+                    formDialog:txtLopdFinalidad formDialog:txtLopdDestinatario formDialog:txtLopdDerechos formDialog:txtTraUrl formDialog:panelModulosLaterales"
+                    oncomplete="checkActivoLOPD();"/>
         </p:selectOneButton>
         <p:commandButton action="#{dialogServicio.traducir}"
                          icon="pi pi-compass" iconPos="top"
@@ -645,22 +646,9 @@
         </div>
 
 
-        <div class="ui-g-12 ui-md-3 pr-1 ">
-            <div class="row left-container mx-0 mb-2">
-                <div class="left-container-header ml-0 col-12 row">
-                    <div class="col-10 text-center">
-                        <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.publicoObjetivo']}*</p>
-                    </div>
-                    <div class="col-2 pb-2">
-                        <p:commandButton id="btnPubObjCol" onclick="colapsarModulo('#divPublico','btnPubObj');"
-                                         title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                         style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                        <p:commandButton id="btnPubObjExp" onclick="expandirModulo('#divPublico','btnPubObj');"
-                                         title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                         styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                    </div>
-                </div>
-                <div id="divPublico" class="col-10 p-1">
+        <h:panelGroup id="panelModulosLaterales" layout="block" styleClass="ui-g-12 ui-md-3 pr-1">
+            <my:moduloLateral id="moduloPublico" titulo="#{labels['dialogServicio.publicoObjetivo']}"
+                              required="true">
                     <p:dataTable id="dataTablePublico" var="td"
                                  value="#{dialogServicio.data.publicosObjetivo}"
                                  emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
@@ -683,8 +671,7 @@
                         <f:event type="postValidate" listener="#{dialogServicio.validacionListaNoVacia}"/>
                         -->
                     </p:dataTable>
-                </div>
-                <div id="divPublicoBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                <f:facet name="acciones">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevoPubObjEnt()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -694,29 +681,14 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarPubObjEnt}"
-                                     process="@this" update="dataTablePublico messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
-                </div>
-            </div>
+                                     process="@this" update="dataTablePublico :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                </f:facet>
+            </my:moduloLateral>
             <h:panelGroup id="panelTemas">
                 <c:forEach items="#{dialogServicio.roots}" var="tema" varStatus="status">
-                    <div class="row left-container mx-0 mt-2">
-                        <div class="left-container-header ml-0 col-12 row">
-                            <div class="col-10 text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccionConValor(sessionBean.lang)}</p>
-                            </div>
-                            <div class="col-2">
-                                <p:commandButton id="btnTema#{tema.data.codigo}Col"
-                                                 onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                 title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2"
-                                                 style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                                <p:commandButton id="btnTema#{tema.data.codigo}Exp"
-                                                 onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');"
-                                                 title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                                 styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                            </div>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
+                    <my:moduloLateral id="moduloTema#{tema.data.codigo}" styleClass="mt-2"
+                                      titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(sessionBean.lang)}"
+                                      required="true" completo="#{dialogServicio.isTemaCompleto(tema.data)}">
                             <p:treeTable
                                     value="#{tema}"
                                     var="td"
@@ -745,9 +717,7 @@
                                 </p:column>
 
                             </p:treeTable>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}Btns"
-                             class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                        <f:facet name="acciones">
                             <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                              styleClass="text-success"
                                              process="@this"
@@ -755,31 +725,14 @@
                                              rendered="#{!dialogServicio.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
                                 <p:ajax event="dialogReturn"
                                         listener="#{dialogServicio.returnDialogTemas}" process="@this"
-                                        update="messagesDialog panelTemas"/>
+                                        update=":formDialog:messagesDialog :formDialog:panelTemas"/>
                             </p:commandButton>
-                        </div>
-                    </div>
+                        </f:facet>
+                    </my:moduloLateral>
                 </c:forEach>
 
             </h:panelGroup>
-            <div class="row left-container mx-0 mb-2 mt-2">
-                <div class="col-12 left-container-header text-center">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.normativaProc']}</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnNormativasCol"
-                                             onclick="colapsarModulo('#divNormativas','btnNormativas');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnNormativasExp"
-                                             onclick="expandirModulo('#divNormativas','btnNormativas');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                </div>
-                <div id="divNormativas" class="col-10 p-1">
+            <my:moduloLateral id="moduloNormativas" titulo="#{labels['dialogServicio.normativaProc']}" styleClass="mb-2 mt-2">
                     <p:dataTable id="dataNormativaProcedimiento" var="td"
                                  value="#{dialogServicio.data.normativas}"
                                  emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
@@ -799,9 +752,7 @@
                             <h:outputText value="#{td.titulo.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
-                </div>
-                <div id="divNormativasBtns"
-                     class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                <f:facet name="acciones">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevaNormativa()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -811,26 +762,22 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarNormativa}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                     process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogServicio.consultarNormativa}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
+                                     process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                     <p:commandButton id="btnSubirNormativa" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogServicio.subirNormativa}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                     process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarNormativa" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogServicio.bajarNormativa}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataNormativaProcedimiento messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                </div>
-            </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogServicio.tasa.titulo']}</p>
-                </div>
-                <div class="col-10 p-1">
+                                     process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                </f:facet>
+            </my:moduloLateral>
+            <my:moduloLateral id="moduloTasa" titulo="#{labels['dialogServicio.tasa.titulo']}">
                     <p:dataTable id="dataTasaServicio" var="ts" lazy="false"
                                     value="#{dialogServicio.data.tasaServicio != null ? [dialogServicio.data.tasaServicio] : []}"
                                     emptyMessage="#{labels['dialogServicio.tasa.sinTasa']}" scrollable="true"
@@ -847,8 +794,7 @@
                             <h:outputText value="#{ts.identificador.getTraduccionConValor(dialogServicio.idioma)}" class="labelGrande"/>
                         </p:column>
                     </p:dataTable>
-                </div>
-                <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
+                <f:facet name="acciones">
                         <p:commandButton id="btnAnadirTasaServicio" title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                 disabled="#{dialogServicio.isModoConsulta() or dialogServicio.data.tasaServicio != null}"
                                 process="@this"
@@ -860,13 +806,13 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                         disabled="#{dialogServicio.isModoConsulta()}"
                                         action="#{dialogServicio.borrarTasaServicio}"
-                                        process="@this" update="dataTasaServicio messagesDialog btnAnadirTasaServicio" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                        process="@this" update="dataTasaServicio :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                         id="btnEditarTasaServicio"
                                         action="#{dialogServicio.editarTasaServicio}"
                                         rendered="#{!dialogServicio.isModoConsulta()}"
                                         disabled="#{dialogServicio.isModoConsulta()}"
-                                        process="@this" update="dataTasaServicio messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                                        process="@this" update="dataTasaServicio :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTasaServicio}"
                                 process="@this"
                                 update="dataTasaServicio"/>
@@ -875,26 +821,11 @@
                                         id="btnConsultarTasaServicio"
                                         action="#{dialogServicio.consultarTasaServicio}"
                                         rendered="#{dialogServicio.isModoConsulta()}"
-                                        process="@this" update="dataTasaServicio messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                                        process="@this" update="dataTasaServicio :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
-                </div>
-            </div>
-            <div class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docRelacionados']}</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnDocsRelCol" onclick="colapsarModulo('#divDocsRel','btnDocsRel');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnDocsRelExp" onclick="expandirModulo('#divDocsRel','btnDocsRel');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                </div>
-                <div id="divDocsRel" class="col-10 p-1">
+                </f:facet>
+            </my:moduloLateral>
+            <my:moduloLateral id="moduloDocumentos" titulo="#{labels['dialogServicio.docRelacionados']}">
                     <p:dataTable id="dataDocumentosRelacionados" var="td" value="#{dialogServicio.data.documentos}"
                                  emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
                                  paginator="false" selectionMode="single"
@@ -913,8 +844,7 @@
                             <h:outputText value="#{td.titulo.getTraduccionConValor(sessionBean.lang)}" class="labelGrande" />
                         </p:column>
                     </p:dataTable>
-                </div>
-                <div id="divDocsRelBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                <f:facet name="acciones">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta()}" process="@this"
                                      actionListener="#{dialogServicio.nuevoDocumento()}" pt:aria-label="#{labels['dict.nuevo']}">
@@ -924,54 +854,40 @@
                     <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                      disabled="#{dialogServicio.isModoConsulta()}"
                                      action="#{dialogServicio.borrarDocumento}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogServicio.editarDocumento}"
                                      rendered="#{!dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumento}" process="@this"
                                 update="dataDocumentosRelacionados"/>
                     </p:commandButton>
                     <p:commandButton id="btnConsultarDoc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogServicio.consultarDocumento}"
                                      rendered="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
                     <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                      action="#{dialogServicio.subirDocumento}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                     <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                      icon="pi pi-arrow-circle-down"
                                      action="#{dialogServicio.bajarDocumento}"
                                      disabled="#{dialogServicio.isModoConsulta()}"
-                                     process="@this" update="dataDocumentosRelacionados messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
-                </div>
-            </div>
-            <!--<div class="row left-container mx-0 mb-2">-->
-            <h:panelGroup id="panelDocumentoLOPD" class="row left-container mx-0 mb-2">
-                <div class="col-12 left-container-header text-center">
-                    <div class="left-container-header ml-0 col-12 row">
-                        <div class="col-10 text-center">
-                            <p class="left-container-tit mt-2 mb-1">#{labels['dialogServicio.docInformacion']}</p>
-                        </div>
-                        <div class="col-2">
-                            <p:commandButton id="btnDocsLopdCol" onclick="colapsarModulo('#divDocsLopd','btnDocsLopd');"
-                                             title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" pt:aria-label="#{labels['dict.colapsar']}"/>
-                            <p:commandButton id="btnDocsLopdExp" onclick="expandirModulo('#divDocsLopd','btnDocsLopd');"
-                                             title="#{labels['dict.expandir']}" icon="pi pi-plus"
-                                             styleClass="mt-2 importantOcultar" pt:aria-label="#{labels['dict.expandir']}"/>
-                        </div>
-                    </div>
-                </div>
-                <div id="divDocsLopd" class="col-10 p-1">
+                                     process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                </f:facet>
+            </my:moduloLateral>
+            <h:panelGroup id="panelDocumentoLOPD" layout="block">
+                <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogServicio.docInformacion']}"
+                                  required="#{dialogServicio.data.activoLOPD}">
                     <h:panelGroup id="paneldataDocumentosLopd">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogServicio.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
                                      paginator="false" selectionMode="single"
                                      selection="#{dialogServicio.documentoLOPDSeleccionado}"
                                      rowKey="#{td.codigoString}" styleClass="noHeader"
-                                     rendered="#{!data.isActivoLOPD()}">
+                                     rendered="#{dialogServicio.data.activoLOPD}">
 
                             <!-- Necesario para actualizar en controlador la fila seleccionada -->
                             <p:ajax event="rowSelect" global="false"/>
@@ -986,8 +902,7 @@
 
                         </p:dataTable>
                     </h:panelGroup>
-                </div>
-                <div id="divDocsLopdBtns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
+                <f:facet name="acciones">
                     <p:commandButton id="btnNuevoDocLOPD" title="#{labels['dict.nuevo']}" icon="pi pi-plus"
                                      styleClass="text-success"
                                      disabled="#{dialogServicio.isModoConsulta() or !empty dialogServicio.data.documentosLOPD}"
@@ -1003,10 +918,10 @@
                                      disabled="#{dialogServicio.isModoConsulta() or empty dialogServicio.data.documentosLOPD}"
                                      action="#{dialogServicio.borrarDocumentoLOPD}"
                                      process="@this"
-                                     update="dataDocumentosLopd @form:btnNuevoDocLOPD  @form:btnEliminarDocLOPD  @form:btnEditarDocLOPD messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                     update="dataDocumentosLopd :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                     <p:commandButton id="btnEditarDocLOPD" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                      action="#{dialogServicio.editarDocumentoLOPD}" styleClass=" "
-                                     process="@this" update="dataDocumentosLopd messagesDialog"
+                                     process="@this" update="dataDocumentosLopd :formDialog:messagesDialog"
                                      rendered="#{!dialogServicio.isModoConsulta()}"
                                      disabled="#{dialogServicio.isModoConsulta() or empty dialogServicio.data.documentosLOPD}" pt:aria-label="#{labels['dict.editar']}">
                         <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogDocumentoLOPD}"
@@ -1015,14 +930,15 @@
                     </p:commandButton>
                     <p:commandButton id="btnConsultarDocLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                      action="#{dialogServicio.consultarDocumentoLOPD}" styleClass=" "
-                                     process="@this" update="dataDocumentosLopd messagesDialog"
+                                     process="@this" update="dataDocumentosLopd :formDialog:messagesDialog"
                                      rendered="#{dialogServicio.isModoConsulta()}"
                                      readonly="#{empty dialogServicio.data.documentosLOPD}" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
-                </div>
+                </f:facet>
+                </my:moduloLateral>
             </h:panelGroup>
 
-        </div>
+        </h:panelGroup>
         </div>
         <h:outputScript library="js" name="datePickerR2.js"/>
         <h:outputScript>
@@ -1035,7 +951,7 @@
             }
 
             function triggerDblClickNormativa() {
-            document.getElementById("formDialog:btnConsultarNormativa").click();
+            document.getElementById("formDialog:moduloNormativas:btnConsultarNormativa").click();
             }
 
             function triggerDblClickTramite() {
@@ -1046,21 +962,21 @@
             }
 
             function triggerDblClickDoc() {
-                var button = document.getElementById("formDialog:btnEditarDoc") || document.getElementById("formDialog:btnConsultarDoc");
+                var button = document.getElementById("formDialog:moduloDocumentos:btnEditarDoc") || document.getElementById("formDialog:moduloDocumentos:btnConsultarDoc");
                 if (button) {
                     button.click();
                 }
             }
 
             function triggerDblClickDocLopd() {
-                var button = document.getElementById("formDialog:btnEditarDocLOPD") || document.getElementById("formDialog:btnConsultarDocLOPD");
+                var button = document.getElementById("formDialog:moduloLOPD:btnEditarDocLOPD") || document.getElementById("formDialog:moduloLOPD:btnConsultarDocLOPD");
                 if (button) {
                     button.click();
                 }
             }
 
             function triggerDblClickTasaServicio() {
-                var button = document.getElementById("formDialog:btnEditarTasaServicio") || document.getElementById("formDialog:btnConsultarTasaServicio");
+                var button = document.getElementById("formDialog:moduloTasa:btnEditarTasaServicio") || document.getElementById("formDialog:moduloTasa:btnConsultarTasaServicio");
                 if (button) {
                     button.click();
                 }
@@ -1096,7 +1012,7 @@
             $("#formDialog\\:panelDocumentoLOPD").hide();
             }
             }
-
+            
             function colapsarModulo(lateral, botones) {
             $(lateral).addClass('importantOcultar');
             $(lateral+"Btns").addClass('importantOcultar');
@@ -1188,9 +1104,10 @@
                              style="white-space: nowrap;text-align: center;"
                              process="@all"
                              readonly="#{empty dialogServicio.data.codigo}"
-                             update="messagesDialog"
-                                rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}">
-                <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"/>
+                             update="messagesDialog panelModulosLaterales" oncomplete="checkActivoLOPD();"
+                             rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}">
+                        <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"
+                                update="messagesDialog panelModulosLaterales" oncomplete="checkActivoLOPD();"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}"
                              icon="pi pi-inbox"
@@ -1242,9 +1159,11 @@
                          process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
         <p:commandButton action="#{dialogServicio.guardar}"
                          value="#{labels['dict.guardar']}"
-                         update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales"
+                         update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales panelModulosLaterales"
+                         oncomplete="checkActivoLOPD();"
                          rendered="#{dialogServicio.mostrarBotonGuardar()}"
-                         process="@all" pt:aria-label="#{labels['dict.guardar']}"/>
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}">
+        </p:commandButton>
 
     </ui:define>
 </ui:composition>

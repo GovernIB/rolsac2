@@ -433,22 +433,12 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }*/
 
-        if (data.getEstado() == TypeProcedimientoEstado.MODIFICACION && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
+        if (isDocumentoLopdObligatorio() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
             return;
         }
 
-        boolean tiene = false;
-        if (data.getTramites() != null) {
-            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
-                if (tramite.getFase() == FASE_INICIACION.intValue()) {
-                    tiene = true;
-                    break;
-                }
-            }
-        }
-
-        if (!tiene) {
+        if (!isTramiteIniciacionCompleto()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
             return;
         }
@@ -463,13 +453,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
         for (TemaGridDTO temaPadre : temasPadre) {
-            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
+            if (!isTemaCompleto(temaPadre)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
                 return;
             }
         }
 
-        if (data != null && "P".equals(data.getTipo()) && data.getEstado() == TypeProcedimientoEstado.MODIFICACION && data.isIntegrarPdu()) {
+        if (isCategoriaPduObligatoria()) {
             boolean correcto = checkPDU();
             if (!correcto) {
                 return;
@@ -822,6 +812,22 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 }
             }
         }
+    }
+
+    public boolean isDocumentoLopdObligatorio() {
+        return data != null && data.getEstado() == TypeProcedimientoEstado.MODIFICACION;
+    }
+
+    public boolean isCategoriaPduObligatoria() {
+        return data != null && "P".equals(data.getTipo()) && data.getEstado() == TypeProcedimientoEstado.MODIFICACION && data.isIntegrarPdu();
+    }
+
+    public boolean isTramiteIniciacionCompleto() {
+        return data.getTramites() != null && data.getTramites().stream().anyMatch(tramite -> tramite.getFase() == FASE_INICIACION.intValue());
+    }
+
+    public boolean isTemaCompleto(TemaGridDTO temaPadre) {
+        return data.getTemas() != null && data.getTemas().stream().anyMatch(tema -> tema.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString()));
     }
 
     private boolean checkObligatorio() {
