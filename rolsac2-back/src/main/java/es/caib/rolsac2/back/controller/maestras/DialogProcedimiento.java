@@ -885,15 +885,8 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
         if (data.getTemas() == null || data.getTemas().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.sinTemas"));
             todoCorrecto = false;
-        }
-
-        for (TemaGridDTO temaPadre : temasPadre) {
-            if (!isTemaCompleto(temaPadre)) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
-                todoCorrecto = false;
-            }
         }
 
         if (this.data.getTramites() != null) {
