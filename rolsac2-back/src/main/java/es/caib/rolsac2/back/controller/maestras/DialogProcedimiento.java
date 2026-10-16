@@ -830,6 +830,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public boolean isListaTramitesCompleto() {
         boolean todoCorrecto = true;
         List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
+        if (this.data.getTramites() == null || this.data.getTramites().isEmpty()) {
+            return false;
+        }
         for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
             if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
                 todoCorrecto = false;
