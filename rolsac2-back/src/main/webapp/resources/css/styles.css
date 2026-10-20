@@ -2244,7 +2244,18 @@ tr.ui-expanded-row-content.ui-widget-content >td {
     background-position: -65px -145px !important;
 }
 
-
+.tema-tree-table {
+    font-size: 1.2em;
+}
+.tema-tree-table .tema-filtro-inline .ui-column-title {
+    display: inline-block;
+    margin-right: .5rem;
+}
+.tema-tree-table .tema-filtro-inline .ui-column-filter {
+    display: inline-block;
+    vertical-align: left;
+    width: 90%;
+}
 
 
 .alertaContenido {

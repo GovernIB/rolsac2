@@ -25,11 +25,6 @@
         </c:forEach>
     </ui:define>
     <ui:define name="content">
-        <h:outputStylesheet library="css">
-            .ui-treetable {
-                font-size:1.2em;
-            }
-        </h:outputStylesheet>
         <h:form id="form">
             <p:commandButton value="#{labels['viewTema.actualizar']}" id="actualizarBusqueda"
                              style="display:none" ajax="false" action="#{viewTema.buscar}"
@@ -72,6 +67,7 @@
                                  selectionMode="single" selection="#{viewTema.datoSeleccionado}"
                                  rowKey="#{tema.codigo}"
                                  reflow="true"
+                                 styleClass="tema-tree-table"
                                  style="min-height: 300px;"
                     >
                         <!--<p:ajax
@@ -87,7 +83,7 @@
                                   headerText="#{labels['dict.filtro']}"
                                   filterBy="#{tema.descripcion.getTraduccion(viewTema.idioma)}"
                                   filterMatchMode="contains"
-                                  filterStyleClass="mt-2"
+                                  styleClass="tema-filtro-inline"
                         >
                             <h:outputText value="#{tema.codigo} - #{tema.descripcion.getTraduccion(viewTema.idioma)}"/>
                         </p:column>
