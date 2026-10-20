@@ -686,13 +686,12 @@
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloTipoProcedimiento" titulo="#{labels['dialogProcedimiento.tipoProcedimiento.header']}"
                                   required="true"
+                                  completo="#{dialogProcedimiento.data.tipoProcedimiento != null}"
                                   conBotones="false">
-
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
-                                  styleClass="w100" required="#{empty param['formDialog:closeButton']}"
+                                         styleClass="w100"
                                          autoWidth="false"
                                          pt:aria-label="#{labels['dialogProcedimiento.tipoProcedimiento']}"
-                                         requiredMessage="#{labels['dict.obligatorio.tipoProcedimiento']}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          converter="#{tipoProcedimientoConverter}">
                             <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
@@ -953,7 +952,7 @@
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloTramites" titulo="#{labels['dialogProcedimiento.tramites']}"
-                                  required="true" completo="#{dialogProcedimiento.isListaTramitesCompleto()}">
+                                  styleClass="mb-2 #{dialogProcedimiento.isTramitesModuloErrorFlujo() ? 'ui-state-error' : ''}">
                         <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -977,19 +976,19 @@
                                          actionListener="#{dialogProcedimiento.nuevoTramite()}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
                                     process="@this"
-                                    update="dataTableTramite"/>
+                                    update=":formDialog:moduloTramites"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarTramite}"
-                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update=":formDialog:moduloTramites :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnEditarTramite" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                          action="#{dialogProcedimiento.editarTramite}"
                                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
                                          process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogTramite}"
                                     process="@this"
-                                    update="dataTableTramite"/>
+                                    update=":formDialog:moduloTramites"/>
                         </p:commandButton>
                         <p:commandButton id="btnConsultarTramite" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarTramite}"
@@ -1000,11 +999,11 @@
                         <p:commandButton id="btnSubirTramite" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                          action="#{dialogProcedimiento.subirTramite}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                         process="@this" update=":formDialog:moduloTramites :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
                         <p:commandButton id="btnBajarTramite" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down"
                                          action="#{dialogProcedimiento.bajarTramite}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataTableTramite :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                                         process="@this" update=":formDialog:moduloTramites :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
                     </f:facet>
                 </my:moduloLateral>
             </h:panelGroup>
@@ -1131,7 +1130,7 @@
                          widgetVar="cdApoderado">
             <p:commandButton value="#{labels['dict.no']}" onclick="confirmation.hide()" pt:aria-label="#{labels['dict.no']}"/>
             <p:commandButton value="#{labels['dict.continuar']}" onclick="confirmation.hide()"
-                             action="#{dialogProcedimiento.accionSin()}" update="messagesDialog" pt:aria-label="#{labels['dict.continuar']}">
+                             action="#{dialogProcedimiento.accionSin()}" update="messagesDialog panelModulosLaterales" pt:aria-label="#{labels['dict.continuar']}">
                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
 

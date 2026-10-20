@@ -19,7 +19,7 @@ function inicializarDatePickers() {
             trigger = widget.input.parent().find('.ui-datepicker-trigger');
         }
 
-    if (!widget.input) {
+        if (!widget.input) {
             if (!trigger || trigger.length === 0) {
                 return;
             }
@@ -58,7 +58,7 @@ function bloquearDatePickerReadonly(widget) {
     }
 
     if (!isReadOnly) {
-        return;
+        return false;
     }
 
     if (typeof widget.show === 'function') {
@@ -112,6 +112,8 @@ function bloquearDatePickerReadonly(widget) {
             }
         });
     }
+
+    return true;
 }
 
 $(document).ready(function() {

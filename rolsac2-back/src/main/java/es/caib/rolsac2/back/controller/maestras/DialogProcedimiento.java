@@ -106,6 +106,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
     private final Integer FASE_INICIACION = 1;
     private boolean esSoloGuardar;
+    private boolean isComprobarModuloTramitesFlujo = false;
     private String uaRaiz;
     private Literal lopdDerechos;
     private Literal lopdInfoAdicional;
@@ -415,6 +416,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public void guardarFlujo() {
 
         esSoloGuardar = false;
+        isComprobarModuloTramitesFlujo = true;
         if (!checkObligatorio()) {
             return;
         }
@@ -710,6 +712,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     public void guardar() {
 
         esSoloGuardar = true;
+        isComprobarModuloTramitesFlujo = false;
         if (!checkObligatorio()) {
             return;
         }
@@ -855,6 +858,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         return todoCorrecto;
     }
 
+    public boolean isTramitesModuloErrorFlujo() {
+        return isComprobarModuloTramitesFlujo && (!isTramiteIniciacionCompleto() || !isListaTramitesCompleto());
+    }
+
     public boolean isTemaCompleto(TemaGridDTO temaPadre) {
         return data.getTemas() != null && data.getTemas().stream().anyMatch(tema -> tema.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString()));
     }
@@ -882,13 +889,18 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             todoCorrecto = false;
         }
 
-        if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
+        if (this.data.getTipoProcedimiento() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dict.obligatorio.tipoProcedimiento"));
             todoCorrecto = false;
         }
 
         if (data.getTemas() == null || data.getTemas().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.sinTemas"));
+            todoCorrecto = false;
+        }
+
+        if (this.data.getNormativas() == null || this.data.getNormativas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunaNormativa"));
             todoCorrecto = false;
         }
 

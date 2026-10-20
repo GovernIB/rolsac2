@@ -880,7 +880,7 @@
             </my:moduloLateral>
             <h:panelGroup id="panelDocumentoLOPD" layout="block">
                 <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogServicio.docInformacion']}"
-                                  required="#{dialogServicio.data.activoLOPD}">
+                                  styleClass="mb-2 #{dialogServicio.isLOPDModuloCompletoFlujo() ? 'ui-state-error' : ''}">                 
                     <h:panelGroup id="paneldataDocumentosLopd">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogServicio.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"

@@ -125,6 +125,7 @@ public class DialogServicio extends AbstractController implements Serializable {
      * Variable booleana para saber si es guardar o flujo
      **/
     boolean esSoloGuardar;
+    private boolean isComprobarModuloLOPDFlujo = false;
     private Integer opcionTelematica = null;
     private boolean mostrarRefreshSIA = false;
 
@@ -457,6 +458,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void guardarFlujo() {
         esSoloGuardar = false;
+        isComprobarModuloLOPDFlujo = true;
         if (!checkObligatorio()) {
             return;
         }
@@ -574,6 +576,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     public void guardar() {
 
         esSoloGuardar = true;
+        isComprobarModuloLOPDFlujo = false;
         this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
         this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
@@ -674,6 +677,10 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
+    }
+
+    public boolean isLOPDModuloCompletoFlujo(){
+        return isComprobarModuloLOPDFlujo && data.getDocumentosLOPD() != null && !data.getDocumentosLOPD().isEmpty();
     }
 
     public boolean isTemaCompleto(TemaGridDTO temaPadre) {
