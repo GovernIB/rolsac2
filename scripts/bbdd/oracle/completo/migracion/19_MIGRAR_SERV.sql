@@ -185,7 +185,7 @@ AS
 SELECT *
 FROM   r1_servicios_trad
 WHERE  tsr_codser = codser
-  AND tsr_nombre IS NOT NULL;
+  AND tsr_codidi IN ('ca', 'es', 'en');
 CURSOR cursornormativasrolsac1 (
     codser NUMBER) IS
 SELECT *
@@ -253,6 +253,7 @@ maximoid             NUMBER;
   existe_archivos      NUMBER(2, 0);
   orden                NUMBER(2, 0);
   rs2_codpr_lopd       NUMBER(10, 0);
+  v_nombre_ca          VARCHAR2(4000);
   existe_trad_es       NUMBER(1, 0);
   existe_trad_ca       NUMBER(1, 0);
   vUsuario                   NUMBER(10,0);
@@ -288,7 +289,6 @@ SELECT Count(*)
 INTO   existe_trad_es
 FROM   r1_servicios_trad
 WHERE  tsr_codser = codigo
-  AND tsr_nombre IS NOT NULL
   AND tsr_codidi = 'es';
 
 SELECT Count(*)
@@ -620,7 +620,16 @@ VALUES      (rs2_codpr_lopd,
 END IF;
 
           /** INTRODUCIMOS LAS TRADUCCIONES **/
+/* Nombre en catalán: se usa en los idiomas que no tengan el nombre relleno */
+SELECT MAX(tsr_nombre)
+INTO   v_nombre_ca
+FROM   r1_servicios_trad
+WHERE  tsr_codser = codigo
+  AND  tsr_codidi = 'ca';
+
+/* Solo se migran ca, es y en (filtrado en el cursor); si no hay nombre, se coge el catalán */
 FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
+            IF NVL(rolsac1_tradserv.tsr_nombre, v_nombre_ca) IS NOT NULL THEN
               INSERT INTO rs2_traprwf
                           (trpw_codigo,
                            trpw_codprwf,
@@ -636,7 +645,7 @@ FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
               VALUES      ( rs2_traprwf_seq.NEXTVAL,
                            codigo_procwf,
                            rolsac1_tradserv.tsr_codidi,
-                           rolsac1_tradserv.tsr_nombre,
+                           NVL(rolsac1_tradserv.tsr_nombre, v_nombre_ca),
                            rolsac1_tradserv.tsr_objeto,
                            rolsac1_tradserv.tsr_destin,
                            rolsac1_tradserv.tsr_observ,
@@ -680,6 +689,7 @@ FOR rolsac1_tradserv IN cursortradservicsrolsac1(codigo) LOOP
                              '',
                              rolsac1_tradserv.tsr_lopdia);
 END IF;
+            END IF;
 END LOOP;
 
           /** SI NO EXISTE LA TRADUCCION EN ESPANYOL, DUPLICAMOS LA CATALAN **/

@@ -268,6 +268,7 @@ AS
 	lstdoctram                 NUMBER;
 	ldsocodigo                 NUMBER;
 	rs2_codpr_lopd             NUMBER;
+	v_nombre_ca                VARCHAR2(4000);
 	existe_trad_es             NUMBER;
 	existe_trad_ca             NUMBER;
 	existe_trad_tram_es        NUMBER;
@@ -305,7 +306,6 @@ BEGIN
 	INTO   existe_trad_es
 	FROM   r1_procedimientos_trad
 	WHERE  tpr_codpro = codigo
-	  AND  TPR_NOMBRE IS NOT NULL
 	  AND tpr_codidi = 'es';
 
 	SELECT Count(*)
@@ -975,9 +975,18 @@ BEGIN
 			END IF;
 
 			/** INTRODUCIMOS LAS TRADUCCIONES **/
+			/* Nombre en catalán: se usa en los idiomas que no tengan el nombre relleno */
+			SELECT MAX(tpr_nombre)
+			INTO   v_nombre_ca
+			FROM   r1_procedimientos_trad
+			WHERE  tpr_codpro = codigo
+			  AND  tpr_codidi = 'ca';
+
 			FOR rolsac1_tradproc IN cursortradprocedsrolsac1(codigo) LOOP
 
-					IF rolsac1_tradproc.tpr_nombre IS NOT NULL
+					/* Solo se migran ca, es y en; si no hay nombre, se coge el catalán */
+					IF rolsac1_tradproc.tpr_codidi IN ('ca', 'es', 'en')
+						AND NVL(rolsac1_tradproc.tpr_nombre, v_nombre_ca) IS NOT NULL
 					THEN
 
 						/* Primer intento: idioma de la traducción */
@@ -1019,7 +1028,7 @@ BEGIN
 						VALUES      ( rs2_traprwf_seq.NEXTVAL,
 						              codigo_procwf,
 						              rolsac1_tradproc.tpr_codidi,
-						              SUBSTR(NVL(rolsac1_tradproc.tpr_nombre, ''), 1, 255) ,
+						              SUBSTR(NVL(rolsac1_tradproc.tpr_nombre, v_nombre_ca), 1, 255) ,
 						              rolsac1_tradproc.tpr_resume,
 						              rolsac1_tradproc.tpr_destin,
 						              rolsac1_tradproc.tpr_observ,
