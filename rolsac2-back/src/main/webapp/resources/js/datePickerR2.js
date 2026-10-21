@@ -119,3 +119,12 @@ function bloquearDatePickerReadonly(widget) {
 $(document).ready(function() {
     inicializarDatePickers();
 });
+
+/*
+ * Tras cualquier petición ajax (p. ej. "Guardar" con validación fallida) PrimeFaces
+ * repinta los p:datePicker y recrea sus widgets, perdiendo los manejadores anteriores.
+ * Se vuelven a registrar para que la hora por defecto siga siendo 00:01.
+ */
+$(document).on('pfAjaxComplete', function() {
+    setTimeout(inicializarDatePickers, 0);
+});

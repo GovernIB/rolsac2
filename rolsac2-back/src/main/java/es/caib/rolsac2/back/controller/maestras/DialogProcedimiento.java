@@ -435,7 +435,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }*/
 
-        if (isDocumentoLopdObligatorio() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
+        if (isDocumentosLopdVacio()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
             return;
         }
@@ -860,6 +860,17 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public boolean isTramitesModuloErrorFlujo() {
         return isComprobarModuloTramitesFlujo && (!isTramiteIniciacionCompleto() || !isListaTramitesCompleto());
+    }
+
+    /**
+     * Indica si al aplicar el flujo no hay ningún documento LOPD, para marcar el módulo en rojo.
+     */
+    public boolean isLOPDModuloErrorFlujo() {
+        return isComprobarModuloTramitesFlujo && isDocumentosLopdVacio();
+    }
+
+    private boolean isDocumentosLopdVacio() {
+        return data == null || data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty();
     }
 
     public boolean isTemaCompleto(TemaGridDTO temaPadre) {

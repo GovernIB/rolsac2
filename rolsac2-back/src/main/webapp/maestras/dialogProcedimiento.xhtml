@@ -899,6 +899,7 @@
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogProcedimiento.docInformacion']}"
+                                  styleClass="mb-2 #{dialogProcedimiento.isLOPDModuloErrorFlujo() ? 'ui-state-error' : ''}"
                                   required="#{dialogProcedimiento.documentoLopdObligatorio}">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogProcedimiento.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
@@ -926,14 +927,14 @@
                                          actionListener="#{dialogProcedimiento.nuevoDocumentoLOPD()}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}"
                                     process="@this"
-                                    update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
+                                    update=":formDialog:moduloLOPD"/>
                         </p:commandButton>
                         <p:commandButton id="btnEliminarDocLOPD" title="#{labels['dict.eliminar']}" icon="pi pi-minus"
                                          styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta() or empty dialogProcedimiento.data.documentosLOPD}"
                                          action="#{dialogProcedimiento.borrarDocumentoLOPD}"
                                          process="@this"
-                                         update="dataDocumentosLopd :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         update=":formDialog:moduloLOPD :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnEditarDocLOPD" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                          action="#{dialogProcedimiento.editarDocumentoLOPD}" styleClass=" "
                                          process="@this" update="dataDocumentosLopd :formDialog:messagesDialog"
@@ -941,7 +942,7 @@
                                          rendered="#{!dialogProcedimiento.isModoConsulta()}" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumentoLOPD}"
                                     process="@this"
-                                    update="dataDocumentosLopd btnNuevoDocLOPD btnEliminarDocLOPD btnEditarDocLOPD"/>
+                                    update=":formDialog:moduloLOPD"/>
                         </p:commandButton>
                         <p:commandButton id="btnConsultarDocLOPD" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarDocumentoLOPD}" styleClass=" "
