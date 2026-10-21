@@ -478,23 +478,6 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }*/
 
-        if (data.isActivoLOPD() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
-            return;
-        }
-
-        if (data.getTemas() == null || data.getTemas().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
-            return;
-        }
-
-        for (TemaGridDTO temaPadre : temasPadre) {
-            if (!isTemaCompleto(temaPadre)) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
-                return;
-            }
-        }
-
         /*
         if (this.data.getCodigo() == null) {
             guardarSinCheck(false);
@@ -680,7 +663,7 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean isLOPDModuloCompletoFlujo(){
-        return isComprobarModuloLOPDFlujo && data.getDocumentosLOPD() != null && !data.getDocumentosLOPD().isEmpty();
+        return isComprobarModuloLOPDFlujo && data.getDocumentosLOPD() != null && data.getDocumentosLOPD().isEmpty();
     }
 
     public boolean isTemaCompleto(TemaGridDTO temaPadre) {
@@ -709,6 +692,11 @@ public class DialogServicio extends AbstractController implements Serializable {
             retorno = false;
         }
 
+        if (this.data.getTemas() == null || this.data.getTemas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+            retorno = false;
+        }
+
         if (this.data.getTasaServicio() != null) {
             List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
             if (this.data.getTasaServicio().getIdentificador() == null || !this.data.getTasaServicio().getIdentificador().estaCompleto(idiomasObligatorios)) {
@@ -717,25 +705,24 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
-        /*
-        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
-            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
-            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
-                PrimeFaces.current().executeScript("PF('cdApoderado').show();");
-                return retorno;
-            }
-        }*/
-
         if (this.data.isTramitElectronica()) {
-            if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
+            if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion() == null || this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaPlataformaTramitacion"));
                 return false;
             }
-            if (this.opcionTelematica == 2 && (this.data.getTipoTramitacion().getUrl() == null || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
+            if (this.opcionTelematica == 2 && (this.data.getTipoTramitacion() == null || this.data.getTipoTramitacion().getUrl() == null || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlTramitacion"));
                 return false;
             }
         }
+
+        if (isComprobarModuloLOPDFlujo) {
+            if (data.isActivoLOPD() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.obligatorio.flujo.documentosLOPD"));
+                return false;
+            }
+        }
+
         return retorno;
     }
 

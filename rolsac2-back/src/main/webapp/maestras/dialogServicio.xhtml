@@ -730,9 +730,10 @@
                         </f:facet>
                     </my:moduloLateral>
                 </c:forEach>
-
             </h:panelGroup>
-            <my:moduloLateral id="moduloNormativas" titulo="#{labels['dialogServicio.normativaProc']}" styleClass="mb-2 mt-2">
+            
+            <my:moduloLateral id="moduloNormativas" titulo="#{labels['dialogServicio.normativaProc']}"
+                              styleClass="mb-2 mt-2">
                     <p:dataTable id="dataNormativaProcedimiento" var="td"
                                  value="#{dialogServicio.data.normativas}"
                                  emptyMessage="#{labels['dialogServicio.tablaVacia']}" scrollable="true"
@@ -880,7 +881,7 @@
             </my:moduloLateral>
             <h:panelGroup id="panelDocumentoLOPD" layout="block">
                 <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogServicio.docInformacion']}"
-                                  styleClass="mb-2 #{dialogServicio.isLOPDModuloCompletoFlujo() ? 'ui-state-error' : ''}">                 
+                                  styleClass="mb-2 #{dialogServicio.isLOPDModuloCompletoFlujo() ? 'ui-state-error' : ''}">   
                     <h:panelGroup id="paneldataDocumentosLopd">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogServicio.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogServicio.noDocumentos']}" scrollable="true"
