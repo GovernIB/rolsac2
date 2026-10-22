@@ -751,7 +751,8 @@ SELECT rs2_tradopr_seq.NEXTVAL,
        tds_descri,
        tds_codarc
 FROM   r1_servicios_doc_trad
-WHERE  tds_coddsr = documento.dsr_codi;
+WHERE  tds_coddsr = documento.dsr_codi
+  AND tds_codidi IN ('ca', 'es', 'en');
 
 orden := orden + 1;
 END LOOP;

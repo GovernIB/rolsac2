@@ -887,7 +887,8 @@ BEGIN
 								       tdo_descri,
 								       tdo_codarc
 								FROM   r1_tramites_doc_trad
-								WHERE  tdo_codtra = documento.dtr_codi;
+								WHERE  tdo_codtra = documento.dtr_codi
+								  AND tdo_codidi IN ('ca', 'es', 'en');
 
 								orden := orden + 1;
 							END LOOP;
@@ -921,7 +922,8 @@ BEGIN
 								       tdo_descri,
 								       tdo_codarc
 								FROM   r1_tramites_doc_trad
-								WHERE  tdo_codtra = documento.dtr_codi;
+								WHERE  tdo_codtra = documento.dtr_codi
+								  AND tdo_codidi IN ('ca', 'es', 'en');
 
 								orden := orden + 1;
 							END LOOP;
@@ -1134,6 +1136,7 @@ BEGIN
 						       tdo_codarc
 						FROM   r1_procedimientos_doc_trad
 						WHERE  tdo_coddoc = documento.doc_codi
+						  AND tdo_codidi IN ('ca', 'es', 'en')
 						/*AND TDO_CODARC IN (SELECT ARC_CODI FROM R1_ARCHIV WHERE ARC_DATOS IS NOT NULL)*/
 						;
 
