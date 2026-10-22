@@ -1,0 +1,50 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+              xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <cc:interface componentType="moduloLateral">
+        <cc:attribute name="titulo" required="true" type="java.lang.String"
+                  shortDescription="Titulo de la cabecera del modulo."/>
+        <cc:attribute name="required" default="false" type="java.lang.Boolean"
+                  shortDescription="Indica si el modulo es obligatorio."/>
+        <cc:attribute name="completo" type="java.lang.Boolean"
+                  shortDescription="Indica si el modulo está relleno o completo."/>
+        <cc:attribute name="conBotones" default="true" type="java.lang.Boolean"
+                  shortDescription="Reserva una columna para la faceta acciones."/>
+        <cc:attribute name="styleClass" default="mb-2" type="java.lang.String"
+                  shortDescription="Clases adicionales del modulo."/>
+        <cc:facet name="acciones"/>
+    </cc:interface>
+    
+    <cc:implementation>
+           <div id="#{cc.clientId}"
+             class="row left-container modulo-lateral mx-0 #{cc.getClasesModulo()}"
+             aria-invalid="#{cc.isInvalido()}">
+            <div class="left-container-header ml-0 col-12 row">
+                <div class="col-10 text-center">
+                    <p class="left-container-tit mt-2 mb-1 negrita">#{cc.getTituloModulo()}</p>
+                </div>
+                <div class="col-2 mb-1">
+                    <p:commandButton id="colapsar" type="button" icon="pi pi-minus"
+                                     title="#{labels['dict.colapsar']}" styleClass="mt-2 modulo-lateral-boton"
+                                     pt:aria-label="#{labels['dict.colapsar']}"
+                                     onclick="$(this).closest('.left-container').children('.modulo-lateral-contenido, .modulo-lateral-acciones').addClass('importantOcultar'); $(this).addClass('importantOcultar').siblings().removeClass('importantOcultar');"/>
+                    <p:commandButton id="expandir" type="button" icon="pi pi-plus"
+                                     title="#{labels['dict.expandir']}" styleClass="mt-2 modulo-lateral-boton importantOcultar"
+                                     pt:aria-label="#{labels['dict.expandir']}"
+                                     onclick="$(this).closest('.left-container').children('.modulo-lateral-contenido, .modulo-lateral-acciones').removeClass('importantOcultar'); $(this).addClass('importantOcultar').siblings().removeClass('importantOcultar');"/>
+                </div>
+            </div>
+            <div class="#{cc.attrs.conBotones ? 'col-10' : 'col-12'} p-1 modulo-lateral-contenido">
+                <cc:insertChildren/>
+            </div>
+            <h:panelGroup layout="block" rendered="#{cc.attrs.conBotones}"
+                          styleClass="col-2 p-1 d-flex flex-column align-content-center align-items-center modulo-lateral-acciones">
+                <cc:renderFacet name="acciones"/>
+            </h:panelGroup>
+        </div>
+    </cc:implementation>
+</ui:component>
