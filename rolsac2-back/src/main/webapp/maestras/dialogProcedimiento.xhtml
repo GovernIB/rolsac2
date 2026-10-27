@@ -71,6 +71,22 @@
             tr.ui-state-highlight td div div.ui-chkbox-box {
                 background: #22F !important;
             }
+
+            /* Esta validacion visual del label se aplica solo cuando el dialogo
+               tiene checkValores=true (bloque-validacion-literal).
+               El boton mantiene su estado de color INDEPENDIENTEMENTE del flag. */
+            .bloque-validacion-literal:has(.iconoRojo) label.ui-outputlabel {
+                color: #d32f2f !important;
+            }
+            .bloque-validacion-literal .literal-idiomas-incompletos {
+                color: #d32f2f !important;
+                border-color: #d32f2f !important;
+            }
+            /* El estado anterior de JSF no debe dejar una etiqueta roja
+               cuando ya estan completos los idiomas y no hay otros errores. */
+            .bloque-validacion-literal:not(:has(.iconoRojo)):not(:has(.bordeAzulRequired)) label.ui-outputlabel {
+                color: inherit !important;
+            }
         </h:outputStylesheet>
 
         <div class="row" style="margin-right: 0px;">
@@ -146,6 +162,7 @@
                                          styleClass="w85" readonly="true"/>
                         </div>
                         <div class="form-group col-md-4">
+                            <h:panelGroup id="bloqueTxtFechaPublicacion" layout="block">
                             <p:outputLabel value="#{labels['dialogProcedimiento.fecha.publicacion']}:" for="txtFechaPublicacion" styleClass="mb-1 pt-0 negrita" pt:aria-label="#{labels['dialogProcedimiento.fecha.publicacion']}:"/>
                             <p>
                                 <p:datePicker showIcon="#{dialogProcedimiento.isModoConsulta() ? 'false' : 'true'}"  id="txtFechaPublicacion" styleClass="fecha"
@@ -155,9 +172,10 @@
                                               requiredMessage="#{labels['dict.obligatorio.fechaPublicacion']}"
                                               required="#{empty param['formDialog:closeButton']}"
                                               showTime="true" showOn="button" widgetVar="fechaWidget">
-                                    <p:ajax event="change" />
+                                    <p:ajax event="change" process="@this" update=":formDialog:bloqueTxtFechaPublicacion"/>
                                 </p:datePicker>
                             </p>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-4">
                             <p:outputLabel value="#{labels['dialogProcedimiento.fecha.caducidad']}:" for="txtFechaCaducidad"
@@ -205,6 +223,7 @@
                 <p:panel header="#{labels['dialogProcedimiento.datos']}" id="formDatos" styleClass="panel sinMarginBottom sinPaddingBottom">
                     <div class="form-row">
                         <div class="form-group col-md-12 sinMarginBottom sinPaddingBottom">
+                            <h:panelGroup id="bloqueTxtNombre" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.nombre.procedimiento']}:"
                                            for="txtNombre" pt:aria-label="#{labels['dialogProcedimiento.nombre.procedimiento']}:"/>
@@ -218,12 +237,16 @@
                                                          idioma="#{dialogProcedimiento.idioma}"
                                                          literal="#{dialogProcedimiento.data.nombreProcedimientoWorkFlow}"
                                                          maxlength="255"
-                                                         nombreLiteral="#{labels['dialogProcedimiento.nombre.procedimiento']}">
+                                                         nombreLiteral="#{labels['dialogProcedimiento.nombre.procedimiento']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtNombre">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalAreaComponent>
                             </p>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtObjeto" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.objeto']}:"
                                            for="txtObjeto" pt:aria-label="#{labels['dialogProcedimiento.objeto']}:"/>
                             <p>
@@ -235,13 +258,17 @@
                                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                          idioma="#{dialogProcedimiento.idioma}"
                                                          literal="#{dialogProcedimiento.data.objeto}"
-                                                         nombreLiteral="#{labels['dialogProcedimiento.objeto']}">
+                                                         nombreLiteral="#{labels['dialogProcedimiento.objeto']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtObjeto">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalAreaComponent>
                             </p>
+                            </h:panelGroup>
 
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtDestinatarios" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.destinatarios']}:"
                                            for="txtDestinatarios" pt:aria-label="#{labels['dialogProcedimiento.destinatarios']}:"/>
@@ -254,13 +281,17 @@
                                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                          idioma="#{dialogProcedimiento.idioma}"
                                                          literal="#{dialogProcedimiento.data.destinatarios}"
-                                                         nombreLiteral="#{labels['dialogProcedimiento.destinatarios']}">
+                                                         nombreLiteral="#{labels['dialogProcedimiento.destinatarios']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtDestinatarios">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalAreaComponent>
                             </p>
+                            </h:panelGroup>
 
                         </div>
                         <div class="form-group col-md-4">
+                            <h:panelGroup id="bloqueTxtFormaIni" layout="block">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.formaInicio']}:"
                                            for="txtFormaIni" pt:aria-label="#{labels['dialogProcedimiento.formaInicio']}:"/>
                             <p:selectOneMenu id="txtFormaIni" value="#{dialogProcedimiento.data.iniciacion}"
@@ -273,10 +304,12 @@
                                 <f:selectItems value="#{dialogProcedimiento.listTipoFormaInicio}" var="tipoFormaInicio"
                                                itemLabel="#{tipoFormaInicio.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                itemValue="#{tipoFormaInicio}"/>
-                                <p:ajax event="change" update="@this"></p:ajax>
+                                <p:ajax event="change" process="@this" update=":formDialog:bloqueTxtFormaIni"/>
                             </p:selectOneMenu>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-4" >
+                            <h:panelGroup id="bloqueTxtTerminios" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.terminios']}:"
                                            for="txtTerminios" pt:aria-label="#{labels['dialogProcedimiento.terminios']}:"/>
                             <p>
@@ -288,13 +321,17 @@
                                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                          idioma="#{dialogProcedimiento.idioma}"
                                                          literal="#{dialogProcedimiento.data.terminoResolucion}"
-                                                         nombreLiteral="#{labels['dialogProcedimiento.terminios']}">
+                                                         nombreLiteral="#{labels['dialogProcedimiento.terminios']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtTerminios">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalAreaComponent>
                             </p>
+                            </h:panelGroup>
 
                         </div>
                         <div class="form-group col-md-4">
+                            <h:panelGroup id="bloqueTxtSilAdmin" layout="block">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.silencioAdministrativo']}:"
                                            for="txtSilAdmin" pt:aria-label="#{labels['dialogProcedimiento.silencioAdministrativo']}:"/>
@@ -308,10 +345,12 @@
                                 <f:selectItems value="#{dialogProcedimiento.listTipoSilencio}" var="tipoSilencio"
                                                itemLabel="#{tipoSilencio.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                itemValue="#{tipoSilencio}"/>
-                                <p:ajax event="change" update="@this"></p:ajax>
+                                <p:ajax event="change" process="@this" update=":formDialog:bloqueTxtSilAdmin"/>
                             </p:selectOneMenu>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-4">
+                            <h:panelGroup id="bloqueTxtTipoVia" layout="block">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.tipoVia']}:" for="txtTipoVia" pt:aria-label="#{labels['dialogProcedimiento.tipoVia']}:"/>
                             <p:selectOneMenu id="txtTipoVia" value="#{dialogProcedimiento.data.tipoVia}"
                                              styleClass="w95" required="#{empty param['formDialog:closeButton']}"
@@ -323,10 +362,12 @@
                                 <f:selectItems value="#{dialogProcedimiento.listTipoVia}" var="tipoVia"
                                                itemLabel="#{tipoVia.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                                itemValue="#{tipoVia}"/>
-                                <p:ajax event="change" update="@this"></p:ajax>
+                                <p:ajax event="change" process="@this" update=":formDialog:bloqueTxtTipoVia"/>
                             </p:selectOneMenu>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-4">
+                            <h:panelGroup id="bloqueTxtHabilitadoApoderado" layout="block">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.habilitadoApoderado']}:"
                                            for="txtHabilitadoApoderado" pt:aria-label="#{labels['dialogProcedimiento.habilitadoApoderado']}:"/>
@@ -342,9 +383,12 @@
                                 <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="true"/>
                                 <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="false"/>
                                 <f:converter converterId="javax.faces.Boolean"/>
+                                        <p:ajax event="change" process="@this" update=":formDialog:bloqueTxtHabilitadoApoderado"/>
                             </p:selectOneMenu>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-4">
+                            <h:panelGroup id="bloqueTxtHabilitadoFuncionario" layout="block">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.habilitadoFuncionario']}:"
                                            for="txtHabilitadoFuncionario" pt:aria-label="#{labels['dialogProcedimiento.habilitadoFuncionario']}:"/>
@@ -358,9 +402,12 @@
                                 <f:selectItem itemLabel="#{labels['dialogProcedimiento.selecciona']}" itemValue="#{null}"/>
                                 <f:selectItem itemLabel="#{labels['dict.si']}" itemValue="S"/>
                                 <f:selectItem itemLabel="#{labels['dict.no']}" itemValue="N"/>
+                                        <p:ajax event="change" process="@this" update=":formDialog:bloqueTxtHabilitadoFuncionario"/>
                             </p:selectOneMenu>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtObservaciones" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.observaciones']}:"
                                            for="txtObservaciones" pt:aria-label="#{labels['dialogProcedimiento.observaciones']}:"/>
@@ -372,11 +419,15 @@
                                                          idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                          idioma="#{dialogProcedimiento.idioma}"
                                                          literal="#{dialogProcedimiento.data.observaciones}"
-                                                         nombreLiteral="#{labels['dialogProcedimiento.observaciones']}"/>
+                                                         nombreLiteral="#{labels['dialogProcedimiento.observaciones']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtObservaciones"/>
                             </p>
+                            </h:panelGroup>
 
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtKeywords" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:"
                                            for="txtKeywords" pt:aria-label="#{labels['dialogProcedimiento.keywords']}:"/>
                             <my:literalComponent id="txtKeywords" styleClass="w95"
@@ -387,7 +438,10 @@
                                                  idioma="#{dialogProcedimiento.idioma}"
                                                  literal="#{dialogProcedimiento.data.keywords}"
                                                  nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
-                                                 maxlength="500"/>
+                                                 maxlength="500"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtKeywords"/>
+                            </h:panelGroup>
                         </div>
                     </div>
 
@@ -501,6 +555,7 @@
                 <p:panel header="#{labels['dialogProcedimiento.datos.contacto']}" styleClass="panel" id="formDatosContacto">
                     <div class="form-row">
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtOrgResp" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 pt-0 negrita" value="#{labels['dialogProcedimiento.servicio']}:"
                                            for="txtOrgResp" pt:aria-label="#{labels['dialogProcedimiento.servicio']}:"/>
                             <p>
@@ -514,11 +569,14 @@
                                                      nombreLiteral="#{labels['dialogProcedimiento.servicio']}"
                                                      required="#{empty param['formDialog:closeButton']}"
                                                      maxlength="1000"
-                                >
+                                
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtOrgResp">
                                     <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                                 </my:literalComponent>
 
                             </p>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-7">
                             <p:outputLabel styleClass="mr-2 pt-0 negrita"
@@ -569,6 +627,7 @@
                          id="formDatosLOPD">
                     <div class="form-row">
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtRespTrat" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p class="mb-1">
                                 <p:outputLabel styleClass="mb-1 negrita"
                                                value="#{labels['dialogProcedimiento.responsableTratamiento']}:"
@@ -582,7 +641,10 @@
                                                  idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                  idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
                                                  nombreLiteral="#{labels['dialogProcedimiento.responsableTratamiento']}"
-                            />
+                            
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtRespTrat"/>
+                            </h:panelGroup>
                             <p:inputText id="txtRespTratComun"
                                          value="#{dialogProcedimiento.comunLOPD.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                          rendered="#{dialogProcedimiento.data.esComun()}"
@@ -590,6 +652,7 @@
                                          readonly="true"/>
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtLopdFinalidad" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.finalidad']}:"
                                            for="txtLopdFinalidad" pt:aria-label="#{labels['dialogProcedimiento.finalidad']}:"/>
@@ -599,9 +662,12 @@
                                                      idioma="#{dialogProcedimiento.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                     nombreLiteral="#{labels['dialogProcedimiento.finalidad']}">
+                                                     nombreLiteral="#{labels['dialogProcedimiento.finalidad']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtLopdFinalidad">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-12">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
@@ -619,6 +685,7 @@
                             </p:selectOneMenu>
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtLopdDestinatario" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.destinatario']}:"
                                            for="txtLopdDestinatario" pt:aria-label="#{labels['dialogProcedimiento.destinatario']}:"/>
@@ -628,11 +695,15 @@
                                                      idioma="#{dialogProcedimiento.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                     nombreLiteral="#{labels['dialogProcedimiento.destinatario']}">
+                                                     nombreLiteral="#{labels['dialogProcedimiento.destinatario']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtLopdDestinatario">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-12">
+                            <h:panelGroup id="bloqueTxtLopdDerechos" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
                             <p:outputLabel styleClass="mr-2 mt-2 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.derechos']}:"
                                            for="txtLopdDerechos" pt:aria-label="#{labels['dialogProcedimiento.derechos']}:"/>
@@ -642,9 +713,12 @@
                                                      idioma="#{dialogProcedimiento.idioma}"
                                                      idiomasObligatorios="#{sessionBean.getIdiomasObligatorios()}"
                                                      idiomasPermitidos="#{sessionBean.getIdiomasPermitidos()}"
-                                                     nombreLiteral="#{labels['dialogProcedimiento.derechos']}">
+                                                     nombreLiteral="#{labels['dialogProcedimiento.derechos']}"
+                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     updateOnBlur=":formDialog:bloqueTxtLopdDerechos">
                                 <f:validator validatorId="es.caib.rolsac2.back.validators.ValidadorLiteral"/>
                             </my:literalAreaComponent>
+                            </h:panelGroup>
 
                         </div>
                     </div>
@@ -654,7 +728,7 @@
 
             <h:panelGroup id="panelModulosLaterales" layout="block" styleClass="ui-g-12 ui-md-3 pr-1">
                 <my:moduloLateral id="moduloPublico" titulo="#{labels['dialogServicio.publicoObjetivo']}"
-                                  required="true">
+                                  required="true" checkValores="#{dialogProcedimiento.checkValores}">
                         <p:dataTable id="dataTablePublico" var="td"
                                      value="#{dialogProcedimiento.data.publicosObjetivo}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -676,18 +750,18 @@
                                          actionListener="#{dialogProcedimiento.nuevoPubObjEnt()}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogPubObjEnt}"
                                     process="@this"
-                                    update="dataTablePublico"/>
+                                    update=":formDialog:moduloPublico"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarPubObjEnt}"
-                                         process="@this" update="dataTablePublico :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloPublico" pt:aria-label="#{labels['dict.eliminar']}"/>
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloTipoProcedimiento" titulo="#{labels['dialogProcedimiento.tipoProcedimiento.header']}"
                                   required="true"
                                   completo="#{dialogProcedimiento.data.tipoProcedimiento != null}"
-                                  conBotones="false">
+                                  conBotones="false" checkValores="#{dialogProcedimiento.checkValores}">
                         <p:selectOneMenu id="txtTipoProcedimiento" value="#{dialogProcedimiento.data.tipoProcedimiento}"
                                          styleClass="w100"
                                          autoWidth="false"
@@ -698,7 +772,7 @@
                             <f:selectItems value="#{dialogProcedimiento.listTipoProcedimiento}" var="tipoProcedimiento"
                                            itemLabel="#{tipoProcedimiento.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
                                            itemValue="#{tipoProcedimiento}"/>
-                            <p:ajax event="change" update="@this"></p:ajax>
+                            <p:ajax event="change" update=":formDialog:moduloTipoProcedimiento"></p:ajax>
                         </p:selectOneMenu>
                 </my:moduloLateral>
                 <h:panelGroup id="panelTemas">
@@ -746,7 +820,7 @@
 
                 </h:panelGroup>
                 <my:moduloLateral id="moduloNormativas" titulo="#{labels['dialogProcedimiento.normativaProc']}"
-                                  styleClass="mb-2 mt-2" required="true">
+                                  styleClass="mb-2 mt-2" required="true" checkValores="#{dialogProcedimiento.checkValores}">
                         <p:dataTable id="dataNormativaProcedimiento" var="td"
                                      value="#{dialogProcedimiento.data.normativas}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -772,31 +846,31 @@
                                          actionListener="#{dialogProcedimiento.nuevaNormativa()}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogNormativa}"
                                     process="@this"
-                                    update="dataNormativaProcedimiento"/>
+                                    update=":formDialog:moduloNormativas"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarNormativa}"
-                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloNormativas" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnConsultarNormativa" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarNormativa}"
                                          process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                         <p:commandButton id="btnSubirNormativa" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                          action="#{dialogProcedimiento.subirNormativa}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloNormativas" pt:aria-label="#{labels['dict.subir']}"/>
                         <p:commandButton id="btnBajarNormativa" title="#{labels['dict.bajar']}"
                                          icon="pi pi-arrow-circle-down"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.bajarNormativa}"
-                                         process="@this" update="dataNormativaProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloNormativas" pt:aria-label="#{labels['dict.bajar']}"/>
                     </f:facet>
                 </my:moduloLateral>
 
                 <p:outputPanel id="panelCategoriasPDU" layout="block">
                     <div id="divCategoriasPadrePDU" style="#{dialogProcedimiento.getStyleDivCategoriasPDU()}">
                         <my:moduloLateral id="moduloCategoriasPDU" titulo="#{labels['dialogProcedimiento.categoriasPDU']}"
-                                          styleClass="mb-2 mt-2" required="#{dialogProcedimiento.categoriaPduObligatoria}">
+                                          styleClass="mb-2 mt-2" required="#{dialogProcedimiento.categoriaPduObligatoria}" checkValores="#{dialogProcedimiento.checkValores}">
                             <p:dataTable id="dataCategoriaPDUProcedimiento" var="td"
                                          value="#{dialogProcedimiento.data.categoriasPDU}"
                                          emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -822,28 +896,28 @@
                                              actionListener="#{dialogProcedimiento.nuevaCategoriaPDU()}" pt:aria-label="#{labels['dict.nuevo']}">
                                 <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogCategoriaPDU}"
                                         process="@this"
-                                        update="dataCategoriaPDUProcedimiento"/>
+                                        update=":formDialog:moduloCategoriasPDU"/>
                             </p:commandButton>
                             <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                              disabled="#{dialogProcedimiento.isModoConsulta()}"
                                              action="#{dialogProcedimiento.borrarCategoriaPDU}"
-                                             process="@this" update="dataCategoriaPDUProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                             process="@this" update=":formDialog:messagesDialog :formDialog:moduloCategoriasPDU" pt:aria-label="#{labels['dict.eliminar']}"/>
                             <p:commandButton id="btnConsultarCategoriaPDU" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                              action="#{dialogProcedimiento.consultarCategoriaPDU}"
                                              process="@this" update="dataCategoriaPDUProcedimiento :formDialog:messagesDialog" pt:aria-label="#{labels['dict.consultar']}"/>
                             <!-- <p:commandButton id="btnSubirCategoriaPDU" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                               action="#{dialogProcedimiento.subirCategoriaPDU}"
-                                              process="@this" update="dataCategoriaPDUProcedimiento messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                              process="@this" update="messagesDialog :formDialog:moduloCategoriasPDU" pt:aria-label="#{labels['dict.subir']}"/>
                              <p:commandButton id="btnBajarCategoriaPDU" title="#{labels['dict.bajar']}"
                                               icon="pi pi-arrow-circle-down"
                                               action="#{dialogProcedimiento.bajarCategoriaPDU}"
-                                              process="@this" update="dataCategoriaPDUProcedimiento messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>-->
+                                              process="@this" update="messagesDialog :formDialog:moduloCategoriasPDU" pt:aria-label="#{labels['dict.bajar']}"/>-->
                         </f:facet>
                         </my:moduloLateral>
                     </div>
                 </p:outputPanel>
 
-                <my:moduloLateral id="moduloDocumentos" titulo="#{labels['dialogProcedimiento.docRelacionados']}">
+                <my:moduloLateral id="moduloDocumentos" titulo="#{labels['dialogProcedimiento.docRelacionados']}" checkValores="#{dialogProcedimiento.checkValores}">
                         <p:dataTable id="dataDocumentosRelacionados" var="td" value="#{dialogProcedimiento.data.documentos}"
                                      emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -868,19 +942,19 @@
                                          action="#{dialogProcedimiento.nuevoDocumento}" pt:aria-label="#{labels['dict.nuevo']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumento}"
                                     process="@this"
-                                    update="dataDocumentosRelacionados"/>
+                                    update=":formDialog:moduloDocumentos"/>
                         </p:commandButton>
                         <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
                                          action="#{dialogProcedimiento.borrarDocumento}"
-                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloDocumentos" pt:aria-label="#{labels['dict.eliminar']}"/>
                         <p:commandButton id="btnEditarDoc" title="#{labels['dict.editar']}" icon="pi pi-pencil"
                                          action="#{dialogProcedimiento.editarDocumento}"
                                          rendered="#{!dialogProcedimiento.isModoConsulta()}"
                                          process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.editar']}">
                             <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogDocumento}"
                                     process="@this"
-                                    update="dataDocumentosRelacionados"/>
+                                    update=":formDialog:moduloDocumentos"/>
                         </p:commandButton>
                         <p:commandButton id="btnConsultarDoc" title="#{labels['dict.consultar']}" icon="pi pi-eye"
                                          action="#{dialogProcedimiento.consultarDocumento}"
@@ -890,17 +964,17 @@
                         <p:commandButton id="btnSubirDocumento" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up"
                                          action="#{dialogProcedimiento.subirDocumento}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloDocumentos" pt:aria-label="#{labels['dict.subir']}"/>
                         <p:commandButton id="btnBajarDocumento" title="#{labels['dict.bajar']}"
                                          icon="pi pi-arrow-circle-down"
                                          action="#{dialogProcedimiento.bajarDocumento}"
                                          disabled="#{dialogProcedimiento.isModoConsulta()}"
-                                         process="@this" update="dataDocumentosRelacionados :formDialog:messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                                         process="@this" update=":formDialog:messagesDialog :formDialog:moduloDocumentos" pt:aria-label="#{labels['dict.bajar']}"/>
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogProcedimiento.docInformacion']}"
                                   styleClass="mb-2 #{dialogProcedimiento.isLOPDModuloErrorFlujo() ? 'ui-state-error' : ''}"
-                                  required="#{dialogProcedimiento.documentoLopdObligatorio}">
+                                  required="#{dialogProcedimiento.documentoLopdObligatorio}" checkValores="#{dialogProcedimiento.checkValores}">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogProcedimiento.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -953,7 +1027,7 @@
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloTramites" titulo="#{labels['dialogProcedimiento.tramites']}"
-                                  styleClass="mb-2 #{dialogProcedimiento.isTramitesModuloErrorFlujo() ? 'ui-state-error' : ''}">
+                                  styleClass="mb-2 #{dialogProcedimiento.isTramitesModuloErrorFlujo() ? 'ui-state-error' : ''}" checkValores="#{dialogProcedimiento.checkValores}">
                         <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                                      paginator="false" selectionMode="single"

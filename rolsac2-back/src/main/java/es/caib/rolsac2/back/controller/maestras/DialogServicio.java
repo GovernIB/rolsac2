@@ -30,6 +30,9 @@ import java.util.*;
 public class DialogServicio extends AbstractController implements Serializable {
 
 
+    // Se activa al intentar guardar o avanzar el flujo; false al abrir el dialogo.
+    private boolean checkValores = false;
+
     private ServicioDTO data;
     private ServicioDTO dataOriginal;
     private String estadoProcedimiento;
@@ -125,10 +128,26 @@ public class DialogServicio extends AbstractController implements Serializable {
      * Variable booleana para saber si es guardar o flujo
      **/
     boolean esSoloGuardar;
-    private boolean isComprobarModuloLOPDFlujo = false;
     private Integer opcionTelematica = null;
     private boolean mostrarRefreshSIA = false;
 
+
+    public boolean isCheckValores() {
+        // En JSF, si falla un required, el metodo action puede no ejecutarse.
+        // Detectamos el boton que origino el AJAX para conservar el estado rojo.
+        if (!checkValores && javax.faces.context.FacesContext.getCurrentInstance() != null) {
+            String origen = javax.faces.context.FacesContext.getCurrentInstance()
+                    .getExternalContext().getRequestParameterMap().get("javax.faces.source");
+            if ("formDialog:btnGuardar".equals(origen) || "formDialog:btnGuardarFlujo".equals(origen)) {
+                checkValores = true;
+            }
+        }
+        return checkValores;
+    }
+
+    public void setCheckValores(boolean checkValores) {
+        this.checkValores = checkValores;
+    }
 
     public void load() {
         LOG.debug("init");
@@ -318,7 +337,7 @@ public class DialogServicio extends AbstractController implements Serializable {
      * Enviado a SIA para que se indexe.
      */
     public void enviarSIA() {
-        if (puedeEnviarSIA()) {
+        if (data.getCodigo() != null && data.getCodigoSIA() == null) {
             if (this.data.compareTo(this.dataOriginal) != 0) {
                 PrimeFaces.current().executeScript("PF('cdSalirSinGuardarSIA').show();");
                 return;
@@ -330,10 +349,6 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void enviarSIAsincomprobar() {
         try {
-            if (!puedeEnviarSIA()) {
-                return;
-            }
-
             if (!checkObligatorio()) {
                 return;
             }
@@ -457,8 +472,8 @@ public class DialogServicio extends AbstractController implements Serializable {
 
 
     public void guardarFlujo() {
+        checkValores = true;
         esSoloGuardar = false;
-        isComprobarModuloLOPDFlujo = true;
         if (!checkObligatorio()) {
             return;
         }
@@ -477,6 +492,23 @@ public class DialogServicio extends AbstractController implements Serializable {
                 return;
             }
         }*/
+
+        if (data.isActivoLOPD() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+            return;
+        }
+
+        if (data.getTemas() == null || data.getTemas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+            return;
+        }
+
+        for (TemaGridDTO temaPadre : temasPadre) {
+            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+                return;
+            }
+        }
 
         /*
         if (this.data.getCodigo() == null) {
@@ -557,9 +589,9 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public void guardar() {
+        checkValores = true;
 
         esSoloGuardar = true;
-        isComprobarModuloLOPDFlujo = false;
         this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
         this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
@@ -662,14 +694,6 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     }
 
-    public boolean isLOPDModuloCompletoFlujo(){
-        return isComprobarModuloLOPDFlujo && data.getDocumentosLOPD() != null && data.getDocumentosLOPD().isEmpty();
-    }
-
-    public boolean isTemaCompleto(TemaGridDTO temaPadre) {
-        return data.getTemas() != null && data.getTemas().stream().anyMatch(tema -> tema.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString()));
-    }
-
     private boolean checkObligatorio() {
         boolean retorno = true;
         if (this.data.getUaInstructor() == null || this.data.getUaInstructor().getCodigo() == null) {
@@ -692,11 +716,6 @@ public class DialogServicio extends AbstractController implements Serializable {
             retorno = false;
         }
 
-        if (this.data.getTemas() == null || this.data.getTemas().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
-            retorno = false;
-        }
-
         if (this.data.getTasaServicio() != null) {
             List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
             if (this.data.getTasaServicio().getIdentificador() == null || !this.data.getTasaServicio().getIdentificador().estaCompleto(idiomasObligatorios)) {
@@ -705,24 +724,25 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }
 
+        /*
+        if (this.data.getPublicosObjetivo() != null && !this.data.getPublicosObjetivo().isEmpty()) {
+            boolean empleadoPublico = this.data.getPublicosObjetivo().get(0).isEmpleadoPublico();
+            if ((empleadoPublico && this.data.isHabilitadoApoderado()) || (!empleadoPublico && !this.data.isHabilitadoApoderado())) {
+                PrimeFaces.current().executeScript("PF('cdApoderado').show();");
+                return retorno;
+            }
+        }*/
+
         if (this.data.isTramitElectronica()) {
-            if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion() == null || this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
+            if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaPlataformaTramitacion"));
                 return false;
             }
-            if (this.opcionTelematica == 2 && (this.data.getTipoTramitacion() == null || this.data.getTipoTramitacion().getUrl() == null || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
+            if (this.opcionTelematica == 2 && (this.data.getTipoTramitacion().getUrl() == null || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlTramitacion"));
                 return false;
             }
         }
-
-        if (isComprobarModuloLOPDFlujo) {
-            if (data.isActivoLOPD() && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
-                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogServicio.obligatorio.flujo.documentosLOPD"));
-                return false;
-            }
-        }
-
         return retorno;
     }
 
@@ -1365,13 +1385,6 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.platTramitElectronica = platTramitElectronica;
     }
 
-    public TasaServicioDTO getTasaServicioSeleccionada() {
-        return tasaServicioSeleccionada;
-    }
-
-    public void setTasaServicioSeleccionada(TasaServicioDTO tasaServicioSeleccionada) {
-        this.tasaServicioSeleccionada = tasaServicioSeleccionada;
-    }
 
     public List<String> getCanalesSeleccionados() {
         return canalesSeleccionados;
@@ -1570,12 +1583,17 @@ public class DialogServicio extends AbstractController implements Serializable {
     }
 
     public boolean mostrarBtnSIA() {
-        return puedeEnviarSIA() && !mostrarRefreshSIA && !isInformador();
+        return data.getCodigoSIA() == null && data.getCodigo() != null && !mostrarRefreshSIA && !isInformador() && (data.getEstado().compareTo(TypeProcedimientoEstado.MODIFICACION) == 0
+                || data.getEstado().compareTo(TypeProcedimientoEstado.PENDIENTE_PUBLICAR) == 0
+        );
     }
 
-    private boolean puedeEnviarSIA() {
-        return data != null && data.getCodigo() != null && data.getCodigoSIA() == null && estadosProcedimiento != null
-                && ((!estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.CERRADO.toString()))
-                && (data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || data.getEstado() == TypeProcedimientoEstado.MODIFICACION));
+    public TasaServicioDTO getTasaServicioSeleccionada() {
+        return tasaServicioSeleccionada;
+    }
+
+    public void setTasaServicioSeleccionada(TasaServicioDTO tasaServicioSeleccionada) {
+        this.tasaServicioSeleccionada = tasaServicioSeleccionada;
     }
 }
+

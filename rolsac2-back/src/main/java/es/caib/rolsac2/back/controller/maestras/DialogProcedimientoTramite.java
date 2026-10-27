@@ -25,6 +25,9 @@ import java.util.*;
 @ViewScoped
 public class DialogProcedimientoTramite extends AbstractController implements Serializable {
 
+    // Se activa al intentar guardar o avanzar el flujo; false al abrir el dialogo.
+    private boolean checkValores = false;
+
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimientoTramite.class);
 
     @EJB
@@ -73,7 +76,27 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
 
     boolean procedimientoComun;
 
+    public boolean isCheckValores() {
+        // En JSF, si falla un required, el metodo action puede no ejecutarse.
+        // Detectamos el boton que origino el AJAX para conservar el estado rojo.
+        if (!checkValores && javax.faces.context.FacesContext.getCurrentInstance() != null) {
+            String origen = javax.faces.context.FacesContext.getCurrentInstance()
+                    .getExternalContext().getRequestParameterMap().get("javax.faces.source");
+            if ("formDialog:btnAceptarTramite".equals(origen)) {
+                checkValores = true;
+            }
+        }
+        return checkValores;
+    }
+
+    public void setCheckValores(boolean checkValores) {
+        this.checkValores = checkValores;
+    }
+
     public void load() {
+        // Valor transmitido desde DialogProcedimiento (mismo mecanismo que los tramites).
+        Object comprobar = UtilJSF.getValorMochilaByKey("checkValores");
+        this.checkValores = Boolean.TRUE.equals(comprobar);
         this.setearIdioma();
 
         nombreProcedimiento = (Literal) UtilJSF.getValorMochilaByKey("nombreProcedimiento");
@@ -251,6 +274,7 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void guardar() {
+        checkValores = true;
 
         this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
         this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));

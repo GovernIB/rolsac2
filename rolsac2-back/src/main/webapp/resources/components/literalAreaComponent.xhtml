@@ -40,6 +40,10 @@
         <cc:attribute name="idiomasObligatorios" type="String" shortDescription="Idiomas obligatorios"></cc:attribute>
         <cc:attribute name="nombreLiteral" type="String"
                       shortDescription="Nombre del componente multiidioma que se edita"></cc:attribute>
+        <cc:attribute name="checkValores" type="java.lang.Boolean" default="false"
+                      shortDescription="Activa la comprobacion visual de los idiomas obligatorios"/>
+        <cc:attribute name="updateOnBlur" type="java.lang.String"
+                      shortDescription="ID absoluto del bloque que se actualiza al editar el literal"/>
 		<cc:attribute name="maxlength" type="Integer" default="9999"
 					  shortDescription="Largo máximo de los campos"></cc:attribute>
 
@@ -48,10 +52,11 @@
         <span id="#{cc.clientId}" style="white-space:nowrap; display:flex;">
         	<c:choose>
 				<c:when test="#{cc.tipo == null || !cc.tipo.equals('html')}">
-						<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1 #{cc.estiloInput}"
-						                 pt:aria-label="#{cc.attrs.nombreLiteral}"
+						<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1 #{cc.attrs.checkValores ? (cc.errorIdiomas ? 'literal-idiomas-incompletos' : cc.estiloInput) : ''}"
 										 readonly="#{cc.isModoConsulta()}" maxlength="#{cc.maxlength}" autoResize="false">
-		                <p:ajax event="change" listener="#{cc.actualizarLiteral}" update="btnAbrir"/>
+		                <p:ajax event="change" process="@this"
+                        listener="#{cc.actualizarLiteral}"
+                        update="btnAbrir #{cc.attrs.updateOnBlur}"/>
 		            </p:inputTextarea>
 		             <p:commandButton id="btnAbrir"
                              action="#{cc.abrirVentana()}"
@@ -63,7 +68,7 @@
                              disabled="#{cc.isModoConsulta()}"
                              process="@this"  ariaLabel="#{labels['dict.seleccionar']}">
                      <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
-                             update="texto btnAbrir"/>
+                             update="texto btnAbrir #{cc.attrs.updateOnBlur}"/>
             </p:commandButton>
 
 				</c:when>
@@ -127,8 +132,8 @@
 
 
 					</h:outputScript>
-					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1 #{cc.estiloInput}"
-                         readonly="#{cc.isModoConsulta()}" style="white-space:nowrap;" pt:aria-label="#{cc.attrs.nombreLiteral}">
+					<p:inputTextarea id="texto" binding="#{cc.texto}" value="#{cc.textoValor}" styleClass="w90 mr-1"
+                         readonly="#{cc.isModoConsulta()}" style="white-space:nowrap;">
 		            </p:inputTextarea>
 		             <p:commandButton id="textoHTMLprocess"
 		             		 action="#{cc.actualizarLiteral()}"
@@ -145,6 +150,7 @@
                              styleClass="w35px h30px #{cc.getEstiloBoton()}"
                              disabled="#{cc.isModoConsulta()}"
                              process="@this"
+                             style="margin-left:4px;"
                              ariaLabel="#{labels['dict.seleccionar']}">
 		                     <p:ajax event="dialogReturn" listener="#{cc.returnDialogo}" process="@this"
 		                             update="@form btnAbrir"/>

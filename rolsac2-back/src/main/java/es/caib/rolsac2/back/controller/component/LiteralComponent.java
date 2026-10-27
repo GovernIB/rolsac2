@@ -10,7 +10,6 @@ import es.caib.rolsac2.service.model.Traduccion;
 import es.caib.rolsac2.service.model.types.TypeModoAcceso;
 import es.caib.rolsac2.service.model.types.TypeParametroVentana;
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.PrimeFaces;
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.inputtextarea.InputTextarea;
@@ -285,6 +284,10 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         literal.add(trad);
         getAttributes().put("literal", literal);
 
+        // Volver a validar el conjunto de idiomas, no solo el idioma editado.
+        // No modificar el comportamiento de los formularios que no usan updateOnBlur.
+        actualizarEstadoValidacion();
+
         marcarActualizadoComponente();
     }
 
@@ -313,25 +316,53 @@ public class LiteralComponent extends UIInput implements NamingContainer {
     public void returnDialogo(final SelectEvent event) {
         final DialogResult respuesta = (DialogResult) event.getObject();
 
-        // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             literal = (Literal) respuesta.getResult();
             getAttributes().put("literal", literal);
             this.setModoAcceso(respuesta.getModoAcceso());
-            if (tipo == null || !tipo.equals("html")) {
+
+            if (!"html".equals(tipo) && literal != null) {
+                // El campo pudo quedar invalidado en un guardado anterior.
+                // Limpiar el valor enviado antes de renderizar la traduccion nueva.
+                texto.setSubmittedValue(null);
+                texto.setValid(true);
                 texto.setValue(literal.getTraduccion((String) textoIdioma.getValue()));
-                marcarActualizadoComponente();
-                PrimeFaces.current().ajax().update("formDialog:tabs:txtNombre:texto");
-            } else {
-                textoIdioma.getValue();
-                marcarActualizadoComponente();
-                // PrimeFaces.current().executeScript("recargarTiny(\"" +
-                // this.getTextoESA().getValue() + "\",\"" + this.getTextoCAA().getValue() +
-                // "\")");
             }
 
-            PrimeFaces.current().ajax().update("formDialog:tabs:txtNombre:btnAbrir");
+            // Mismo criterio que cuando se edita directamente el campo.
+            // El boton y su icono siempre usan comprobarEstado(), con independencia
+            // de checkValores; este flag solo controla el error del texto y el label.
+            actualizarEstadoValidacion();
+            marcarActualizadoComponente();
+            // El p:ajax dialogReturn actualiza texto, boton y bloque de la etiqueta.
+            // No usar IDs fijos como formDialog:tabs:txtNombre, pues el componente
+            // se reutiliza en varios dialogos y vistas.
         }
+    }
+
+    private void actualizarEstadoValidacion() {
+        if (!debeComprobarValores()) {
+            setValid(true);
+            setEstiloInput("");
+            return;
+        }
+
+        boolean valido = !isObligatorio() || !ICONO_ROJO.equals(comprobarEstado());
+        Literal actual = (Literal) getAttributes().get("literal");
+        Integer longitudMaxima = (Integer) getAttributes().get("maxlength");
+        if (valido && longitudMaxima != null && longitudMaxima != 9999
+                && actual != null && actual.getTraducciones() != null) {
+            for (Traduccion traduccion : actual.getTraducciones()) {
+                if (traduccion.getLiteral() != null
+                        && traduccion.getLiteral().length() > longitudMaxima) {
+                    valido = false;
+                    break;
+                }
+            }
+        }
+
+        setValid(valido);
+        setEstiloInput(valido ? "" : "bordeAzulRequired");
     }
 
     public void abrirVentana() {
@@ -378,8 +409,19 @@ public class LiteralComponent extends UIInput implements NamingContainer {
 
     // Getters/setters
     // ----------------------------------------------------------------------------
+    /**
+     * La comprobacion visual de idiomas se activa exclusivamente cuando el
+     * dialogo pasa checkValores=true al componente compuesto.
+     */
+    // No declarar un getter JavaBean de checkValores: JSF lo invoca al
+    // resolver getAttributes().get("checkValores"), causando recursion.
+    private boolean debeComprobarValores() {
+        return Boolean.TRUE.equals(getAttributes().get("checkValores"));
+    }
+
     public String getEstiloBoton() {
-        // if (isObligatorio() && !isCompleto()) {
+        // Independiente de checkValores: el icono muestra siempre
+        // el estado real de los idiomas (rojo, amarillo o verde).
         return comprobarEstado();
     }
 
@@ -400,6 +442,11 @@ public class LiteralComponent extends UIInput implements NamingContainer {
         }
 
         return literal.getTraducciones().stream().anyMatch(traduccion -> StringUtils.isNotBlank(traduccion.getLiteral()));
+    }
+
+    /** Estado del literal: mismo criterio que el icono del boton. */
+    public boolean isErrorIdiomas() {
+        return debeComprobarValores() && ICONO_ROJO.equals(comprobarEstado());
     }
 
     public String comprobarEstado() {

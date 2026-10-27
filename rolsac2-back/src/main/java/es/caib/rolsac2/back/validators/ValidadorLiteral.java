@@ -33,7 +33,7 @@ public class ValidadorLiteral implements Validator {
 
         if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
-            literalComponent.setEstiloInput("ui-state-error");
+            literalComponent.setEstiloInput("bordeAzulRequired");
 
             String mensajeError = "";
             if (literalComponent.getAttributes().get("mensajeError") != null) {
@@ -59,7 +59,7 @@ public class ValidadorLiteral implements Validator {
                 Literal literal = (Literal) literalComponent.getAttributes().get("literal");
                 for (Traduccion trad : literal.getTraducciones()) {
                     if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
-                        literalComponent.setEstiloInput("ui-state-error");
+                        literalComponent.setEstiloInput("bordeAzulRequired");
                         Object[] param = new Object[3];
                         param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
                         param[1] = trad.getIdioma();
@@ -71,9 +71,9 @@ public class ValidadorLiteral implements Validator {
                     }
                 }
             }
-        } else {
-            literalComponent.setEstiloInput("");
         }
+        // Se llega aqui solo si ninguna validacion ha lanzado ValidatorException.
+        literalComponent.setEstiloInput("");
     }
 
     private void comprobacionLiteralComponent(FacesContext context, LiteralComponent literalComponent, Object value) {
@@ -83,7 +83,7 @@ public class ValidadorLiteral implements Validator {
 
         if (literalComponent.isObligatorio() && (estado == null || estado.isEmpty() || LiteralComponent.ICONO_ROJO.equals(estado))) {
 
-            literalComponent.setEstiloInput("ui-state-error");
+            literalComponent.setEstiloInput("bordeAzulRequired");
 
             String mensajeError = "";
             if (literalComponent.getAttributes().get("mensajeError") != null) {
@@ -107,7 +107,7 @@ public class ValidadorLiteral implements Validator {
                 Literal literal = (Literal) literalComponent.getAttributes().get("literal");
                 for (Traduccion trad : literal.getTraducciones()) {
                     if (trad.getLiteral() != null && trad.getLiteral().length() > length) {
-                        literalComponent.setEstiloInput("ui-state-error");
+                        literalComponent.setEstiloInput("bordeAzulRequired");
                         Object[] param = new Object[3];
                         param[0] = literalComponent.getAttributes().get("nombreLiteral").toString();
                         param[1] = trad.getIdioma();
@@ -119,9 +119,9 @@ public class ValidadorLiteral implements Validator {
                     }
                 }
             }
-        } else {
-            literalComponent.setEstiloInput("");
         }
+        // Se llega aqui solo si ninguna validacion ha lanzado ValidatorException.
+        literalComponent.setEstiloInput("");
     }
 
 

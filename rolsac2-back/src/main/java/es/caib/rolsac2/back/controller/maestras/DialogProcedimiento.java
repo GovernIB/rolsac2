@@ -30,6 +30,9 @@ import java.util.*;
 public class DialogProcedimiento extends AbstractController implements Serializable {
 
 
+    // Se activa al intentar guardar o avanzar el flujo; false al abrir el dialogo.
+    private boolean checkValores = false;
+
     private ProcedimientoDTO data;
     private ProcedimientoDTO dataOriginal;
 
@@ -106,7 +109,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private static final Logger LOG = LoggerFactory.getLogger(DialogProcedimiento.class);
     private final Integer FASE_INICIACION = 1;
     private boolean esSoloGuardar;
-    private boolean isComprobarModuloTramitesFlujo = false;
     private String uaRaiz;
     private Literal lopdDerechos;
     private Literal lopdInfoAdicional;
@@ -114,6 +116,23 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     private boolean noEditable;
     private boolean mostrarBtnPDU = false;
     private boolean mostrarBtnFlujo = true;
+
+    public boolean isCheckValores() {
+        // En JSF, si falla un required, el metodo action puede no ejecutarse.
+        // Detectamos el boton que origino el AJAX para conservar el estado rojo.
+        if (!checkValores && javax.faces.context.FacesContext.getCurrentInstance() != null) {
+            String origen = javax.faces.context.FacesContext.getCurrentInstance()
+                    .getExternalContext().getRequestParameterMap().get("javax.faces.source");
+            if ("formDialog:btnGuardar".equals(origen) || "formDialog:btnGuardarFlujo".equals(origen)) {
+                checkValores = true;
+            }
+        }
+        return checkValores;
+    }
+
+    public void setCheckValores(boolean checkValores) {
+        this.checkValores = checkValores;
+    }
 
     public void load() {
         LOG.debug("init");
@@ -243,7 +262,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
      * Enviado a SIA para que se indexe.
      */
     public void enviarSIA() {
-        if (puedeEnviarSIA()) {
+        if (data.getCodigo() != null && data.getCodigoSIA() == null) {
             if (this.data.compareTo(this.dataOriginal, false) != 0) {
                 PrimeFaces.current().executeScript("PF('cdSalirSinGuardarSIA').show();");
                 return;
@@ -255,9 +274,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void enviarSIAsincomprobar() {
         try {
-            if (!puedeEnviarSIA()) {
-                return;
-            }
             if (!checkObligatorio()) {
                 return;
             }
@@ -414,9 +430,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void guardarFlujo() {
+        checkValores = true;
 
         esSoloGuardar = false;
-        isComprobarModuloTramitesFlujo = true;
         if (!checkObligatorio()) {
             return;
         }
@@ -435,12 +451,22 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             }
         }*/
 
-        if (isDocumentosLopdVacio()) {
+        if (data.getEstado() == TypeProcedimientoEstado.MODIFICACION && (data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
             return;
         }
 
-        if (!isTramiteIniciacionCompleto()) {
+        boolean tiene = false;
+        if (data.getTramites() != null) {
+            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
+                if (tramite.getFase() == FASE_INICIACION.intValue()) {
+                    tiene = true;
+                    break;
+                }
+            }
+        }
+
+        if (!tiene) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
             return;
         }
@@ -455,13 +481,13 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
 
         for (TemaGridDTO temaPadre : temasPadre) {
-            if (!isTemaCompleto(temaPadre)) {
+            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
                 return;
             }
         }
 
-        if (isCategoriaPduObligatoria()) {
+        if (data != null && "P".equals(data.getTipo()) && data.getEstado() == TypeProcedimientoEstado.MODIFICACION && data.isIntegrarPdu()) {
             boolean correcto = checkPDU();
             if (!correcto) {
                 return;
@@ -710,9 +736,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void guardar() {
+        checkValores = true;
 
         esSoloGuardar = true;
-        isComprobarModuloTramitesFlujo = false;
         if (!checkObligatorio()) {
             return;
         }
@@ -817,66 +843,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-    public boolean isDocumentoLopdObligatorio() {
-        return false;
-        //  return data != null && data.getEstado() == TypeProcedimientoEstado.MODIFICACION;
-    }
-
-    public boolean isCategoriaPduObligatoria() {
-        return data != null && "P".equals(data.getTipo()) && data.getEstado() == TypeProcedimientoEstado.MODIFICACION && data.isIntegrarPdu();
-    }
-
-    public boolean isTramiteIniciacionCompleto() {
-        return data.getTramites() != null && data.getTramites().stream().anyMatch(tramite -> tramite.getFase() == FASE_INICIACION.intValue());
-    }
-
-    public boolean isListaTramitesCompleto() {
-        boolean todoCorrecto = true;
-        List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
-        if (this.data.getTramites() == null || this.data.getTramites().isEmpty()) {
-            return false;
-        }
-        for (ProcedimientoTramiteDTO tramite : this.data.getTramites()) {
-            if (data.getFechaPublicacion() != null && tramite.getFechaPublicacion() != null && tramite.getFechaPublicacion().before(data.getFechaPublicacion())) {
-                todoCorrecto = false;
-                break;
-            }
-            if (tramite.getListaTasas() != null) {
-                for (TasaProcedimientoDTO tasa : tramite.getListaTasas()) {
-                    if (tasa == null) {
-                        continue;
-                    }
-                    if (tasa.getIdentificador() == null || !tasa.getIdentificador().estaCompleto(idiomasObligatorios)) {
-                        todoCorrecto = false;
-                    }
-                    if (tasa.getFormaPago() == null || !tasa.getFormaPago().estaCompleto(idiomasObligatorios)) {
-                        todoCorrecto = false;
-                    }
-                }
-            }
-        }
-        return todoCorrecto;
-    }
-
-    public boolean isTramitesModuloErrorFlujo() {
-        return isComprobarModuloTramitesFlujo && (!isTramiteIniciacionCompleto() || !isListaTramitesCompleto());
-    }
-
-    /**
-     * Indica si al aplicar el flujo no hay ningún documento LOPD, para marcar el módulo en rojo.
-     */
-    public boolean isLOPDModuloErrorFlujo() {
-        return isComprobarModuloTramitesFlujo && isDocumentosLopdVacio();
-    }
-
-    private boolean isDocumentosLopdVacio() {
-        return data == null || data.getDocumentosLOPD() == null || data.getDocumentosLOPD().isEmpty();
-    }
-
-    public boolean isTemaCompleto(TemaGridDTO temaPadre) {
-        return data.getTemas() != null && data.getTemas().stream().anyMatch(tema -> tema.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString()));
-    }
-
     private boolean checkObligatorio() {
         boolean todoCorrecto = true;
         List<String> idiomasObligatorios = sessionBean.getIdiomasObligatoriosList();
@@ -897,16 +863,6 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
         if (this.data.getPublicosObjetivo() == null || this.data.getPublicosObjetivo().isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunPublicoObjetivo"));
-            todoCorrecto = false;
-        }
-
-        if (this.data.getTipoProcedimiento() == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dict.obligatorio.tipoProcedimiento"));
-            todoCorrecto = false;
-        }
-
-        if (data.getTemas() == null || data.getTemas().isEmpty()) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.sinTemas"));
             todoCorrecto = false;
         }
 
@@ -1133,6 +1089,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
                 data.setTramites(new ArrayList<>());
             }
             UtilJSF.anyadirMochila("listaTramites", data.getTramites());
+            UtilJSF.anyadirMochila("checkValores", isCheckValores());
             UtilJSF.anyadirMochila("comun", data.esComun());
             UtilJSF.openDialog("dialogProcedimientoTramite", modoAcceso, params, true, 1000, 600);
         }
@@ -2001,12 +1958,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public boolean mostrarBtnSIA() {
-        return puedeEnviarSIA() && !mostrarRefreshSIA && !isInformador();
-    }
-
-    private boolean puedeEnviarSIA() {
-        return data != null && data.getCodigo() != null && data.getCodigoSIA() == null && estadosProcedimiento != null
-                && ((!estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.CERRADO.toString()))
-                && (data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || data.getEstado() == TypeProcedimientoEstado.MODIFICACION));
+        return data.getCodigoSIA() == null && data.getCodigo() != null && !mostrarRefreshSIA && !isInformador() && (data.getEstado().compareTo(TypeProcedimientoEstado.MODIFICACION) == 0
+                || data.getEstado().compareTo(TypeProcedimientoEstado.PENDIENTE_PUBLICAR) == 0
+        );
     }
 }
+

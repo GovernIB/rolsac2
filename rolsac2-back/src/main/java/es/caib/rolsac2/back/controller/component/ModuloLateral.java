@@ -20,6 +20,8 @@ public class ModuloLateral extends UINamingContainer {
 			return;
 		}
 		super.processValidators(context);
+		// La validacion ya se ha solicitado (p. ej., pulsando Guardar).
+		getStateHelper().put("validado", true);
 		getStateHelper().put("invalido", isRequired() && !isCompleto());
 	}
 
@@ -63,6 +65,13 @@ public class ModuloLateral extends UINamingContainer {
 	}
 
 	public boolean isInvalido() {
+		// Los AJAX parciales no vuelven a llamar a processValidators() del modulo.
+		// Se recalcula tambien durante el render para actualizar cabecera y borde.
+		boolean comprobar = Boolean.TRUE.equals(getAttributes().get("checkValores"))
+				|| Boolean.TRUE.equals(getStateHelper().eval("validado", false));
+		if (comprobar) {
+			return isRequired() && !isCompleto();
+		}
 		return Boolean.TRUE.equals(getStateHelper().eval("invalido", false));
 	}
 
