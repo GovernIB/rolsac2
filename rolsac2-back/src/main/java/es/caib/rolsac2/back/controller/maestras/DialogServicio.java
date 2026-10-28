@@ -502,11 +502,53 @@ public class DialogServicio extends AbstractController implements Serializable {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
                     getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
         }
-        if (!camposCorrectos || !documentoLopdCorrecto) {
+
+        boolean temasCorrectos = true;
+        if (data.getTemas() == null || data.getTemas().isEmpty()) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+            temasCorrectos = false;
+        }
+
+        if (temasCorrectos) {
+            for (TemaGridDTO temaPadre : temasPadre) {
+                if (!temaFlujoCompleto(temaPadre)) {
+                    UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
+                    temasCorrectos = false;
+                    break;
+                }
+            }
+        }
+
+        if (!camposCorrectos || !documentoLopdCorrecto || !temasCorrectos) {
             return;
         }
 
         guardarFlujoSinCheck();
+    }
+
+    /**
+     * Indica si un tema padre tiene al menos una asignacion tematica.
+     * Se utiliza tanto para la validacion de flujo como para pintar
+     * el estado de cada modulo lateral (sin efectos secundarios).
+     */
+    public boolean temaFlujoCompleto(TemaGridDTO temaPadre) {
+        if (temaPadre == null || temaPadre.getCodigo() == null
+                || data == null || data.getTemas() == null) {
+            return false;
+        }
+        String codigoPadre = temaPadre.getCodigo().toString();
+        for (TemaGridDTO asignacion : data.getTemas()) {
+            if (asignacion == null || asignacion.getMathPath() == null) {
+                continue;
+            }
+            String ruta = asignacion.getMathPath();
+            int separador = ruta.indexOf(';');
+            String raiz = separador >= 0 ? ruta.substring(0, separador) : ruta;
+            if (codigoPadre.equals(raiz)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void guardarFlujoSinCheck() {
@@ -532,7 +574,7 @@ public class DialogServicio extends AbstractController implements Serializable {
         }
 
         for (TemaGridDTO temaPadre : temasPadre) {
-            if (data.getTemas().stream().filter(t -> t.getMathPath().split(";")[0].equals(temaPadre.getCodigo().toString())).findAny().orElse(null) == null) {
+            if (!temaFlujoCompleto(temaPadre)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.sinTemas"));
                 return;
             }

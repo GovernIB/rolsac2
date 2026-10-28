@@ -58,6 +58,14 @@
             .panel-canales-incompletos .ui-chkbox-box {
                 border-color: #eed3d7 !important;
             }
+            /* El listado de modelos solo es obligatorio si se ha elegido Presencial
+               y se ha intentado guardar el tramite pulsando Aceptar. */
+            .panel-modelos-incompletos {
+                border: 1px solid #eed3d7 !important;
+            }
+            .panel-modelos-incompletos > .left-container-header {
+                background-color: #d32f2f !important;
+            }
             .bloque-validacion-literal:not(:has(.iconoRojo)):not(:has(.bordeAzulRequired)) label.ui-outputlabel {
                 color: inherit !important;
             }
@@ -200,7 +208,7 @@
                             <f:selectItem id="canalesTramitacionTel" itemLabel="#{labels['dialogProcedimientoTramite.canalTelematico']}" itemValue="TEL"/>
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.canalPresencial']}" itemValue="PRE"/>
                             <p:ajax event="change" process="@this"
-                                    update=":formDialog:panelCanales"/>
+                                    update=":formDialog:panelCanales :formDialog:panelModelos"/>
                         </p:selectManyCheckbox>
                     </div>
                     <div class="form-group col-md-5">
@@ -291,7 +299,8 @@
             </p:panel>
         </div>
         <div class="ui-g-12 ui-md-3 pr-1 ">
-            <div class="row left-container mx-0 mb-2">
+            <h:panelGroup id="panelModelos" layout="block"
+                          styleClass="row left-container mx-0 mb-2 #{dialogProcedimientoTramite.checkValores and dialogProcedimientoTramite.canalesSeleccionados.contains('PRE') and empty dialogProcedimientoTramite.data.listaModelos ? 'panel-modelos-incompletos' : ''}">
                 <div class="col-12 left-container-header text-center">
                     <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.modelos']}</p>
                 </div>
@@ -311,19 +320,19 @@
                 </div>
                 <div class="col-2 p-1 d-flex flex-column align-content-center justify-content-center align-items-center">
                     <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" actionListener="#{dialogProcedimientoTramite.nuevoModelo()}" pt:aria-label="#{labels['dict.nuevo']}">
-                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}" process="@this" update="dataDocumentosModelo"/>
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}" process="@this" update=":formDialog:panelModelos"/>
                     </p:commandButton>
-                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" action="#{dialogProcedimientoTramite.borrarModelo}" process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
-                    <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil" id="btnEditarModelo" action="#{dialogProcedimientoTramite.editarModelo}" rendered="#{!dialogProcedimientoTramite.isModoConsulta()}" process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.editar']}">
-                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}" process="@this" update="dataDocumentosModelo"/>
+                    <p:commandButton title="#{labels['dict.eliminar']}" icon="pi pi-minus" styleClass="text-danger" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" action="#{dialogProcedimientoTramite.borrarModelo}" process="@this" update=":formDialog:panelModelos messagesDialog" pt:aria-label="#{labels['dict.eliminar']}"/>
+                    <p:commandButton title="#{labels['dict.editar']}" icon="pi pi-pencil" id="btnEditarModelo" action="#{dialogProcedimientoTramite.editarModelo}" rendered="#{!dialogProcedimientoTramite.isModoConsulta()}" process="@this" update=":formDialog:panelModelos messagesDialog" pt:aria-label="#{labels['dict.editar']}">
+                        <p:ajax event="dialogReturn" listener="#{dialogProcedimientoTramite.returnDialogModelo}" process="@this" update=":formDialog:panelModelos"/>
                     </p:commandButton>
 
-                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye" id="btnConsultarModelo" action="#{dialogProcedimientoTramite.consultarModelo}" rendered="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
+                    <p:commandButton title="#{labels['dict.consultar']}" icon="pi pi-eye" id="btnConsultarModelo" action="#{dialogProcedimientoTramite.consultarModelo}" rendered="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" update=":formDialog:panelModelos messagesDialog" pt:aria-label="#{labels['dict.consultar']}">
                     </p:commandButton>
-                    <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up" action="#{dialogProcedimientoTramite.subirModelo}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
-                    <p:commandButton id="btnBajarModelo" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down" action="#{dialogProcedimientoTramite.bajarModelo}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" update="dataDocumentosModelo messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
+                    <p:commandButton id="btnSubirModelo" title="#{labels['dict.subir']}" icon="pi pi-arrow-circle-up" action="#{dialogProcedimientoTramite.subirModelo}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" update=":formDialog:panelModelos messagesDialog" pt:aria-label="#{labels['dict.subir']}"/>
+                    <p:commandButton id="btnBajarModelo" title="#{labels['dict.bajar']}" icon="pi pi-arrow-circle-down" action="#{dialogProcedimientoTramite.bajarModelo}" disabled="#{dialogProcedimientoTramite.isModoConsulta()}" process="@this" update=":formDialog:panelModelos messagesDialog" pt:aria-label="#{labels['dict.bajar']}"/>
                 </div>
-            </div>
+            </h:panelGroup>
             <div class="row left-container mx-0 mb-2">
                 <div class="col-12 left-container-header text-center">
                     <p class="left-container-tit mt-2 mb-1" style="font-size: 1.1em">#{labels['dialogProcedimientoTramite.documentosRelacionados']}</p>
@@ -464,7 +473,7 @@
 
     <ui:define name="contentFooterDialogRight">
         <p:commandButton id="closeButton" action="#{dialogProcedimientoTramite.cerrar}" value="#{labels['dict.cerrar']}" update="messagesDialog" process="@all" pt:aria-label="#{labels['dict.cerrar']}"/>
-        <p:commandButton action="#{dialogProcedimientoTramite.guardar}" value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelDatosPublicacion panelOrganos panelCanales " rendered="#{!dialogProcedimientoTramite.isModoConsulta()}" process="@all" pt:aria-label="#{labels['dict.aceptar']}" id="btnAceptarTramite"/>
+        <p:commandButton action="#{dialogProcedimientoTramite.guardar}" value="#{labels['dict.aceptar']}" update="messagesDialog panelDatos panelDatosPublicacion panelOrganos panelCanales panelModelos" rendered="#{!dialogProcedimientoTramite.isModoConsulta()}" process="@all" pt:aria-label="#{labels['dict.aceptar']}" id="btnAceptarTramite"/>
     </ui:define>
 </ui:composition>
 </html>

@@ -787,7 +787,10 @@
                 <h:panelGroup id="panelTemas">
                     <c:forEach items="#{dialogProcedimiento.roots}" var="tema" varStatus="status">
                         <my:moduloLateral id="moduloTema#{tema.data.codigo}" styleClass="mt-2"
-                                          titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}">
+                                          titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
+                                          required="#{dialogProcedimiento.validarDocumentosLopdFlujo}"
+                                          completo="#{dialogProcedimiento.temaFlujoCompleto(tema.data)}"
+                                          checkValores="#{dialogProcedimiento.validarDocumentosLopdFlujo}">
                                 <p:treeTable
                                         value="#{tema}"
                                         var="td"

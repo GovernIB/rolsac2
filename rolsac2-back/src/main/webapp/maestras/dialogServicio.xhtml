@@ -454,47 +454,43 @@
             </my:moduloLateral>
             <h:panelGroup id="panelTemas">
                 <c:forEach items="#{dialogServicio.roots}" var="tema" varStatus="status">
-                    <div class="row left-container mx-0 mt-2">
-                        <div class="left-container-header ml-0 col-12 row">
-                            <div class="col-10 text-center">
-                                <p class="left-container-tit mt-2 mb-1">#{labels['dialogUnidadAdministrativa.temas']} -
-                                    #{tema.data.descripcion.getTraduccionConValor(sessionBean.lang)}</p>
-                            </div>
-                            <div class="col-2">
-                                <p:commandButton id="btnTema#{tema.data.codigo}Col" onclick="colapsarModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.colapsar']}" icon="pi pi-minus" styleClass="mt-2" style="margin-left:-10px" pt:aria-label="#{labels['dict.colapsar']}"/>
-                                <p:commandButton id="btnTema#{tema.data.codigo}Exp" onclick="expandirModulo('#divTema#{tema.data.codigo}','btnTema#{tema.data.codigo}');" title="#{labels['dict.expandir']}" icon="pi pi-plus" styleClass="mt-2 importantOcultar" style="margin-left:-10px" pt:aria-label="#{labels['dict.expandir']}"/>
-                            </div>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}" class="col-10 p-1">
-                            <p:treeTable value="#{tema}" var="td" emptyMessage="#{labels['dict.tablaVacia']}" scrollable="true" paginator="false" selectionMode="single" selection="#{dialogServicio.temasTabla[status.index]}" rowKey="#{td.codigo}" styleClass="noHeader">
-
-                                <!-- Necesario para actualizar en controlador la fila seleccionada -->
-                                <p:ajax event="select" global="false"/>
-                                <!--<p:ajax event="rowUnselect"/>-->
-
-
-                                <p:column headerText="" styleClass="w75">
-
-                                    <div class="ui-chkbox ui-widget ui-selection">
-                                        <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                                            <p:outputLabel styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}" pt:aria-label="Etiqueta"/>
-                                        </div>
+                    <my:moduloLateral id="moduloTema#{tema.data.codigo}" styleClass="mt-2"
+                                      titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(sessionBean.lang)}"
+                                      required="#{dialogServicio.validarDocumentosLopdFlujo}"
+                                      completo="#{dialogServicio.temaFlujoCompleto(tema.data)}"
+                                      checkValores="#{dialogServicio.validarDocumentosLopdFlujo}">
+                        <p:treeTable value="#{tema}" var="td"
+                                     emptyMessage="#{labels['dict.tablaVacia']}"
+                                     scrollable="true" paginator="false"
+                                     selectionMode="single"
+                                     selection="#{dialogServicio.temasTabla[status.index]}"
+                                     rowKey="#{td.codigo}" styleClass="noHeader">
+                            <p:ajax event="select" global="false"/>
+                            <p:column headerText="" styleClass="w75">
+                                <div class="ui-chkbox ui-widget ui-selection">
+                                    <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                                        <p:outputLabel styleClass="ui-chkbox-icon ui-icon ui-c #{td.relacionado ? 'ui-icon-minus' : 'ui-icon-check'}" pt:aria-label="Etiqueta"/>
                                     </div>
-                                    <i class="#{dialogServicio.getIcono(td)}"/>
-                                    <h:outputText id="texto" value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande"/>
-                                    <p:tooltip id="toolTipFade#{td.codigo}" for="texto" value="#{dialogServicio.getTooltip(td)}" position="right"/>
-                                </p:column>
-
-                            </p:treeTable>
-                        </div>
-                        <div id="divTema#{tema.data.codigo}Btns" class="col-2 p-1 d-flex flex-column align-content-center align-items-center">
-                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus" styleClass="text-success" process="@this" actionListener="#{dialogServicio.altaTematicas(tema.data)}" rendered="#{!dialogServicio.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
-                                <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogTemas}" process="@this" update="messagesDialog panelTemas"/>
+                                </div>
+                                <i class="#{dialogServicio.getIcono(td)}"/>
+                                <h:outputText id="texto" value="#{td.descripcion.getTraduccionConValor(sessionBean.lang)}" class="labelGrande"/>
+                                <p:tooltip id="toolTipFade#{td.codigo}" for="texto"
+                                           value="#{dialogServicio.getTooltip(td)}" position="right"/>
+                            </p:column>
+                        </p:treeTable>
+                        <f:facet name="acciones">
+                            <p:commandButton title="#{labels['dict.nuevo']}" icon="pi pi-plus"
+                                             styleClass="text-success" process="@this"
+                                             actionListener="#{dialogServicio.altaTematicas(tema.data)}"
+                                             rendered="#{!dialogServicio.isModoConsulta()}" pt:aria-label="#{labels['dict.nuevo']}">
+                                <p:ajax event="dialogReturn"
+                                        listener="#{dialogServicio.returnDialogTemas}"
+                                        process="@this"
+                                        update=":formDialog:messagesDialog :formDialog:panelTemas"/>
                             </p:commandButton>
-                        </div>
-                    </div>
+                        </f:facet>
+                    </my:moduloLateral>
                 </c:forEach>
-
             </h:panelGroup>
             <div class="row left-container mx-0 mb-2 mt-2">
                 <div class="col-12 left-container-header text-center">
@@ -803,7 +799,7 @@
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
             <p:outputLabel value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow" pt:aria-label="#{labels['dialogServicio.estado']}:"/>
             <p:inputText id="txtWorkFlow" value="#{empty dialogServicio.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogServicio.estadoProcedimiento.toString()]}" styleClass="wf-field" style="min-width: 250px;" readonly="true"/>
-            <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}" icon="pi pi-arrow-right" action="#{dialogServicio.guardarFlujo}" styleClass="btn-footer" style="white-space: nowrap;text-align: center;" process="@all" readonly="#{empty dialogServicio.data.codigo}" update="messagesDialog formDatos formDatosPublicacion formDatosContacto panelOrganos panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD" rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}" id="btnGuardarFlujo">
+            <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}" icon="pi pi-arrow-right" action="#{dialogServicio.guardarFlujo}" styleClass="btn-footer" style="white-space: nowrap;text-align: center;" process="@all" readonly="#{empty dialogServicio.data.codigo}" update="messagesDialog formDatos formDatosPublicacion formDatosContacto panelOrganos panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD :formDialog:panelTemas" rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}" id="btnGuardarFlujo">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}" icon="pi pi-inbox" action="#{dialogServicio.verMensajes}" styleClass="btn-footer" process="@this" readonly="#{empty dialogServicio.data.codigo}" update="messagesDialog" rendered="#{dialogServicio.mostrarBtnMensajes}" pt:aria-label="#{labels['dict.mensajes']}">
@@ -830,7 +826,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton id="closeButton" action="#{dialogServicio.cerrar}" value="#{labels['dict.cerrar']}" process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
-        <p:commandButton action="#{dialogServicio.guardar}" value="#{labels['dict.guardar']}" update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD" rendered="#{dialogServicio.mostrarBotonGuardar()}" process="@all" pt:aria-label="#{labels['dict.guardar']}" id="btnGuardar"/>
+        <p:commandButton action="#{dialogServicio.guardar}" value="#{labels['dict.guardar']}" update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD :formDialog:panelTemas" rendered="#{dialogServicio.mostrarBotonGuardar()}" process="@all" pt:aria-label="#{labels['dict.guardar']}" id="btnGuardar"/>
 
     </ui:define>
 </ui:composition>
