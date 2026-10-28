@@ -580,17 +580,22 @@
                             </h:panelGroup>
                         </div>
                         <div class="form-group col-md-7">
-                            <p:outputLabel styleClass="mr-2 pt-0 negrita"
-                                           value="#{labels['dialogProcedimiento.nombreResponsable']}:"
-                                           for="txtNombreResp" pt:aria-label="#{labels['dialogProcedimiento.nombreResponsable']}:"/>
-                            <p>
-                                <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}"
-                                             readonly="#{dialogProcedimiento.isModoConsulta()}"
-                                             required="#{empty param['formDialog:closeButton']}"
-                                             requiredMessage="#{labels['dict.obligatorio.responsable']}"
-                                             maxlength="255"
-                                             styleClass="w95"/>
-                            </p>
+                            <h:panelGroup id="bloqueTxtNombreResp" layout="block">
+                                <p:outputLabel styleClass="mr-2 pt-0 negrita"
+                                               value="#{labels['dialogProcedimiento.nombreResponsable']}:"
+                                               for="txtNombreResp" pt:aria-label="#{labels['dialogProcedimiento.nombreResponsable']}:"/>
+                                <p>
+                                    <p:inputText id="txtNombreResp" value="#{dialogProcedimiento.data.responsable}"
+                                                 readonly="#{dialogProcedimiento.isModoConsulta()}"
+                                                 required="#{empty param['formDialog:closeButton']}"
+                                                 requiredMessage="#{labels['dict.obligatorio.responsable']}"
+                                                 maxlength="255" styleClass="w95">
+                                        <!-- Revalidar el campo y volver a dibujar también la etiqueta. -->
+                                        <p:ajax event="blur" process="@this"
+                                                update=":formDialog:bloqueTxtNombreResp :formDialog:messagesDialog"/>
+                                    </p:inputText>
+                                </p>
+                            </h:panelGroup>
                         </div>
                         <div class="form-group col-md-5">
                             <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoElectronico']}:"
@@ -607,20 +612,23 @@
                             </p:inputText>
                         </div>
                         <div class="form-group col-md-12">
-                            <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
-                                           for="txtEmailIncidencias" pt:aria-label="#{labels['dialogProcedimiento.correoIncidencias']}:"/>
-                            <p:inputText id="txtEmailIncidencias" value="#{dialogProcedimiento.data.incidenciasEmail}"
-                                         validatorMessage="#{labels['dict.emailNoValido']}"
-                                         update="messagesDialog"
-                                         maxlength="100"
-                                         requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
-                                         required="#{empty param['formDialog:closeButton']}"
-                                         readonly="#{dialogProcedimiento.isModoConsulta()}" styleClass="w96">
-                                <f:validateRegex
-                                        pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
-                                />
-                                <p:ajax partialSubmit="@this" update="messagesDialog"/>
-                            </p:inputText>
+                            <h:panelGroup id="bloqueTxtEmailIncidencias" layout="block">
+                                <p:outputLabel styleClass="mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.correoIncidencias']}:"
+                                               for="txtEmailIncidencias" pt:aria-label="#{labels['dialogProcedimiento.correoIncidencias']}:"/>
+                                <p:inputText id="txtEmailIncidencias" value="#{dialogProcedimiento.data.incidenciasEmail}"
+                                             validatorMessage="#{labels['dict.emailNoValido']}"
+                                             maxlength="100"
+                                             requiredMessage="#{labels['dict.obligatorio.incidenciasEmail']}"
+                                             required="#{empty param['formDialog:closeButton']}"
+                                             readonly="#{dialogProcedimiento.isModoConsulta()}" styleClass="w96">
+                                    <f:validateRegex
+                                            pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                    />
+                                    <!-- Actualizar también el label para retirar el rojo tras validar. -->
+                                    <p:ajax event="blur" process="@this"
+                                            update=":formDialog:bloqueTxtEmailIncidencias :formDialog:messagesDialog"/>
+                                </p:inputText>
+                            </h:panelGroup>
                         </div>
                     </div>
                 </p:panel>

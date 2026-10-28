@@ -625,12 +625,20 @@ public class DialogServicio extends AbstractController implements Serializable {
         this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
 
+        // No intentar guardar con TEL activo si el select ha quedado sin opcion.
+        // Evita el autounboxing de Integer null y muestra un aviso al usuario.
+        if (data.isTramitElectronica() && opcionTelematica == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
+                    getLiteral("dict.obligatorio.opcionTelematica"));
+            return;
+        }
+
         if (data.isTramitElectronica()) {
             //Es para borrar datos antiguos que ya no se utilizan
-            if (opcionTelematica == 1 && data.getTipoTramitacion() != null) {
+            if (Integer.valueOf(1).equals(opcionTelematica) && data.getTipoTramitacion() != null) {
                 //Introducimos datos
                 data.getTipoTramitacion().setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            } else if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
+            } else if (Integer.valueOf(2).equals(opcionTelematica) && data.getTipoTramitacion() != null) {
                 //Introducimos url
                 data.getTipoTramitacion().setTramiteId(null);
                 data.getTipoTramitacion().setTramiteVersion(null);
@@ -765,11 +773,23 @@ public class DialogServicio extends AbstractController implements Serializable {
         }*/
 
         if (canalesSeleccionados != null && canalesSeleccionados.contains("TEL")) {
-            if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
+            if (opcionTelematica == null) {
+                UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
+                        getLiteral("dict.obligatorio.opcionTelematica"));
+                return false;
+            }
+            if (Integer.valueOf(1).equals(opcionTelematica)
+                    && (this.data.getTipoTramitacion() == null
+                    || this.data.getTipoTramitacion().getCodPlatTramitacion() == null
+                    || this.data.getTipoTramitacion().getTramiteId() == null
+                    || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaPlataformaTramitacion"));
                 return false;
             }
-            if (this.opcionTelematica == 2 && (this.data.getTipoTramitacion().getUrl() == null || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
+            if (Integer.valueOf(2).equals(opcionTelematica)
+                    && (this.data.getTipoTramitacion() == null
+                    || this.data.getTipoTramitacion().getUrl() == null
+                    || !this.data.getTipoTramitacion().getUrl().estaCompleto(sessionBean.getIdiomasObligatoriosList()))) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaUrlTramitacion"));
                 return false;
             }

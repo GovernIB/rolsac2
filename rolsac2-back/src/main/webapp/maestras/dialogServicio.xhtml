@@ -281,11 +281,10 @@
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccione']}" itemValue="#{null}"/>
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccionePlataforma']}" itemValue="1"/>
                             <f:selectItem itemLabel="#{labels['dialogProcedimientoTramite.opcionTelematica.seleccioneUrl']}" itemValue="2"/>
-                            <p:ajax event="change" process="@this" resetValues="true"
+                            <p:ajax event="change" process="@this"
                                      update=":formDialog:bloqueValTxtOpcionTelematica :formDialog:panelFormCanales"/>
 
                         </p:selectOneMenu>
-                        <p:inputText id="txtOpcion" style="display:none" value="#{dialogServicio.opcionTelematica}"/>
                     </h:panelGroup>
                     </div>
 
