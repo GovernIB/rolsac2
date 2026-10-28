@@ -80,7 +80,8 @@
             }
             .bloque-validacion-literal .literal-idiomas-incompletos {
                 color: #d32f2f !important;
-                border-color: #d32f2f !important;
+                border: 1px solid #eed3d7 !important;
+                box-shadow: none !important;
             }
             /* El estado anterior de JSF no debe dejar una etiqueta roja
                cuando ya estan completos los idiomas y no hay otros errores. */
@@ -407,7 +408,7 @@
                             </h:panelGroup>
                         </div>
                         <div class="form-group col-md-12">
-                            <h:panelGroup id="bloqueTxtObservaciones" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
+                            <h:panelGroup id="bloqueTxtObservaciones" layout="block">
                             <p:outputLabel styleClass="mr-2 mt-1 mb-1 pt-0 negrita"
                                            value="#{labels['dialogProcedimiento.observaciones']}:"
                                            for="txtObservaciones" pt:aria-label="#{labels['dialogProcedimiento.observaciones']}:"/>
@@ -420,14 +421,14 @@
                                                          idioma="#{dialogProcedimiento.idioma}"
                                                          literal="#{dialogProcedimiento.data.observaciones}"
                                                          nombreLiteral="#{labels['dialogProcedimiento.observaciones']}"
-                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     checkValores="false"
                                                      updateOnBlur=":formDialog:bloqueTxtObservaciones"/>
                             </p>
                             </h:panelGroup>
 
                         </div>
                         <div class="form-group col-md-12">
-                            <h:panelGroup id="bloqueTxtKeywords" layout="block" styleClass="#{dialogProcedimiento.checkValores ? 'bloque-validacion-literal' : ''}">
+                            <h:panelGroup id="bloqueTxtKeywords" layout="block">
                             <p:outputLabel styleClass="mr-2 mb-1 pt-0 negrita" value="#{labels['dialogProcedimiento.keywords']}:"
                                            for="txtKeywords" pt:aria-label="#{labels['dialogProcedimiento.keywords']}:"/>
                             <my:literalComponent id="txtKeywords" styleClass="w95"
@@ -439,7 +440,7 @@
                                                  literal="#{dialogProcedimiento.data.keywords}"
                                                  nombreLiteral="#{labels['dialogProcedimiento.keywords']}"
                                                  maxlength="500"
-                                                     checkValores="#{dialogProcedimiento.checkValores}"
+                                                     checkValores="false"
                                                      updateOnBlur=":formDialog:bloqueTxtKeywords"/>
                             </h:panelGroup>
                         </div>
@@ -778,8 +779,7 @@
                 <h:panelGroup id="panelTemas">
                     <c:forEach items="#{dialogProcedimiento.roots}" var="tema" varStatus="status">
                         <my:moduloLateral id="moduloTema#{tema.data.codigo}" styleClass="mt-2"
-                                          titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}"
-                                          required="true" completo="#{dialogProcedimiento.isTemaCompleto(tema.data)}">
+                                          titulo="#{labels['dialogUnidadAdministrativa.temas']} - #{tema.data.descripcion.getTraduccionConValor(dialogProcedimiento.idioma)}">
                                 <p:treeTable
                                         value="#{tema}"
                                         var="td"
@@ -870,7 +870,7 @@
                 <p:outputPanel id="panelCategoriasPDU" layout="block">
                     <div id="divCategoriasPadrePDU" style="#{dialogProcedimiento.getStyleDivCategoriasPDU()}">
                         <my:moduloLateral id="moduloCategoriasPDU" titulo="#{labels['dialogProcedimiento.categoriasPDU']}"
-                                          styleClass="mb-2 mt-2" required="#{dialogProcedimiento.categoriaPduObligatoria}" checkValores="#{dialogProcedimiento.checkValores}">
+                                          styleClass="mb-2 mt-2" required="#{dialogProcedimiento.data.integrarPdu}" checkValores="#{dialogProcedimiento.checkValores}">
                             <p:dataTable id="dataCategoriaPDUProcedimiento" var="td"
                                          value="#{dialogProcedimiento.data.categoriasPDU}"
                                          emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
@@ -973,8 +973,10 @@
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloLOPD" titulo="#{labels['dialogProcedimiento.docInformacion']}"
-                                  styleClass="mb-2 #{dialogProcedimiento.isLOPDModuloErrorFlujo() ? 'ui-state-error' : ''}"
-                                  required="#{dialogProcedimiento.documentoLopdObligatorio}" checkValores="#{dialogProcedimiento.checkValores}">
+                                  styleClass="mb-2"
+                                  required="#{dialogProcedimiento.validarDocumentosLopdFlujo and dialogProcedimiento.data.estado eq 'MODIFICACION'}"
+                                  completo="#{not empty dialogProcedimiento.data.documentosLOPD}"
+                                  checkValores="#{dialogProcedimiento.validarDocumentosLopdFlujo}">
                         <p:dataTable id="dataDocumentosLopd" var="td" value="#{dialogProcedimiento.data.documentosLOPD}"
                                      emptyMessage="#{labels['dialogProcedimiento.noDocumentos']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -1027,7 +1029,10 @@
                     </f:facet>
                 </my:moduloLateral>
                 <my:moduloLateral id="moduloTramites" titulo="#{labels['dialogProcedimiento.tramites']}"
-                                  styleClass="mb-2 #{dialogProcedimiento.isTramitesModuloErrorFlujo() ? 'ui-state-error' : ''}" checkValores="#{dialogProcedimiento.checkValores}">
+                                  styleClass="mb-2"
+                                  required="#{dialogProcedimiento.validarDocumentosLopdFlujo}"
+                                  completo="#{dialogProcedimiento.tramitesFlujoCompletos}"
+                                  checkValores="#{dialogProcedimiento.validarDocumentosLopdFlujo}">
                         <p:dataTable id="dataTableTramite" var="td" value="#{dialogProcedimiento.data.tramites}"
                                      emptyMessage="#{labels['dialogProcedimiento.tablaVacia']}" scrollable="true"
                                      paginator="false" selectionMode="single"
@@ -1243,14 +1248,14 @@
                          styleClass="wf-field"
                          style="min-width: 250px;"
                          readonly="true" />
-            <p:commandButton value="#{labels['dialogProcedimiento.seguirFlujo']}"
+            <p:commandButton id="btnGuardarFlujo" value="#{labels['dialogProcedimiento.seguirFlujo']}"
                              icon="pi pi-arrow-right"
                              action="#{dialogProcedimiento.guardarFlujo}"
                              styleClass="btn-footer"
                              style="white-space: nowrap;text-align: center;flex:0 0 auto; "
                              process="@all"
                              readonly="#{empty dialogProcedimiento.data.codigo}"
-                             update="messagesDialog panelModulosLaterales"
+                             update="messagesDialog panelModulosLaterales formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos"
                              rendered="#{dialogProcedimiento.isMostrarBtnFlujo()}" pt:aria-label="#{labels['dialogProcedimiento.seguirFlujo']}">
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"
                                 update="messagesDialog panelModulosLaterales"/>

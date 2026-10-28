@@ -33,6 +33,9 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     // Se activa al intentar guardar o avanzar el flujo; false al abrir el dialogo.
     private boolean checkValores = false;
 
+    // Solo se activa al intentar Seguir flujo; Guardar nunca debe marcar el modulo LOPD.
+    private boolean validarDocumentosLopdFlujo = false;
+
     private ProcedimientoDTO data;
     private ProcedimientoDTO dataOriginal;
 
@@ -132,6 +135,22 @@ public class DialogProcedimiento extends AbstractController implements Serializa
 
     public void setCheckValores(boolean checkValores) {
         this.checkValores = checkValores;
+    }
+
+    public boolean isValidarDocumentosLopdFlujo() {
+        // Se consulta tambien el boton origen: en una validacion JSF fallida
+        // no llega a invocarse guardar() ni guardarFlujo().
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            String origen = context.getExternalContext()
+                    .getRequestParameterMap().get("javax.faces.source");
+            if ("formDialog:btnGuardarFlujo".equals(origen)) {
+                validarDocumentosLopdFlujo = true;
+            } else if ("formDialog:btnGuardar".equals(origen)) {
+                validarDocumentosLopdFlujo = false;
+            }
+        }
+        return validarDocumentosLopdFlujo;
     }
 
     public void load() {
@@ -430,10 +449,29 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void guardarFlujo() {
+        validarDocumentosLopdFlujo = true;
         checkValores = true;
 
         esSoloGuardar = false;
-        if (!checkObligatorio()) {
+        // Estas tres comprobaciones son exclusivas de Mover/Seguir flujo.
+        // Se evaluan todas para mostrar los avisos en una sola pulsacion.
+        boolean camposCorrectos = checkObligatorio();
+
+        boolean documentoLopdCorrecto = data.getEstado() != TypeProcedimientoEstado.MODIFICACION
+                || (data.getDocumentosLOPD() != null && !data.getDocumentosLOPD().isEmpty());
+        if (!documentoLopdCorrecto) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
+                    getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+        }
+
+        // Misma condicion funcional que usa el modulo lateral.
+        boolean tramitesCorrectos = isTramitesFlujoCompletos();
+        if (!tramitesCorrectos) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
+                    getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
+        }
+
+        if (!camposCorrectos || !documentoLopdCorrecto || !tramitesCorrectos) {
             return;
         }
 
@@ -456,17 +494,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             return;
         }
 
-        boolean tiene = false;
-        if (data.getTramites() != null) {
-            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
-                if (tramite.getFase() == FASE_INICIACION.intValue()) {
-                    tiene = true;
-                    break;
-                }
-            }
-        }
-
-        if (!tiene) {
+        if (!isTramitesFlujoCompletos()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.flujo.tramiteFaseIniciacion"));
             return;
         }
@@ -736,6 +764,7 @@ public class DialogProcedimiento extends AbstractController implements Serializa
     }
 
     public void guardar() {
+        validarDocumentosLopdFlujo = false;
         checkValores = true;
 
         esSoloGuardar = true;
@@ -1095,16 +1124,24 @@ public class DialogProcedimiento extends AbstractController implements Serializa
         }
     }
 
-    private boolean yaExisteFaseIniciacion() {
-        boolean existeFaseIniciacion = false;
-        if (this.data.getTramites() != null) {
-            for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
-                if (tramite.getFase() == FASE_INICIACION) {
-                    existeFaseIniciacion = true;
-                }
+    /**
+     * Estado funcional del modulo de tramites para Mover flujo.
+     * No basta con que haya tramites: alguno debe estar en iniciacion (fase 1).
+     */
+    public boolean isTramitesFlujoCompletos() {
+        if (data == null || data.getTramites() == null) {
+            return false;
+        }
+        for (ProcedimientoTramiteDTO tramite : data.getTramites()) {
+            if (tramite != null && FASE_INICIACION.equals(tramite.getFase())) {
+                return true;
             }
         }
-        return existeFaseIniciacion;
+        return false;
+    }
+
+    private boolean yaExisteFaseIniciacion() {
+        return isTramitesFlujoCompletos();
     }
 
     //NORMATIVA

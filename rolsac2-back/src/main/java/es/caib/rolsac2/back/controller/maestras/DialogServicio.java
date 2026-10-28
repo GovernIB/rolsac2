@@ -32,6 +32,8 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     // Se activa al intentar guardar o avanzar el flujo; false al abrir el dialogo.
     private boolean checkValores = false;
+    // Independiente de checkValores: Guardar no exige documento LOPD.
+    private boolean validarDocumentosLopdFlujo = false;
 
     private ServicioDTO data;
     private ServicioDTO dataOriginal;
@@ -147,6 +149,21 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void setCheckValores(boolean checkValores) {
         this.checkValores = checkValores;
+    }
+
+    public boolean isValidarDocumentosLopdFlujo() {
+        // La accion puede no ejecutarse si JSF detecta un campo required vacio.
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            String origen = context.getExternalContext()
+                    .getRequestParameterMap().get("javax.faces.source");
+            if ("formDialog:btnGuardarFlujo".equals(origen)) {
+                validarDocumentosLopdFlujo = true;
+            } else if ("formDialog:btnGuardar".equals(origen)) {
+                validarDocumentosLopdFlujo = false;
+            }
+        }
+        return validarDocumentosLopdFlujo;
     }
 
     public void load() {
@@ -473,8 +490,19 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void guardarFlujo() {
         checkValores = true;
+        validarDocumentosLopdFlujo = true;
         esSoloGuardar = false;
-        if (!checkObligatorio()) {
+
+        // Comprobar campos obligatorios y documento LOPD al intentar mover
+        // el flujo; no condicionar esta comprobacion a que fallen otros campos.
+        boolean camposCorrectos = checkObligatorio();
+        boolean documentoLopdCorrecto = !data.isActivoLOPD()
+                || (data.getDocumentosLOPD() != null && !data.getDocumentosLOPD().isEmpty());
+        if (!documentoLopdCorrecto) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
+                    getLiteral("dialogProcedimiento.obligatorio.flujo.documentosLOPD"));
+        }
+        if (!camposCorrectos || !documentoLopdCorrecto) {
             return;
         }
 
@@ -590,6 +618,7 @@ public class DialogServicio extends AbstractController implements Serializable {
 
     public void guardar() {
         checkValores = true;
+        validarDocumentosLopdFlujo = false;
 
         esSoloGuardar = true;
         this.data.setTramitPresencial(canalesSeleccionados.contains("PRE"));
@@ -706,7 +735,9 @@ public class DialogServicio extends AbstractController implements Serializable {
             retorno = false;
         }
 
-        if (!this.data.isTramitElectronica() && !this.data.isTramitPresencial() && !this.data.isTramitTelefonica()) {
+        // El usuario cambia los canales en canalesSeleccionados. No usar los flags
+        // del DTO aqui: al pulsar Mover flujo pueden conservar los valores anteriores.
+        if (canalesSeleccionados == null || canalesSeleccionados.isEmpty()) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.algunCanalPresentacion"));
             retorno = false;
         }
@@ -733,7 +764,7 @@ public class DialogServicio extends AbstractController implements Serializable {
             }
         }*/
 
-        if (this.data.isTramitElectronica()) {
+        if (canalesSeleccionados != null && canalesSeleccionados.contains("TEL")) {
             if (this.opcionTelematica == 1 && (this.data.getTipoTramitacion().getCodPlatTramitacion() == null || this.data.getTipoTramitacion().getTramiteId() == null || this.data.getTipoTramitacion().getTramiteVersion() == null)) {
                 UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.error.faltaPlataformaTramitacion"));
                 return false;

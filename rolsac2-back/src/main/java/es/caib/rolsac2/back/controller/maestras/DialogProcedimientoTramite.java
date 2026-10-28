@@ -94,9 +94,9 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
     }
 
     public void load() {
-        // Valor transmitido desde DialogProcedimiento (mismo mecanismo que los tramites).
-        Object comprobar = UtilJSF.getValorMochilaByKey("checkValores");
-        this.checkValores = Boolean.TRUE.equals(comprobar);
+        // La validacion visual se activa solo cuando se pulsa Aceptar en este dialogo.
+        // No se hereda el checkValores del procedimiento que abre el tramite.
+        this.checkValores = false;
         this.setearIdioma();
 
         nombreProcedimiento = (Literal) UtilJSF.getValorMochilaByKey("nombreProcedimiento");
@@ -280,19 +280,27 @@ public class DialogProcedimientoTramite extends AbstractController implements Se
         this.data.setTramitElectronica(canalesSeleccionados.contains("TEL"));
         this.data.setTramitTelefonica(canalesSeleccionados.contains("TFN"));
 
+        // Al reactivar el canal telematico no podemos guardar sin una opcion.
+        // En ese caso mostrar aviso en lugar de hacer autounboxing de Integer null.
+        if (data.isTramitElectronica() && opcionTelematica == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING,
+                    getLiteral("dict.obligatorio.opcionTelematica"));
+            return;
+        }
+
         if (!verificarGuardar()) {
             return;
         }
 
         if (data.isTramitElectronica()) {
-            if (opcionTelematica == 1) {
+            if (Integer.valueOf(1).equals(opcionTelematica)) {
                 //Seleccionamos plantilla
                 data.setTipoTramitacion(null);
-            } else if (opcionTelematica == 2 && data.getTipoTramitacion() != null) {
+            } else if (Integer.valueOf(2).equals(opcionTelematica) && data.getTipoTramitacion() != null) {
                 //Introducimos datos
                 data.setPlantillaSel(null);
                 data.getTipoTramitacion().setUrl(Literal.createInstance(sessionBean.getIdiomasPermitidosList()));
-            } else if (opcionTelematica == 3 && data.getTipoTramitacion() != null) {
+            } else if (Integer.valueOf(3).equals(opcionTelematica) && data.getTipoTramitacion() != null) {
                 //Introducimos url
                 data.setPlantillaSel(null);
                 data.getTipoTramitacion().setTramiteId(null);
