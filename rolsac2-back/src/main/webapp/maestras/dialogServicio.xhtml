@@ -606,8 +606,8 @@
                                   titulo="#{labels['dialogServicio.docInformacion']}"
                                   styleClass="mb-2"
                                   required="#{dialogServicio.validarDocumentosLopdFlujo and dialogServicio.data.activoLOPD}"
-                                  completo="#{not empty dialogServicio.data.documentosLOPD}"
-                                  checkValores="#{dialogServicio.validarDocumentosLopdFlujo}">
+                                  completo="#{not dialogServicio.data.activoLOPD or not empty dialogServicio.data.documentosLOPD}"
+                                  checkValores="#{dialogServicio.validarDocumentosLopdFlujo and dialogServicio.data.activoLOPD}">
                     <p:dataTable id="dataDocumentosLopd" var="td"
                                  value="#{dialogServicio.data.documentosLOPD}"
                                  emptyMessage="#{labels['dialogServicio.noDocumentos']}"
