@@ -1131,3 +1131,9 @@ button.ui-state-hover:hover{
 .ui-icon-check {
 	background-position: -65px -145px !important;
 }
+
+/* Texto del tipo de procedimiento en negrita cuando está incompleto */
+.modulo-lateral.tipo-procedimiento-negrita.ui-state-error
+.ui-selectonemenu-label {
+	color: #000000 !important;
+}

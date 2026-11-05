@@ -921,10 +921,10 @@ public class DialogProcedimiento extends AbstractController implements Serializa
             todoCorrecto = false;
         }
 
-        /*if (this.data.getUaResponsable() == null || this.data.getUaResponsable().getCodigo() == null) {
-            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.obligatorio.uaResponsable"));
+        if (this.data.getTipoProcedimiento() == null) {
+            UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dict.obligatorio.tipoProcedimiento"));
             todoCorrecto = false;
-        }*/
+        }
 
         if (this.data.getFechaPublicacion() != null && this.data.getFechaCaducidad() != null && data.getFechaCaducidad().before(this.data.getFechaPublicacion())) {
             UtilJSF.addMessageContext(TypeNivelGravedad.WARNING, getLiteral("dialogProcedimiento.fechas.fechaPublicacionCaducidad"));
