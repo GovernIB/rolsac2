@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rolsac2</artifactId>
         <groupId>es.caib.rolsac2</groupId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
 
     <artifactId>rolsac2-rest-api-externa</artifactId>
