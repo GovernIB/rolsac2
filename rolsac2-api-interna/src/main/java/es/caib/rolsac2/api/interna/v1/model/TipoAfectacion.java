@@ -38,8 +38,8 @@ public class TipoAfectacion extends EntidadBase {
     @Schema(description = "Código numérico del tipo de afectación", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoAfectacion(TipoAfectacionDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoAfectacion(TipoAfectacionDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoAfectacion() {

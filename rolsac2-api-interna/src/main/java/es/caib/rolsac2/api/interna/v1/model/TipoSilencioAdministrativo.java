@@ -51,8 +51,8 @@ public class TipoSilencioAdministrativo extends EntidadBase<TipoSilencioAdminist
     @Schema(description = "Código numérico del tipo de silencio administrativo", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoSilencioAdministrativo(TipoSilencioAdministrativoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoSilencioAdministrativo(TipoSilencioAdministrativoDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoSilencioAdministrativo() {

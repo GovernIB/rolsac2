@@ -168,7 +168,8 @@ public class Procedimientos extends EntidadBase {
     private Integer habilitadoApoderado;
 
     @Schema(description = "habilitadoFuncionario", type = SchemaType.STRING, required = false)
-    private String habilitadoFuncionario;;
+    private String habilitadoFuncionario;
+    ;
 
     @Schema(description = "responsableEmail", type = SchemaType.STRING, required = false)
     private String responsableEmail;
@@ -209,7 +210,7 @@ public class Procedimientos extends EntidadBase {
 
     public Procedimientos(ProcedimientoDTO nodo, String urlBase, String idioma, boolean hateoasEnabled, final String idiomaPorDefecto) {
 
-        super(nodo, urlBase, idioma, hateoasEnabled);
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
 
         try {
             // Si no existe el idioma solicitado, usar idioma por defecto

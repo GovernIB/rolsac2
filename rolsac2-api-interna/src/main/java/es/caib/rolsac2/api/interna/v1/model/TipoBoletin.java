@@ -44,8 +44,8 @@ public class TipoBoletin extends EntidadBase<TipoBoletin> {
     @Schema(description = "Nombre del tipo de boletín oficial", name = "nombre", type = SchemaType.STRING, required = false)
     private String nombre;
 
-    public TipoBoletin(TipoBoletinDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoBoletin(TipoBoletinDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoBoletin() {

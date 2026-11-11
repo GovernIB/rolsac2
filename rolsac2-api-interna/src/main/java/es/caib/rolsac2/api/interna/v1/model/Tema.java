@@ -21,150 +21,160 @@ import javax.xml.bind.annotation.XmlTransient;
 @Schema(name = "Tema", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TEMAS)
 public class Tema extends EntidadBase<Tema> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Tema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Tema.class);
 
-	/** codigo **/
-	@Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
-	private Long codigo;
+    /**
+     * codigo
+     **/
+    @Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
+    private Long codigo;
 
-	/** identificador **/
-	@Schema(description = "identificador", type = SchemaType.STRING, required = false)
-	private String identificador;
+    /**
+     * identificador
+     **/
+    @Schema(description = "identificador", type = SchemaType.STRING, required = false)
+    private String identificador;
 
-	/** descripcion **/
-	@Schema(description = "descripcion", type = SchemaType.STRING, required = false)
-	private String descripcion;
+    /**
+     * descripcion
+     **/
+    @Schema(description = "descripcion", type = SchemaType.STRING, required = false)
+    private String descripcion;
 
-	/** mathPath **/
-	@Schema(description = "mathPath", type = SchemaType.STRING, required = false)
-	private String mathPath;//
+    /**
+     * mathPath
+     **/
+    @Schema(description = "mathPath", type = SchemaType.STRING, required = false)
+    private String mathPath;//
 
 
-	// -- LINKS--//
-	// -- se duplican las entidades para poder generar la clase link en funcion de
-	// la propiedad principal (sin "link_")
-	/** boletin **/
-	@Schema(description = "link_temaPadre", required = false)
-	private Link link_temaPadre;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long temaPadre;
+    // -- LINKS--//
+    // -- se duplican las entidades para poder generar la clase link en funcion de
+    // la propiedad principal (sin "link_")
+    /**
+     * boletin
+     **/
+    @Schema(description = "link_temaPadre", required = false)
+    private Link link_temaPadre;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long temaPadre;
 
-	@Schema(description = "link_entidad", required = false)
-	private Link link_entidad;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long entidad;
+    @Schema(description = "link_entidad", required = false)
+    private Link link_entidad;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long entidad;
 
-	public Tema(TemaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
-		this(elem, urlBase, idioma, hateoasEnabled, null);
-	}
+    public Tema(TemaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+        this(elem, urlBase, idioma, hateoasEnabled, null);
+    }
 
-	public Tema(TemaDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
-		super( elem, urlBase, idioma, hateoasEnabled);
-		if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
-			this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
-		}
-	}
+    public Tema(TemaDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
+        if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
+            this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
+    }
 
-	public Tema() {
-		super();
-	}
+    public Tema() {
+        super();
+    }
 
-	@Override
-	public void generaLinks(String urlBase) {
-		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
-				null);
-		link_temaPadre = this.generaLink(this.temaPadre, Constantes.ENTIDAD_TEMAS, Constantes.URL_TEMAS, urlBase,
-				null);
-	}
+    @Override
+    public void generaLinks(String urlBase) {
+        link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+                null);
+        link_temaPadre = this.generaLink(this.temaPadre, Constantes.ENTIDAD_TEMAS, Constantes.URL_TEMAS, urlBase,
+                null);
+    }
 
-	@Override
-	protected void addSetersInvalidos() {
-		// TODO Auto-generated method stub
+    @Override
+    protected void addSetersInvalidos() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setId(Long codigo) {
-		this.codigo = codigo;
-	}
+    @Override
+    public void setId(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	/**
-	 * @return the codigo
-	 */
-	public long getCodigo() {
-		return codigo;
-	}
+    /**
+     * @return the codigo
+     */
+    public long getCodigo() {
+        return codigo;
+    }
 
-	/**
-	 * @param codigo the codigo to set
-	 */
-	public void setCodigo(long codigo) {
-		this.codigo = codigo;
-	}
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(long codigo) {
+        this.codigo = codigo;
+    }
 
-	public Link getLink_entidad() {
-		return link_entidad;
-	}
+    public Link getLink_entidad() {
+        return link_entidad;
+    }
 
-	public void setLink_entidad(Link link_entidad) {
-		this.link_entidad = link_entidad;
-	}
+    public void setLink_entidad(Link link_entidad) {
+        this.link_entidad = link_entidad;
+    }
 
-	@XmlTransient
-	public Long getEntidad() {
-		return entidad;
-	}
+    @XmlTransient
+    public Long getEntidad() {
+        return entidad;
+    }
 
-	public void setEntidad(Long entidad) {
-		this.entidad = entidad;
-	}
+    public void setEntidad(Long entidad) {
+        this.entidad = entidad;
+    }
 
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	public String getIdentificador() {
-		return identificador;
-	}
+    public String getIdentificador() {
+        return identificador;
+    }
 
-	public void setIdentificador(String identificador) {
-		this.identificador = identificador;
-	}
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public String getMathPath() {
-		return mathPath;
-	}
+    public String getMathPath() {
+        return mathPath;
+    }
 
-	public void setMathPath(String mathPath) {
-		this.mathPath = mathPath;
-	}
+    public void setMathPath(String mathPath) {
+        this.mathPath = mathPath;
+    }
 
-	public Link getLink_temaPadre() {
-		return link_temaPadre;
-	}
+    public Link getLink_temaPadre() {
+        return link_temaPadre;
+    }
 
-	public void setLink_temaPadre(Link link_temaPadre) {
-		this.link_temaPadre = link_temaPadre;
-	}
+    public void setLink_temaPadre(Link link_temaPadre) {
+        this.link_temaPadre = link_temaPadre;
+    }
 
-	public Long getTemaPadre() {
-		return temaPadre;
-	}
+    public Long getTemaPadre() {
+        return temaPadre;
+    }
 
-	public void setTemaPadre(Long temaPadre) {
-		this.temaPadre = temaPadre;
-	}
+    public void setTemaPadre(Long temaPadre) {
+        this.temaPadre = temaPadre;
+    }
 
 }

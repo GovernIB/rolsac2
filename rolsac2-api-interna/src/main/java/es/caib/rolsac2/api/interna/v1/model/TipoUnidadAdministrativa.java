@@ -21,173 +21,177 @@ import javax.xml.bind.annotation.XmlTransient;
 @Schema(name = "TipoUnidadAdministrativa", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_TIPO_UNIDAD)
 public class TipoUnidadAdministrativa extends EntidadBase<TipoUnidadAdministrativa> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TipoUnidadAdministrativa.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TipoUnidadAdministrativa.class);
 
-	/**
-	 * Identificador
-	 */
-	@Schema(description = "Identificador del tipo de unidad administrativa", name = "identificador", type = SchemaType.STRING, required = true)
-	private String identificador;
+    /**
+     * Identificador
+     */
+    @Schema(description = "Identificador del tipo de unidad administrativa", name = "identificador", type = SchemaType.STRING, required = true)
+    private String identificador;
 
-	/** descripcion. **/
-	@Schema(description = "Descripción del tipo de unidad administrativa", name = "descripcion", type = SchemaType.STRING, required = false)
-	private String descripcion;
+    /**
+     * descripcion.
+     **/
+    @Schema(description = "Descripción del tipo de unidad administrativa", name = "descripcion", type = SchemaType.STRING, required = false)
+    private String descripcion;
 
-	@Schema(description = "link_entidad", required = false)
-	private Link link_entidad;
-	@Schema(hidden = true)
-	@JsonIgnore
-	@XmlTransient
-	private Long entidad;
+    @Schema(description = "link_entidad", required = false)
+    private Link link_entidad;
+    @Schema(hidden = true)
+    @JsonIgnore
+    @XmlTransient
+    private Long entidad;
 
-	/**
-	 * Cargo Masculino
-	 */
-	@Schema(description = "Denominación del cargo en masculino", name = "cargoMasculino", type = SchemaType.STRING, required = false)
-	private String cargoMasculino;
+    /**
+     * Cargo Masculino
+     */
+    @Schema(description = "Denominación del cargo en masculino", name = "cargoMasculino", type = SchemaType.STRING, required = false)
+    private String cargoMasculino;
 
-	/**
-	 * Cargo Femenino
-	 */
-	@Schema(description = "Denominación del cargo en femenino", name = "cargoFemenino", type = SchemaType.STRING, required = false)
-	private String cargoFemenino;
+    /**
+     * Cargo Femenino
+     */
+    @Schema(description = "Denominación del cargo en femenino", name = "cargoFemenino", type = SchemaType.STRING, required = false)
+    private String cargoFemenino;
 
-	/**
-	 * Tratamiento masculino
-	 */
-	@Schema(description = "Tratamiento asociado en masculino", name = "tratamientoMasculino", type = SchemaType.STRING, required = false)
-	private String tratamientoMasculino;
+    /**
+     * Tratamiento masculino
+     */
+    @Schema(description = "Tratamiento asociado en masculino", name = "tratamientoMasculino", type = SchemaType.STRING, required = false)
+    private String tratamientoMasculino;
 
-	/**
-	 * Tratamiento femenino
-	 */
-	@Schema(description = "Tratamiento asociado en femenino", name = "tratamientoFemenino", type = SchemaType.STRING, required = false)
-	private String tratamientoFemenino;
+    /**
+     * Tratamiento femenino
+     */
+    @Schema(description = "Tratamiento asociado en femenino", name = "tratamientoFemenino", type = SchemaType.STRING, required = false)
+    private String tratamientoFemenino;
 
-	/** codigo **/
-	@Schema(description = "Código numérico del tipo de unidad administrativa", name = "codigo", type = SchemaType.INTEGER, required = false)
-	private Long codigo;
+    /**
+     * codigo
+     **/
+    @Schema(description = "Código numérico del tipo de unidad administrativa", name = "codigo", type = SchemaType.INTEGER, required = false)
+    private Long codigo;
 
-	public TipoUnidadAdministrativa(TipoUnidadAdministrativaDTO nodo, String urlBase, String idioma,
-			boolean hateoasEnabled) {
-		super(nodo, urlBase, idioma, hateoasEnabled);
-	}
+    public TipoUnidadAdministrativa(TipoUnidadAdministrativaDTO nodo, String urlBase, String idioma, String idiomaPorDefecto,
+                                    boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
+    }
 
-	public TipoUnidadAdministrativa() {
-		super();
-	}
+    public TipoUnidadAdministrativa() {
+        super();
+    }
 
-	@Override
-	public void generaLinks(String urlBase) {
-		link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
-				null);
-	}
+    @Override
+    public void generaLinks(String urlBase) {
+        link_entidad = this.generaLink(this.entidad, Constantes.ENTIDAD_ENTIDADES, Constantes.URL_ENTIDADES, urlBase,
+                null);
+    }
 
-	@Override
-	protected void addSetersInvalidos() {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    protected void addSetersInvalidos() {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void setId(Long codigo) {
-		this.codigo = codigo;
-	}
+    @Override
+    public void setId(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	/**
-	 * @return the descripcion
-	 */
-	public String getDescripcion() {
-		return descripcion;
-	}
+    /**
+     * @return the descripcion
+     */
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	/**
-	 * @param enlace the enlace to set
-	 */
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    /**
+     * @param enlace the enlace to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	/**
-	 * @return the codigo
-	 */
-	public long getCodigo() {
-		return codigo;
-	}
+    /**
+     * @return the codigo
+     */
+    public long getCodigo() {
+        return codigo;
+    }
 
-	/**
-	 * @param codigo the codigo to set
-	 */
-	public void setCodigo(long codigo) {
-		this.codigo = codigo;
-	}
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(long codigo) {
+        this.codigo = codigo;
+    }
 
-	/**
-	 * Obtiene identificador.
-	 *
-	 * @return identificador
-	 */
-	public String getIdentificador() {
-		return identificador;
-	}
+    /**
+     * Obtiene identificador.
+     *
+     * @return identificador
+     */
+    public String getIdentificador() {
+        return identificador;
+    }
 
-	/**
-	 * Establece identificador.
-	 *
-	 * @param identificador identificador
-	 */
-	public void setIdentificador(String identificador) {
-		this.identificador = identificador;
-	}
+    /**
+     * Establece identificador.
+     *
+     * @param identificador identificador
+     */
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	public Link getLink_entidad() {
-		return link_entidad;
-	}
+    public Link getLink_entidad() {
+        return link_entidad;
+    }
 
-	public void setLink_entidad(Link link_entidad) {
-		this.link_entidad = link_entidad;
-	}
+    public void setLink_entidad(Link link_entidad) {
+        this.link_entidad = link_entidad;
+    }
 
-	public Long getEntidad() {
-		return entidad;
-	}
+    public Long getEntidad() {
+        return entidad;
+    }
 
-	public void setEntidad(Long entidad) {
-		this.entidad = entidad;
-	}
+    public void setEntidad(Long entidad) {
+        this.entidad = entidad;
+    }
 
-	public String getCargoMasculino() {
-		return cargoMasculino;
-	}
+    public String getCargoMasculino() {
+        return cargoMasculino;
+    }
 
-	public void setCargoMasculino(String cargoMasculino) {
-		this.cargoMasculino = cargoMasculino;
-	}
+    public void setCargoMasculino(String cargoMasculino) {
+        this.cargoMasculino = cargoMasculino;
+    }
 
-	public String getCargoFemenino() {
-		return cargoFemenino;
-	}
+    public String getCargoFemenino() {
+        return cargoFemenino;
+    }
 
-	public void setCargoFemenino(String cargoFemenino) {
-		this.cargoFemenino = cargoFemenino;
-	}
+    public void setCargoFemenino(String cargoFemenino) {
+        this.cargoFemenino = cargoFemenino;
+    }
 
-	public String getTratamientoMasculino() {
-		return tratamientoMasculino;
-	}
+    public String getTratamientoMasculino() {
+        return tratamientoMasculino;
+    }
 
-	public void setTratamientoMasculino(String tratamientoMasculino) {
-		this.tratamientoMasculino = tratamientoMasculino;
-	}
+    public void setTratamientoMasculino(String tratamientoMasculino) {
+        this.tratamientoMasculino = tratamientoMasculino;
+    }
 
-	public String getTratamientoFemenino() {
-		return tratamientoFemenino;
-	}
+    public String getTratamientoFemenino() {
+        return tratamientoFemenino;
+    }
 
-	public void setTratamientoFemenino(String tratamientoFemenino) {
-		this.tratamientoFemenino = tratamientoFemenino;
-	}
+    public void setTratamientoFemenino(String tratamientoFemenino) {
+        this.tratamientoFemenino = tratamientoFemenino;
+    }
 }

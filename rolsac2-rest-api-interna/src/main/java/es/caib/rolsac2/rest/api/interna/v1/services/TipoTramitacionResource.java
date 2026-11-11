@@ -96,32 +96,41 @@ public class TipoTramitacionResource {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
 
         // Limitar el número total de elementos según API_MAX_LIMIT
         Integer apiMaxLimit = null;
-    	try {
+        try {
             String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
-	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
-	        if (apiMaxLimit > 0) {
-		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
-		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
-		        if (offset >= apiMaxLimit) {
-		            fg.setPaginaFirst(0);
-		            fg.setPaginaTamanyo(0);
-		        } else if (offset + size > apiMaxLimit) {
-		            fg.setPaginaTamanyo(apiMaxLimit - offset);
-		        }
-	        } else {
-	        	apiMaxLimit = null;
-	        }
-    	} catch (NumberFormatException e){
-    		apiMaxLimit = null;
+            apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+            if (apiMaxLimit > 0) {
+                int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+                int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+                if (offset >= apiMaxLimit) {
+                    fg.setPaginaFirst(0);
+                    fg.setPaginaTamanyo(0);
+                } else if (offset + size > apiMaxLimit) {
+                    fg.setPaginaTamanyo(apiMaxLimit - offset);
+                }
+            } else {
+                apiMaxLimit = null;
+            }
+        } catch (NumberFormatException e) {
+            apiMaxLimit = null;
         }
 
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url, apiMaxLimit, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -151,10 +160,20 @@ public class TipoTramitacionResource {
                 fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
             }
 
+            String idiomaPorDefecto;
+            if (fg.getIdEntidad() == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            } else {
+                idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+                if (idiomaPorDefecto == null) {
+                    idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+                }
+            }
+
             URI uriCompleta = uriInfo.getRequestUri();
             String url = uriCompleta.toString();
 
-            return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+            return Response.ok(getRespuesta(fg, start, url, null, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
                 long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
@@ -167,14 +186,14 @@ public class TipoTramitacionResource {
         }
     }
 
-    private RespuestaBase getRespuesta(TipoTramitacionFiltro fg, Instant start, String url, Integer apiMaxLimit) {
+    private RespuestaBase getRespuesta(TipoTramitacionFiltro fg, Instant start, String url, Integer apiMaxLimit, final String idiomaPorDefecto) {
         Pagina<TipoTramitacionDTO> resultadoBusqueda = tipoTramitacionService.findByFiltroRest(fg);
 
         List<TipoTramitacion> lista = new ArrayList<>();
         TipoTramitacion elemento;
 
         for (TipoTramitacionDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new TipoTramitacion(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), true);
+            elemento = new TipoTramitacion(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), idiomaPorDefecto, true);
             lista.add(elemento);
         }
 

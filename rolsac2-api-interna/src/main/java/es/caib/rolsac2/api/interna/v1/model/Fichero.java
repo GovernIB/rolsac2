@@ -51,8 +51,8 @@ public class Fichero extends EntidadBase<Fichero> {
     @Schema(description = "contenido", name = "contenido", type = SchemaType.STRING, required = false)
     private String contenido;
 
-    public Fichero(FicheroDTO nodo, String urlBase, String idioma, boolean hateoasEnabled, boolean conDatos) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public Fichero(FicheroDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled, boolean conDatos) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
 
         if (nodo.getTipo() != null) {
             tipo = nodo.getTipo().getTipo();
@@ -82,8 +82,8 @@ public class Fichero extends EntidadBase<Fichero> {
 
     @Override
     protected void addSetersInvalidos() {
-        // TODO Auto-generated method stub
-
+        SETTERS_INVALIDS.add("setContenido");
+        SETTERS_INVALIDS.add("setTipo");
     }
 
     @Override
@@ -92,20 +92,26 @@ public class Fichero extends EntidadBase<Fichero> {
     }
 
     /**
-     * @return the descripcion
+     * Devuelve la referencia
+     *
+     * @return the referencia
      */
     public String getReferencia() {
         return referencia;
     }
 
     /**
-     * @param enlace the enlace to set
+     * Establece la referencia
+     *
+     * @param referencia the referencia to set
      */
     public void setReferencia(String referencia) {
         this.referencia = referencia;
     }
 
     /**
+     * Devuelve el codigo
+     *
      * @return the codigo
      */
     public Long getCodigo() {
@@ -113,24 +119,46 @@ public class Fichero extends EntidadBase<Fichero> {
     }
 
     /**
+     * Establece el codigo
+     *
      * @param codigo the codigo to set
      */
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Devuelve el filenmae
+     *
+     * @return Filename
+     */
     public String getFilename() {
         return filename;
     }
 
+    /**
+     * Establece el filename
+     *
+     * @param filename filename
+     */
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Devuelve el tipo
+     *
+     * @return Tipo
+     */
     public String getTipo() {
         return tipo;
     }
 
+    /**
+     * Establece el tipo
+     *
+     * @param tipo tipo
+     */
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }

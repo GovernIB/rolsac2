@@ -20,110 +20,112 @@ import java.util.Calendar;
 @Schema(name = "Silencio", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_SERVICIOS)
 public class Silencio extends EntidadBase<Silencio> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Silencio.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Silencio.class);
 
-	/** codigo **/
-	@Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
-	private long codigo;
+    /**
+     * codigo
+     **/
+    @Schema(description = "codigo", type = SchemaType.INTEGER, required = false)
+    private long codigo;
 
-	@Schema(description = "identificador", type = SchemaType.STRING, required = false)
-	private String identificador;
+    @Schema(description = "identificador", type = SchemaType.STRING, required = false)
+    private String identificador;
 
-	@Schema(description = "descripcion", type = SchemaType.STRING, required = false)
-	private String descripcion;
+    @Schema(description = "descripcion", type = SchemaType.STRING, required = false)
+    private String descripcion;
 
-	@Schema(description = "descripcion2", type = SchemaType.STRING, required = false)
-	private String descripcion2;
+    @Schema(description = "descripcion2", type = SchemaType.STRING, required = false)
+    private String descripcion2;
 
-	@Schema(description = "fechaBorrar", required = false)
-	private Calendar fechaBorrar;
+    @Schema(description = "fechaBorrar", required = false)
+    private Calendar fechaBorrar;
 
 
-	public Silencio() {
-		super();
-	}
+    public Silencio() {
+        super();
+    }
 
-	public Silencio(TipoSilencioAdministrativoDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled) {
-		this(elem, urlBase, idioma, hateoasEnabled, null);
-	}
+    public Silencio(TipoSilencioAdministrativoDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled) {
+        this(elem, urlBase, idioma, hateoasEnabled, null);
+    }
 
-	public Silencio(TipoSilencioAdministrativoDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled, final String idiomaPorDefecto) {
-		super(elem, urlBase, idioma, hateoasEnabled);
-		if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
-			this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
-		}
-	}
+    public Silencio(TipoSilencioAdministrativoDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled, final String idiomaPorDefecto) {
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
+        if (idiomaPorDefecto != null && elem.getDescripcion() != null) {
+            this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+        }
+    }
 
-	@Override
-	public void generaLinks(final String urlBase) {
+    @Override
+    public void generaLinks(final String urlBase) {
 //		linkServicioResponsable = this.generaLink(this.servicioResponsable, Constantes.ENTIDAD_UA, Constantes.URL_UA,
 //				urlBase, null);
 //		linkOrganoInstructor = this.generaLink(this.organoInstructor, Constantes.ENTIDAD_UA, Constantes.URL_UA,
 //				urlBase, null);
 //		linkLopdInfoAdicional = this.generaLinkArchivo(this.lopdInfoAdicional, urlBase, null);
-	}
+    }
 
-	@Override
-	protected void addSetersInvalidos() {
-		if (!SETTERS_INVALIDS.contains("setCodigo")) {
-			SETTERS_INVALIDS.add("setCodigo");
-		}
+    @Override
+    protected void addSetersInvalidos() {
+        if (!SETTERS_INVALIDS.contains("setCodigo")) {
+            SETTERS_INVALIDS.add("setCodigo");
+        }
 
-		if (!SETTERS_INVALIDS.contains("setPlataforma")) {
-			SETTERS_INVALIDS.add("setPlataforma");
-		}
+        if (!SETTERS_INVALIDS.contains("setPlataforma")) {
+            SETTERS_INVALIDS.add("setPlataforma");
+        }
 
-	}
+    }
 
-	@Override
-	public void setId(final Long codigo) {
-		this.codigo = codigo;
-	}
+    @Override
+    public void setId(final Long codigo) {
+        this.codigo = codigo;
+    }
 
-	/**
-	 * @return the codigo
-	 */
-	public long getCodigo() {
-		return codigo;
-	}
+    /**
+     * @return the codigo
+     */
+    public long getCodigo() {
+        return codigo;
+    }
 
-	/**
-	 * @param codigo the codigo to set
-	 */
-	public void setCodigo(final long codigo) {
-		this.codigo = codigo;
-	}
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(final long codigo) {
+        this.codigo = codigo;
+    }
 
-	public String getIdentificador() {
-		return identificador;
-	}
+    public String getIdentificador() {
+        return identificador;
+    }
 
-	public void setIdentificador(String identificador) {
-		this.identificador = identificador;
-	}
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public String getDescripcion2() {
-		return descripcion2;
-	}
+    public String getDescripcion2() {
+        return descripcion2;
+    }
 
-	public void setDescripcion2(String descripcion2) {
-		this.descripcion2 = descripcion2;
-	}
+    public void setDescripcion2(String descripcion2) {
+        this.descripcion2 = descripcion2;
+    }
 
-	public Calendar getFechaBorrar() {
-		return fechaBorrar;
-	}
+    public Calendar getFechaBorrar() {
+        return fechaBorrar;
+    }
 
-	public void setFechaBorrar(Calendar fechaBorrar) {
-		this.fechaBorrar = fechaBorrar;
-	}
+    public void setFechaBorrar(Calendar fechaBorrar) {
+        this.fechaBorrar = fechaBorrar;
+    }
 
 }

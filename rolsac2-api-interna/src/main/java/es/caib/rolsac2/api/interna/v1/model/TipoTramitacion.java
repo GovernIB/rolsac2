@@ -112,8 +112,8 @@ public class TipoTramitacion extends EntidadBase<TipoTramitacion> {
     private Long entidad;
 
 
-    public TipoTramitacion(TipoTramitacionDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoTramitacion(TipoTramitacionDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoTramitacion() {

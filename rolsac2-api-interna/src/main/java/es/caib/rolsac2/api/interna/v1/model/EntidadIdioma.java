@@ -29,8 +29,8 @@ public class EntidadIdioma extends EntidadBase<EntidadIdioma> {
     @Schema(description = "idiomaDefectoRest", name = "idiomaDefectoRest", type = SchemaType.STRING, required = false)
     private String idiomaDefectoRest;
 
-    public EntidadIdioma(EntidadDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public EntidadIdioma(EntidadDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public EntidadIdioma() {

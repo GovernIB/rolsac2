@@ -47,8 +47,8 @@ public class TipoMediaEdificio extends EntidadBase<TipoMediaEdificio> {
     @XmlTransient
     private Long entidad;
 
-    public TipoMediaEdificio(TipoMediaEdificioDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoMediaEdificio(TipoMediaEdificioDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoMediaEdificio() {

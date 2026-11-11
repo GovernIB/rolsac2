@@ -44,9 +44,9 @@ public class TipoPublicoObjetivo extends EntidadBase<TipoPublicoObjetivo> {
     @Schema(description = "Código numérico del público objetivo", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoPublicoObjetivo(TipoPublicoObjetivoDTO nodo, String urlBase, String idioma,
+    public TipoPublicoObjetivo(TipoPublicoObjetivoDTO nodo, String urlBase, String idioma, String idiomaPorDefecto,
                                boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoPublicoObjetivo() {

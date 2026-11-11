@@ -44,8 +44,8 @@ public class TipoLegitimacion extends EntidadBase<TipoLegitimacion> {
     @Schema(description = "Indica si este tipo de legitimación se utiliza por defecto", name = "porDefecto", type = SchemaType.INTEGER, required = false)
     private Integer porDefecto;
 
-    public TipoLegitimacion(TipoLegitimacionDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoLegitimacion(TipoLegitimacionDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoLegitimacion() {

@@ -53,7 +53,7 @@ public class FicheroResource {
 
         Instant start = Instant.now();
         try {
-            return Response.ok(getRespuesta(Long.valueOf(codigo), start), MediaType.APPLICATION_JSON).build();
+            return Response.ok(getRespuesta(Long.valueOf(codigo), start, null), MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
                 long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
@@ -81,18 +81,18 @@ public class FicheroResource {
     public Response getFicheroSinContenido(@Parameter(description = "Código de fichero", required = true, name = "codigo", in = ParameterIn.PATH) @PathParam("codigo") final String codigo) {
 
         Instant start = Instant.now();
-        return Response.ok(getRespuestaMetadatos(Long.valueOf(codigo), start), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuestaMetadatos(Long.valueOf(codigo), start, null), MediaType.APPLICATION_JSON).build();
     }
 
 
-    private RespuestaFichero getRespuesta(Long codigo, Instant start) {
+    private RespuestaFichero getRespuesta(Long codigo, Instant start, String idiomaPorDefecto) {
         String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
         FicheroDTO resultadoBusqueda = ficheroService.getContentById(codigo, path);
 
         List<Fichero> lista = new ArrayList<>();
 
         if (resultadoBusqueda != null) {
-            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, true, true);
+            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, idiomaPorDefecto, true, true);
             lista.add(elemento);
         }
 
@@ -102,14 +102,14 @@ public class FicheroResource {
         return new RespuestaFichero(Response.Status.OK.getStatusCode() + "", Constantes.mensaje200(lista.size()), resultadoBusqueda != null ? 1 : 0, lista, tiempoMiliSegundos);
     }
 
-    private RespuestaFichero getRespuestaMetadatos(Long codigo, Instant start) {
+    private RespuestaFichero getRespuestaMetadatos(Long codigo, Instant start, String idiomaPorDefecto) {
         String path = systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.PATH_FICHEROS_EXTERNOS);
         FicheroDTO resultadoBusqueda = ficheroService.getContentMetadata(codigo, path);
 
         List<Fichero> lista = new ArrayList<>();
 
         if (resultadoBusqueda != null) {
-            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, true, false);
+            Fichero elemento = new Fichero(resultadoBusqueda, systemServiceFacade.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), null, idiomaPorDefecto, true, false);
             lista.add(elemento);
         }
 

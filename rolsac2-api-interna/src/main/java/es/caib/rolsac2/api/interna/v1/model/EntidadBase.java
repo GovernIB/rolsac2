@@ -58,10 +58,10 @@ public abstract class EntidadBase<V> extends EntidadJson<V> {
      * @param idioma
      * @param hateoasEnabled
      */
-    public <T> EntidadBase(T tr, String urlBase, String idioma, boolean hateoasEnabled) {
+    public <T> EntidadBase(T tr, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
         super();
         addSetersInvalidos();
-        this.fill(tr, urlBase, idioma, hateoasEnabled);
+        this.fill(tr, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     /**
@@ -73,9 +73,9 @@ public abstract class EntidadBase<V> extends EntidadJson<V> {
      * @param idioma
      * @param hateoasEnabled
      */
-    public <T> void fill(T tr, String urlBase, String idioma, boolean hateoasEnabled) {
+    public <T> void fill(T tr, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
         setHateoasEnabled(hateoasEnabled);
-        copiaPropiedadesDeEntity(tr, idioma);
+        copiaPropiedadesDeEntity(tr, idioma, idiomaPorDefecto);
         generaLinks(urlBase);
     }
 
@@ -127,7 +127,7 @@ public abstract class EntidadBase<V> extends EntidadJson<V> {
         this.hateoasEnabled = hateoasEnabled;
     }
 
-    public void copiaPropiedadesDeEntity(Object entity, String lang) {
+    public void copiaPropiedadesDeEntity(Object entity, String lang, String idiomaPorDefecto) {
         if (entity == null) {
             return;
         }
@@ -140,7 +140,7 @@ public abstract class EntidadBase<V> extends EntidadJson<V> {
                 method = dtoMethods[i];
                 if (method.getName().startsWith("set") && !SETTERS_INVALIDS.contains(method.getName())) {
                     try {
-                        Utiles.copyProperty(entity, this, method, lang);
+                        Utiles.copyProperty(entity, this, method, lang, idiomaPorDefecto);
                     } catch (Exception e) {
                         errores.append("Error al copiar la propiedad:");
                         errores.append(method.getName());

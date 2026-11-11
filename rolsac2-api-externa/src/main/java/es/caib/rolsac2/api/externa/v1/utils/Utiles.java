@@ -62,7 +62,7 @@ public class Utiles {
      * @throws InvocationTargetException
      * @throws NoSuchFieldException
      */
-    public static void copyProperty(Object entity, Object dto, Method setter, String lang)
+    public static void copyProperty(Object entity, Object dto, Method setter, String lang, String idiomaPorDefecto)
             throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
             InvocationTargetException, NoSuchFieldException {
 
@@ -117,7 +117,8 @@ public class Utiles {
                 if (value == null) {
                     // No hemos encontrado valor en la traduccion principal, buscamos en las
                     // traducciones alternativas
-                    String[] langAlternates = getLangAlternates(lang);
+
+                    String[] langAlternates = idiomaPorDefecto == null ? new String[]{"ca"} : new String[]{idiomaPorDefecto};
                     if (langAlternates != null) {
                         for (String altLang : langAlternates) {
                             altLang = altLang.trim();
@@ -217,11 +218,17 @@ public class Utiles {
             } else if (Date.class.equals(propertyClass)) {
                 value = value; // Para evitar problemas con java.sql.Timestamp.
                 valueClasses[0] = Date.class;
-            } else if (Calendar.class.equals(propertyClass) || GregorianCalendar.class.equals(value.getClass())) {
-                // Para evitar problemas con los DTO generados por WSDL
-                Long tmpValue = ((Timestamp) value).getTime();
-                value = Calendar.getInstance();
-                ((Calendar) value).setTimeInMillis(tmpValue);
+            } else if (Calendar.class.equals(propertyClass)) {
+
+                if (value instanceof LocalDate) {
+                    value = convertLocalDateToJavaUtilCalendar((LocalDate) value);
+
+                } else if (value instanceof Timestamp) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(((Timestamp) value).getTime());
+                    value = calendar;
+                }
+
                 valueClasses[0] = Calendar.class;
             } else {
                 valueClasses[0] = value.getClass();
@@ -241,18 +248,6 @@ public class Utiles {
         }
     }
 
-    private static String[] getLangAlternates(String lang) {
-
-        if (StringUtils.isBlank(lang))
-            lang = getDefaultLanguage();
-        String alternates = System.getProperty("es.caib.rolsac.api.v2.alternativesIdioma_" + lang);
-        if (alternates == null) {
-            LOG.info("No hay definidas alternativas de idioma para " + lang + ". Usando ca,es,en");
-            return new String[]{"ca", "es", "en"};
-        }
-        return alternates.split(",");
-    }
-
     public static String booleanToString(Boolean value) {
         if (value == null) {
             return null;
@@ -261,17 +256,9 @@ public class Utiles {
     }
 
     public static boolean stringToBoolean(String value) {
-        return StringUtils.isBlank(value) || value.equals("0") ? false : true;
+        return !StringUtils.isBlank(value) && !value.equals("0");
     }
 
-    public static String getDefaultLanguage() {
-        String defaultLanguage = System.getProperty("es.caib.rolsac.api.v2.idiomaPerDefecte");
-        if (StringUtils.isBlank(defaultLanguage)) {
-            LOG.error("No hay definido un idioma por defecto en el sistema. Se va a usar 'ca' como idioma.");
-            defaultLanguage = "ca";
-        }
-        return defaultLanguage;
-    }
 
     public static Calendar convertLocalDateToJavaUtilCalendar(LocalDate localDate) {
         Calendar calendar = null;

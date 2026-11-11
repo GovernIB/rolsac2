@@ -38,8 +38,8 @@ public class TipoNormativa extends EntidadBase<TipoNormativa> {
     @Schema(description = "Código numérico del tipo de normativa", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoNormativa(TipoNormativaDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoNormativa(TipoNormativaDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoNormativa() {

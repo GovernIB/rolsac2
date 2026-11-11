@@ -5,6 +5,7 @@ import es.caib.rolsac2.api.interna.v1.model.filters.FiltroTipoFormaInicio;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
+import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.MaestrasSupServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.Pagina;
@@ -43,6 +44,9 @@ public class TipoFormaInicioResource {
     @EJB
     SystemServiceFacade systemService;
 
+    @EJB
+    EntidadServiceFacade entidadService;
+
     @Context
     private UriInfo uriInfo;
 
@@ -76,6 +80,16 @@ public class TipoFormaInicioResource {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
 
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
+
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
@@ -84,29 +98,29 @@ public class TipoFormaInicioResource {
 
         // Limitar el número total de elementos según API_MAX_LIMIT
         Integer apiMaxLimit = null;
-    	try {
+        try {
             String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
-	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
-	        if (apiMaxLimit > 0) {
-		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
-		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
-		        if (offset >= apiMaxLimit) {
-		            fg.setPaginaFirst(0);
-		            fg.setPaginaTamanyo(0);
-		        } else if (offset + size > apiMaxLimit) {
-		            fg.setPaginaTamanyo(apiMaxLimit - offset);
-		        }
-	        } else {
-	        	apiMaxLimit = null;
-	        }
-    	} catch (NumberFormatException e){
-    		apiMaxLimit = null;
+            apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+            if (apiMaxLimit > 0) {
+                int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+                int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+                if (offset >= apiMaxLimit) {
+                    fg.setPaginaFirst(0);
+                    fg.setPaginaTamanyo(0);
+                } else if (offset + size > apiMaxLimit) {
+                    fg.setPaginaTamanyo(apiMaxLimit - offset);
+                }
+            } else {
+                apiMaxLimit = null;
+            }
+        } catch (NumberFormatException e) {
+            apiMaxLimit = null;
         }
 
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url, apiMaxLimit), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url, apiMaxLimit, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -134,10 +148,20 @@ public class TipoFormaInicioResource {
                 fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
             }
 
+            String idiomaPorDefecto;
+            if (fg.getIdEntidad() == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            } else {
+                idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+                if (idiomaPorDefecto == null) {
+                    idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+                }
+            }
+
             URI uriCompleta = uriInfo.getRequestUri();
             String url = uriCompleta.toString();
 
-            return Response.ok(getRespuesta(fg, start, url, null), MediaType.APPLICATION_JSON).build();
+            return Response.ok(getRespuesta(fg, start, url, null, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
                 long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
@@ -150,14 +174,14 @@ public class TipoFormaInicioResource {
         }
     }
 
-    private RespuestaBase getRespuesta(TipoFormaInicioFiltro fg, Instant start, String url, Integer apiMaxLimit) {
+    private RespuestaBase getRespuesta(TipoFormaInicioFiltro fg, Instant start, String url, Integer apiMaxLimit, String idiomaPorDefecto) {
         Pagina<TipoFormaInicioDTO> resultadoBusqueda = tipoFormaInicioService.findByFiltroRest(fg);
 
         List<TipoFormaInicio> lista = new ArrayList<>();
         TipoFormaInicio elemento;
 
         for (TipoFormaInicioDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new TipoFormaInicio(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), true);
+            elemento = new TipoFormaInicio(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), idiomaPorDefecto, true);
             lista.add(elemento);
         }
 

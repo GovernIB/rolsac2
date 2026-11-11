@@ -7,6 +7,7 @@ import es.caib.rolsac2.api.interna.v1.model.filters.FiltroDocumentoNormativa;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaBase;
 import es.caib.rolsac2.api.interna.v1.model.respuestas.RespuestaError;
 import es.caib.rolsac2.api.interna.v1.utils.Constantes;
+import es.caib.rolsac2.service.facade.EntidadServiceFacade;
 import es.caib.rolsac2.service.facade.NormativaServiceFacade;
 import es.caib.rolsac2.service.facade.SystemServiceFacade;
 import es.caib.rolsac2.service.model.DocumentoNormativaDTO;
@@ -45,6 +46,9 @@ public class DocumentoNormativaResource {
     @EJB
     SystemServiceFacade systemService;
 
+    @EJB
+    EntidadServiceFacade entidadService;
+
     @Context
     private UriInfo uriInfo;
 
@@ -82,10 +86,20 @@ public class DocumentoNormativaResource {
             fg.setPaginaFirst(filtro.getFiltroPaginacion().getOffset());
         }
 
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
+
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -116,30 +130,40 @@ public class DocumentoNormativaResource {
             }
             fg.setCodigo(Long.valueOf(codigo));
 
+            String idiomaPorDefecto;
+            if (fg.getIdEntidad() == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            } else {
+                idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+                if (idiomaPorDefecto == null) {
+                    idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+                }
+            }
+
             URI uriCompleta = uriInfo.getRequestUri();
             String url = uriCompleta.toString();
 
-            return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+            return Response.ok(getRespuesta(fg, start, url, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
                 long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
                 RespuestaBase respuesta = new RespuestaBase(new ArrayList<>(), tiempoMiliSegundos);
                 respuesta.setMensaje(e.getMessage());
                 return Response.ok(respuesta, MediaType.APPLICATION_JSON).build();
-            } else{
+            } else {
                 throw e;
             }
         }
     }
 
-    private RespuestaBase getRespuesta(DocumentoNormativaFiltro filtro, Instant start, String url) throws DelegateException {
+    private RespuestaBase getRespuesta(DocumentoNormativaFiltro filtro, Instant start, String url, String idiomaPorDefecto) throws DelegateException {
         Pagina<DocumentoNormativaDTO> resultadoBusqueda = normativaService.findDocumentoNormativaByFiltroRest(filtro);
 
         List<DocumentoNormativa> lista = new ArrayList<>();
         DocumentoNormativa elemento = null;
 
         for (DocumentoNormativaDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new DocumentoNormativa(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), true);
+            elemento = new DocumentoNormativa(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), filtro.getIdioma(), idiomaPorDefecto, true);
             lista.add(elemento);
         }
 

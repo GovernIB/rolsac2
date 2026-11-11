@@ -38,9 +38,9 @@ public class TipoVia extends EntidadBase<TipoVia> {
     @Schema(description = "Código numérico del tipo de vía", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoVia(TipoViaDTO nodo, String urlBase, String idioma,
+    public TipoVia(TipoViaDTO nodo, String urlBase, String idioma, String idiomaPorDefecto,
                    boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoVia() {

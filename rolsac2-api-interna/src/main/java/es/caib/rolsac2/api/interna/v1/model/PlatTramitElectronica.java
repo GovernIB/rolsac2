@@ -54,8 +54,8 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
     private Long codEntidad;
 
 
-    public PlatTramitElectronica(PlatTramitElectronicaDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public PlatTramitElectronica(PlatTramitElectronicaDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public PlatTramitElectronica() {
@@ -87,7 +87,7 @@ public class PlatTramitElectronica extends EntidadBase<PlatTramitElectronica> {
     }
 
     /**
-     * @param enlace the enlace to set
+     * @param descripcion the descripcion to set
      */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;

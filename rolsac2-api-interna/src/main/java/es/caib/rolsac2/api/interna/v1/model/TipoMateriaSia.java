@@ -44,8 +44,8 @@ public class TipoMateriaSia extends EntidadBase<TipoMateriaSia> {
     @Schema(description = "Código de la materia en el catálogo SIA", name = "codigoSIA", type = SchemaType.INTEGER, required = false)
     private Long codigoSIA;
 
-    public TipoMateriaSia(TipoMateriaSIADTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoMateriaSia(TipoMateriaSIADTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoMateriaSia() {

@@ -168,8 +168,8 @@ public class Servicios extends EntidadBase {
      * @param idioma
      * @param hateoasEnabled
      */
-    public Servicios(final ServicioDTO elem, final String urlBase, final String idioma, final boolean hateoasEnabled, String idiomaPorDefecto) {
-        super(elem, urlBase, idioma, hateoasEnabled);
+    public Servicios(final ServicioDTO elem, final String urlBase, final String idioma, final String idiomaPorDefecto, final boolean hateoasEnabled) {
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
         if (elem != null) {
             this.codigo = elem.getCodigo();
             this.comun = elem.getComun();
@@ -708,16 +708,16 @@ public class Servicios extends EntidadBase {
         this.fechaCaducidad = fechaCaducidad;
     }
 
-    /** 
-    * @return get the tasa
+    /**
+     * @return get the tasa
      */
     public Tasa getTasa() {
         return tasa;
     }
 
     /**
-    * @param tasa the tasa to set
-    */
+     * @param tasa the tasa to set
+     */
     public void setTasa(Tasa tasa) {
         this.tasa = tasa;
     }

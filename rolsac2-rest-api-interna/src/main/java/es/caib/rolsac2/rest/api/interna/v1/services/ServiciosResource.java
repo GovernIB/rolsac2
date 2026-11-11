@@ -130,23 +130,23 @@ public class ServiciosResource {
 
         // Limitar el número total de elementos según API_MAX_LIMIT
         Integer apiMaxLimit = null;
-    	try {
+        try {
             String apiMaxLimitStr = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.API_MAX_LIMIT);
-	        apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
-	        if (apiMaxLimit > 0) {
-		        int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
-		        int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
-		        if (offset >= apiMaxLimit) {
-		            fg.setPaginaFirst(0);
-		            fg.setPaginaTamanyo(0);
-		        } else if (offset + size > apiMaxLimit) {
-		            fg.setPaginaTamanyo(apiMaxLimit - offset);
-		        }
-	        } else {
-	        	apiMaxLimit = null;
-	        }
-    	} catch (NumberFormatException e){
-    		apiMaxLimit = null;
+            apiMaxLimit = Integer.parseInt(apiMaxLimitStr);
+            if (apiMaxLimit > 0) {
+                int offset = fg.getPaginaFirst() != null ? fg.getPaginaFirst() : 0;
+                int size = fg.getPaginaTamanyo() != null ? fg.getPaginaTamanyo() : 10;
+                if (offset >= apiMaxLimit) {
+                    fg.setPaginaFirst(0);
+                    fg.setPaginaTamanyo(0);
+                } else if (offset + size > apiMaxLimit) {
+                    fg.setPaginaTamanyo(apiMaxLimit - offset);
+                }
+            } else {
+                apiMaxLimit = null;
+            }
+        } catch (NumberFormatException e) {
+            apiMaxLimit = null;
         }
 
         URI uriCompleta = uriInfo.getRequestUri();
@@ -305,7 +305,7 @@ public class ServiciosResource {
         Servicios elemento;
 
         for (ProcedimientoBaseDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new Servicios((ServicioDTO) nodo, null, filtro.getIdioma(), true, idiomaPorDefecto);
+            elemento = new Servicios((ServicioDTO) nodo, null, filtro.getIdioma(), idiomaPorDefecto, true);
             lista.add(elemento);
         }
 
@@ -456,7 +456,7 @@ public class ServiciosResource {
             result = servicioService.getNormativasByCodProcWF(Long.valueOf(codigo));
 
             for (NormativaDTO nodo : result) {
-                elemento = new Normativa(nodo, null, idioma, true, idiomaPorDefecto);
+                elemento = new Normativa(nodo, null, idioma, idiomaPorDefecto, true);
                 lista.add(elemento);
             }
         }

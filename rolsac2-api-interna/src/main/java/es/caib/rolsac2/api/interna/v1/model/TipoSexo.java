@@ -38,9 +38,9 @@ public class TipoSexo extends EntidadBase<TipoSexo> {
     @Schema(description = "Código numérico del tipo de sexo", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoSexo(TipoSexoDTO nodo, String urlBase, String idioma,
+    public TipoSexo(TipoSexoDTO nodo, String urlBase, String idioma, String idiomaPorDefecto,
                     boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoSexo() {

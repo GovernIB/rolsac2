@@ -171,8 +171,8 @@ public class UnidadAdministrativa extends EntidadBase<UnidadAdministrativaDTO> {
         super();
     }
 
-    public UnidadAdministrativa(UnidadAdministrativaDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public UnidadAdministrativa(UnidadAdministrativaDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
         this.orden = nodo.getOrden();
     }
 

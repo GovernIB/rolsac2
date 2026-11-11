@@ -38,8 +38,8 @@ public class TipoFormaInicio extends EntidadBase<TipoFormaInicio> {
     @Schema(description = "Código numérico de la forma de inicio", name = "codigo", type = SchemaType.INTEGER, required = false)
     private Long codigo;
 
-    public TipoFormaInicio(TipoFormaInicioDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public TipoFormaInicio(TipoFormaInicioDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
     }
 
     public TipoFormaInicio() {

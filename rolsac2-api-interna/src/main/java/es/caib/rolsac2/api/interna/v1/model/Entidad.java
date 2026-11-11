@@ -87,8 +87,8 @@ public class Entidad extends EntidadBase<Entidad> {
     @Schema(description = "uaComun", name = "uaComun", type = SchemaType.STRING, required = false)
     private String uaComun;
 
-    public Entidad(EntidadDTO nodo, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(nodo, urlBase, idioma, hateoasEnabled);
+    public Entidad(EntidadDTO nodo, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(nodo, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
 
         if (nodo != null) {
             logo = nodo.getLogo() == null ? null : nodo.getLogo().getCodigo();

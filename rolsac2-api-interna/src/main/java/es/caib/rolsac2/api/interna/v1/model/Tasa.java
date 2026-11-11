@@ -27,7 +27,7 @@ public class Tasa extends EntidadBase<Tasa> {
     private String url;
 
     public Tasa(TasaProcedimientoDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
-        super(elem, urlBase, idioma, hateoasEnabled);
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
         if (elem.getIdentificador() != null) {
             this.codigo = elem.getIdentificador().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
@@ -43,7 +43,7 @@ public class Tasa extends EntidadBase<Tasa> {
     }
 
     public Tasa(TasaServicioDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
-        super(elem, urlBase, idioma, hateoasEnabled);
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
         if (elem.getIdentificador() != null) {
             this.codigo = elem.getIdentificador().getTraduccionConValor(idioma, idiomaPorDefecto);
         }
@@ -73,6 +73,7 @@ public class Tasa extends EntidadBase<Tasa> {
 
     @Override
     protected void addSetersInvalidos() {
+        SETTERS_INVALIDS.add("setCodigo");
     }
 
     public String getCodigo() {

@@ -116,7 +116,7 @@ public class Tramite extends EntidadBase<Tramite> {
     private Long plantillaSel;
 
     public Tramite(ProcedimientoTramiteDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
-        super(elem, urlBase, idioma, hateoasEnabled);
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
 
         // Si no existe el idioma solicitado, usar idioma por defecto
         if (idiomaPorDefecto != null) {

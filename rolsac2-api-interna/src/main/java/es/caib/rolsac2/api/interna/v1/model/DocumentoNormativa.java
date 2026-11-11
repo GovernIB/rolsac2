@@ -72,8 +72,8 @@ public class DocumentoNormativa extends EntidadBase<DocumentoNormativa> {
     @XmlTransient
     private Long fichero;
 
-    public DocumentoNormativa(DocumentoNormativaDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
-        super(elem, urlBase, idioma, hateoasEnabled);
+    public DocumentoNormativa(DocumentoNormativaDTO elem, String urlBase, String idioma, String idiomaPorDefecto, boolean hateoasEnabled) {
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
 
         if (elem.getDocumentos() != null) {
             Long fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFichero();

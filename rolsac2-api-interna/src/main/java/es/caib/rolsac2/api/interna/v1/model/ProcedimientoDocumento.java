@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Schema(name = "ProcedimientoDocumento", description = Constantes.TXT_DEFINICION_CLASE + Constantes.ENTIDAD_PROCEDIMIENTO_DOCUMENTO)
 public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoDocumento.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProcedimientoDocumento.class);
 
     /**
      * Orden
@@ -44,23 +44,27 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 //    private String url;
 
     /*Descripción del documento*/
-	@Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
+    @Schema(description = "descripcion", name = "descripcion", type = SchemaType.STRING, required = false)
     private String descripcion;
 
-	/** codigo **/
-	@Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
-	private Long codigo;
+    /**
+     * codigo
+     **/
+    @Schema(description = "codigo", name = "codigo", type = SchemaType.INTEGER, required = false)
+    private Long codigo;
 
-	// -- LINKS--//
-	// -- se duplican las entidades para poder generar la clase link en funcion de
-	// la propiedad principal (sin "link_")
-	/** Fichero asociado al documento **/
-	@Schema(description = "link_fichero", required = false)
-	private Link link_fichero;
-	@JsonIgnore
-	@Schema(hidden = true)
-	@XmlTransient
-	private Long fichero;
+    // -- LINKS--//
+    // -- se duplican las entidades para poder generar la clase link en funcion de
+    // la propiedad principal (sin "link_")
+    /**
+     * Fichero asociado al documento
+     **/
+    @Schema(description = "link_fichero", required = false)
+    private Link link_fichero;
+    @JsonIgnore
+    @Schema(hidden = true)
+    @XmlTransient
+    private Long fichero;
 
 //	@Schema(description = "link_procedimientoDTO", required = false)
 //	private Link link_procedimientoDTO;
@@ -69,86 +73,86 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 //	@XmlTransient
 //	private Long procedimientoDTO;
 
-	public ProcedimientoDocumento(ProcedimientoDocumentoDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
-		this(elem, urlBase, idioma, hateoasEnabled, null);
-	}
+    public ProcedimientoDocumento(ProcedimientoDocumentoDTO elem, String urlBase, String idioma, boolean hateoasEnabled) {
+        this(elem, urlBase, idioma, hateoasEnabled, null);
+    }
 
-	public ProcedimientoDocumento(ProcedimientoDocumentoDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
-		super( elem, urlBase, idioma, hateoasEnabled);
+    public ProcedimientoDocumento(ProcedimientoDocumentoDTO elem, String urlBase, String idioma, boolean hateoasEnabled, String idiomaPorDefecto) {
+        super(elem, urlBase, idioma, idiomaPorDefecto, hateoasEnabled);
 
-		// Si no existe el idioma solicitado, usar idioma por defecto
-		if (idiomaPorDefecto != null) {
-			if (elem.getTitulo() != null) {
-				this.titulo = elem.getTitulo().getTraduccionConValor(idioma, idiomaPorDefecto);
-			}
-			if (elem.getDescripcion() != null) {
-				this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
-			}
-		}
+        // Si no existe el idioma solicitado, usar idioma por defecto
+        if (idiomaPorDefecto != null) {
+            if (elem.getTitulo() != null) {
+                this.titulo = elem.getTitulo().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+            if (elem.getDescripcion() != null) {
+                this.descripcion = elem.getDescripcion().getTraduccionConValor(idioma, idiomaPorDefecto);
+            }
+        }
 
-		if(elem.getDocumentos() != null) {
-			Long fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFichero();
+        if (elem.getDocumentos() != null) {
+            Long fichero = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFichero();
 
-			if(fichero == null) {
-				FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFicheroDTO();
+            if (fichero == null) {
+                FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idioma) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idioma).getFicheroDTO();
 
-				if(ficheroDTO != null) {
-					fichero = ficheroDTO.getCodigo();
-				}
-			}
+                if (ficheroDTO != null) {
+                    fichero = ficheroDTO.getCodigo();
+                }
+            }
 
-			// Idioma por defecto si no se encontró documento en el idioma solicitado
-			if(fichero == null && idiomaPorDefecto != null && !idiomaPorDefecto.equals(idioma)) {
-				fichero = elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto).getFichero();
+            // Idioma por defecto si no se encontró documento en el idioma solicitado
+            if (fichero == null && idiomaPorDefecto != null && !idiomaPorDefecto.equals(idioma)) {
+                fichero = elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto).getFichero();
 
-				if(fichero == null) {
-					FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto).getFicheroDTO();
+                if (fichero == null) {
+                    FicheroDTO ficheroDTO = elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto) == null ? null : elem.getDocumentos().getDocumentoTraduccion(idiomaPorDefecto).getFicheroDTO();
 
-					if(ficheroDTO != null) {
-						fichero = ficheroDTO.getCodigo();
-					}
-				}
-			}
+                    if (ficheroDTO != null) {
+                        fichero = ficheroDTO.getCodigo();
+                    }
+                }
+            }
 
-			this.fichero = fichero;
-		}
+            this.fichero = fichero;
+        }
 
-		generaLinks(urlBase);
-	}
+        generaLinks(urlBase);
+    }
 
-	public ProcedimientoDocumento() {
-		super();
-	}
+    public ProcedimientoDocumento() {
+        super();
+    }
 
-	@Override
-	public void generaLinks(String urlBase) {
+    @Override
+    public void generaLinks(String urlBase) {
 //		link_procedimientoDTO = this.generaLink(this.procedimientoDTO, Constantes.ENTIDAD_PROCEDIMIENTO, Constantes.URL_PROCEDIMIENTO,
 //				urlBase, null);
-		link_fichero = this.generaLink(this.fichero, Constantes.ENTIDAD_FICHERO, Constantes.URL_FICHERO, urlBase,
-				null);
-	}
+        link_fichero = this.generaLink(this.fichero, Constantes.ENTIDAD_FICHERO, Constantes.URL_FICHERO, urlBase,
+                null);
+    }
 
-	@Override
-	protected void addSetersInvalidos() {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    protected void addSetersInvalidos() {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void setId(Long codigo) {
-		this.codigo = codigo;
-	}
+    @Override
+    public void setId(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
-	public Integer getOrden() {
-		return orden;
-	}
+    public Integer getOrden() {
+        return orden;
+    }
 
-	public void setOrden(Integer orden) {
-		this.orden = orden;
-	}
+    public void setOrden(Integer orden) {
+        this.orden = orden;
+    }
 
 //	public String getCodigoString() {
 //		return codigoString;
@@ -158,13 +162,13 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 //		this.codigoString = codigoString;
 //	}
 
-	public String getTitulo() {
-		return titulo;
-	}
+    public String getTitulo() {
+        return titulo;
+    }
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
 //	public String getUrl() {
 //		return url;
@@ -174,29 +178,29 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 //		this.url = url;
 //	}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public Link getLink_fichero() {
-		return link_fichero;
-	}
+    public Link getLink_fichero() {
+        return link_fichero;
+    }
 
-	public void setLink_fichero(Link link_fichero) {
-		this.link_fichero = link_fichero;
-	}
+    public void setLink_fichero(Link link_fichero) {
+        this.link_fichero = link_fichero;
+    }
 
-	public Long getFichero() {
-		return fichero;
-	}
+    public Long getFichero() {
+        return fichero;
+    }
 
-	public void setFichero(Long fichero) {
-		this.fichero = fichero;
-	}
+    public void setFichero(Long fichero) {
+        this.fichero = fichero;
+    }
 
 //	public Link getLink_procedimientoDTO() {
 //		return link_procedimientoDTO;
@@ -214,8 +218,8 @@ public class ProcedimientoDocumento extends EntidadBase<ProcedimientoDocumento> 
 //		this.procedimientoDTO = procedimientoDTO;
 //	}
 
-	public Long getCodigo() {
-		return codigo;
-	}
+    public Long getCodigo() {
+        return codigo;
+    }
 
 }

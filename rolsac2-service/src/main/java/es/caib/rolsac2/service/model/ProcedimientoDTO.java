@@ -237,10 +237,9 @@ public class ProcedimientoDTO extends ProcedimientoBaseDTO implements Cloneable 
         if (this.getTipoVia() != null) {
             procClonado.setTipoVia((TipoViaDTO) this.getTipoVia().clone());
         }
-        LOG.error("Clone. UACompetente" + this.getUaCompetente());
+
         if (this.getUaCompetente() != null) {
             procClonado.setUaCompetente((UnidadAdministrativaDTO) this.getUaCompetente().clone());
-            LOG.error("Clonado. UACompetente" + procClonado.getUaCompetente());
         }
 
         //Literal

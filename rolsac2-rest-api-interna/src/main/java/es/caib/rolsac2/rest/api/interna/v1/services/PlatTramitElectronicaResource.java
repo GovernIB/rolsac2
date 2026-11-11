@@ -88,6 +88,16 @@ public class PlatTramitElectronicaResource {
             fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
         }
 
+        String idiomaPorDefecto;
+        if (fg.getIdEntidad() == null) {
+            idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+        } else {
+            idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+            if (idiomaPorDefecto == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            }
+        }
+
         // si no vienen los filtros se completan con los datos por defecto
         if (filtro.getFiltroPaginacion() != null) {
             fg.setPaginaTamanyo(filtro.getFiltroPaginacion().getSize());
@@ -98,7 +108,7 @@ public class PlatTramitElectronicaResource {
         URI uriCompleta = uriInfo.getRequestUri();
         String url = uriCompleta.toString();
 
-        return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+        return Response.ok(getRespuesta(fg, start, url, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -128,10 +138,20 @@ public class PlatTramitElectronicaResource {
                 fg.setIdioma(systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO));
             }
 
+            String idiomaPorDefecto;
+            if (fg.getIdEntidad() == null) {
+                idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+            } else {
+                idiomaPorDefecto = entidadService.getIdiomaPorDefecto(fg.getIdEntidad());
+                if (idiomaPorDefecto == null) {
+                    idiomaPorDefecto = systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.IDIOMA_DEFECTO);
+                }
+            }
+
             URI uriCompleta = uriInfo.getRequestUri();
             String url = uriCompleta.toString();
 
-            return Response.ok(getRespuesta(fg, start, url), MediaType.APPLICATION_JSON).build();
+            return Response.ok(getRespuesta(fg, start, url, idiomaPorDefecto), MediaType.APPLICATION_JSON).build();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("No entity found for query")) {
                 long tiempoMiliSegundos = Duration.between(start, Instant.now()).toMillis();
@@ -144,14 +164,14 @@ public class PlatTramitElectronicaResource {
         }
     }
 
-    private RespuestaBase getRespuesta(PlatTramitElectronicaFiltro fg, Instant start, String url) {
+    private RespuestaBase getRespuesta(PlatTramitElectronicaFiltro fg, Instant start, String url, String idiomaPorDefecto) {
         Pagina<PlatTramitElectronicaDTO> resultadoBusqueda = platTramitElectronicaService.findByFiltroRest(fg);
 
         List<PlatTramitElectronica> lista = new ArrayList<>();
         PlatTramitElectronica elemento;
 
         for (PlatTramitElectronicaDTO nodo : resultadoBusqueda.getItems()) {
-            elemento = new PlatTramitElectronica(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), true);
+            elemento = new PlatTramitElectronica(nodo, systemService.obtenerPropiedadConfiguracion(TypePropiedadConfiguracion.URL_BASE), fg.getIdioma(), idiomaPorDefecto, true);
             lista.add(elemento);
         }
 

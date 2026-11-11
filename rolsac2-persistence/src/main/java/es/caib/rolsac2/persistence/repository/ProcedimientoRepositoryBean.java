@@ -16,6 +16,7 @@ import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 import es.caib.rolsac2.service.model.types.*;
 import es.caib.rolsac2.service.utils.UtilJSON;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,7 +240,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             procedimientoGridDTO.setTramiteInicioCodigo(Long.valueOf(valores[0]));
                         }
                         final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                        if (valores[1] != null) {
+                        if (StringUtils.isNotBlank(valores[1])) {
                             try {
                                 Date fecha = sdf.parse((String) valores[1]);
                                 procedimientoGridDTO.setTramiteInicioFechaPublicacion(fecha);
@@ -248,7 +249,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
                             }
 
                         }
-                        if (valores.length == 3 && valores[2] != null) {
+                        if (valores.length == 3 && StringUtils.isNotBlank(valores[2])) {
                             try {
                                 Date fecha = sdf.parse(valores[2]);
                                 procedimientoGridDTO.setTramiteIniciofechaCierre(fecha);
@@ -4947,7 +4948,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return query;
 
     }
- 
+
 
     private boolean contiene(List<ProcedimientoDocumentoDTO> docs, JProcedimientoDocumento jdoc) {
         for (ProcedimientoDocumentoDTO doc : docs) {
