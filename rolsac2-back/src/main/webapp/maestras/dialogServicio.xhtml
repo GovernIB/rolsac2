@@ -799,7 +799,7 @@
         <div class="d-flex flex-column flex-sm-row align-items-center mb-2 mb-sm-0" style="gap: 5px;">
             <p:outputLabel value="#{labels['dialogServicio.estado']}:" for="txtWorkFlow" pt:aria-label="#{labels['dialogServicio.estado']}:"/>
             <p:inputText id="txtWorkFlow" value="#{empty dialogServicio.estadoProcedimiento ? '' : labels['TypeProcedimientoEstado.' += dialogServicio.estadoProcedimiento.toString()]}" styleClass="wf-field" style="min-width: 250px;" readonly="true"/>
-            <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}" icon="pi pi-arrow-right" action="#{dialogServicio.guardarFlujo}" styleClass="btn-footer" style="white-space: nowrap;text-align: center;" process="@all" readonly="#{empty dialogServicio.data.codigo}" update="messagesDialog formDatos formDatosPublicacion formDatosContacto panelOrganos panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD :formDialog:panelTemas" rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}" id="btnGuardarFlujo">
+            <p:commandButton value="#{labels['dialogServicio.seguirFlujo']}" icon="pi pi-arrow-right" action="#{dialogServicio.guardarFlujo}" styleClass="btn-footer" style="white-space: nowrap;text-align: center;" process="@all" readonly="#{empty dialogServicio.data.codigo}" update="messagesDialog formDatos formDatosPublicacion formDatosContacto panelOrganos panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD :formDialog:panelTemas" rendered="#{dialogServicio.mostrarBtnFlujo}" pt:aria-label="#{labels['dialogServicio.seguirFlujo']}" id="btnGuardarFlujo" oncomplete="checkUAraiz()">
                 <p:ajax event="dialogReturn" listener="#{dialogServicio.returnDialogFlujo}" process="@this"/>
             </p:commandButton>
             <p:commandButton value="#{labels['dict.mensajes']}" icon="pi pi-inbox" action="#{dialogServicio.verMensajes}" styleClass="btn-footer" process="@this" readonly="#{empty dialogServicio.data.codigo}" update="messagesDialog" rendered="#{dialogServicio.mostrarBtnMensajes}" pt:aria-label="#{labels['dict.mensajes']}">
@@ -826,7 +826,7 @@
     </ui:define>
     <ui:define name="contentFooterDialogRight">
         <p:commandButton id="closeButton" action="#{dialogServicio.cerrar}" value="#{labels['dict.cerrar']}" process="@this" pt:aria-label="#{labels['dict.cerrar']}"/>
-        <p:commandButton action="#{dialogServicio.guardar}" value="#{labels['dict.guardar']}" update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD :formDialog:panelTemas" rendered="#{dialogServicio.mostrarBotonGuardar()}" process="@all" pt:aria-label="#{labels['dict.guardar']}" id="btnGuardar"/>
+        <p:commandButton action="#{dialogServicio.guardar}" value="#{labels['dict.guardar']}" update="messagesDialog formDatos panelOrganos panelDatosPublicacion formDatosSIA formDatosContacto panelCanales formDatosLOPD :formDialog:moduloPublico :formDialog:panelDocumentoLOPD :formDialog:panelTemas" rendered="#{dialogServicio.mostrarBotonGuardar()}" process="@all" pt:aria-label="#{labels['dict.guardar']}" id="btnGuardar" oncomplete="checkUAraiz()"/>
 
     </ui:define>
 </ui:composition>

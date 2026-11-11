@@ -1269,7 +1269,9 @@
                              process="@all"
                              readonly="#{empty dialogProcedimiento.data.codigo}"
                              update="messagesDialog panelModulosLaterales formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos"
-                             rendered="#{dialogProcedimiento.isMostrarBtnFlujo()}" pt:aria-label="#{labels['dialogProcedimiento.seguirFlujo']}">
+                             rendered="#{dialogProcedimiento.isMostrarBtnFlujo()}" pt:aria-label="#{labels['dialogProcedimiento.seguirFlujo']}"
+                             oncomplete="checkUAraiz()"
+            >
                         <p:ajax event="dialogReturn" listener="#{dialogProcedimiento.returnDialogFlujo}" process="@this"
                                 update="messagesDialog panelModulosLaterales"/>
             </p:commandButton>
@@ -1303,7 +1305,7 @@
                          value="#{labels['dict.guardar']}"
                          update="messagesDialog formDatos formDatosSIA formDatosContacto formDatosLOPD panelDatosPublicacion panelOrganos panelModulosLaterales"
                          rendered="#{dialogProcedimiento.mostrarBotonGuardar()}"
-                         process="@all" pt:aria-label="#{labels['dict.guardar']}">
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}" oncomplete="checkUAraiz()">
         </p:commandButton>
 
     </ui:define>
