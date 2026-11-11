@@ -1674,11 +1674,15 @@ public class DialogServicio extends AbstractController implements Serializable {
     public void setComunLOPD(Literal comunLOPD) {
         this.comunLOPD = comunLOPD;
     }
-
+ 
     public boolean mostrarBtnSIA() {
-        return data.getCodigoSIA() == null && data.getCodigo() != null && !mostrarRefreshSIA && !isInformador() && (data.getEstado().compareTo(TypeProcedimientoEstado.MODIFICACION) == 0
-                || data.getEstado().compareTo(TypeProcedimientoEstado.PENDIENTE_PUBLICAR) == 0
-        );
+        return puedeEnviarSIA() && !mostrarRefreshSIA && !isInformador();
+    }
+
+    private boolean puedeEnviarSIA() {
+        return data != null && data.getCodigo() != null && data.getCodigoSIA() == null && estadosProcedimiento != null
+                && ((!estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_MODIFICACION.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.PUBLICADO_PENDIENTE_PUBLICAR.toString()) && !estadosProcedimiento.contains(TypeProcedimientoEstado.CERRADO.toString()))
+                && (data.getEstado() == TypeProcedimientoEstado.PENDIENTE_PUBLICAR || data.getEstado() == TypeProcedimientoEstado.MODIFICACION));
     }
 
     public TasaServicioDTO getTasaServicioSeleccionada() {
