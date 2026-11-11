@@ -73,10 +73,12 @@
                                     <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
                                 </p:outputLabel>
 
-                                <p:outputLabel value="- #{alerta.fechaFin}"
-                                               rendered="#{!empty alerta.fechaFin}" >
-                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
-                                </p:outputLabel>
+                                <h:panelGroup rendered="#{!empty alerta.fechaFin}">
+                                    <h:outputText value=" - "/>
+                                    <p:outputLabel value="#{alerta.fechaFin}">
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                </h:panelGroup>
 
                                 <p:outputLabel
                                         value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" />
