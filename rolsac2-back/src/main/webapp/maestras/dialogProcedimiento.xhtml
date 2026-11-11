@@ -189,12 +189,12 @@
                             </p>
                         </div>
                         <div class="form-group col-md-2">
-                            <p:outputLabel for="selectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" pt:aria-label="#{labels['dict.tipo']}:" />
+                            <p:outputLabel id="labelSelectComun" for="selectComun" value="#{labels['dict.tipo']}:" styleClass="pt-0 mb-1 negrita" pt:aria-label="#{labels['dict.tipo']}:" />
                             <br/>
                             <p:selectOneMenu id="selectComun" value="#{dialogProcedimiento.data.comun}"
                                              autoWidth="false" styleClass="w100px"
                                              disabled="#{dialogProcedimiento.isModoConsulta() or dialogProcedimiento.isGestor()}"
-                                             converter="javax.faces.Integer">
+                                            >
                                 <f:selectItem itemLabel="#{labels['dict.especifico']}" itemValue="0"/>
                                 <f:selectItem itemLabel="#{labels['dict.comun']}" itemValue="1"/>
                                 <p:ajax event="change"
