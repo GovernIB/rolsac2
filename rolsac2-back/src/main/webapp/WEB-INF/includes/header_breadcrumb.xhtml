@@ -56,36 +56,37 @@
             <c:if test="#{!empty sessionBean.alertas}">
 
                 <c:forEach items="#{sessionBean.alertas}" var="alerta" varStatus="status">
+                    <ui:fragment rendered="#{sessionBean.esAlertaVigente(alerta)}">
+                            <div id="alerta-#{status.index}" class="w-full row">
+                                <div class="ui-g-12 claseAlerta mt-2 mr-3">
+                                    <div class="alertaContenido">
 
-                    <div id="alerta-#{status.index}" class="w-full row">
-                        <div class="ui-g-12 claseAlerta mt-2 mr-3">
-                            <div class="alertaContenido">
+                                        <p:commandButton
+                                                action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
+                                                icon="pi pi-times-circle"
+                                                styleClass="w45px h23px iconoAlertaLeido botonBordeado botonCerrarAlerta"
+                                                process="@this"
+                                                update="@parent"
+                                                pt:aria-label="Cerrar alerta"
+                                        />
+                                        <p:outputLabel value="#{alerta.fechaIni}" >
+                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                        </p:outputLabel>
 
-                                <p:commandButton
-                                        action="#{sessionBean.marcarAlertaLeida(alerta.codigo)}"
-                                        icon="pi pi-times-circle"
-                                        styleClass="w45px h23px iconoAlertaLeido botonBordeado botonCerrarAlerta"
-                                        process="@this"
-                                        update="@parent"
-                                        pt:aria-label="Cerrar alerta"
-                                />
-                                <p:outputLabel value="#{alerta.fechaIni}" >
-                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
-                                </p:outputLabel>
+                                        <h:panelGroup rendered="#{!empty alerta.fechaFin}">
+                                            <h:outputText value=" - "/>
+                                            <p:outputLabel value="#{alerta.fechaFin}">
+                                                <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                            </p:outputLabel>
+                                        </h:panelGroup>
 
-                                <h:panelGroup rendered="#{!empty alerta.fechaFin}">
-                                    <h:outputText value=" - "/>
-                                    <p:outputLabel value="#{alerta.fechaFin}">
-                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
-                                    </p:outputLabel>
-                                </h:panelGroup>
+                                        <p:outputLabel
+                                                value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" />
 
-                                <p:outputLabel
-                                        value=" : #{alerta.descripcion.getTraduccionConValor(sessionBean.lang)}" />
-
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                    </ui:fragment>
 
                 </c:forEach>
 

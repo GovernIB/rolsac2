@@ -1557,4 +1557,10 @@ public class SessionBean implements Serializable {
             FacesContext.getCurrentInstance().responseComplete();
         }
     }
+
+    public boolean esAlertaVigente(AlertaDTO alerta) {
+        return alerta != null
+                && (alerta.getFechaFin() == null
+                || alerta.getFechaFin().after(new java.util.Date()));
+    }
 }
