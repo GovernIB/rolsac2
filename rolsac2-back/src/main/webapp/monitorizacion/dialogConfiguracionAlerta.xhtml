@@ -101,14 +101,21 @@
                     <p:outputLabel value="#{labels['dict.fechaInicio']}:" for="txtFechaInicio" pt:aria-label="#{labels['dict.fechaInicio']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:calendar id="txtFechaInicio" styleClass="fecha w40"
-                                disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
-                                required="true"
-                                requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
-                                value="#{dialogConfiguracionAlerta.data.fechaIni}" pattern="dd/MM/yyyy HH:mm"
-                                showOn="button">
-                        <p:ajax event="change"/>
-                    </p:calendar>
+                    <p:datePicker id="txtFechaInicio"
+                                  styleClass="fecha w40"
+                                  disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
+                                  required="true"
+                                  requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
+                                  value="#{dialogConfiguracionAlerta.data.fechaIni}"
+                                  pattern="dd/MM/yyyy HH:mm"
+                                  showIcon="true"
+                                  showTime="true"
+                                  timeInput="true"
+                                  hourFormat="24"
+                                  stepMinute="1"
+                                  showSeconds="false">
+                        <p:ajax event="dateSelect"/>
+                    </p:datePicker>
                 </div>
 
 
@@ -116,12 +123,19 @@
                     <p:outputLabel value="#{labels['dict.fechaFin']}:" for="txtFechaFin" pt:aria-label="#{labels['dict.fechaFin']}:"/>
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
-                    <p:calendar id="txtFechaFin" styleClass="fecha w40"
-                                disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
-                                value="#{dialogConfiguracionAlerta.data.fechaFin}" pattern="dd/MM/yyyy HH:mm"
-                                showOn="button">
-                        <p:ajax event="change"/>
-                    </p:calendar>
+                    <p:datePicker id="txtFechaFin"
+                                  styleClass="fecha w40"
+                                  disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
+                                  value="#{dialogConfiguracionAlerta.data.fechaFin}"
+                                  pattern="dd/MM/yyyy HH:mm"
+                                  showIcon="true"
+                                  showTime="true"
+                                  timeInput="true"
+                                  hourFormat="24"
+                                  stepMinute="1"
+                                  showSeconds="false">
+                        <p:ajax event="dateSelect"/>
+                    </p:datePicker>
                 </div>
 
 
