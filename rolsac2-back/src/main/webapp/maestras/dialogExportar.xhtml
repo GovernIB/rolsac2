@@ -1,4 +1,4 @@
-﻿<html xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -71,8 +71,7 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
                         <p:outputLabel value="#{labels['dict.estados']}:" pt:aria-label="#{labels['dict.estados']}:" />
                     </div>
                     <div class="ui-g-12 ui-md-9 ui-lg-9">
-                        <p:selectOneButton value="#{dialogExportar.datos.estados}"
-                                           converter="javax.faces.Boolean"
+                        <p:selectOneButton value="#{dialogExportar.estadosTexto}"
                                            styleClass="w95 botoneraRed"  maxlength="50">
                             <f:selectItem itemValue="true" itemLabel="#{labels['dialogExportar.estado.todos']}" />
                             <f:selectItem itemValue="false" itemLabel="#{labels['dialogExportar.estado.soloUno']}" />
@@ -85,12 +84,13 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
                     <p:outputLabel value="#{labels['dict.cantidad']}:" pt:aria-label="#{labels['dict.cantidad']}:" />
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-9">
-                    <p:selectOneButton value="#{dialogExportar.datos.todosLosDatos}"
-                                       converter="javax.faces.Boolean"
-                                       styleClass="w95 botoneraRed"  maxlength="50">
-                        <f:selectItem itemValue="true" itemLabel="#{labels['dialogExportar.cantidad.todos']}" />
-                        <f:selectItem itemValue="false" itemLabel="#{labels['dialogExportar.cantidad.actual']}" />
-                    </p:selectOneButton>
+                    <p:selectOneButton value="#{dialogExportar.todosLosDatosTexto}"
+					                   styleClass="w95 botoneraRed">
+					    <f:selectItem itemValue="true"
+					                  itemLabel="#{labels['dialogExportar.estado.todos']}" />
+					    <f:selectItem itemValue="false"
+					                  itemLabel="#{labels['dialogExportar.estado.soloUno']}" />
+					</p:selectOneButton>
                 </div>
             </div>
 
@@ -138,4 +138,3 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 
 </ui:composition>
 </html>
-

@@ -733,14 +733,15 @@ PÃ gina amb el llistat de procedimiento d'una unitat administrativa.
                                          action="#{viewProcedimientos.buscar()}" update="messages dataTable"
                                          onstart="start()" oncomplete="stop()"
                                          process="@form"/>
-                        <h:inputHidden id="descargarFlag" value="#{viewProcedimientos.downloadReady}"/>
-
+                        <h:outputText id="descargarFlag"
+              				  			 style="display:none"
+              							 value="#{viewProcedimientos.downloadReady ? 'true' : 'false'}"/>
                         <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print" styleClass="ml-2"
                                          aria-label="#{labels['dict.exportar']}"
                                          actionListener="#{viewProcedimientos.exportar()}" process="@form">
                             <p:ajax event="dialogReturn" listener="#{viewProcedimientos.returnDialogoExportar}"
                                     update="messages descargarFlag"
-                                    oncomplete="if($('#form\\:descargarFlag').val()==='true'){ $('#form\\:descargarDoc').click(); }"/>
+                                    oncomplete="if($('#form\\:descargarFlag').text()==='true'){ $('#form\\:descargarDoc').click(); }"/>
                         </p:commandButton>
 
                         <p:commandButton id="descargarDoc" value="Download" ajax="false"

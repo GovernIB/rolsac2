@@ -291,4 +291,20 @@ public class DialogExportar extends AbstractController implements Serializable {
     public void setDatos(ExportarDatos datos) {
         this.datos = datos;
     }
+
+    public String getEstadosTexto() {
+        return String.valueOf(datos.isEstados());
+    }
+
+    public void setEstadosTexto(String valor) {
+        datos.setEstados(Boolean.parseBoolean(valor));
+    }
+
+    public String getTodosLosDatosTexto() {
+        return String.valueOf(datos.getTodosLosDatos());
+    }
+
+    public void setTodosLosDatosTexto(String valor) {
+        datos.setTodosLosDatos(Boolean.parseBoolean(valor));
+    }
 }
