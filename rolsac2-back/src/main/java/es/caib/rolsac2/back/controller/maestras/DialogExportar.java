@@ -307,4 +307,8 @@ public class DialogExportar extends AbstractController implements Serializable {
     public void setTodosLosDatosTexto(String valor) {
         datos.setTodosLosDatos(Boolean.parseBoolean(valor));
     }
+
+    public javax.faces.convert.Converter getBooleanConverter() {
+        return new javax.faces.convert.BooleanConverter();
+    }
 }
