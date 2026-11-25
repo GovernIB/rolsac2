@@ -359,6 +359,46 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return retorno;
     }
 
+    /**
+     * Devuelve el usuario del ultimo evento de auditoria de cada procedimiento
+     * o servicio. RS2_PRAUDIT esta vinculada al procedimiento, no al workflow.
+     * No se ejecuta una consulta por registro: se agrupan los codigos en lotes.
+     *
+     * Si hay dos auditorias con la misma fecha, se toma la de codigo mayor.
+     * Los registros sin auditoria no se incluyen en el mapa.
+     */
+    @Override
+    public Map<Long, String> findUltimosUsuariosAuditoria(Collection<Long> codigos) {
+        Map<Long, String> usuarios = new HashMap<>();
+        if (codigos == null || codigos.isEmpty()) {
+            return usuarios;
+        }
+        List<Long> listaCodigos = new ArrayList<>(new LinkedHashSet<>(codigos));
+        // Oracle limita IN a 1000 elementos: se usan lotes de 500.
+        for (int inicio = 0; inicio < listaCodigos.size(); inicio += 500) {
+            int fin = Math.min(inicio + 500, listaCodigos.size());
+            List<Object[]> resultados = entityManager.createQuery(
+                    "SELECT a.procedimiento.codigo, a.usuarioModificacion " +
+                    "FROM JProcedimientoAuditoria a " +
+                    "WHERE a.procedimiento.codigo IN :codigos " +
+                    "AND a.fechaModificacion = (" +
+                    "SELECT MAX(otra.fechaModificacion) FROM JProcedimientoAuditoria otra " +
+                    "WHERE otra.procedimiento.codigo = a.procedimiento.codigo) " +
+                    "ORDER BY a.procedimiento.codigo, a.codigo DESC",
+                    Object[].class)
+                    .setParameter("codigos", listaCodigos.subList(inicio, fin))
+                    .getResultList();
+            for (Object[] fila : resultados) {
+                Long codigo = (Long) fila[0];
+                String usuario = (String) fila[1];
+                if (codigo != null && usuario != null && !usuarios.containsKey(codigo)) {
+                    usuarios.put(codigo, usuario);
+                }
+            }
+        }
+        return usuarios;
+    }
+
     private ExportConversionContext buildExportConversionContext(List<JProcedimientoWorkflow> workflows) {
         ExportConversionContext contexto = new ExportConversionContext();
         if (workflows == null || workflows.isEmpty()) {

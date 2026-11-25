@@ -1569,7 +1569,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
                         LOG.debug("Exportar procedimientos (completo): lote procesado offset={}, obtenidos={}, total acumulado={}", offset, batchSize, procedimientos.size());
                     }
                 } else {
-                    return procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
+                    procedimientos = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
                 }
             } else {
                 List<ProcedimientoBaseDTO> allProcs = new ArrayList<>();
@@ -1616,7 +1616,55 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             // Anteriormente se descartaba la modificación al existir una versión publicada,
             // lo que impedía exportar las dos filas del mismo procedimiento.
         }
+        // Consultar la auditoria SOLO cuando se haya seleccionado ese campo.
+        // Se aplica a servicios, procedimientos y a los filtros de un solo WF.
+        boolean exportarUsuarioAuditoria = exportarDatos.getCampos() != null
+                && exportarDatos.getCampos().stream().anyMatch(
+                campo -> campo.isSeleccionado() && "usuarioUltimaActualizacion".equals(campo.getCampo()));
+        if (exportarUsuarioAuditoria) {
+            completarUsuariosAuditoriaExportacion(procedimientos);
+        }
         return procedimientos;
+    }
+
+    /**
+     * Rellena NOM_USUARI_DARRERA_ACT sin N+1 queries de auditoria.
+     * La auditoria corresponde al procedimiento/servicio completo; si tiene
+     * workflow publicado y en modificacion, ambas versiones muestran el
+     * ultimo usuario auditado de ese mismo procedimiento/servicio.
+     */
+    private void completarUsuariosAuditoriaExportacion(List<ProcedimientoCompletoDTO> procedimientos) {
+        if (procedimientos == null || procedimientos.isEmpty()) {
+            return;
+        }
+        Set<Long> codigos = new LinkedHashSet<>();
+        for (ProcedimientoCompletoDTO procedimiento : procedimientos) {
+            if (procedimiento != null && procedimiento.getCodigo() != null) {
+                codigos.add(procedimiento.getCodigo());
+            }
+        }
+        Map<Long, String> usuarios = procedimientoRepository.findUltimosUsuariosAuditoria(codigos);
+        int informados = 0;
+        for (ProcedimientoCompletoDTO procedimiento : procedimientos) {
+            if (procedimiento == null) {
+                continue;
+            }
+            String usuario = usuarios.get(procedimiento.getCodigo());
+            if (usuario == null) {
+                continue;
+            }
+            ProcedimientoBaseDTO publicado = procedimiento.getProcedimientoBaseDTOPub();
+            ProcedimientoBaseDTO modificado = procedimiento.getProcedimientoBaseDTOMod();
+            if (publicado != null && publicado.getCodigo() != null) {
+                publicado.setUsuarioAuditoria(usuario);
+            }
+            if (modificado != null && modificado.getCodigo() != null) {
+                modificado.setUsuarioAuditoria(usuario);
+            }
+            informados++;
+        }
+        LOG.info("Exportacion: usuarios de ultima auditoria encontrados para {} de {} procedimientos/servicios",
+                informados, codigos.size());
     }
 
     @Override

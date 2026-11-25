@@ -11,7 +11,9 @@ import es.caib.rolsac2.service.model.filtro.ProcedimientoFiltro;
 import es.caib.rolsac2.service.model.filtro.ProcesoSolrFiltro;
 import es.caib.rolsac2.service.model.types.TypePerfiles;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,9 @@ public interface ProcedimientoRepository extends CrudRepository<JProcedimiento, 
     List<ProcedimientoGridDTO> findProcedimientosPagedByFiltro(ProcedimientoFiltro filtro);
 
     List<ProcedimientoCompletoDTO> findProcedimientosPagedByFiltroExport(ProcedimientoFiltro filtro);
+
+    /** Ultimo usuario registrado en RS2_PRAUDIT, por codigo de procedimiento/servicio. */
+    Map<Long, String> findUltimosUsuariosAuditoria(Collection<Long> codigos);
 
     List<ProcedimientoBaseDTO> findProcedimientosPagedByFiltroRest(ProcedimientoFiltro filtro, boolean ignorarDocs);
 
