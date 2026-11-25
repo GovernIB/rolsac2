@@ -102,7 +102,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:datePicker id="txtFechaInicio"
-                                  styleClass="fecha w40"
+                                  styleClass="fecha w40 calendario-lateral"
                                   disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
                                   required="true"
                                   requiredMessage="#{labels['dict.obligatorio.fechaInicio']}"
@@ -124,7 +124,7 @@
                 </div>
                 <div class="ui-g-12 ui-md-10 ui-lg-5">
                     <p:datePicker id="txtFechaFin"
-                                  styleClass="fecha w40"
+                                  styleClass="fecha w40 calendario-lateral"
                                   disabled="#{dialogConfiguracionAlerta.isModoConsulta()}"
                                   value="#{dialogConfiguracionAlerta.data.fechaFin}"
                                   pattern="dd/MM/yyyy HH:mm"
@@ -193,10 +193,10 @@
                 </div>
             </div>
             <h:outputStylesheet>
-            .ui-datepicker {
-                top: 150px !important;
-                left: 360px !important;
-            }
+                .ui-datepicker {
+                    top: 150px !important;
+                    left: 360px !important;
+                }
             </h:outputStylesheet>
             <h:outputScript>
                 function checkDivs() {

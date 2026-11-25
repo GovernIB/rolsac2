@@ -592,6 +592,12 @@ public class UnidadAdministrativaServiceFacadeBean implements UnidadAdministrati
 
     @Override
     @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
+    public Map<Long, Map<Integer, String>> obtenerNivelesOrganigrama(List<Long> codigosUA, String idioma) {
+        return unidadAdministrativaRepository.obtenerNivelesOrganigrama(codigosUA, idioma);
+    }
+
+    @Override
+    @RolesAllowed({TypePerfiles.ADMINISTRADOR_CONTENIDOS_VALOR, TypePerfiles.ADMINISTRADOR_ENTIDAD_VALOR, TypePerfiles.SUPER_ADMINISTRADOR_VALOR, TypePerfiles.GESTOR_VALOR, TypePerfiles.INFORMADOR_VALOR})
     public EntidadRaizDTO getUaRaiz(Long codigoUA) {
         return entidadRaizRepository.getEntidadRaizByUA(codigoUA);
     }

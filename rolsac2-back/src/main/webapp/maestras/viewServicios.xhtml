@@ -547,8 +547,8 @@ Pàgina amb el llistat de procedimiento d'una unitat administrativa.
                                          onstart="start()" oncomplete="stop()"
                                          process="@form"/>
                         <h:outputText id="descargarFlag"
-						                 style="display:none"
-              							 value="#{viewServicios.downloadReady ? 'true' : 'false'}"/>
+                                      style="display:none"
+                                      value="#{viewServicios.downloadReady ? 'true' : 'false'}"/>
                         <p:commandButton value="#{labels['dict.exportar']}" icon="pi pi-print" styleClass="ml-2"
                                          aria-label="#{labels['dict.exportar']}"
                                          actionListener="#{viewServicios.exportar()}"

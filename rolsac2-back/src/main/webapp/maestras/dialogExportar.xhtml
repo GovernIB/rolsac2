@@ -85,12 +85,12 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
                 </div>
                 <div class="ui-g-12 ui-md-9 ui-lg-9">
                     <p:selectOneButton value="#{dialogExportar.todosLosDatosTexto}"
-					                   styleClass="w95 botoneraRed">
-					    <f:selectItem itemValue="true"
-					                  itemLabel="#{labels['dialogExportar.estado.todos']}" />
-					    <f:selectItem itemValue="false"
-					                  itemLabel="#{labels['dialogExportar.estado.soloUno']}" />
-					</p:selectOneButton>
+                                       styleClass="w95 botoneraRed">
+                        <f:selectItem itemValue="true"
+                                      itemLabel="#{labels['dialogExportar.estado.todos']}" />
+                        <f:selectItem itemValue="false"
+                                      itemLabel="#{labels['dialogExportar.estado.soloUno']}" />
+                    </p:selectOneButton>
                 </div>
             </div>
 
@@ -107,15 +107,24 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
                     <h:outputLabel for="chkSeleccionado" styleClass="sr-only"
                                    value="#{td.nombreCampo} #{td.seleccionado}"/>
                     <p:selectBooleanCheckbox id="chkSeleccionado"
-                         value="#{td.seleccionado}"
-                         converter="#{dialogExportar.booleanConverter}"
-                         pt:aria-label="#{td.nombreCampo} #{td.seleccionado}">
-					    <p:ajax event="change" />
-					</p:selectBooleanCheckbox>
+                                             value="#{td.seleccionado}"
+                                             converter="#{dialogExportar.booleanConverter}"
+                                             pt:aria-label="#{td.nombreCampo} #{td.seleccionado}">
+                        <p:ajax event="change" />
+                    </p:selectBooleanCheckbox>
                 </p:column>
 
                 <p:column headerText="#{labels['dict.campo']}" styleClass="text-center">
                     <h:outputText value="#{td.literal}" />
+                    <h:outputText id="iconoAdvertenciaRendimiento"
+                                  value=" "
+                                  styleClass="pi pi-exclamation-triangle ml-2"
+                                  rendered="#{td.campo eq 'organigramaInstructorNivel1' or td.campo eq 'organigramaInstructorNivel2'}"
+                                  pt:aria-label="#{labels['dict.avisoRendimiento']}"/>
+                    <p:tooltip for="iconoAdvertenciaRendimiento"
+                               value="#{labels['dict.avisoRendimiento']}"
+                               position="right"
+                               rendered="#{td.campo eq 'organigramaInstructorNivel1' or td.campo eq 'organigramaInstructorNivel2'}"/>
                 </p:column>
 
                 <p:column headerText="#{labels['dict.nombreCabecera']}" styleClass="text-center">

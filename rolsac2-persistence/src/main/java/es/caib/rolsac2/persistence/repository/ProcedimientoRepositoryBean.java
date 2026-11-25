@@ -28,11 +28,6 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -280,37 +275,87 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
         return procs;
     }
 
+    /**
+     * Recupera las dos versiones de cada procedimiento seleccionado para exportar.
+     * La consulta de filtro determina QUE procedimientos se exportan; esta segunda
+     * consulta recupera los workflows reales de esos procedimientos, sin depender
+     * de que los LEFT JOIN de la consulta de listado traigan ambas versiones.
+     */
     @Override
     public List<ProcedimientoCompletoDTO> findProcedimientosPagedByFiltroExport(ProcedimientoFiltro filtro) {
         Query query = getQuery(false, filtro, true);
         query.setFirstResult(filtro.getPaginaFirst());
         query.setMaxResults(filtro.getPaginaTamanyo());
-        List<ProcedimientoBaseDTO> procs = new ArrayList<>();
-        List<ProcedimientoCompletoDTO> retorno = new ArrayList<>();
-        List<JProcedimientoWorkflow[]> jprocs = query.getResultList();
-        for (Object[] proc : jprocs) {
-            if (proc != null) {
-                JProcedimientoWorkflow modificado = (JProcedimientoWorkflow) proc[2];
-                JProcedimientoWorkflow publicado = (JProcedimientoWorkflow) proc[1];
 
-                ProcedimientoCompletoDTO procCompleto = new ProcedimientoCompletoDTO();
-                if (publicado != null) {
-                    procCompleto.setProcedimientoPub(convertDTO(publicado, false));
-                    procCompleto.setCodigo(publicado.getProcedimiento().getCodigo());
-                } else {
-                    procCompleto.setProcedimientoPub(new ProcedimientoBaseDTO());
+        // Preservar el orden y la paginacion de los procedimientos filtrados.
+        Map<Long, ProcedimientoCompletoDTO> porCodigo = new LinkedHashMap<>();
+        List<?> resultados = query.getResultList();
+        for (Object resultado : resultados) {
+            Long codigo = null;
+            if (resultado instanceof Object[]) {
+                Object[] columnas = (Object[]) resultado;
+                if (columnas.length > 0 && columnas[0] instanceof JProcedimiento) {
+                    codigo = ((JProcedimiento) columnas[0]).getCodigo();
                 }
-                if (modificado != null) {
-                    procCompleto.setProcedimientoMod(convertDTO(modificado, false));
-                    procCompleto.setCodigo(modificado.getProcedimiento().getCodigo());
-                } else {
-                    procCompleto.setProcedimientoMod(new ProcedimientoBaseDTO());
-                }
-
-                retorno.add(procCompleto);
+            } else if (resultado instanceof JProcedimientoWorkflow) {
+                codigo = ((JProcedimientoWorkflow) resultado).getProcedimiento().getCodigo();
             }
-
+            if (codigo != null && !porCodigo.containsKey(codigo)) {
+                ProcedimientoCompletoDTO dto = new ProcedimientoCompletoDTO();
+                dto.setCodigo(codigo);
+                dto.setProcedimientoPub(new ProcedimientoBaseDTO());
+                dto.setProcedimientoMod(new ProcedimientoBaseDTO());
+                porCodigo.put(codigo, dto);
+            }
         }
+        if (porCodigo.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Oracle limita el numero de elementos de IN; no superar 500 por lote.
+        List<Long> codigos = new ArrayList<>(porCodigo.keySet());
+        String estadoWF = filtro.getEstadoWF();
+        boolean incluirPublicado = !"M".equals(estadoWF);
+        boolean incluirModificado = !"D".equals(estadoWF);
+        int dosVersiones = 0;
+        for (int inicio = 0; inicio < codigos.size(); inicio += 500) {
+            int fin = Math.min(inicio + 500, codigos.size());
+            List<JProcedimientoWorkflow> workflows = entityManager.createQuery(
+                    "SELECT wf FROM JProcedimientoWorkflow wf WHERE wf.procedimiento.codigo IN :codigos",
+                    JProcedimientoWorkflow.class)
+                    .setParameter("codigos", codigos.subList(inicio, fin))
+                    .getResultList();
+            for (JProcedimientoWorkflow wf : workflows) {
+                if (wf.getWorkflow() == null || wf.getProcedimiento() == null) {
+                    continue;
+                }
+                ProcedimientoCompletoDTO dto = porCodigo.get(wf.getProcedimiento().getCodigo());
+                if (dto == null) {
+                    continue;
+                }
+                // false = definitivo/publicado; true = modificacion.
+                if (!wf.getWorkflow() && incluirPublicado) {
+                    dto.setProcedimientoPub(convertDTO(wf, false));
+                } else if (wf.getWorkflow() && incluirModificado) {
+                    dto.setProcedimientoMod(convertDTO(wf, false));
+                }
+            }
+        }
+        List<ProcedimientoCompletoDTO> retorno = new ArrayList<>();
+        for (ProcedimientoCompletoDTO dto : porCodigo.values()) {
+            boolean publicado = dto.getProcedimientoBaseDTOPub().getCodigo() != null;
+            boolean modificado = dto.getProcedimientoBaseDTOMod().getCodigo() != null;
+            if (publicado && modificado) {
+                dosVersiones++;
+            }
+            if (publicado || modificado) {
+                retorno.add(dto);
+            } else {
+                LOG.warn("Procedimiento {} seleccionado para exportar sin workflow recuperable", dto.getCodigo());
+            }
+        }
+        LOG.info("Exportacion procedimientos: seleccionados={}, recuperados={}, con ambos workflows={}",
+                porCodigo.size(), retorno.size(), dosVersiones);
         return retorno;
     }
 
@@ -948,13 +993,7 @@ public class ProcedimientoRepositoryBean extends AbstractCrudRepository<JProcedi
     }
 
     private void writeExportLog(String message) {
-        try {
-            Path logPath = Paths.get("P:", "workspace", "Rolsac2_SVN", "EXPORT.LOG");
-            String line = message + System.lineSeparator();
-            Files.write(logPath, line.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        } catch (Exception e) {
-            LOG.error("Error writing EXPORT.LOG", e);
-        }
+        LOG.info("EXPORT: {}", message);
     }
 
     @SuppressWarnings("unchecked")

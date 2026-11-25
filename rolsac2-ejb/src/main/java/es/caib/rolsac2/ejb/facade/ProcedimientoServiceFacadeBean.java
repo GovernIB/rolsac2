@@ -1555,7 +1555,7 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
 
         List<ProcedimientoCompletoDTO> procedimientos = new ArrayList<>();
         if (exportarDatos.isEstados()) {
-            if (filtroClonado.getEstadoWF().equals("T")) {
+            if ("T".equals(filtroClonado.getEstadoWF()) || "A".equals(filtroClonado.getEstadoWF())) {
                 if (exportarDatos.getTodosLosDatos()) {
                     int offset = 0;
                     int batchSize = EXPORT_BATCH_SIZE;
@@ -1611,13 +1611,10 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             } else {
                 procedimientos = procedimientoRepository.findProcedimientosPagedByFiltroExport(filtroClonado);
             }
-            if (procedimientos != null && !procedimientos.isEmpty()) {
-                for (ProcedimientoCompletoDTO proc : procedimientos) {
-                    if (proc.isProcedimientoPub() && proc.isProcedimientoMod()) {
-                        proc.setProcedimientoMod(new ProcedimientoBaseDTO());
-                    }
-                }
-            }
+            // Mantener ambos workflows en la exportación, también cuando no se filtra por estados.
+            // UtilExport.getValoresCompletos() crea una fila independiente para cada versión.
+            // Anteriormente se descartaba la modificación al existir una versión publicada,
+            // lo que impedía exportar las dos filas del mismo procedimiento.
         }
         return procedimientos;
     }

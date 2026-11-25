@@ -17,6 +17,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Controlador para exportar.
@@ -50,6 +51,7 @@ public class DialogExportar extends AbstractController implements Serializable {
     public void load() {
 
         LOG.debug("init");
+        getContext().getViewRoot().setLocale(Locale.forLanguageTag(sessionBean.getLang()));
         this.setearIdioma();
         List<ExportarCampos> campos = new ArrayList<>();
         if (UtilJSF.getValorMochilaByKey("exportar") == null) {
@@ -94,6 +96,8 @@ public class DialogExportar extends AbstractController implements Serializable {
 
                 } else if (tipo.equals("PROC")) {
                     tipoProcServ = true;
+                    campos.add(new ExportarCampos(getLiteral("dict.organigrama.nivel1"), "organigramaInstructorNivel1", "PRIMER_NIVELL_CONSELLERIA"));
+                    campos.add(new ExportarCampos(getLiteral("dict.organigrama.nivel2"), "organigramaInstructorNivel2", "SEGON_NIVELL"));
                     campos.add(new ExportarCampos(getLiteral("dict.codigo"), "codigo", "CODI_PROCEDIMENT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.codigoWF"), "codigoWF", "CODI_PROCEDIMENT_WF", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.fechaPublicacion"), "fechaPub", "DATA_PUBLICACIO", true, 1));
@@ -109,8 +113,12 @@ public class DialogExportar extends AbstractController implements Serializable {
                     campos.add(new ExportarCampos(getLiteral("dict.objetoCat"), "objetoCat", "OBJECTE_CA", true, 3));
                     campos.add(new ExportarCampos(getLiteral("dict.objetoEsp"), "objetoEsp", "OBJECTE_ES", true, 3));
                     campos.add(new ExportarCampos(getLiteral("dict.publicoObjetivo"), "publicoObjetivo", "PUBLIC_OBJECTIU", true, 1));
-                    campos.add(new ExportarCampos(getLiteral("dialogProcedimiento.organoInstructor"), "unidadAdministrativaInstructora", "NOM_UA_INSTRUCTURA", true, 2));
-                    campos.add(new ExportarCampos(getLiteral("dialogProcedimiento.organoCompetente"), "unidadAdministrativaResponsable", "NOM_UA_RESPONSABLE", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dialogProcedimiento.tipoProcedimiento"), "tipoProcedimiento", "TIPUS_PROCEDIMENT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.numeroDocumentosRelacionadosCa"), "numeroDocumentosRelacionadosCa", "NUM_DOC_RELACIONATS_CA", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.pdu"), "pdu", "PDU_PROCEDIMENT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.organoInstructor"), "unidadAdministrativaInstructora", "NOM_UA_INSTRUCTURA", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.organoCompetente"), "unidadAdministrativaCompetente", "NOM_UA_COMPETENT_RESOLDRE", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.organoResponsable"), "unidadAdministrativaResponsable", "NOM_UA_RESPONSABLE", true, 2));
                     campos.add(new ExportarCampos(getLiteral("dict.responsable"), "responsable", "NOM_RESPONSABLE", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.numeroTramites"), "numeroTramites", "NUM_TRAMITS", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.numeroTramitesTelematicos"), "numeroTramitesTelematicos", "NUM_TRAMITS_TELEMATICS", true, 1));
@@ -119,13 +127,28 @@ public class DialogExportar extends AbstractController implements Serializable {
                     campos.add(new ExportarCampos(getLiteral("dict.usuarioUltimaActualizacion"), "usuarioUltimaActualizacion", "NOM_USUARI_DARRERA_ACT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.comun"), "comun", "COMU", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.codigoTramite"), "codigoTramite", "CODI_TRAMIT", true, 1));
-                    campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.nombreTramite"), "nombreTramite", "NOM_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.nombreTramiteEsp"), "nombreTramiteEsp", "NOM_TRAMIT_CASTELLANO", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.nombreTramiteCat"), "nombreTramiteCat", "NOM_TRAMIT_CATALA", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.fechaPublicacion"), "fechaPublicacionTramite", "DATA_PUBLICACIO_TRAMIT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.fechaInicio"), "fechaInicioTramite", "DATA_INICI_TRAMIT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dialogProcedimientoTramite.fechaCierre"), "fechaCierreTramite", "DATA_TANCAMENT_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.organoTramita"), "organoTramita", "ORGAN_TRAMITA", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.faseTramite"), "faseTramite", "FASE_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.tramitePresencial"), "tramitePresencial", "TRAMIT_PRESENCIAL", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.tramiteTelematico"), "tramiteTelematico", "TRAMIT_TELEMATIC", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.plantillaTramite"), "plantillaTramite", "PLANTILLA_TRAMIT", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.sistraIdentificador"), "sistraIdentificador", "SISTRA_IDENTIFICADOR", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.sistraVersion"), "sistraVersion", "SISTRA_VERSIO", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.sistraPlataforma"), "sistraPlataforma", "SISTRA_PLATAFORMA", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.urlPersonalizadaEsp"), "urlPersonalizadaEsp", "URL_PERSONALITZADA_CASTELLANO", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.urlPersonalizadaCat"), "urlPersonalizadaCat", "URL_PERSONALITZADA_CATALA", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.numModelosPresentacionCa"), "numModelosPresentacionCa", "NUM_MODELS_PRESENTACIO_CA", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.numDocumentosTramiteCa"), "numDocumentosTramiteCa", "NUM_DOCUMENTS_TRAMIT_CA", true, 1));
 
                 } else if (tipo.equals("SERV")) {
                     tipoProcServ = true;
+                    campos.add(new ExportarCampos(getLiteral("dict.organigrama.nivel1"), "organigramaInstructorNivel1", "PRIMER_NIVELL_CONSELLERIA"));
+                    campos.add(new ExportarCampos(getLiteral("dict.organigrama.nivel2"), "organigramaInstructorNivel2", "SEGON_NIVELL"));
                     campos.add(new ExportarCampos(getLiteral("dict.codigo"), "codigo", "CODI_SERVEI", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.codigoWF"), "codigoWF", "CODI_SERVEI_WF", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.fechaPublicacion"), "fechaPub", "DATA_PUBLICACIO", true, 1));
@@ -141,14 +164,22 @@ public class DialogExportar extends AbstractController implements Serializable {
                     campos.add(new ExportarCampos(getLiteral("dict.objetoCat"), "objetoCat", "OBJECTE_CA", true, 3));
                     campos.add(new ExportarCampos(getLiteral("dict.objetoEsp"), "objetoEsp", "OBJECTE_ES", true, 3));
                     campos.add(new ExportarCampos(getLiteral("dict.publicoObjetivo"), "publicoObjetivo", "PUBLIC_OBJECTIU", true, 1));
-                    campos.add(new ExportarCampos(getLiteral("dialogProcedimiento.organoCompetente"), "unidadAdministrativaCompetente", "NOM_UA_RESPONSABLE", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.organoInstructor"), "unidadAdministrativaInstructora", "NOM_UA_INSTRUCTORA", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.organoResponsable"), "unidadAdministrativaResponsable", "NOM_UA_RESPONSABLE", true, 2));
                     campos.add(new ExportarCampos(getLiteral("dict.responsable"), "responsable", "NOM_RESPONSABLE", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.numDocumentosServicioCat"), "numDocumentosServicioCat", "NUM_DOCUMENTS_CA", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.numeroNormativas"), "numeroNormas", "NUM_NORMES", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.fechaActualizacion"), "fechaActualizacion", "DATA_ACTUALITZACIO", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.usuarioUltimaActualizacion"), "usuarioUltimaActualizacion", "NOM_USUARI_DARRERA_ACT", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.comun"), "comun", "COMU", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.presencial"), "presencial", "PRESENCIAL", true, 1));
                     campos.add(new ExportarCampos(getLiteral("dict.telematico"), "telematico", "TELEMATICO", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.plantilla"), "plantillaTramite", "PLANTILLA", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.sistraIdentificador"), "sistraIdentificador", "SISTRA_IDENTIFICADOR", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.sistraVersion"), "sistraVersion", "SISTRA_VERSION", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.sistraPlataforma"), "sistraPlataforma", "SISTRA_PLATAFORMA", true, 1));
+                    campos.add(new ExportarCampos(getLiteral("dict.urlPersonalizadaEsp"), "urlPersonalizadaEsp", "URL_PERSONALITZADA_CASTELLANO", true, 2));
+                    campos.add(new ExportarCampos(getLiteral("dict.urlPersonalizadaCat"), "urlPersonalizadaCat", "URL_PERSONALITZADA_CATALA", true, 2));
                     campos.add(new ExportarCampos(getLiteral("dict.telefonico"), "telefonico", "TELEFONICO", true, 1));
                 }
             }

@@ -242,6 +242,8 @@ public interface UnidadAdministrativaServiceFacade {
 
     String obtenerCodigoDIR3(Long codigoUA);
 
+    Map<Long, Map<Integer, String>> obtenerNivelesOrganigrama(List<Long> codigosUA, String idioma);
+
     EntidadRaizDTO getUaRaiz(Long codigoUA);
 
     Pagina<UnidadAdministrativaDTO> findByFiltroRest(UnidadAdministrativaFiltro fg);

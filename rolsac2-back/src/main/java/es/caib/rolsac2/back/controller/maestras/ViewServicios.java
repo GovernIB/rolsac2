@@ -653,7 +653,7 @@ public class ViewServicios extends AbstractController implements Serializable {
         literalesEstadoSIA.put("A", getLiteral("dialogProcedimiento.estadoSIA.A"));
         literalesEstadoSIA.put("B", getLiteral("dialogProcedimiento.estadoSIA.B"));
 
-        String[][] datos = UtilExport.getValoresCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA);
+        String[][] datos = UtilExport.getValoresServsCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA, uaService);
         String[] cabecera = UtilExport.getCabecera(exportarDatos);
         return UtilExport.generarStreamedContent("Servei", cabecera, datos, exportarDatos);
     }

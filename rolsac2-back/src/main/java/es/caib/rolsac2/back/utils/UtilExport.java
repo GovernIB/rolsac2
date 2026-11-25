@@ -6,6 +6,7 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import es.caib.rolsac2.service.facade.UnidadAdministrativaServiceFacade;
 import es.caib.rolsac2.service.model.*;
 import es.caib.rolsac2.service.model.exportar.ExportarCampos;
 import es.caib.rolsac2.service.model.exportar.ExportarDatos;
@@ -16,9 +17,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
@@ -167,12 +168,9 @@ public class UtilExport {
 
             if (!tieneDosWF) {
                 //Si no tiene dos wf, solo hay que mostrar un dato
-                Boolean valorBoolean;
-                if (prioridadPublicado) {
-                    valorBoolean = (boolean) valor;
-                } else {
-                    valorBoolean = (boolean) valor2;
-                }
+                // No desempaquetar un Boolean nulo: la version ausente puede
+                // contener campos booleanos vacios.
+                Boolean valorBoolean = (Boolean) (prioridadPublicado ? valor : valor2);
 
                 if (valorBoolean == null) {
                     return "";
@@ -419,8 +417,14 @@ public class UtilExport {
      * @param idioma
      * @return
      */
-    public static String[][] getValoresServsCompletos(List<ProcedimientoCompletoDTO> procs, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA) {
+    public static String[][] getValoresServsCompletos(List<ProcedimientoCompletoDTO> procs, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA, UnidadAdministrativaServiceFacade uaService) {
 
+        NivelesOrganigrama nivelesOrganigrama = new NivelesOrganigrama(uaService, idioma);
+        if (exportarDatos.getCampos().stream().anyMatch(c ->
+                "organigramaInstructorNivel1".equals(c.getCampo())
+                        || "organigramaInstructorNivel2".equals(c.getCampo()))) {
+            nivelesOrganigrama.precargar(procs);
+        }
         String[][] retorno = new String[procs.size()][exportarDatos.getCampos().size()];
         int fila = 0;
         for (ProcedimientoCompletoDTO procedimientoDTO : procs) {
@@ -543,11 +547,23 @@ public class UtilExport {
                     case "unidadAdministrativaResponsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaResponsableLiteral(), procedimientoDTO.getServicioMod().getUaResponsableLiteral(), idioma, tieneDosWF, prioridadPublicado);
                         break;
+                    case "organigramaInstructorNivel1":
+                        retorno[fila][columna] = UtilExport.getValor(nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOPub(), 1),
+                                nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOMod(), 1), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "organigramaInstructorNivel2":
+                        retorno[fila][columna] = UtilExport.getValor(nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOPub(), 2),
+                                nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOMod(), 2), idioma, tieneDosWF, prioridadPublicado);
+                        break;
                     case "unidadAdministrativaCompetente":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaCompetente(), procedimientoDTO.getServicioMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "responsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getResponsable(), procedimientoDTO.getServicioMod().getResponsable(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "numDocumentosServicioCat":
+                        retorno[fila][columna] = UtilExport.getValor(contarDocumentosPorIdioma(procedimientoDTO.getServicioPub().getDocumentos(), Constantes.IDIOMA_CATALAN),
+                                contarDocumentosPorIdioma(procedimientoDTO.getServicioMod().getDocumentos(), Constantes.IDIOMA_CATALAN), idioma, tieneDosWF, prioridadPublicado);
                         break;
                     case "unidadAdministrativaResolutoria":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().getUaCompetente(), procedimientoDTO.getServicioMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
@@ -609,6 +625,42 @@ public class UtilExport {
                     case "telefonico":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getServicioPub().isTramitTelefonica(), procedimientoDTO.getServicioMod().isTramitTelefonica(), idioma, tieneDosWF, prioridadPublicado);
                         break;
+                    case "plantillaTramite":
+                        TipoTramitacionDTO plantillaPub = procedimientoDTO.getServicioPub().getPlantillaSel();
+                        TipoTramitacionDTO plantillaMod = procedimientoDTO.getServicioMod().getPlantillaSel();
+                        retorno[fila][columna] = UtilExport.getValor(plantillaPub != null ? plantillaPub.getDescripcion() : null,
+                                plantillaMod != null ? plantillaMod.getDescripcion() : null, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "sistraIdentificador":
+                        TipoTramitacionDTO tipoServicioIdPub = obtenerTipoTramitacion(procedimientoDTO.getServicioPub());
+                        TipoTramitacionDTO tipoServicioIdMod = obtenerTipoTramitacion(procedimientoDTO.getServicioMod());
+                        retorno[fila][columna] = UtilExport.getValor(tipoServicioIdPub != null ? tipoServicioIdPub.getTramiteId() : null,
+                                tipoServicioIdMod != null ? tipoServicioIdMod.getTramiteId() : null, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "sistraVersion":
+                        TipoTramitacionDTO tipoServicioVersionPub = obtenerTipoTramitacion(procedimientoDTO.getServicioPub());
+                        TipoTramitacionDTO tipoServicioVersionMod = obtenerTipoTramitacion(procedimientoDTO.getServicioMod());
+                        retorno[fila][columna] = UtilExport.getValor(tipoServicioVersionPub != null ? tipoServicioVersionPub.getTramiteVersion() : null,
+                                tipoServicioVersionMod != null ? tipoServicioVersionMod.getTramiteVersion() : null, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "sistraPlataforma":
+                        TipoTramitacionDTO tipoServicioPlatPub = obtenerTipoTramitacion(procedimientoDTO.getServicioPub());
+                        TipoTramitacionDTO tipoServicioPlatMod = obtenerTipoTramitacion(procedimientoDTO.getServicioMod());
+                        retorno[fila][columna] = UtilExport.getValor(tipoServicioPlatPub != null && tipoServicioPlatPub.getCodPlatTramitacion() != null ? tipoServicioPlatPub.getCodPlatTramitacion().getIdentificador() : null,
+                                tipoServicioPlatMod != null && tipoServicioPlatMod.getCodPlatTramitacion() != null ? tipoServicioPlatMod.getCodPlatTramitacion().getIdentificador() : null, idioma, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "urlPersonalizadaEsp":
+                        TipoTramitacionDTO tipoServicioUrlEspPub = obtenerUrlPersonalizada(procedimientoDTO.getServicioPub());
+                        TipoTramitacionDTO tipoServicioUrlEspMod = obtenerUrlPersonalizada(procedimientoDTO.getServicioMod());
+                        retorno[fila][columna] = UtilExport.getValor(tipoServicioUrlEspPub != null ? tipoServicioUrlEspPub.getUrl() : null,
+                                tipoServicioUrlEspMod != null ? tipoServicioUrlEspMod.getUrl() : null, Constantes.IDIOMA_ESPANYOL, tieneDosWF, prioridadPublicado);
+                        break;
+                    case "urlPersonalizadaCat":
+                        TipoTramitacionDTO tipoServicioUrlCatPub = obtenerUrlPersonalizada(procedimientoDTO.getServicioPub());
+                        TipoTramitacionDTO tipoServicioUrlCatMod = obtenerUrlPersonalizada(procedimientoDTO.getServicioMod());
+                        retorno[fila][columna] = UtilExport.getValor(tipoServicioUrlCatPub != null ? tipoServicioUrlCatPub.getUrl() : null,
+                                tipoServicioUrlCatMod != null ? tipoServicioUrlCatMod.getUrl() : null, Constantes.IDIOMA_CATALAN, tieneDosWF, prioridadPublicado);
+                        break;
                     default:
                         break;
                 }
@@ -642,7 +694,8 @@ public class UtilExport {
                         ).flatMap(l -> l == null ? Stream.empty() : l.stream()),
                         // Obtener trámites del workflow modificado (casting inline)
                         Stream.ofNullable(
-                                (p.getProcedimientoBaseDTOMod() instanceof ProcedimientoDTO)
+                                (p.getProcedimientoBaseDTOMod() != p.getProcedimientoBaseDTOPub()
+                                        && p.getProcedimientoBaseDTOMod() instanceof ProcedimientoDTO)
                                         ? ((ProcedimientoDTO) p.getProcedimientoBaseDTOMod()).getTramites()
                                         : null
                         ).flatMap(l -> l == null ? Stream.empty() : l.stream())
@@ -657,22 +710,21 @@ public class UtilExport {
      * Solo los ProcedimientoDTO tienen trámites; los ServicioDTO siempre generan una sola fila.
      *
      * @param procs lista de procedimientos
+     * @param incluirTramites indica si se exportan campos de trámite
      * @return número total de filas (procedimientos + suma de trámites)
      */
-    private static int calcularTotalFilas(List<ProcedimientoCompletoDTO> procs) {
-        return procs.stream()
-                .mapToInt(procedimiento -> {
-                    // Verificar si es un ProcedimientoDTO (que tiene trámites) o ServicioDTO (que no tiene)
-                    if (procedimiento.getProcedimientoBaseDTOPub() instanceof ProcedimientoDTO
-                            || procedimiento.getProcedimientoBaseDTOMod() instanceof ProcedimientoDTO) {
-                        // Obtener trámites combinados de ambos workflows
-                        List<ProcedimientoTramiteDTO> tramitesCombinados = obtenerTramitesCombinados(procedimiento);
-                        return (tramitesCombinados == null || tramitesCombinados.isEmpty()) ? 1 : tramitesCombinados.size();
-                    }
-                    // Es un ServicioDTO, solo cuenta 1 fila
-                    return 1;
-                })
-                .sum();
+    private static int calcularTotalFilas(List<ProcedimientoCompletoDTO> procs, boolean incluirTramites,
+                                          Map<ProcedimientoCompletoDTO, List<ProcedimientoTramiteDTO>> cacheTramites) {
+        int total = 0;
+        for (ProcedimientoCompletoDTO procedimiento : procs) {
+            List<ProcedimientoTramiteDTO> tramites = Collections.emptyList();
+            if (incluirTramites && (procedimiento.getProcedimientoBaseDTOPub() instanceof ProcedimientoDTO
+                    || procedimiento.getProcedimientoBaseDTOMod() instanceof ProcedimientoDTO)) {
+                tramites = cacheTramites.computeIfAbsent(procedimiento, UtilExport::obtenerTramitesCombinados);
+            }
+            total += Math.max(1, tramites.size());
+        }
+        return total;
     }
 
     /**
@@ -683,9 +735,20 @@ public class UtilExport {
      * @param idioma
      * @return
      */
-    public static String[][] getValoresCompletos(List<ProcedimientoCompletoDTO> procs, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA) {
+    public static String[][] getValoresCompletos(List<ProcedimientoCompletoDTO> procs, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA, UnidadAdministrativaServiceFacade uaService) {
 
-        List<String> tramiteFieldNames = Arrays.asList("codigoProcTramite", "codigoTramite", "nombreTramite", "fechaPublicacionTramite", "fechaInicioTramite", "fechaCierreTramite");
+        NivelesOrganigrama nivelesOrganigrama = new NivelesOrganigrama(uaService, idioma);
+        if (exportarDatos.getCampos().stream().anyMatch(c ->
+                "organigramaInstructorNivel1".equals(c.getCampo())
+                        || "organigramaInstructorNivel2".equals(c.getCampo()))) {
+            nivelesOrganigrama.precargar(procs);
+        }
+        List<String> tramiteFieldNames = Arrays.asList(
+                "codigoProcTramite", "codigoTramite", "nombreTramite", "nombreTramiteEsp", "nombreTramiteCat",
+                "fechaPublicacionTramite", "fechaInicioTramite", "fechaCierreTramite", "organoTramita",
+                "faseTramite", "tramitePresencial", "tramiteTelematico", "plantillaTramite",
+                "sistraIdentificador", "sistraVersion", "sistraPlataforma", "urlPersonalizadaEsp",
+                "urlPersonalizadaCat", "numModelosPresentacionCa", "numDocumentosTramiteCa");
         ExportarCampos exportarTramites = exportarDatos.getCampos().stream()
                 .filter(c -> "exportarTramites".equals(c.getCampo()))
                 .findFirst()
@@ -693,7 +756,30 @@ public class UtilExport {
 
         boolean tieneCamposTramite = exportarDatos.getCampos().stream().anyMatch(c -> tramiteFieldNames.contains(c.getCampo()));
 
-        int totalFilas = calcularTotalFilas(procs);
+        List<ProcedimientoCompletoDTO> versiones = new ArrayList<>();
+        for (ProcedimientoCompletoDTO procedimiento : procs) {
+            if (tieneDosWF(procedimiento)) {
+                // Cada fila debe contener exclusivamente los datos y tramites de su workflow.
+                // No asignar una misma version a ambos campos, porque oculta el origen de los datos.
+                ProcedimientoCompletoDTO publicado = new ProcedimientoCompletoDTO();
+                publicado.setCodigo(procedimiento.getCodigo());
+                publicado.setProcedimientoPub(procedimiento.getProcedimientoBaseDTOPub());
+                publicado.setProcedimientoMod(new ProcedimientoBaseDTO());
+                versiones.add(publicado);
+
+                ProcedimientoCompletoDTO modificado = new ProcedimientoCompletoDTO();
+                modificado.setCodigo(procedimiento.getCodigo());
+                modificado.setProcedimientoPub(new ProcedimientoBaseDTO());
+                modificado.setProcedimientoMod(procedimiento.getProcedimientoBaseDTOMod());
+                versiones.add(modificado);
+            } else {
+                versiones.add(procedimiento);
+            }
+        }
+        procs = versiones;
+
+        Map<ProcedimientoCompletoDTO, List<ProcedimientoTramiteDTO>> cacheTramites = new IdentityHashMap<>();
+        int totalFilas = calcularTotalFilas(procs, exportarTramites != null || tieneCamposTramite, cacheTramites);
         int columnasExtra = (exportarTramites != null) ? 4 : 0;
         String[][] retorno = new String[totalFilas][exportarDatos.getCampos().size() + columnasExtra];
         int fila = 0;
@@ -706,19 +792,16 @@ public class UtilExport {
             }
 
             // Obtener trámites combinados de ambos workflows (publicado y modificado)
-            List<ProcedimientoTramiteDTO> tramitesCombinados = null;
-            if (exportarTramites != null || tieneCamposTramite) {
-                tramitesCombinados = obtenerTramitesCombinados(procedimientoDTO);
-            }
+            List<ProcedimientoTramiteDTO> tramitesCombinados = cacheTramites.get(procedimientoDTO);
 
             if (tramitesCombinados == null || tramitesCombinados.isEmpty()) {
                 // Si no hay trámites (o es un ServicioDTO), crear una fila con el procedimiento sin trámite asociado
-                rellenarFilaCompleta(retorno, fila, procedimientoDTO, null, exportarDatos, idioma, literalesWF, literalesEstado, literalesEstadoSIA, tieneDosWF, prioridadPublicado);
+                rellenarFilaCompleta(retorno, fila, procedimientoDTO, null, exportarDatos, idioma, literalesWF, literalesEstado, literalesEstadoSIA, nivelesOrganigrama, tieneDosWF, prioridadPublicado);
                 fila++;
             } else {
                 // Si hay trámites (solo para ProcedimientoDTO), crear una fila por cada trámite
                 for (ProcedimientoTramiteDTO tramiteDTO : tramitesCombinados) {
-                    rellenarFilaCompleta(retorno, fila, procedimientoDTO, tramiteDTO, exportarDatos, idioma, literalesWF, literalesEstado, literalesEstadoSIA, tieneDosWF, prioridadPublicado);
+                    rellenarFilaCompleta(retorno, fila, procedimientoDTO, tramiteDTO, exportarDatos, idioma, literalesWF, literalesEstado, literalesEstadoSIA, nivelesOrganigrama, tieneDosWF, prioridadPublicado);
                     fila++;
                 }
             }
@@ -740,7 +823,7 @@ public class UtilExport {
     /**
      * Rellena una fila completa de la matriz con datos del procedimiento y opcionalmente con datos del trámite.
      */
-    private static void rellenarFilaCompleta(String[][] retorno, int fila, ProcedimientoCompletoDTO procedimientoDTO, ProcedimientoTramiteDTO tramiteDTO, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA, boolean tieneDosWF, boolean prioridadPublicado) {
+    private static void rellenarFilaCompleta(String[][] retorno, int fila, ProcedimientoCompletoDTO procedimientoDTO, ProcedimientoTramiteDTO tramiteDTO, ExportarDatos exportarDatos, String idioma, Map<String, String> literalesWF, Map<String, String> literalesEstado, Map<String, String> literalesEstadoSIA, NivelesOrganigrama nivelesOrganigrama, boolean tieneDosWF, boolean prioridadPublicado) {
         int columna = 0;
         for (ExportarCampos exp : exportarDatos.getCampos()) {
             switch (exp.getCampo()) {
@@ -856,8 +939,31 @@ public class UtilExport {
                     }
                     retorno[fila][columna] = UtilExport.getValor(texto, texto2, idioma, tieneDosWF, prioridadPublicado);
                     break;
+                case "numeroDocumentosRelacionadosCa":
+                    int documentosPub = procedimientoDTO.getProcedimientoBaseDTOPub().getDocumentos() == null ? 0 : procedimientoDTO.getProcedimientoBaseDTOPub().getDocumentos().size();
+                    int documentosMod = procedimientoDTO.getProcedimientoBaseDTOMod().getDocumentos() == null ? 0 : procedimientoDTO.getProcedimientoBaseDTOMod().getDocumentos().size();
+                    retorno[fila][columna] = UtilExport.getValor(documentosPub, documentosMod, idioma, tieneDosWF, prioridadPublicado);
+                    break;
+                case "pdu":
+                    Boolean pduPub = Integer.valueOf(1).equals(procedimientoDTO.getProcedimientoBaseDTOPub().getEstadoPdu());
+                    Boolean pduMod = Integer.valueOf(1).equals(procedimientoDTO.getProcedimientoBaseDTOMod().getEstadoPdu());
+                    retorno[fila][columna] = UtilExport.getValor(pduPub, pduMod, idioma, tieneDosWF, prioridadPublicado);
+                    break;
+                case "tipoProcedimiento":
+                    Literal tipoProcedimientoPub = procedimientoDTO.getProcedimientoBaseDTOPub().getTipoProcedimiento() == null ? null : procedimientoDTO.getProcedimientoBaseDTOPub().getTipoProcedimiento().getDescripcion();
+                    Literal tipoProcedimientoMod = procedimientoDTO.getProcedimientoBaseDTOMod().getTipoProcedimiento() == null ? null : procedimientoDTO.getProcedimientoBaseDTOMod().getTipoProcedimiento().getDescripcion();
+                    retorno[fila][columna] = UtilExport.getValor(tipoProcedimientoPub, tipoProcedimientoMod, idioma, tieneDosWF, prioridadPublicado);
+                    break;
                 case "unidadAdministrativaInstructora":
                     retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaInstructor(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
+                    break;
+                case "organigramaInstructorNivel1":
+                    retorno[fila][columna] = UtilExport.getValor(nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOPub(), 1),
+                            nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOMod(), 1), idioma, tieneDosWF, prioridadPublicado);
+                    break;
+                case "organigramaInstructorNivel2":
+                    retorno[fila][columna] = UtilExport.getValor(nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOPub(), 2),
+                            nivelesOrganigrama.obtenerNivel(procedimientoDTO.getProcedimientoBaseDTOMod(), 2), idioma, tieneDosWF, prioridadPublicado);
                     break;
                 case "unidadAdministrativaResponsable":
                     retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().getUaResponsableLiteral(), procedimientoDTO.getProcedimientoBaseDTOMod().getUaResponsableLiteral(), idioma, tieneDosWF, prioridadPublicado);
@@ -927,14 +1033,22 @@ public class UtilExport {
                 case "telefonico":
                     retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoBaseDTOPub().isTramitTelefonica(), procedimientoDTO.getProcedimientoBaseDTOMod().isTramitTelefonica(), idioma, tieneDosWF, prioridadPublicado);
                     break;
+                // tramites
                 case "codigoProcTramite":
-                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getProcedimiento().getCodigo(), idioma) : "";
+                    retorno[fila][columna] = tramiteDTO != null && tramiteDTO.getProcedimiento() != null
+                            ? UtilExport.getValor(tramiteDTO.getProcedimiento().getCodigo(), idioma) : "";
                     break;
                 case "codigoTramite":
                     retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getCodigo(), idioma) : "";
                     break;
                 case "nombreTramite":
                     retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getNombre(), idioma) : "";
+                    break;
+                case "nombreTramiteEsp":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getNombre(), Constantes.IDIOMA_ESPANYOL) : "";
+                    break;
+                case "nombreTramiteCat":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getNombre(), Constantes.IDIOMA_CATALAN) : "";
                     break;
                 case "fechaPublicacionTramite":
                     retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaPublicacion(), idioma) : "";
@@ -945,7 +1059,48 @@ public class UtilExport {
                 case "fechaCierreTramite":
                     retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getFechaCierre(), idioma) : "";
                     break;
-                // Nuevos campos de trámite
+                case "organoTramita":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getUnidadAdministrativa(), idioma) : "";
+                    break;
+                case "faseTramite":
+                    retorno[fila][columna] = tramiteDTO != null ? getNombreFaseTramite(tramiteDTO.getFase()) : "";
+                    break;
+                case "tramitePresencial":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.isTramitPresencial(), idioma) : "";
+                    break;
+                case "tramiteTelematico":
+                    retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.isTramitElectronica(), idioma) : "";
+                    break;
+                case "plantillaTramite":
+                    TipoTramitacionDTO plantilla = tramiteDTO != null ? tramiteDTO.getPlantillaSel() : null;
+                    retorno[fila][columna] = plantilla != null ? UtilExport.getValor(plantilla.getDescripcion(), idioma) : "";
+                    break;
+                case "sistraIdentificador":
+                    TipoTramitacionDTO tipoTramitacion = tramiteDTO != null ? obtenerTipoTramitacion(tramiteDTO) : null;
+                    retorno[fila][columna] = tipoTramitacion != null ? UtilExport.getValor(tipoTramitacion.getTramiteId(), idioma) : "";
+                    break;
+                case "sistraVersion":
+                    tipoTramitacion = tramiteDTO != null ? obtenerTipoTramitacion(tramiteDTO) : null;
+                    retorno[fila][columna] = tipoTramitacion != null ? UtilExport.getValor(tipoTramitacion.getTramiteVersion(), idioma) : "";
+                    break;
+                case "sistraPlataforma":
+                    tipoTramitacion = tramiteDTO != null ? obtenerTipoTramitacion(tramiteDTO) : null;
+                    retorno[fila][columna] = tipoTramitacion != null && tipoTramitacion.getCodPlatTramitacion() != null ? UtilExport.getValor(tipoTramitacion.getCodPlatTramitacion().getIdentificador(), idioma) : "";
+                    break;
+                case "urlPersonalizadaEsp":
+                    tipoTramitacion = tramiteDTO != null ? obtenerUrlPersonalizada(tramiteDTO) : null;
+                    retorno[fila][columna] = tipoTramitacion != null ? UtilExport.getValor(tipoTramitacion.getUrl(), Constantes.IDIOMA_ESPANYOL) : "";
+                    break;
+                case "urlPersonalizadaCat":
+                    tipoTramitacion = tramiteDTO != null ? obtenerUrlPersonalizada(tramiteDTO) : null;
+                    retorno[fila][columna] = tipoTramitacion != null ? UtilExport.getValor(tipoTramitacion.getUrl(), Constantes.IDIOMA_CATALAN) : "";
+                    break;
+                case "numModelosPresentacionCa":
+                    retorno[fila][columna] = UtilExport.getValor(contarDocumentosPorIdioma(tramiteDTO != null ? tramiteDTO.getListaModelos() : null, Constantes.IDIOMA_CATALAN), idioma);
+                    break;
+                case "numDocumentosTramiteCa":
+                    retorno[fila][columna] = UtilExport.getValor(contarDocumentosPorIdioma(tramiteDTO != null ? tramiteDTO.getListaDocumentos() : null, Constantes.IDIOMA_CATALAN), idioma);
+                    break;
                 case "exportarTramites":
                     // Rellenar las 5 columnas de trámite de una vez y asignar las respectivas cabeceras
                     retorno[fila][columna] = tramiteDTO != null ? UtilExport.getValor(tramiteDTO.getProcedimiento().getCodigo(), idioma) : "";
@@ -963,6 +1118,51 @@ public class UtilExport {
             }
             columna++;
         }
+    }
+
+    private static TipoTramitacionDTO obtenerTipoTramitacion(ProcedimientoTramiteDTO tramiteDTO) {
+        return tramiteDTO.getTipoTramitacion() != null ? tramiteDTO.getTipoTramitacion() : tramiteDTO.getPlantillaSel();
+    }
+
+    private static TipoTramitacionDTO obtenerTipoTramitacion(ServicioDTO servicioDTO) {
+        return servicioDTO.getTipoTramitacion() != null ? servicioDTO.getTipoTramitacion() : servicioDTO.getPlantillaSel();
+    }
+
+    private static TipoTramitacionDTO obtenerUrlPersonalizada(ProcedimientoTramiteDTO tramiteDTO) {
+        return tramiteDTO.getTipoTramitacion();
+    }
+
+    private static TipoTramitacionDTO obtenerUrlPersonalizada(ServicioDTO servicioDTO) {
+        return servicioDTO.getTipoTramitacion();
+    }
+
+    private static String getNombreFaseTramite(Integer fase) {
+        if (fase == null) {
+            return "";
+        }
+        switch (fase) {
+            case 1:
+                return "Iniciación";
+            case 2:
+                return "Instrucción";
+            case 3:
+                return "Finalización";
+            default:
+                return "";
+        }
+    }
+
+    private static Integer contarDocumentosPorIdioma(List<ProcedimientoDocumentoDTO> documentos, String idioma) {
+        if (documentos == null || documentos.isEmpty()) {
+            return 0;
+        }
+        return (int) documentos.stream()
+                .filter(Objects::nonNull)
+                .filter(documento -> documento.getDocumentos() != null)
+                .map(documento -> documento.getDocumentos().getTraduccion(idioma))
+                .filter(Objects::nonNull)
+                .filter(fichero -> fichero.getCodigo() != null)
+                .count();
     }
 
     /**
@@ -1056,6 +1256,9 @@ public class UtilExport {
                         retorno[fila][columna] = UtilExport.getValor(servicioDTO.getUaCompetente(), idioma);
                         break;
 
+                    case "numDocumentosServicioCat":
+                        retorno[fila][columna] = UtilExport.getValor(contarDocumentosPorIdioma(servicioDTO.getDocumentos(), Constantes.IDIOMA_CATALAN), idioma);
+                        break;
                     case "numeroNormas":
                         retorno[fila][columna] = UtilExport.getValor(servicioDTO.getNormativas() == null ? 0 : servicioDTO.getNormativas().size(), idioma);
                         break;
@@ -1214,6 +1417,9 @@ public class UtilExport {
                     case "unidadAdministrativaInstructora":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getUaInstructor(), procedimientoDTO.getProcedimientoMod().getUaInstructor(), idioma, tieneDosWF, prioridadPublicado);
                         break;
+                    case "unidadAdministrativaCompetente":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getUaCompetente(), procedimientoDTO.getProcedimientoMod().getUaCompetente(), idioma, tieneDosWF, prioridadPublicado);
+                        break;
                     case "unidadAdministrativaResponsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getProcedimientoPub().getUaResponsableLiteral(), procedimientoDTO.getProcedimientoMod().getUaResponsableLiteral(), idioma, tieneDosWF, prioridadPublicado);
                         break;
@@ -1285,6 +1491,53 @@ public class UtilExport {
             return true;
         }
         return false;
+    }
+
+    private static class NivelesOrganigrama {
+        private final UnidadAdministrativaServiceFacade uaService;
+        private final String idioma;
+        private final Map<Long, Map<Integer, String>> nivelesPorUa = new HashMap<>();
+
+        private NivelesOrganigrama(UnidadAdministrativaServiceFacade uaService, String idioma) {
+            this.uaService = uaService;
+            this.idioma = idioma;
+        }
+
+        private void precargar(List<ProcedimientoCompletoDTO> procs) {
+            Set<Long> codigos = new LinkedHashSet<>();
+            for (ProcedimientoCompletoDTO proc : procs) {
+                agregarCodigo(proc.getProcedimientoBaseDTOPub(), codigos);
+                agregarCodigo(proc.getProcedimientoBaseDTOMod(), codigos);
+            }
+            if (!codigos.isEmpty()) {
+                Map<Long, Map<Integer, String>> resultado =
+                        uaService.obtenerNivelesOrganigrama(new ArrayList<>(codigos), idioma);
+                // Guardar también los códigos sin niveles, igual que en la carga individual.
+                for (Long codigo : codigos) {
+                    nivelesPorUa.put(codigo, resultado.get(codigo));
+                }
+            }
+        }
+
+        private void agregarCodigo(ProcedimientoBaseDTO procedimiento, Set<Long> codigos) {
+            if (procedimiento != null && procedimiento.getUaInstructor() != null
+                    && procedimiento.getUaInstructor().getCodigo() != null) {
+                codigos.add(procedimiento.getUaInstructor().getCodigo());
+            }
+        }
+
+        private String obtenerNivel(ProcedimientoBaseDTO procedimiento, int nivel) {
+            if (procedimiento == null || procedimiento.getUaInstructor() == null || procedimiento.getUaInstructor().getCodigo() == null) {
+                return null;
+            }
+            Long codigo = procedimiento.getUaInstructor().getCodigo();
+            if (!nivelesPorUa.containsKey(codigo)) {
+                Map<Long, Map<Integer, String>> resultado = uaService.obtenerNivelesOrganigrama(Collections.singletonList(codigo), idioma);
+                nivelesPorUa.put(codigo, resultado.get(codigo));
+            }
+            Map<Integer, String> niveles = nivelesPorUa.get(codigo);
+            return niveles == null ? null : niveles.get(nivel);
+        }
     }
 
     /**
@@ -1366,6 +1619,9 @@ public class UtilExport {
                         break;
                     case "unidadAdministrativaResponsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getUaResponsableLiteral(), idioma);
+                        break;
+                    case "unidadAdministrativaCompetente":
+                        retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getUaCompetente(), idioma);
                         break;
                     case "responsable":
                         retorno[fila][columna] = UtilExport.getValor(procedimientoDTO.getResponsable(), idioma);
@@ -1674,42 +1930,49 @@ public class UtilExport {
     private static final Logger LOG = LoggerFactory.getLogger(UtilExport.class);
 
     public static StreamedContent generarStreamedContentXLS(String tipo, String[] cabecera, String[][] datos, ExportarDatos exportarDatos) {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet(tipo); //Se pone el nombre de la hoja , el tipo de exportacion
+        SXSSFWorkbook workbook = new SXSSFWorkbook(200);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            SXSSFSheet spreadsheet = workbook.createSheet(tipo);
 
-        //Anyadimos la cabecera
-        //Si exportamos en formato XLS, añadimos la cabecera
-        XSSFRow row = spreadsheet.createRow((short) 1);
-        int i = 1;
-        for (ExportarCampos exp : exportarDatos.getCampos()) {
-            row.createCell(i).setCellValue(exp.getNombreCampo());
-            i++;
-        }
-
-        //Anyadimos los datos
-        int fila = 2;
-        for (String[] dato : datos) {
-            int cellid = 1;
-            XSSFRow filaXLS = spreadsheet.createRow(fila);
-            for (String valor : dato) {
-                filaXLS.createCell(cellid).setCellValue(valor);
-                cellid++;
+            // Mantener las posiciones originales de las cabeceras y los datos.
+            SXSSFRow row = spreadsheet.createRow((short) 1);
+            int i = 1;
+            for (ExportarCampos exp : exportarDatos.getCampos()) {
+                row.createCell(i).setCellValue(exp.getNombreCampo());
+                i++;
             }
-            fila++;
-        }
 
-        try {
+            int fila = 2;
+            for (String[] dato : datos) {
+                int cellid = 1;
+                SXSSFRow filaXLS = spreadsheet.createRow(fila);
+                for (String valor : dato) {
+                    filaXLS.createCell(cellid).setCellValue(valor);
+                    cellid++;
+                }
+                fila++;
+            }
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
-
-            InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            //StreamedContent streamedContent = new DefaultStreamedContent(inputStream, "application/xls", "Llistat" + tipo + "_" + getDia() + ".xls");
-            return DefaultStreamedContent.builder().contentType("application/xls").name("Llistat" + tipo + "_" + getDia() + ".xlsx").stream(() -> inputStream).build();
-
-
+            byte[] contenido = outputStream.toByteArray();
+            return DefaultStreamedContent.builder()
+                    .contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    .name("Llistat" + tipo + "_" + getDia() + ".xlsx")
+                    .stream(() -> new ByteArrayInputStream(contenido))
+                    .build();
         } catch (Exception e) {
+            LOG.error("Error generando Excel", e);
             return null;
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                LOG.warn("Error cerrando workbook", e);
+            } finally {
+                if (!workbook.dispose()) {
+                    LOG.warn("No se han podido eliminar todos los ficheros temporales del Excel");
+                }
+            }
         }
     }
 

@@ -985,10 +985,10 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
      * @return
      */
     @Override
-    public List<String[]> getRutaArbol(Long codigo) {
+    public List<Object[]> getRutaArbol(Long codigo) {
 
         Query query = entityManager.createNativeQuery("select UNAD_CODIGO, UNAD_UNADPADRE, level from RS2_UNIADM START WITH UNAD_CODIGO =  " + codigo + "connect by prior UNAD_UNADPADRE = UNAD_CODIGO ");
-        List<String[]> resultado = query.getResultList();
+        List<Object[]> resultado = query.getResultList();
         return resultado;
     }
 
@@ -1026,6 +1026,90 @@ public class UnidadAdministrativaRepositoryBean extends AbstractCrudRepository<J
         }
 
         return getCodigoDIR3r(codigoUA, 0);
+    }
+
+    /**
+     * Carga las rutas de varias UAs conservando el orden desde la UA hasta la raíz.
+     */
+    private Map<Long, List<Object[]>> getRutasArbol(List<Long> codigosUA) {
+        Map<Long, List<Object[]>> rutas = new HashMap<>();
+        List<Long> codigos = codigosUA.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        for (int inicio = 0; inicio < codigos.size(); inicio += 900) {
+            List<Long> lote = codigos.subList(inicio, Math.min(inicio + 900, codigos.size()));
+            Query query = entityManager.createNativeQuery(
+                    "SELECT CONNECT_BY_ROOT UNAD_CODIGO AS CODIGO_ORIGEN, "
+                            + "UNAD_CODIGO, UNAD_UNADPADRE, LEVEL AS PROFUNDIDAD "
+                            + "FROM RS2_UNIADM "
+                            + "START WITH UNAD_CODIGO IN (:codigos) "
+                            + "CONNECT BY PRIOR UNAD_UNADPADRE = UNAD_CODIGO "
+                            + "ORDER BY 1, 4");
+            query.unwrap(org.hibernate.query.NativeQuery.class).setParameterList("codigos", lote);
+            List<Object[]> filas = query.getResultList();
+            for (Object[] fila : filas) {
+                Long codigo = ((Number) fila[0]).longValue();
+                rutas.computeIfAbsent(codigo, k -> new ArrayList<>())
+                        .add(new Object[]{fila[1], fila[2], fila[3]});
+            }
+        }
+        return rutas;
+    }
+
+    public Map<Long, Map<Integer, String>> obtenerNivelesOrganigrama(List<Long> codigosUA, String idioma) {
+        // Si no hay códigos que procesar, no hace falta consultar la base de datos.
+        if (codigosUA == null || codigosUA.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        // Guarda, para cada UA de entrada, el código de las UAs que ocupan los niveles 1 y 2.
+        Map<Long, Map<Integer, Long>> codigosNivelOrganigrama = new LinkedHashMap<>();
+        // Reúne los códigos de nivel sin duplicados para consultar sus nombres en una sola operación por bloque.
+        Set<Long> codigosNiveles = new LinkedHashSet<>();
+        Map<Long, List<Object[]>> rutas = getRutasArbol(codigosUA);
+        for (Long codigoUA : codigosUA) {
+            // Omite entradas nulas y códigos ya procesados.
+            if (codigoUA == null || codigosNivelOrganigrama.containsKey(codigoUA)) {
+                continue;
+            }
+
+            // Las rutas en bloque conservan el orden de getRutaArbol: UA indicada y ascendientes.
+            List<Object[]> ruta = rutas.getOrDefault(codigoUA, Collections.emptyList());
+            Map<Integer, Long> niveles = new LinkedHashMap<>();
+            // Se recorre desde la raíz hacia abajo, excluyéndola y conservando solo los dos primeros niveles.
+            for (int nivel = 1; nivel <= 2 && ruta.size() - 1 - nivel >= 0; nivel++) {
+                // Obtiene el código de la UA en el nivel actual.
+                Long codigoNivel = ((Number) ruta.get(ruta.size() - 1 - nivel)[0]).longValue();
+                // Se añade el código al conjunto de códigos de nivel y al mapa de niveles.
+                niveles.put(nivel, codigoNivel);
+                codigosNiveles.add(codigoNivel);
+            }
+            codigosNivelOrganigrama.put(codigoUA, niveles);
+        }
+
+        // Busca las traducciones de los códigos seleccionados para el idioma solicitado.
+        Map<Long, String> nombresPorCodigo = new HashMap<>();
+        List<Long> codigos = new ArrayList<>(codigosNiveles);
+        // Divide la consulta en bloques para no superar el límite de elementos de una cláusula IN de Oracle.
+        for (int inicio = 0; inicio < codigos.size(); inicio += 900) {
+            TypedQuery<Object[]> query = entityManager.createQuery(
+                    "select j.codigo, t.nombre from JUnidadAdministrativa j left join j.traducciones t on t.idioma = :idioma where j.codigo in :codigos",
+                    Object[].class);
+            query.setParameter("idioma", idioma);
+            query.setParameter("codigos", codigos.subList(inicio, Math.min(inicio + 900, codigos.size())));
+            for (Object[] fila : query.getResultList()) {
+                nombresPorCodigo.put((Long) fila[0], (String) fila[1]);
+            }
+        }
+
+        // Construye el resultado final sustituyendo cada código de nivel por su nombre traducido.
+        Map<Long, Map<Integer, String>> resultado = new LinkedHashMap<>();
+        for (Map.Entry<Long, Map<Integer, Long>> entrada : codigosNivelOrganigrama.entrySet()) {
+            Map<Integer, String> niveles = new HashMap<>();
+            for (Map.Entry<Integer, Long> nivel : entrada.getValue().entrySet()) {
+                niveles.put(nivel.getKey(), nombresPorCodigo.get(nivel.getValue()));
+            }
+            resultado.put(entrada.getKey(), niveles);
+        }
+        return resultado;
     }
 
     /**

@@ -660,7 +660,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
         literalesEstadoSIA.put("A", getLiteral("dialogProcedimiento.estadoSIA.A"));
         literalesEstadoSIA.put("B", getLiteral("dialogProcedimiento.estadoSIA.B"));
 
-        String[][] datos = UtilExport.getValoresCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA);
+        String[][] datos = UtilExport.getValoresCompletos(procedimientos, exportarDatos, this.getIdioma(), literalesWF, literalesEstado, literalesEstadoSIA, uaService);
         String[] cabecera = UtilExport.getCabecera(exportarDatos);
         return UtilExport.generarStreamedContent("Procediment", cabecera, datos, exportarDatos);
     }

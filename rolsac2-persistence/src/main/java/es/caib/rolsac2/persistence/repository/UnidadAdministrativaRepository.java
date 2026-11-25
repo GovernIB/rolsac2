@@ -75,11 +75,13 @@ public interface UnidadAdministrativaRepository extends CrudRepository<JUnidadAd
 
     boolean isVisibleUA(UnidadAdministrativaDTO uaInstructor);
 
-    List<String[]> getRutaArbol(Long codigo);
+    List<Object[]> getRutaArbol(Long codigo);
 
     Map<Long, String> obtenerCodigosDIR3(List<Long> codigos);
 
     String obtenerCodigoDIR3(Long codigoUA);
+
+    Map<Long, Map<Integer, String>> obtenerNivelesOrganigrama(List<Long> codigosUA, String idioma);
 
     Long obtenerCodigo(String codigoUA);
 
