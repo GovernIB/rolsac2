@@ -47,16 +47,16 @@
                                      actionListener="#{viewConfiguracionesAlertas.nuevaAlerta}" process="@this"
                                      renderer="#{viewConfiguracionesAlertas.renderBotones}" pt:aria-label="#{labels['dict.nuevo']}" >
                         <p:ajax event="dialogReturn" listener="#{viewConfiguracionesAlertas.returnDialogo}"
-                                update="messages dataTable"/>
+                                update="messages dataTable :formAlertas:panelAlertas"/>
                     </p:commandButton>
                     <p:commandButton id="btnEditar" value="#{labels['dict.editar']}" icon="pi pi-pencil" iconPos="top" styleClass="mr-2"
                                      actionListener="#{viewConfiguracionesAlertas.editarAlerta}" process="@form" update="messages"
                                      renderer="#{viewConfiguracionesAlertas.renderBotones}" pt:aria-label="#{labels['dict.editar']}" >
                         <p:ajax event="dialogReturn" listener="#{viewConfiguracionesAlertas.returnDialogo}"
-                                update="messages dataTable"/>
+                                update="messages dataTable :formAlertas:panelAlertas"/>
                     </p:commandButton>
                     <p:commandButton value="#{labels['dict.borrar']}" icon="pi pi-trash" iconPos="top" styleClass="mr-2"
-                                     action="#{viewConfiguracionesAlertas.borrarAlerta}" process="@form" update="messages dataTable"
+                                     action="#{viewConfiguracionesAlertas.borrarAlerta}" process="@form" update="messages dataTable :formAlertas:panelAlertas"
                                      renderer="#{viewConfiguracionesAlertas.renderBotones}" pt:aria-label="#{labels['dict.borrar']}" >
                         <p:confirm message="#{labels['msg.eliminarRegistro']}"/>
                     </p:commandButton>

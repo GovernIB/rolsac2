@@ -53,6 +53,8 @@
                     transform: translateX(-0.5px) !important;
                 }
             </h:outputStylesheet>
+            <h:panelGroup id="panelAlertas" layout="block">
+
             <ui:repeat value="#{sessionBean.alertas}"
                        var="alerta"
                        varStatus="status">
@@ -68,7 +70,7 @@
                                                 icon="pi pi-times-circle"
                                                 styleClass="w45px h23px iconoAlertaLeido botonBordeado botonCerrarAlerta"
                                                 process="@this"
-                                                update="@form"
+                                                update=":formAlertas:panelAlertas"
                                                 pt:aria-label="Cerrar alerta"
                                         />
                                         <p:outputLabel value="#{alerta.fechaIni}" >
@@ -93,6 +95,7 @@
                 </ui:fragment>
 
             </ui:repeat>
+            </h:panelGroup>
             <button id="btnCollapseNavbar2" class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

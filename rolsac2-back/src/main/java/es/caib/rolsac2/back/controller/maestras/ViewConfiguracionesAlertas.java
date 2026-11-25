@@ -148,6 +148,9 @@ public class ViewConfiguracionesAlertas extends AbstractController implements Se
         // Verificamos si se ha modificado
         if (!respuesta.isCanceled() && !TypeModoAcceso.CONSULTA.equals(respuesta.getModoAcceso())) {
             this.buscar();
+
+            // Refrescar las alertas de la sesión
+            sessionBean.cargarAlertas();
         }
     }
 
@@ -165,6 +168,10 @@ public class ViewConfiguracionesAlertas extends AbstractController implements Se
             UtilJSF.addMessageContext(TypeNivelGravedad.INFO, "Seleccione un elemento");
         } else {
             alertaService.delete(datoSeleccionado.getCodigo());
+
+            sessionBean.cargarAlertas();
+            datoSeleccionado = null;
+            buscar();
         }
     }
 
