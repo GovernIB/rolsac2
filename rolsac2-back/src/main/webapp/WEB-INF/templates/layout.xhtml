@@ -12,6 +12,7 @@
 Plantilla.
 -->
 <f:view locale="#{sessionBean.current}">
+    <f:event type="preRenderView" listener="#{sessionBean.refrescarAlertasAlNavegar}" />
     <p:importConstants type="es.caib.rolsac2.service.model.types.TypePerfiles" var="TypePerfiles" />
     <!-- Espai perquè les pàgines que emprin el template defineixin els seus viewParam i viewAction -->
     <ui:insert name="metadata" />

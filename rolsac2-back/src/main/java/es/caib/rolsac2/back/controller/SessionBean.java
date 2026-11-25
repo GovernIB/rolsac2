@@ -1563,4 +1563,14 @@ public class SessionBean implements Serializable {
                 && (alerta.getFechaFin() == null
                 || alerta.getFechaFin().after(new java.util.Date()));
     }
+
+    public void refrescarAlertasAlNavegar() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        // Solo cuando entramos en una página nueva.
+        // Evitamos recalcular en peticiones AJAX y postbacks.
+        if (!context.isPostback()) {
+            cargarAlertas();
+        }
+    }
 }
