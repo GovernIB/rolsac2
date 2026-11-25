@@ -103,9 +103,9 @@ Pàgina amb el llistat de personal d'una unitat administrativa.
                          value="#{labels['dict.cancelar']}"
                          process="@this" pt:aria-label="#{labels['dict.cancelar']}" />
         <p:commandButton action="#{dialogLiteral.guardar}"
-                         value="#{labels['dict.aceptar']}" update="messagesDialog"
+                         value="#{labels['dict.guardar']}" update="messagesDialog"
                          rendered="#{!dialogLiteral.isModoConsulta()}"
-                         process="@all" pt:aria-label="#{labels['dict.aceptar']}" />
+                         process="@all" pt:aria-label="#{labels['dict.guardar']}" />
     </ui:define>
 
 </ui:composition>

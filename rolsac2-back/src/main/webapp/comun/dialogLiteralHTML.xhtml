@@ -300,7 +300,7 @@ PÃ gina amb el llistat de personal d'una unitat administrativa.
 	</ui:define>
 	<ui:define name="contentFooterDialogRight">
 
-		<p:commandButton id="btnGuardar" value="#{labels['dict.aceptar']}" onclick="tinyMCE.triggerSave(true,true);" rendered="#{!dialogLiteralHTML.isConsulta()}" process="@all" update="formDialog:growlDialogTraduccion" action="#{dialogLiteralHTML.guardar()}" styleClass="boton-azul" pt:aria-label="#{labels['dict.aceptar']}"/>
+		<p:commandButton id="btnGuardar" value="#{labels['dict.guardar']}" onclick="tinyMCE.triggerSave(true,true);" rendered="#{!dialogLiteralHTML.isConsulta()}" process="@all" update="formDialog:growlDialogTraduccion" action="#{dialogLiteralHTML.guardar()}" styleClass="boton-azul" pt:aria-label="#{labels['dict.guardar']}"/>
 		<p:commandButton value="#{labels['dict.borrar']}" actionListener="#{dialogLiteralHTML.borrar()}" process="@this"  rendered="#{!dialogLiteralHTML.isConsulta() and dialogLiteralHTML.botonBorrarActivo()}" tyleClass="boton-rojo" pt:aria-label="#{labels['dict.borrar']}"/>
 		<p:commandButton value="#{labels['dict.cancelar']}" actionListener="#{dialogLiteralHTML.cancelar()}" process="@this" pt:aria-label="#{labels['dict.cancelar']}"/>
 
