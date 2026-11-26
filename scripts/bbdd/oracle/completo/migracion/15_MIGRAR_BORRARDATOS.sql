@@ -15,14 +15,14 @@ create or replace PROCEDURE "MIGRAR_BORRARDATOS"
     CURSOR cProcedimientosWF(COD_PROC NUMBER)
     IS
         /** OBTIENE INFO DEL WF: SU CODIGO, CODIGO DE LA LISTAS DE DOCUMENTOS, EL TIPO TRAMITACION  **/
-        SELECT PRWF_CODIGO, PRWF_LSTDOC, PRWF_LSLOPD, PRWF_SVTREL
+        SELECT PRWF_CODIGO, PRWF_LSTDOC, PRWF_LSLOPD
           FROM RS2_PRCWF
          WHERE PRWF_CODPROC = COD_PROC;
 
     CURSOR cTramitesWF(COD_WF NUMBER)
     IS
         /** OBTIENE INFO DEL TRAMITE: SU CODIGO, CODIGO DE LA LISTAS DE DOCUMENTOS, EL TIPO TRAMITACION  **/
-        SELECT PRTA_CODIGO, PRTA_LSTDOC, LSDO_CODIGO, PRTA_TRMTRM
+        SELECT PRTA_CODIGO, PRTA_LSTDOC, LSDO_CODIGO
           FROM RS2_PRCTRM
          WHERE PRTA_CODPRWF = COD_WF;
     CURSOR cNormativas
@@ -37,7 +37,6 @@ create or replace PROCEDURE "MIGRAR_BORRARDATOS"
          WHERE UNAD_CODIGO != codigoUA AND UNAD_CODENTI= codigoEntidad;
     l_clob      CLOB := EMPTY_CLOB;
     TOTAL       number(2,0);
-    COD_RS2_TRMPRE NUMBER(10,0);
     modoDebug   boolean := FALSE;
 BEGIN
   dbms_lob.createtemporary(l_clob, TRUE);
@@ -109,15 +108,6 @@ BEGIN
                 /** Borramos las relaciones con normativas **/
                 DELETE FROM RS2_PRCNOR WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;
 
-                /** Borramos tipo tramitacion **/
-                IF PROCEDIMIENTO_WF.PRWF_SVTREL IS NOT NULL
-                THEN
-                    COD_RS2_TRMPRE := PROCEDIMIENTO_WF.PRWF_SVTREL;
-                    UPDATE RS2_PRCWF SET PRWF_SVTREL = NULL WHERE PRWF_CODIGO = PROCEDIMIENTO_WF.PRWF_CODIGO;
-                    DELETE FROM RS2_TRATPTRA WHERE TRTT_CODTPTRA = PROCEDIMIENTO_WF.PRWF_SVTREL;
-                    DELETE FROM RS2_TRMPRE WHERE PRES_CODIGO = PROCEDIMIENTO_WF.PRWF_SVTREL;
-                END IF;
-
                 /** Borramos documentos de lista documentos */
                 IF PROCEDIMIENTO_WF.PRWF_LSTDOC IS NOT NULL
                 THEN
@@ -150,6 +140,40 @@ BEGIN
   END LOOP;
 
   if modoDebug then dbms_output.put_line('fin procedimientos'); END IF;
+
+   /** PASO 1B. BORRAR TRAMITACIONES NO PLANTILLA.
+      Tras eliminar los workflows y tramites de la entidad, se eliminan
+      las configuraciones que no son plantillas y sus traducciones.
+      PRES_PLANTI = 1 (plantillas) se conserva siempre. **/
+ DELETE FROM RS2_TRATPTRA
+WHERE TRTT_CODTPTRA IN (
+    SELECT t.PRES_CODIGO
+    FROM RS2_TRMPRE t
+    WHERE t.PRES_PLANTI = 0
+      AND NOT EXISTS (
+          SELECT 1 FROM RS2_PRCWF w
+          WHERE w.PRWF_SVTREL = t.PRES_CODIGO
+             OR w.PRWF_SVTPRE = t.PRES_CODIGO
+      )
+      AND NOT EXISTS (
+          SELECT 1 FROM RS2_PRCTRM r
+          WHERE r.PRTA_TRMTRM = t.PRES_CODIGO
+             OR r.PRTA_TRMPRE = t.PRES_CODIGO
+      )
+);
+
+ DELETE FROM RS2_TRMPRE t
+WHERE t.PRES_PLANTI = 0
+  AND NOT EXISTS (
+      SELECT 1 FROM RS2_PRCWF w
+      WHERE w.PRWF_SVTREL = t.PRES_CODIGO
+         OR w.PRWF_SVTPRE = t.PRES_CODIGO
+  )
+  AND NOT EXISTS (
+      SELECT 1 FROM RS2_PRCTRM r
+      WHERE r.PRTA_TRMTRM = t.PRES_CODIGO
+         OR r.PRTA_TRMPRE = t.PRES_CODIGO
+  );
 
   /** PASO 2. BORRAR NORMATIVAS. **/
   FOR NORMATIVA IN cNormativas
@@ -212,3 +236,4 @@ EXCEPTION
             resultado := l_clob;
             RAISE;
 END MIGRAR_BORRARDATOS;
+/
