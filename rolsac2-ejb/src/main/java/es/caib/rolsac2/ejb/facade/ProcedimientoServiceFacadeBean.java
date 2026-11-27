@@ -1616,6 +1616,21 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
             // Anteriormente se descartaba la modificación al existir una versión publicada,
             // lo que impedía exportar las dos filas del mismo procedimiento.
         }
+        // Con "Mostrar solo un estado", priorizar el workflow publicado.
+        // Si un procedimiento/servicio solo tiene una version en modificacion, se mantiene.
+        // Se aplica tras recuperar los datos para no alterar el filtro ni la paginacion.
+        if (!exportarDatos.isEstados()) {
+            for (ProcedimientoCompletoDTO procedimiento : procedimientos) {
+                if (procedimiento != null
+                        && procedimiento.getProcedimientoBaseDTOPub() != null
+                        && procedimiento.getProcedimientoBaseDTOPub().getCodigo() != null
+                        && procedimiento.getProcedimientoBaseDTOMod() != null
+                        && procedimiento.getProcedimientoBaseDTOMod().getCodigo() != null) {
+                    procedimiento.setProcedimientoMod(new ProcedimientoBaseDTO());
+                }
+            }
+        }
+
         // Consultar la auditoria SOLO cuando se haya seleccionado ese campo.
         // Se aplica a servicios, procedimientos y a los filtros de un solo WF.
         boolean exportarUsuarioAuditoria = exportarDatos.getCampos() != null
@@ -1682,12 +1697,12 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         JProcedimientoWorkflow jprocWFClonado = JProcedimientoWorkflow.clonar(procedimientoRepository.getWF(idProcedimiento, wfSeleccionado), jprocClonado, usuario);
 
         procedimientoRepository.create(jprocClonado);
-        if (jprocWFClonado.getTramiteElectronico() != null && jprocWFClonado.getTramiteElectronico().getCodigo() == null) {
-            JTipoTramitacion jTipoClonado = JTipoTramitacion.clonar(jprocWFClonado.getTramiteElectronico());
-            //LOG.debug("JTipoClonado:{}", jTipoClonado);
-            JTipoTramitacion jtipo = procedimientoRepository.guardarTipoTramitacion(jTipoClonado);
-            //LOG.debug("JTipo:{}", jtipo);
-            jprocWFClonado.setTramiteElectronico(jtipo);
+        // El tipo propio ya se ha clonado en JProcedimientoWorkflow.clonar().
+        // Debe persistirse como un registro nuevo; nunca reutilizar el tipo del origen
+        // por tener el mismo identificador SISTRA. Las plantillas se mantienen por referencia.
+        if (jprocWFClonado.getTramiteElectronico() != null) {
+            JTipoTramitacion tipoClonado = jprocWFClonado.getTramiteElectronico();
+            jprocWFClonado.setTramiteElectronico(procedimientoRepository.guardarTipoTramitacion(tipoClonado));
         }
         Long idProcWFClonado = procedimientoRepository.createWF(jprocWFClonado);
         //LOG.debug("Proc clonado");
