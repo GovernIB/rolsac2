@@ -1637,12 +1637,13 @@ public class ProcedimientoServiceFacadeBean implements ProcedimientoServiceFacad
         JProcedimientoWorkflow jprocWFClonado = JProcedimientoWorkflow.clonar(procedimientoRepository.getWF(idProcedimiento, wfSeleccionado), jprocClonado, usuario);
 
         procedimientoRepository.create(jprocClonado);
-        if (jprocWFClonado.getTramiteElectronico() != null && jprocWFClonado.getTramiteElectronico().getCodigo() == null) {
-            JTipoTramitacion jTipoClonado = JTipoTramitacion.clonar(jprocWFClonado.getTramiteElectronico());
-            //LOG.debug("JTipoClonado:{}", jTipoClonado);
-            JTipoTramitacion jtipo = procedimientoRepository.guardarTipoTramitacion(jTipoClonado);
-            //LOG.debug("JTipo:{}", jtipo);
-            jprocWFClonado.setTramiteElectronico(jtipo);
+        if (jprocWFClonado.getTramiteElectronico() != null) {
+            JTipoTramitacion tipoClonado =
+                    jprocWFClonado.getTramiteElectronico();
+
+            jprocWFClonado.setTramiteElectronico(
+                    procedimientoRepository.guardarTipoTramitacion(tipoClonado)
+            );
         }
         Long idProcWFClonado = procedimientoRepository.createWF(jprocWFClonado);
         //LOG.debug("Proc clonado");
