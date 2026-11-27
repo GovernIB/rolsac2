@@ -808,6 +808,7 @@ public class ViewProcedimientos extends AbstractController implements Serializab
             public List<ProcedimientoGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setPaginaFirst(first);
+                    filtro.setPaginaTamanyo(pageSize);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

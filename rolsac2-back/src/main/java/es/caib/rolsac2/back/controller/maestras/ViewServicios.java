@@ -921,6 +921,7 @@ public class ViewServicios extends AbstractController implements Serializable {
             public List<ServicioGridDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 try {
                     filtro.setPaginaFirst(first);
+                    filtro.setPaginaTamanyo(pageSize);
                     if (sortBy != null && !sortBy.isEmpty()) {
                         SortMeta sortMeta = sortBy.values().iterator().next();
                         SortOrder sortOrder = sortMeta.getOrder();

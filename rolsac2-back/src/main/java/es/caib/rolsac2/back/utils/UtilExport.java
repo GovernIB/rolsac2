@@ -17,6 +17,10 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -28,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -1929,29 +1934,126 @@ public class UtilExport {
 
     private static final Logger LOG = LoggerFactory.getLogger(UtilExport.class);
 
+    /**
+     * Campos que representan cantidades o códigos numéricos en las exportaciones.
+     * La decisión se toma por el campo seleccionado, nunca por su contenido:
+     * esto evita convertir teléfonos, identificadores externos y versiones a números.
+     */
+    private static final Set<String> CAMPOS_NUMERICOS_EXCEL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            "codigo", "codigoWF", "codigoProcTramite", "codigoTramite",
+            "numeroBoletin", "numero", "orden",
+            "numeroNormas", "numeroTramites", "numeroTramitesTelematicos",
+            "numeroDocumentosRelacionadosCa", "numDocumentosServicioCat",
+            "numModelosPresentacionCa", "numDocumentosTramiteCa"
+    )));
+
+    /**
+     * Las fechas de exportación se identifican por el campo del modelo
+     * (fechaPub, fechaCad, fechaActualizacion, fechaInicioTramite, etc.).
+     */
+    private static boolean esFechaExcel(String campo) {
+        return campo != null && campo.startsWith("fecha");
+    }
+
+    /**
+     * Devuelve null si el dato no es una fecha completa válida. De esa forma se
+     * conserva como texto cualquier valor especial o fecha concatenada de workflows.
+     */
+    private static Date parsearFechaExcel(String valor, SimpleDateFormat[] formatosFecha) {
+        for (SimpleDateFormat formato : formatosFecha) {
+            ParsePosition posicion = new ParsePosition(0);
+            Date fecha = formato.parse(valor, posicion);
+            if (fecha != null && posicion.getIndex() == valor.length()) {
+                return fecha;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Excel solo garantiza 15 dígitos significativos. Si hay ceros iniciales,
+     * más de 15 dígitos o varios workflows concatenados, se conserva el texto.
+     */
+    private static boolean esEnteroSeguroExcel(String valor) {
+        return valor.matches("-?(?:0|[1-9][0-9]{0,14})");
+    }
+
+    private static void escribirCeldaExcel(Cell celda, String valor, String campo,
+                                          CellStyle estiloFechaHora, CellStyle estiloFecha,
+                                          CellStyle estiloEntero, SimpleDateFormat[] formatosFecha) {
+        if (valor == null || valor.isEmpty()) {
+            return; // Dejar la celda vacía (no escribir una cadena vacía).
+        }
+
+        String limpio = valor.trim();
+        if (esFechaExcel(campo)) {
+            Date fecha = parsearFechaExcel(limpio, formatosFecha);
+            if (fecha != null) {
+                celda.setCellValue(fecha);
+                celda.setCellStyle(limpio.length() <= 10 ? estiloFecha : estiloFechaHora);
+                return;
+            }
+        } else if (CAMPOS_NUMERICOS_EXCEL.contains(campo) && esEnteroSeguroExcel(limpio)) {
+            try {
+                celda.setCellValue((double) Long.parseLong(limpio));
+                celda.setCellStyle(estiloEntero);
+                return;
+            } catch (NumberFormatException e) {
+                // Un código fuera de rango debe conservarse sin perder precisión.
+            }
+        }
+
+        // Conservar exactamente el valor original si no se puede tipar con seguridad.
+        celda.setCellValue(valor);
+    }
+
     public static StreamedContent generarStreamedContentXLS(String tipo, String[] cabecera, String[][] datos, ExportarDatos exportarDatos) {
         SXSSFWorkbook workbook = new SXSSFWorkbook(200);
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             SXSSFSheet spreadsheet = workbook.createSheet(tipo);
 
-            // Mantener las posiciones originales de las cabeceras y los datos.
-            SXSSFRow row = spreadsheet.createRow((short) 1);
-            int i = 1;
-            for (ExportarCampos exp : exportarDatos.getCampos()) {
-                row.createCell(i).setCellValue(exp.getNombreCampo());
-                i++;
+            DataFormat formatoExcel = workbook.createDataFormat();
+            CellStyle estiloFechaHora = workbook.createCellStyle();
+            estiloFechaHora.setDataFormat(formatoExcel.getFormat("dd/mm/yyyy hh:mm"));
+            CellStyle estiloFecha = workbook.createCellStyle();
+            estiloFecha.setDataFormat(formatoExcel.getFormat("dd/mm/yyyy"));
+            CellStyle estiloEntero = workbook.createCellStyle();
+            estiloEntero.setDataFormat(formatoExcel.getFormat("0"));
+
+            SimpleDateFormat[] formatosFecha = {
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm"),
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"),
+                    new SimpleDateFormat("dd/MM/yyyy")
+            };
+            for (SimpleDateFormat formato : formatosFecha) {
+                formato.setLenient(false);
             }
 
-            int fila = 2;
-            for (String[] dato : datos) {
-                int cellid = 1;
-                SXSSFRow filaXLS = spreadsheet.createRow(fila);
-                for (String valor : dato) {
-                    filaXLS.createCell(cellid).setCellValue(valor);
-                    cellid++;
-                }
-                fila++;
+            // Conservar el orden y las posiciones de la exportación existente.
+            List<ExportarCampos> campos = exportarDatos.getCampos();
+            SXSSFRow cabeceraXLS = spreadsheet.createRow(1);
+            for (int i = 0; i < campos.size(); i++) {
+                cabeceraXLS.createCell(i + 1).setCellValue(campos.get(i).getNombreCampo());
             }
+
+            int numeroFila = 2;
+            for (String[] dato : datos) {
+                SXSSFRow filaXLS = spreadsheet.createRow(numeroFila++);
+                for (int i = 0; i < dato.length; i++) {
+                    // Las columnas de datos corresponden a los campos exportados, incluso
+                    // cuando el usuario cambia su orden en el diálogo de exportación.
+                    String campo = i < campos.size() ? campos.get(i).getCampo() : null;
+                    escribirCeldaExcel(filaXLS.createCell(i + 1), dato[i], campo,
+                            estiloFechaHora, estiloFecha, estiloEntero, formatosFecha);
+                }
+            }
+
+            // La cabecera existente está en la fila Excel 2 (índice 1).
+            // El autofiltro debe abarcar también las filas de datos.
+            if (!campos.isEmpty()) {
+                spreadsheet.setAutoFilter(new CellRangeAddress(1, Math.max(1, numeroFila - 1), 1, campos.size()));
+            }
+            spreadsheet.createFreezePane(0, 2);
 
             workbook.write(outputStream);
             byte[] contenido = outputStream.toByteArray();
